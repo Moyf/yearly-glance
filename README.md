@@ -4,6 +4,12 @@ English | [中文](./README-zh.md)
 
 Yearly event overview with customizable management.
 
+[![GitHub stars](https://img.shields.io/github/stars/Moyf/yearly-glance?style=flat&label=Stars)](https://github.com/Moyf/yearly-glance/stargazers)
+[![Total Downloads](https://img.shields.io/github/downloads/Moyf/yearly-glance/total?style=flat&label=Total%20Downloads)](https://github.com/Moyf/yearly-glance/releases)
+[![GitHub License](https://img.shields.io/github/license/Moyf/yearly-glance?style=flat&label=License)](https://github.com/Moyf/yearly-glance/blob/master/LICENSE)
+[![GitHub Issues](https://img.shields.io/github/issues/Moyf/yearly-glance?style=flat&label=Issues)](https://github.com/Moyf/yearly-glance/issues)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/Moyf/yearly-glance?style=flat&label=Last%20Commit)](https://github.com/Moyf/yearly-glance/commits/master)
+
 ## Installation
 ### Manual Installation
 
@@ -40,3 +46,6 @@ If you encounter any issues or have suggestions:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Moyf/yearly-glance&type=Timeline)](https://www.star-history.com/#Moyf/yearly-glance&Timeline)

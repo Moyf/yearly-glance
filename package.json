@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "yearly-glance",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "Yearly event overview with customizable management.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node scripts/esbuild.config.mjs",
@@ -15,7 +15,7 @@
 	"keywords": [
 		"Obsidian Plugin"
 	],
-	"author": "RavenHogWarts",
+	"author": "Moy & RavenHogWarts",
 	"license": "MIT",
 	"engines": {
 		"node": ">=18.x"

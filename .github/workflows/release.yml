@@ -9,7 +9,7 @@ permissions:
     contents: write
 
 env:
-    PLUGIN_NAME: xxx(replace all occurrences of xxx with your plugin name)
+    PLUGIN_NAME: yearly-glance
 
 jobs:
     build:
@@ -135,7 +135,7 @@ jobs:
 
                       ## Installation
                       1. Download the files from the Assets section below
-                      2. Copy them to your vault's plugins folder: `<vault>/.obsidian/plugins/xxx/`
+                      2. Copy them to your vault's plugins folder: `<vault>/.obsidian/plugins/yearly-glance/`
                       3. Reload Obsidian
                       4. Enable plugin in settings
 

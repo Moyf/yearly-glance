@@ -76,40 +76,70 @@ jobs:
                     echo -e "## Changes\n" > temp_changelog.md
                   fi
 
-                  # 定义要处理的commit类型
-                  TYPES=("feat" "fix" "perf" "refactor" "style" "docs" "test" "chore")
+                  # 定义要处理的commit类型（按照Conventional Commits规范）
+                  declare -A TYPE_TITLES=(
+                    ["feat"]="✨ Features"
+                    ["fix"]="🐛 Bug Fixes"
+                    ["perf"]="⚡ Performance Improvements"
+                    ["refactor"]="♻️ Code Refactoring"
+                    ["style"]="💄 Styles"
+                    ["docs"]="📝 Documentation"
+                    ["test"]="✅ Tests"
+                    ["build"]="👷 Build System"
+                    ["ci"]="🔧 Continuous Integration"
+                    ["chore"]="🔨 Chores"
+                    ["revert"]="⏪ Reverts"
+                  )
 
-                  for TYPE in "${TYPES[@]}"; do
-                    # 从所有commits中过滤出特定类型的commits
-                    TYPE_COMMITS=$(echo "$COMMITS" | grep "^- ${TYPE}(" || true)
+                  # 首先检查是否有破坏性变更
+                  BREAKING_CHANGES=$(echo "$COMMITS" | grep -E "^- (feat|fix|refactor|perf|style|test|build|ci|chore|revert)(\([^)]+\))?!:" || true)
+                  if [ ! -z "$BREAKING_CHANGES" ]; then
+                    echo -e "\n### ⚠️ BREAKING CHANGES\n" >> temp_changelog.md
+                    while IFS= read -r COMMIT; do
+                      if [[ $COMMIT =~ ^-\ ([^(!:]+)(\([^)]+\))?!:\ (.*)$ ]]; then
+                        TYPE="${BASH_REMATCH[1]}"
+                        SCOPE="${BASH_REMATCH[2]}"
+                        SCOPE="${SCOPE//[()]/}"  # 移除括号
+                        DESC="${BASH_REMATCH[3]}"
+                        if [ ! -z "$SCOPE" ]; then
+                          echo "- **${SCOPE}**: ${DESC}" >> temp_changelog.md
+                        else
+                          echo "- ${DESC}" >> temp_changelog.md
+                        fi
+                      fi
+                    done <<< "$BREAKING_CHANGES"
+                  fi
+
+                  # 处理常规commit类型
+                  for TYPE in "${!TYPE_TITLES[@]}"; do
+                    # 从所有commits中过滤出特定类型的commits（排除已处理的breaking changes）
+                    TYPE_COMMITS=$(echo "$COMMITS" | grep -E "^- ${TYPE}(\([^)]+\))?:" | grep -v "!" || true)
                     
                     if [ ! -z "$TYPE_COMMITS" ]; then
-                      # 转换commit类型为可读文本
-                      case $TYPE in
-                        "feat") TITLE="✨ New Features";;
-                        "fix") TITLE="🐛 Bug Fixes";;
-                        "perf") TITLE="⚡ Performance";;
-                        "refactor") TITLE="♻️ Refactors";;
-                        "style") TITLE="💄 Styles";;
-                        "docs") TITLE="📝 Documentation";;
-                        "test") TITLE="✅ Tests";;
-                        "chore") TITLE="🔧 Chores";;
-                        *) TITLE="Other";;
-                      esac
-                      
                       # 添加分类标题
-                      echo -e "\n### ${TITLE}\n" >> temp_changelog.md
+                      echo -e "\n### ${TYPE_TITLES[$TYPE]}\n" >> temp_changelog.md
                       
                       # 处理每个commit消息，提取scope和描述
                       while IFS= read -r COMMIT; do
-                        if [[ $COMMIT =~ ^-\ ${TYPE}\((.*?)\):\ (.*)$ ]]; then
-                          SCOPE="${BASH_REMATCH[1]}"
-                          DESC="${BASH_REMATCH[2]}"
-                          echo "- **${SCOPE}**: ${DESC}" >> temp_changelog.md
+                        if [[ $COMMIT =~ ^-\ ${TYPE}(\(([^)]+)\))?:\ (.*)$ ]]; then
+                          SCOPE="${BASH_REMATCH[2]}"
+                          DESC="${BASH_REMATCH[3]}"
+                          if [ ! -z "$SCOPE" ]; then
+                            echo "- **${SCOPE}**: ${DESC}" >> temp_changelog.md
+                          else
+                            echo "- ${DESC}" >> temp_changelog.md
+                          fi
                         fi
                       done <<< "$TYPE_COMMITS"
                     fi
                   done
+
+                  # 检查是否有不符合规范的提交
+                  OTHER_COMMITS=$(echo "$COMMITS" | grep -v -E "^- (feat|fix|perf|refactor|style|docs|test|build|ci|chore|revert)(\([^)]+\))?!?:" || true)
+                  if [ ! -z "$OTHER_COMMITS" ]; then
+                    echo -e "\n### 🔄 Other Changes\n" >> temp_changelog.md
+                    echo "$OTHER_COMMITS" >> temp_changelog.md
+                  fi
 
                   # 将处理后的changelog保存到GITHUB_OUTPUT
                   echo "changelog<<EOF" >> $GITHUB_OUTPUT

@@ -1,339 +1,156 @@
-import { Plugin, WorkspaceLeaf, addIcon, ItemView } from 'obsidian';
-import { YearlyGlanceSettingsTab } from './views/SettingsTab';
-import { YearlyCalendarView } from './views/YearlyCalendarView';
-import { DEFAULT_EVENT_TYPES, DEFAULT_SETTINGS, EventType, YearlyGlanceSettings, Holiday, Birthday, CustomEvent } from './models/types';
-import { EventListModal, EventModal } from './views/EventModal';
-import '../styles.css';
-
-// 定义视图类型
-const VIEW_TYPE_YEARLY_GLANCE = 'yearly-glance-view';
-
-// 添加自定义图标
-const CALENDAR_ICON = `<svg t="1680347920392" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2374" width="100" height="100"><path d="M725.333333 128h42.666667v42.666667a85.333333 85.333333 0 0 0 85.333333 85.333333h42.666667v554.666667a128 128 0 0 1-128 128H256a128 128 0 0 1-128-128V256h42.666667a85.333333 85.333333 0 0 0 85.333333-85.333333V128h42.666667v42.666667a85.333333 85.333333 0 0 0 85.333333 85.333333h213.333333a85.333333 85.333333 0 0 0 85.333334-85.333333V128z m42.666667 384H256v298.666667a42.666667 42.666667 0 0 0 42.666667 42.666666h512a42.666667 42.666667 0 0 0 42.666666-42.666666V512zM384 341.333333a42.666667 42.666667 0 1 1 0-85.333333 42.666667 42.666667 0 0 1 0 85.333333z m256 0a42.666667 42.666667 0 1 1 0-85.333333 42.666667 42.666667 0 0 1 0 85.333333zM213.333333 170.666667v42.666666a42.666667 42.666667 0 0 1-42.666666 42.666667H128V170.666667h85.333333z m725.333334 0v85.333333h-42.666667a42.666667 42.666667 0 0 1-42.666667-42.666667V170.666667h85.333334z" p-id="2375"></path></svg>`;
-
-// 扩展 ItemView 类型声明，添加 containerEl 属性
-declare module 'obsidian' {
-    interface ItemView {
-        containerEl: HTMLElement;
-    }
-}
-
-// 定义年历视图类
-class YearlyGlanceView extends ItemView {
-    private plugin: YearlyGlancePlugin;
-    contentEl: HTMLElement;
-    private calendarView: YearlyCalendarView;
-
-    constructor(leaf: WorkspaceLeaf, plugin: YearlyGlancePlugin) {
-        super(leaf);
-        this.plugin = plugin;
-        this.contentEl = document.createElement('div');
-        this.contentEl.className = 'yearly-glance-container';
-        
-        this.calendarView = new YearlyCalendarView(
-            plugin.settings.year,
-            plugin.settings.layout,
-            plugin.settings.viewType,
-            plugin.settings.showWeekdays,
-            plugin.settings.highlightToday,
-            plugin.settings.highlightWeekends,
-            plugin.settings.showLegend,
-            plugin.settings.limitListHeight,
-            plugin.settings.eventFontSize,
-            plugin.settings.showHolidays,
-            plugin.settings.showBirthdays,
-            plugin.settings.showCustomEvents,
-            plugin.settings.mondayFirst,
-            plugin.settings.title,
-            plugin.settings.showTooltips,
-            plugin.settings.colorful,
-            plugin.getEventTypes()
-        );
-    }
-
-    getViewType(): string {
-        return VIEW_TYPE_YEARLY_GLANCE;
-    }
-
-    getDisplayText(): string {
-        return '年度概览';
-    }
-
-    getIcon(): string {
-        return 'calendar-with-checkmark';
-    }
-
-    async onOpen(): Promise<void> {
-        // 添加事件数据
-        this.calendarView.addHolidays(this.plugin.settings.holidays);
-        this.calendarView.addBirthdays(this.plugin.settings.birthdays);
-        this.calendarView.addCustomEvents(this.plugin.settings.customEvents);
-
-        // 渲染日历
-        this.contentEl.innerHTML = this.calendarView.render();
-        this.calendarView.setContainer(this.contentEl);
-        this.calendarView.setupEventHoverEffects();
-        
-        // 将内容添加到视图中
-        const contentContainer = this.containerEl.querySelector('.view-content');
-        if (contentContainer) {
-            contentContainer.appendChild(this.contentEl);
-        } else {
-            this.containerEl.appendChild(this.contentEl);
-        }
-    }
-
-    async onClose(): Promise<void> {
-        this.contentEl.innerHTML = '';
-    }
-
-    getContentEl(): HTMLElement {
-        return this.contentEl;
-    }
-}
+import { Plugin } from "obsidian";
+import { DEFAULT_CONFIG, YearlyGlanceConfig } from "./core/interfaces/types";
+import YearlyGlanceSettingsTab from "./components/settings/SettingsTab";
+import { YearlyGlanceView } from "./views/YearlyGlanceView";
+import { VIEW_TYPE_YEARLY_GLANCE } from "./views/YearlyGlanceView";
+import { EventManagerView } from "./views/EventManagerView";
+import { VIEW_TYPE_EVENT_MANAGER } from "./views/EventManagerView";
+import { t } from "./i18n/i18n";
 
 export default class YearlyGlancePlugin extends Plugin {
-    settings: YearlyGlanceSettings;
-    private eventTypes: Record<string, EventType>;
+	settings: YearlyGlanceConfig;
 
-    async onload() {
-        console.log('加载年度概览插件');
-        
-        // 注册自定义图标
-        addIcon('calendar-yearly', CALENDAR_ICON);
+	async onload() {
+		console.debug("加载年度概览插件");
+		// 加载设置
+		await this.loadSettings();
 
-        // 加载设置
-        await this.loadSettings();
+		// 注册视图
+		this.registerLeafViews();
 
-        // 初始化事件类型
-        this.eventTypes = { ...DEFAULT_EVENT_TYPES };
+		// 注册命令
+		this.registerCommands();
+		this.registerRibbonCommands();
 
-        // 注册视图
-        this.registerView(
-            VIEW_TYPE_YEARLY_GLANCE,
-            (leaf) => new YearlyGlanceView(leaf, this)
-        );
+		// 添加设置选项卡
+		this.addSettingTab(new YearlyGlanceSettingsTab(this.app, this));
+	}
 
-        // 添加打开年历视图的命令
-        this.addCommand({
-            id: 'open-yearly-glance',
-            name: '打开年度概览',
-            callback: () => {
-                this.activateView();
-            }
-        });
+	onunload() {
+		console.debug("卸载年度概览插件");
+	}
 
-        // 添加打开节日管理的命令
-        this.addCommand({
-            id: 'manage-holidays',
-            name: '管理节日',
-            callback: () => {
-                this.openEventManager('holiday');
-            }
-        });
+	async loadSettings() {
+		// 加载数据
+		const savedData = await this.loadData();
 
-        // 添加打开生日管理的命令
-        this.addCommand({
-            id: 'manage-birthdays',
-            name: '管理生日',
-            callback: () => {
-                this.openEventManager('birthday');
-            }
-        });
+		// 验证并合并数据
+		this.settings = this.validateAndMergeSettings(savedData);
+	}
 
-        // 添加打开自定义事件管理的命令
-        this.addCommand({
-            id: 'manage-custom-events',
-            name: '管理自定义事件',
-            callback: () => {
-                this.openEventManager('custom');
-            }
-        });
+	// 确保数据结构符合预期格式，移除未定义的配置
+	private validateAndMergeSettings(savedData: any): YearlyGlanceConfig {
+		// 创建默认配置的深拷贝
+		const validatedSettings = structuredClone(DEFAULT_CONFIG);
+		// console.debug(validatedSettings);
 
-        // 添加刷新年历的命令
-        this.addCommand({
-            id: 'refresh-yearly-glance',
-            name: '刷新年度概览',
-            callback: () => {
-                this.refreshView();
-            }
-        });
+		try {
+			// 如果savedData存在且是对象
+			if (savedData && typeof savedData === "object") {
+				// 验证并合并config部分
+				if (savedData.config && typeof savedData.config === "object") {
+					validatedSettings.config = {
+						...validatedSettings.config,
+						...savedData.config,
+					};
+				}
 
-        // 添加设置选项卡
-        this.addSettingTab(new YearlyGlanceSettingsTab(this.app, this));
+				// 验证并合并data部分
+				if (savedData.data && typeof savedData.data === "object") {
+					validatedSettings.data = {
+						...validatedSettings.data,
+						...savedData.data,
+					};
+				}
+			}
+		} catch (error) {
+			console.error("数据验证失败，使用默认配置", error);
+		}
 
-        // 添加左侧栏图标
-        this.addRibbonIcon('calendar-yearly', '年度概览', () => {
-            this.activateView();
-        });
-    }
+		return validatedSettings;
+	}
 
-    onunload() {
-        console.log('卸载年度概览插件');
-        this.app.workspace.detachLeavesOfType(VIEW_TYPE_YEARLY_GLANCE);
-    }
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
 
-    async loadSettings() {
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-    }
+	private registerLeafViews() {
+		this.registerView(VIEW_TYPE_YEARLY_GLANCE, (leaf) => {
+			return new YearlyGlanceView(leaf, this);
+		});
 
-    async saveSettings() {
-        await this.saveData(this.settings);
-        this.refreshView();
-    }
+		this.registerView(VIEW_TYPE_EVENT_MANAGER, (leaf) => {
+			return new EventManagerView(leaf, this);
+		});
+	}
 
-    getEventTypes(): Record<string, EventType> {
-        return this.eventTypes;
-    }
+	private registerCommands() {
+		this.addCommand({
+			id: "open-yearly-glance",
+			name: t("command.openYearlyGlance"),
+			callback: () => this.openPluginView(VIEW_TYPE_YEARLY_GLANCE),
+		});
 
-    // 激活年历视图
-    async activateView() {
-        // 检查是否已经有打开的视图
-        const existingLeaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_YEARLY_GLANCE);
-        
-        if (existingLeaves.length > 0) {
-            // 如果已经有打开的视图，激活它
-            this.app.workspace.revealLeaf(existingLeaves[0]);
-        } else {
-            // 否则创建新视图
-            const leaf = this.app.workspace.getLeaf('tab');
-            await leaf.setViewState({
-                type: VIEW_TYPE_YEARLY_GLANCE,
-                active: true
-            });
-            
-            this.app.workspace.revealLeaf(leaf);
-        }
-    }
+		this.addCommand({
+			id: "open-event-manager",
+			name: t("command.openEventManager"),
+			callback: () => this.openPluginView(VIEW_TYPE_EVENT_MANAGER),
+		});
+	}
 
-    // 刷新年历视图
-    refreshView() {
-        const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_YEARLY_GLANCE);
-        
-        if (leaves.length > 0) {
-            const view = leaves[0].view as YearlyGlanceView;
-            const contentEl = view.getContentEl();
-            
-            // 重新创建视图
-            contentEl.innerHTML = '';
-            
-            // 重新设置事件数据
-            const calendarView = new YearlyCalendarView(
-                this.settings.year,
-                this.settings.layout,
-                this.settings.viewType,
-                this.settings.showWeekdays,
-                this.settings.highlightToday,
-                this.settings.highlightWeekends,
-                this.settings.showLegend,
-                this.settings.limitListHeight,
-                this.settings.eventFontSize,
-                this.settings.showHolidays,
-                this.settings.showBirthdays,
-                this.settings.showCustomEvents,
-                this.settings.mondayFirst,
-                this.settings.title,
-                this.settings.showTooltips,
-                this.settings.colorful,
-                this.getEventTypes()
-            );
-            
-            calendarView.addHolidays(this.settings.holidays);
-            calendarView.addBirthdays(this.settings.birthdays);
-            calendarView.addCustomEvents(this.settings.customEvents);
-            
-            // 重新渲染
-            contentEl.innerHTML = calendarView.render();
-            calendarView.setContainer(contentEl);
-            calendarView.setupEventHoverEffects();
-        }
-    }
+	private registerRibbonCommands() {
+		this.addRibbonIcon("telescope", t("command.openYearlyGlance"), () =>
+			this.openPluginView(VIEW_TYPE_YEARLY_GLANCE)
+		);
+	}
 
-    // 打开事件管理器
-    openEventManager(eventType: string) {
-        let events: Holiday[] | Birthday[] | CustomEvent[] = [];
-        
-        switch (eventType) {
-            case 'holiday':
-                events = this.settings.holidays;
-                break;
-            case 'birthday':
-                events = this.settings.birthdays;
-                break;
-            case 'custom':
-                events = this.settings.customEvents;
-                break;
-        }
-        
-        // 打开事件列表模态框
-        const modal = new EventListModal(
-            this.app,
-            this,
-            eventType,
-            events,
-            (index) => {
-                // 编辑事件
-                this.openEventEditor(eventType, index);
-            },
-            async (index) => {
-                // 删除事件
-                events.splice(index, 1);
-                await this.saveSettings();
-                
-                // 重新打开事件管理器
-                this.openEventManager(eventType);
-            },
-            () => {
-                // 添加事件
-                this.openEventEditor(eventType);
-            }
-        );
-        modal.open();
-    }
+	public getSettings() {
+		return this.settings;
+	}
 
-    // 打开事件编辑器
-    openEventEditor(eventType: string, index?: number) {
-        let events: Holiday[] | Birthday[] | CustomEvent[] = [];
-        let eventData: Holiday | Birthday | CustomEvent | null = null;
-        
-        switch (eventType) {
-            case 'holiday':
-                events = this.settings.holidays;
-                break;
-            case 'birthday':
-                events = this.settings.birthdays;
-                break;
-            case 'custom':
-                events = this.settings.customEvents;
-                break;
-        }
-        
-        // 如果提供了索引，说明是编辑模式
-        if (index !== undefined) {
-            eventData = events[index];
-        }
-        
-        // 打开事件编辑模态框
-        const modal = new EventModal(
-            this.app,
-            this,
-            eventType,
-            async (data) => {
-                if (index !== undefined) {
-                    // 更新现有事件
-                    events[index] = data;
-                } else {
-                    // 添加新事件
-                    events.push(data);
-                }
-                
-                await this.saveSettings();
-                
-                // 重新打开事件管理器
-                this.openEventManager(eventType);
-            },
-            eventData
-        );
-        modal.open();
-    }
+	public getConfig(): YearlyGlanceConfig["config"] {
+		return this.settings.config;
+	}
+
+	public async updateConfig(
+		newConfig: Partial<YearlyGlanceConfig["config"]>
+	) {
+		this.settings.config = {
+			...this.settings.config,
+			...newConfig,
+		};
+
+		await this.saveSettings();
+	}
+
+	public getData(): YearlyGlanceConfig["data"] {
+		return this.settings.data;
+	}
+
+	public async updateData(newData: Partial<YearlyGlanceConfig["data"]>) {
+		this.settings.data = {
+			...this.settings.data,
+			...newData,
+		};
+		await this.saveSettings();
+	}
+
+	public async openPluginView(viewType: string) {
+		// 检查是否已经有打开的视图
+		const existingLeaves = this.app.workspace.getLeavesOfType(viewType);
+
+		if (existingLeaves.length > 0) {
+			// 如果存在，则激活第一个视图
+			this.app.workspace.revealLeaf(existingLeaves[0]);
+		} else {
+			// 如果不存在，则创建新的视图
+			const leaf = this.app.workspace.getLeaf("tab");
+			await leaf.setViewState({
+				type: viewType,
+				active: true,
+			});
+
+			this.app.workspace.revealLeaf(leaf);
+		}
+	}
 }

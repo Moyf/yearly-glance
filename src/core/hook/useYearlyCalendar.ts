@@ -8,73 +8,73 @@ import {
 
 export const MonthMap: Array<{ name: string; color: string }> = [
 	{
-		name: t("view.month.jan"),
+		name: t("view.yearlyGlance.month.jan"),
 		color: hexToRgb("#e74c3c"), // 红色
 	},
 	{
-		name: t("view.month.feb"),
+		name: t("view.yearlyGlance.month.feb"),
 		color: hexToRgb("#e67e22"), // 橙色
 	},
 	{
-		name: t("view.month.mar"),
+		name: t("view.yearlyGlance.month.mar"),
 		color: hexToRgb("#f1c40f"), // 黄色
 	},
 	{
-		name: t("view.month.apr"),
+		name: t("view.yearlyGlance.month.apr"),
 		color: hexToRgb("#2ecc71"), // 绿色
 	},
 	{
-		name: t("view.month.may"),
+		name: t("view.yearlyGlance.month.may"),
 		color: hexToRgb("#1abc9c"), // 青绿色
 	},
 	{
-		name: t("view.month.jun"),
+		name: t("view.yearlyGlance.month.jun"),
 		color: hexToRgb("#3498db"), // 蓝色
 	},
 	{
-		name: t("view.month.jul"),
+		name: t("view.yearlyGlance.month.jul"),
 		color: hexToRgb("#9b59b6"), // 紫色
 	},
 	{
-		name: t("view.month.aug"),
+		name: t("view.yearlyGlance.month.aug"),
 		color: hexToRgb("#e84393"), // 粉色
 	},
 	{
-		name: t("view.month.sep"),
+		name: t("view.yearlyGlance.month.sep"),
 		color: hexToRgb("#fd79a8"), // 浅粉色
 	},
 	{
-		name: t("view.month.oct"),
+		name: t("view.yearlyGlance.month.oct"),
 		color: hexToRgb("#fdcb6e"), // 浅黄色
 	},
 	{
-		name: t("view.month.nov"),
+		name: t("view.yearlyGlance.month.nov"),
 		color: hexToRgb("#00cec9"), // 青色
 	},
 	{
-		name: t("view.month.dec"),
+		name: t("view.yearlyGlance.month.dec"),
 		color: hexToRgb("#6c5ce7"), // 靛蓝色
 	},
 ];
 
 export const WeekMap: Record<string, string[]> = {
 	sundayFirst: [
-		t("view.week.sun"),
-		t("view.week.mon"),
-		t("view.week.tue"),
-		t("view.week.wed"),
-		t("view.week.thu"),
-		t("view.week.fri"),
-		t("view.week.sat"),
+		t("view.yearlyGlance.week.sun"),
+		t("view.yearlyGlance.week.mon"),
+		t("view.yearlyGlance.week.tue"),
+		t("view.yearlyGlance.week.wed"),
+		t("view.yearlyGlance.week.thu"),
+		t("view.yearlyGlance.week.fri"),
+		t("view.yearlyGlance.week.sat"),
 	],
 	mondayFirst: [
-		t("view.week.mon"),
-		t("view.week.tue"),
-		t("view.week.wed"),
-		t("view.week.thu"),
-		t("view.week.fri"),
-		t("view.week.sat"),
-		t("view.week.sun"),
+		t("view.yearlyGlance.week.mon"),
+		t("view.yearlyGlance.week.tue"),
+		t("view.yearlyGlance.week.wed"),
+		t("view.yearlyGlance.week.thu"),
+		t("view.yearlyGlance.week.fri"),
+		t("view.yearlyGlance.week.sat"),
+		t("view.yearlyGlance.week.sun"),
 	],
 };
 

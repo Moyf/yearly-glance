@@ -12,7 +12,127 @@ export const SupportedLocales: Record<string, BaseMessage> = {
 // 定义翻译结构类型
 export type BaseMessage = {
 	setting: {
-		name: string;
+		title: string;
+		desc: string;
+		general: {
+			name: string;
+			desc: string;
+			title: {
+				name: string;
+				desc: string;
+			};
+			layout: {
+				name: string;
+				desc: string;
+			};
+			viewType: {
+				name: string;
+				desc: string;
+				options: {
+					calendar: string;
+					list: string;
+				};
+			};
+			showWeekdays: {
+				name: string;
+				desc: string;
+			};
+			highlightToday: {
+				name: string;
+				desc: string;
+			};
+			highlightWeekends: {
+				name: string;
+				desc: string;
+			};
+			showLegend: {
+				name: string;
+				desc: string;
+			};
+			limitListHeight: {
+				name: string;
+				desc: string;
+			};
+			eventFontSize: {
+				name: string;
+				desc: string;
+				options: {
+					small: string;
+					medium: string;
+					large: string;
+				};
+			};
+			showHolidays: {
+				name: string;
+				desc: string;
+			};
+			showBirthdays: {
+				name: string;
+				desc: string;
+			};
+			showCustomEvents: {
+				name: string;
+				desc: string;
+			};
+			mondayFirst: {
+				name: string;
+				desc: string;
+			};
+			showTooltips: {
+				name: string;
+				desc: string;
+			};
+			colorful: {
+				name: string;
+				desc: string;
+			};
+		};
+		events: {
+			name: string;
+			desc: string;
+		};
+	};
+	view: {
+		yearlyGlance: {
+			name: string;
+			yearlyCalendar: string;
+			legend: {
+				all: string;
+				holiday: string;
+				birthday: string;
+				custom: string;
+			};
+			month: {
+				jan: string;
+				feb: string;
+				mar: string;
+				apr: string;
+				may: string;
+				jun: string;
+				jul: string;
+				aug: string;
+				sep: string;
+				oct: string;
+				nov: string;
+				dec: string;
+			};
+			week: {
+				sun: string;
+				mon: string;
+				tue: string;
+				wed: string;
+				thu: string;
+				fri: string;
+				sat: string;
+			};
+		};
+		eventManager: {
+			name: string;
+		};
+	};
+	command: {
+		openYearlyGlance: string;
+		openEventManager: string;
 	};
 };
 

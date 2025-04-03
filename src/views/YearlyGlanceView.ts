@@ -36,7 +36,7 @@ export class YearlyGlanceView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return t("view.yearlyGlance");
+		return t("view.yearlyGlance.name");
 	}
 
 	async onOpen() {

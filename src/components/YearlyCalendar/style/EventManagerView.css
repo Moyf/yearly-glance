@@ -1,0 +1,276 @@
+.event-manager-container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	padding: 16px;
+	overflow: hidden;
+	font-family: var(--font-interface);
+}
+
+.event-manager-header {
+	margin-bottom: 20px;
+}
+
+.event-manager-header h2 {
+	margin: 0 0 16px 0;
+	font-size: 1.8em;
+	font-weight: 600;
+	color: var(--text-normal);
+}
+
+.event-tabs {
+	display: flex;
+	border-bottom: 2px solid var(--background-modifier-border);
+	margin-bottom: 16px;
+}
+
+.event-tab-button {
+	padding: 8px 16px;
+	background: transparent;
+	border: none;
+	border-bottom: 2px solid transparent;
+	margin-bottom: -2px;
+	font-size: 1em;
+	cursor: pointer;
+	color: var(--text-muted);
+	transition: all 0.2s ease;
+}
+
+.event-tab-button:hover {
+	color: var(--text-normal);
+}
+
+.event-tab-button.active {
+	color: var(--text-accent);
+	border-bottom-color: var(--text-accent);
+	font-weight: 600;
+}
+
+.event-manager-content {
+	flex: 1;
+	overflow-y: auto;
+	padding-right: 8px;
+}
+
+.event-list-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 16px;
+}
+
+.event-list-header h3 {
+	margin: 0;
+	font-size: 1.2em;
+	font-weight: 600;
+}
+
+.add-event-button {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border: none;
+	border-radius: 4px;
+	padding: 6px 12px;
+	font-size: 0.9em;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.add-event-button:hover {
+	background-color: var(--interactive-accent-hover);
+}
+
+.event-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.event-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px;
+	background-color: var(--background-secondary);
+	border-radius: 6px;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-item:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.event-item-content {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex: 1;
+}
+
+.event-emoji {
+	font-size: 1.5em;
+	min-width: 32px;
+	text-align: center;
+}
+
+.event-details {
+	flex: 1;
+}
+
+.event-title {
+	font-weight: 600;
+	margin-bottom: 4px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.event-date {
+	font-size: 0.85em;
+	color: var(--text-muted);
+	font-weight: normal;
+}
+
+.event-remark {
+	font-size: 0.9em;
+	color: var(--text-muted);
+	margin-top: 4px;
+}
+
+.event-type,
+.event-age {
+	font-size: 0.8em;
+	color: var(--text-faint);
+	margin-top: 2px;
+}
+
+.event-actions {
+	display: flex;
+	gap: 8px;
+}
+
+.edit-button,
+.delete-button {
+	background: transparent;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	padding: 4px 8px;
+	font-size: 0.8em;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.edit-button {
+	color: var(--text-normal);
+}
+
+.edit-button:hover {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border-color: var(--interactive-accent);
+}
+
+.delete-button {
+	color: var(--text-error);
+	border-color: var(--text-error-hover);
+}
+
+.delete-button:hover {
+	background-color: var(--text-error);
+	color: white;
+}
+
+.empty-list {
+	text-align: center;
+	padding: 32px;
+	color: var(--text-muted);
+	font-style: italic;
+}
+
+/* 表单样式 */
+.event-form {
+	background-color: var(--background-secondary);
+	padding: 20px;
+	border-radius: 8px;
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.event-form h3 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 1.3em;
+	text-align: center;
+}
+
+.form-group {
+	margin-bottom: 16px;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+	font-size: 0.9em;
+}
+
+.form-group.checkbox label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: normal;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+	width: 100%;
+	padding: 8px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	background-color: var(--background-primary);
+	color: var(--text-normal);
+	font-size: 0.9em;
+}
+
+.form-group textarea {
+	min-height: 80px;
+	resize: vertical;
+}
+
+.form-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+	margin-top: 24px;
+}
+
+.save-button,
+.cancel-button {
+	padding: 8px 16px;
+	border-radius: 4px;
+	font-size: 0.9em;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.save-button {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border: none;
+}
+
+.save-button:hover {
+	background-color: var(--interactive-accent-hover);
+}
+
+.cancel-button {
+	background-color: transparent;
+	border: 1px solid var(--background-modifier-border);
+	color: var(--text-normal);
+}
+
+.cancel-button:hover {
+	background-color: var(--background-modifier-hover);
+}

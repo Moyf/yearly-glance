@@ -5,13 +5,20 @@ import { YearlyGlanceView } from "./views/YearlyGlanceView";
 import { VIEW_TYPE_YEARLY_GLANCE } from "./views/YearlyGlanceView";
 import { EventManagerView } from "./views/EventManagerView";
 import { VIEW_TYPE_EVENT_MANAGER } from "./views/EventManagerView";
+import {
+	Birthday,
+	CustomEvent,
+	EventType,
+	Holiday,
+} from "@/src/core/interfaces/Events";
 import { t } from "./i18n/i18n";
+import { EventFormModal } from "./components/YearlyCalendar/EventFormModal";
 
 export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
 
 	async onload() {
-		console.debug("加载年度概览插件");
+		console.debug("[yearly-glance] 加载年度概览插件");
 		// 加载设置
 		await this.loadSettings();
 
@@ -27,7 +34,7 @@ export default class YearlyGlancePlugin extends Plugin {
 	}
 
 	onunload() {
-		console.debug("卸载年度概览插件");
+		console.debug("[yearly-glance] 卸载年度概览插件");
 	}
 
 	async loadSettings() {
@@ -96,6 +103,14 @@ export default class YearlyGlancePlugin extends Plugin {
 			name: t("command.openEventManager"),
 			callback: () => this.openPluginView(VIEW_TYPE_EVENT_MANAGER),
 		});
+
+		this.addCommand({
+			id: "add-event",
+			name: t("command.addEvent"),
+			callback: () => {
+				this.openEventForm("holiday", {}, false, true);
+			},
+		});
 	}
 
 	private registerRibbonCommands() {
@@ -152,5 +167,21 @@ export default class YearlyGlancePlugin extends Plugin {
 
 			this.app.workspace.revealLeaf(leaf);
 		}
+	}
+
+	// 添加打开事件表单的方法
+	openEventForm(
+		eventType: EventType = "holiday",
+		event: Partial<Holiday | Birthday | CustomEvent> = {},
+		isEditing: boolean = false,
+		allowTypeChange: boolean = false
+	) {
+		new EventFormModal(
+			this,
+			eventType,
+			event,
+			isEditing,
+			allowTypeChange
+		).open();
 	}
 }

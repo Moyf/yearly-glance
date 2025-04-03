@@ -4,7 +4,6 @@ import { createRoot, Root } from "react-dom/client";
 import YearlyGlancePlugin from "@/src/main";
 import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
 import {
-	BaseEvent,
 	Birthday,
 	CustomEvent,
 	Events,
@@ -12,7 +11,6 @@ import {
 	Holiday,
 } from "@/src/core/interfaces/Events";
 import "./style/EventManagerView.css";
-import { t } from "@/src/i18n/i18n";
 
 interface EventManagerViewProps {
 	config: YearlyGlanceConfig;
@@ -99,254 +97,12 @@ const EventList: React.FC<{
 	);
 };
 
-// 事件表单组件
-const EventForm: React.FC<{
-	event: Partial<Holiday | Birthday | CustomEvent>;
-	eventType: EventType;
-	onSave: (event: Holiday | Birthday | CustomEvent) => void;
-	onCancel: () => void;
-	isEditing: boolean;
-}> = ({ event, eventType, onSave, onCancel, isEditing }) => {
-	const [formData, setFormData] =
-		useState<Partial<Holiday | Birthday | CustomEvent>>(event);
-
-	const handleChange = (
-		e: React.ChangeEvent<
-			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-		>
-	) => {
-		const { name, value, type } = e.target;
-
-		if (type === "checkbox") {
-			const checked = (e.target as HTMLInputElement).checked;
-			setFormData((prev) => ({ ...prev, [name]: checked }));
-		} else {
-			setFormData((prev) => ({ ...prev, [name]: value }));
-		}
-	};
-
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-
-		// 构建基础事件对象
-		const baseEvent: BaseEvent = {
-			date: formData.date || "",
-			dateType: formData.dateType || "SOLAR",
-			text: formData.text || "",
-			isRepeat: formData.isRepeat || false,
-			emoji: formData.emoji,
-			color: formData.color,
-			remark: formData.remark,
-		};
-
-		// 根据事件类型构建完整事件对象
-		let completeEvent: Holiday | Birthday | CustomEvent;
-
-		if (eventType === "holiday") {
-			completeEvent = {
-				...baseEvent,
-				type: (formData as Holiday).type || "CUSTOM",
-				isShow: (formData as Holiday).isShow || true,
-				foundDate: (formData as Holiday).foundDate,
-			} as Holiday;
-		} else if (eventType === "birthday") {
-			completeEvent = {
-				...baseEvent,
-				nextBirthday: (formData as Birthday).nextBirthday || "",
-				age: (formData as Birthday).age,
-				animal: (formData as Birthday).animal,
-				zodiac: (formData as Birthday).zodiac,
-			} as Birthday;
-		} else {
-			completeEvent = baseEvent as CustomEvent;
-		}
-
-		onSave(completeEvent);
-	};
-
-	return (
-		<form className="event-form" onSubmit={handleSubmit}>
-			<h3>{isEditing ? "编辑" : "添加"}</h3>
-
-			<div className="form-group">
-				<label>事件名称</label>
-				<input
-					type="text"
-					name="text"
-					value={formData.text || ""}
-					onChange={handleChange}
-					required
-				/>
-			</div>
-
-			<div className="form-group">
-				<label>事件日期</label>
-				<input
-					type="text"
-					name="date"
-					value={formData.date || ""}
-					onChange={handleChange}
-					placeholder="MM-DD"
-					required
-				/>
-			</div>
-
-			<div className="form-group">
-				<label>日期类型</label>
-				<select
-					name="dateType"
-					value={formData.dateType || "SOLAR"}
-					onChange={handleChange}
-				>
-					<option value="SOLAR">公历</option>
-					<option value="LUNAR">农历</option>
-				</select>
-			</div>
-
-			<div className="form-group checkbox">
-				<label>
-					<input
-						type="checkbox"
-						name="isRepeat"
-						checked={formData.isRepeat || false}
-						onChange={handleChange}
-					/>
-					重复
-				</label>
-			</div>
-
-			<div className="form-group">
-				<label>事件图标</label>
-				<input
-					type="text"
-					name="emoji"
-					value={formData.emoji || ""}
-					onChange={handleChange}
-					placeholder="📅"
-				/>
-			</div>
-
-			<div className="form-group">
-				<label>事件颜色</label>
-				<input
-					type="color"
-					name="color"
-					value={formData.color || "#000000"}
-					onChange={handleChange}
-				/>
-			</div>
-
-			<div className="form-group">
-				<label>事件备注</label>
-				<textarea
-					name="remark"
-					value={formData.remark || ""}
-					onChange={handleChange}
-				/>
-			</div>
-
-			{/* 节日特有字段 */}
-			{eventType === "holiday" && (
-				<>
-					<div className="form-group">
-						<label>节日类型</label>
-						<select
-							name="type"
-							value={(formData as Holiday).type || "CUSTOM"}
-							onChange={handleChange}
-						>
-							<option value="CUSTOM">自定义</option>
-							<option value="INTERNAT">内置</option>
-						</select>
-					</div>
-
-					<div className="form-group checkbox">
-						<label>
-							<input
-								type="checkbox"
-								name="isShow"
-								checked={(formData as Holiday).isShow || false}
-								onChange={handleChange}
-							/>
-							显示在日历上
-						</label>
-					</div>
-
-					<div className="form-group">
-						<label>节日起源时间</label>
-						<input
-							type="text"
-							name="foundDate"
-							value={(formData as Holiday).foundDate || ""}
-							onChange={handleChange}
-							placeholder="YYYY-MM-DD"
-						/>
-					</div>
-				</>
-			)}
-
-			{/* 生日特有字段 */}
-			{eventType === "birthday" && (
-				<>
-					<div className="form-group">
-						<label>年龄</label>
-						<input
-							type="number"
-							name="age"
-							value={(formData as Birthday).age || ""}
-							onChange={handleChange}
-						/>
-					</div>
-
-					<div className="form-group">
-						<label>生肖</label>
-						<input
-							type="text"
-							name="animal"
-							value={(formData as Birthday).animal || ""}
-							onChange={handleChange}
-						/>
-					</div>
-
-					<div className="form-group">
-						<label>星座</label>
-						<input
-							type="text"
-							name="zodiac"
-							value={(formData as Birthday).zodiac || ""}
-							onChange={handleChange}
-						/>
-					</div>
-				</>
-			)}
-
-			<div className="form-actions">
-				<button type="submit" className="save-button">
-					保存
-				</button>
-				<button
-					type="button"
-					className="cancel-button"
-					onClick={onCancel}
-				>
-					取消
-				</button>
-			</div>
-		</form>
-	);
-};
-
 const EventManagerView: React.FC<EventManagerViewProps> = ({
 	config,
 	plugin,
 }) => {
 	const [activeTab, setActiveTab] = useState<EventType>("holiday");
 	const [events, setEvents] = useState<Events>(config.data);
-	const [showForm, setShowForm] = useState(false);
-	const [currentEvent, setCurrentEvent] = useState<
-		Partial<Holiday | Birthday | CustomEvent>
-	>({});
-	const [isEditing, setIsEditing] = useState(false);
 
 	// 当配置更改时更新事件
 	useEffect(() => {
@@ -361,27 +117,12 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({
 
 	// 添加新事件
 	const handleAddEvent = () => {
-		setCurrentEvent({
-			date: "",
-			dateType: "SOLAR",
-			text: "",
-			isRepeat: true,
-			emoji: "📅",
-			color: "#4285f4",
-			...(activeTab === "holiday"
-				? { type: "CUSTOM", isShow: true }
-				: {}),
-			...(activeTab === "birthday" ? { nextBirthday: "" } : {}),
-		});
-		setIsEditing(false);
-		setShowForm(true);
+		plugin.openEventForm(activeTab, {}, false, false);
 	};
 
 	// 编辑事件
 	const handleEditEvent = (event: Holiday | Birthday | CustomEvent) => {
-		setCurrentEvent(event);
-		setIsEditing(true);
-		setShowForm(true);
+		plugin.openEventForm(activeTab, event, true, false);
 	};
 
 	// 删除事件
@@ -401,48 +142,6 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({
 		}
 
 		await saveEvents(newEvents);
-	};
-
-	// 保存事件
-	const handleSaveEvent = async (event: Holiday | Birthday | CustomEvent) => {
-		const newEvents = { ...events };
-
-		if (activeTab === "holiday") {
-			if (isEditing) {
-				newEvents.holidays = events.holidays.map((h) =>
-					h === currentEvent ? (event as Holiday) : h
-				);
-			} else {
-				newEvents.holidays = [...events.holidays, event as Holiday];
-			}
-		} else if (activeTab === "birthday") {
-			if (isEditing) {
-				newEvents.birthdays = events.birthdays.map((b) =>
-					b === currentEvent ? (event as Birthday) : b
-				);
-			} else {
-				newEvents.birthdays = [...events.birthdays, event as Birthday];
-			}
-		} else {
-			if (isEditing) {
-				newEvents.customEvents = events.customEvents.map((c) =>
-					c === currentEvent ? (event as CustomEvent) : c
-				);
-			} else {
-				newEvents.customEvents = [
-					...events.customEvents,
-					event as CustomEvent,
-				];
-			}
-		}
-
-		await saveEvents(newEvents);
-		setShowForm(false);
-	};
-
-	// 取消编辑
-	const handleCancelEdit = () => {
-		setShowForm(false);
 	};
 
 	// 获取当前标签页的事件列表
@@ -485,33 +184,21 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({
 			</div>
 
 			<div className="event-manager-content">
-				{showForm ? (
-					<EventForm
-						event={currentEvent}
-						eventType={activeTab}
-						onSave={handleSaveEvent}
-						onCancel={handleCancelEdit}
-						isEditing={isEditing}
-					/>
-				) : (
-					<>
-						<div className="event-list-header">
-							<button
-								className="add-event-button"
-								onClick={handleAddEvent}
-							>
-								添加新事件
-							</button>
-						</div>
+				<div className="event-list-header">
+					<button
+						className="add-event-button"
+						onClick={handleAddEvent}
+					>
+						添加新事件
+					</button>
+				</div>
 
-						<EventList
-							events={getCurrentEvents()}
-							onEdit={handleEditEvent}
-							onDelete={handleDeleteEvent}
-							eventType={activeTab}
-						/>
-					</>
-				)}
+				<EventList
+					events={getCurrentEvents()}
+					onEdit={handleEditEvent}
+					onDelete={handleDeleteEvent}
+					eventType={activeTab}
+				/>
 			</div>
 		</div>
 	);

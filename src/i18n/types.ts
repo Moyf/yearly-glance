@@ -128,11 +128,47 @@ export type BaseMessage = {
 		};
 		eventManager: {
 			name: string;
+			solar: string;
+			lunar: string;
+			form: {
+				edit: string;
+				add: string;
+				eventType: string;
+				eventName: string;
+				eventDate: string;
+				eventDateType: string;
+				optional: string;
+				eventRepeat: string;
+				eventEmoji: string;
+				eventColor: string;
+				eventRemark: string;
+				save: string;
+				cancel: string;
+			};
+			holiday: {
+				name: string;
+				type: string;
+				isShow: string;
+				foundDate: string;
+				internat: string;
+				custom: string;
+			};
+			birthday: {
+				name: string;
+				age: string;
+				nextBirthday: string;
+				animal: string;
+				zodiac: string;
+			};
+			custom: {
+				name: string;
+			};
 		};
 	};
 	command: {
 		openYearlyGlance: string;
 		openEventManager: string;
+		addEvent: string;
 	};
 };
 

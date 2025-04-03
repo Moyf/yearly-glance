@@ -118,11 +118,47 @@ const translations: BaseMessage = {
 		},
 		eventManager: {
 			name: "事件管理",
+			solar: "公历",
+			lunar: "农历",
+			form: {
+				edit: "編輯",
+				add: "添加",
+				eventType: "事件類型",
+				eventName: "名稱字段",
+				eventDate: "事件日期",
+				eventDateType: "事件日期類型",
+				optional: "可選",
+				eventRepeat: "重複",
+				eventEmoji: "事件圖標",
+				eventColor: "事件顏色",
+				eventRemark: "事件備註",
+				save: "保存",
+				cancel: "取消",
+			},
+			holiday: {
+				name: "節日",
+				type: "類型",
+				isShow: "是否顯示",
+				foundDate: "節日起源時間",
+				internat: "國際",
+				custom: "自定義",
+			},
+			birthday: {
+				name: "生日",
+				age: "年齡",
+				nextBirthday: "下一次生日",
+				animal: "生肖",
+				zodiac: "星座",
+			},
+			custom: {
+				name: "自定義事件",
+			},
 		},
 	},
 	command: {
 		openYearlyGlance: "打開年度概覽",
 		openEventManager: "打開年度概覽事件管理",
+		addEvent: "添加事件",
 	},
 };
 

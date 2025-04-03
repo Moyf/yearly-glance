@@ -34,7 +34,15 @@ export interface Birthday extends BaseEvent {
 export type CustomEvent = BaseEvent;
 
 // 事件类型
-export type EventType = "holiday" | "birthday" | "custom";
+export type EventType = (typeof EVENT_TYPE_LIST)[number];
+export const EVENT_TYPE_LIST = ["holiday", "birthday", "custom"] as const;
+
+// 事件类型默认图标
+export const EVENT_TYPE_DEFAULT_EMOJI: Record<EventType, string> = {
+	holiday: "🎉",
+	birthday: "🎂",
+	custom: "📅",
+};
 
 export const DEFAULT_EVENTS: Events = {
 	holidays: [

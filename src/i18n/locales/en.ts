@@ -118,11 +118,47 @@ const translations: BaseMessage = {
 		},
 		eventManager: {
 			name: "Event Manager",
+			solar: "Solar",
+			lunar: "Lunar",
+			form: {
+				edit: "Edit",
+				add: "Add",
+				eventType: "Event Type",
+				eventName: "Name Field",
+				eventDate: "Event Date",
+				eventDateType: "Event Date Type",
+				optional: "Optional",
+				eventRepeat: "Repeat",
+				eventEmoji: "Event Emoji",
+				eventColor: "Event Color",
+				eventRemark: "Event Remark",
+				save: "Save",
+				cancel: "Cancel",
+			},
+			holiday: {
+				name: "Holiday",
+				type: "Type",
+				isShow: "Is Show",
+				foundDate: "Found Date",
+				internat: "Internat",
+				custom: "Custom",
+			},
+			birthday: {
+				name: "Birthday",
+				age: "Age",
+				nextBirthday: "Next Birthday",
+				animal: "Animal",
+				zodiac: "Zodiac",
+			},
+			custom: {
+				name: "Custom Event",
+			},
 		},
 	},
 	command: {
 		openYearlyGlance: "Open Yearly Glance",
 		openEventManager: "Open Yearly Glance Events Manager",
+		addEvent: "Add Event",
 	},
 };
 

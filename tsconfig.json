@@ -4,15 +4,15 @@
 		"inlineSourceMap": true,
 		"inlineSources": true,
 		"module": "ESNext",
-		"target": "ES2017", 
+		"target": "ES2017",
 		"allowJs": true,
-		"noImplicitAny": false, 
+		"noImplicitAny": false,
 		"moduleResolution": "node",
 		"importHelpers": true,
 		"isolatedModules": true,
 		"strictNullChecks": true,
 		"jsx": "react-jsx",
-		"lib": ["DOM", "ES5", "ES6", "ES2017", "ES2018", "ES2019", "ES2020"], 
+		"lib": ["DOM", "ES5", "ES6", "ES2017", "ES2018", "ES2019", "ES2020"],
 		"paths": {
 			"@/*": ["./*"]
 		}

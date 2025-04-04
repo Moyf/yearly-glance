@@ -14,7 +14,9 @@ import {
 } from "@/src/core/interfaces/Events";
 import { t } from "@/src/i18n/i18n";
 import { Select } from "../base/Select";
+import { Toggle } from "../base/Toggle";
 import "./style/EventFormModal.css";
+import { EventBus } from "@/src/core/hook/useEvents";
 
 interface EventFormProps {
 	event: Partial<Holiday | Birthday | CustomEvent>;
@@ -24,7 +26,7 @@ interface EventFormProps {
 	isEditing: boolean;
 }
 
-const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
+export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
 	value: type,
 	label: t(`view.eventManager.${type}.name` as any),
 }));
@@ -55,6 +57,10 @@ const EventForm: React.FC<EventFormProps> = ({
 		}
 	};
 
+	const handleToggleChange = (name: string, checked: boolean) => {
+		setFormData((prev) => ({ ...prev, [name]: checked }));
+	};
+
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -63,7 +69,6 @@ const EventForm: React.FC<EventFormProps> = ({
 			date: formData.date || "",
 			dateType: formData.dateType || "SOLAR",
 			text: formData.text || "",
-			isRepeat: formData.isRepeat || false,
 			emoji: formData.emoji,
 			color: formData.color,
 			remark: formData.remark,
@@ -148,18 +153,6 @@ const EventForm: React.FC<EventFormProps> = ({
 						: t("view.eventManager.solar")
 				)}
 			</div>
-			{/* 是否重复 */}
-			<div className="form-group checkbox">
-				<label>
-					{t("view.eventManager.form.eventRepeat")}
-					<input
-						type="checkbox"
-						name="isRepeat"
-						checked={formData.isRepeat || false}
-						onChange={handleChange}
-					/>
-				</label>
-			</div>
 			{/* 节日字段(只读)：类型 */}
 			{eventType === "holiday" && isEditing && (
 				<div className="form-group read-only">
@@ -234,15 +227,16 @@ const EventForm: React.FC<EventFormProps> = ({
 						<div className="form-group checkbox">
 							<label>
 								{t("view.eventManager.holiday.isShow")}
-								<input
-									type="checkbox"
-									name="isShow"
-									checked={
-										(formData as Holiday).isShow || false
-									}
-									onChange={handleChange}
-								/>
 							</label>
+							<Toggle
+								checked={(formData as Holiday).isShow || false}
+								onChange={(checked) =>
+									handleToggleChange("isShow", checked)
+								}
+								aria-label={t(
+									"view.eventManager.holiday.isShow"
+								)}
+							/>
 						</div>
 						<div className="form-group">
 							<label>
@@ -257,6 +251,19 @@ const EventForm: React.FC<EventFormProps> = ({
 							/>
 						</div>
 					</>
+				)}
+				{/* 自定义事件字段：是否重复 */}
+				{eventType === "custom" && (
+					<div className="form-group checkbox">
+						<label>{t("view.eventManager.form.eventRepeat")}</label>
+						<Toggle
+							checked={formData.isRepeat || false}
+							onChange={(checked) =>
+								handleToggleChange("isRepeat", checked)
+							}
+							aria-label={t("view.eventManager.form.eventRepeat")}
+						/>
+					</div>
 				)}
 				{/* 事件备注 */}
 				<div className="form-group">
@@ -431,6 +438,10 @@ export class EventFormModal extends Modal {
 		}
 
 		await this.plugin.updateData(newEvents);
+
+		// 通知其他组件数据已更新
+		EventBus.publish();
+
 		this.close();
 	}
 

@@ -147,6 +147,7 @@ export default class YearlyGlancePlugin extends Plugin {
 			...this.settings.data,
 			...newData,
 		};
+
 		await this.saveSettings();
 	}
 

@@ -120,6 +120,17 @@ const translations: BaseMessage = {
 			name: "事件管理",
 			solar: "公历",
 			lunar: "农历",
+			actions: {
+				add: "添加新事件",
+				search: "搜索事件...",
+				clearSearch: "清除搜索",
+				delete: "删除事件",
+				edit: "编辑",
+			},
+			empty: {
+				text: "暂无事件",
+				subtext: "点击上方“添加新事件”按钮创建",
+			},
 			form: {
 				edit: "编辑",
 				add: "添加",
@@ -140,8 +151,8 @@ const translations: BaseMessage = {
 				type: "类型",
 				isShow: "是否显示",
 				foundDate: "节日起源时间",
-				internat: "内置",
-				custom: "自定义",
+				internat: "内置节日",
+				custom: "自定义节日",
 			},
 			birthday: {
 				name: "生日",
@@ -152,6 +163,7 @@ const translations: BaseMessage = {
 			},
 			custom: {
 				name: "自定义事件",
+				repeat: "重复",
 			},
 		},
 	},

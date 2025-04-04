@@ -1,6 +1,6 @@
 import * as React from "react";
 import YearlyGlancePlugin from "@/src/main";
-import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
+import { YearlyGlanceSettings } from "../interfaces/Settings";
 
 export function useConfig(plugin: YearlyGlancePlugin) {
 	// 使用插件的配置作为初始状态
@@ -8,7 +8,7 @@ export function useConfig(plugin: YearlyGlancePlugin) {
 
 	// 更新配置的回调函数
 	const updateConfig = React.useCallback(
-		async (newConfig: Partial<YearlyGlanceConfig["config"]>) => {
+		async (newConfig: YearlyGlanceSettings) => {
 			// 使用插件的方法更新配置
 			await plugin.updateConfig(newConfig);
 			// 更新本地状态

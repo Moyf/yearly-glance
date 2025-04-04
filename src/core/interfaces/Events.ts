@@ -9,7 +9,7 @@ export interface BaseEvent {
 	date: string; // 年月日，月日
 	dateType: "SOLAR" | "LUNAR"; // 公历或农历
 	text: string; // 事件名称
-	isRepeat: boolean; // 是否重复
+
 	emoji?: string; // 事件图标
 	color?: string; // 事件颜色
 	remark?: string; // 事件备注
@@ -31,7 +31,9 @@ export interface Birthday extends BaseEvent {
 }
 
 // 自定义事件接口
-export type CustomEvent = BaseEvent;
+export interface CustomEvent extends BaseEvent {
+	isRepeat: boolean; // 是否重复
+}
 
 // 事件类型
 export type EventType = (typeof EVENT_TYPE_LIST)[number];
@@ -50,7 +52,6 @@ export const DEFAULT_EVENTS: Events = {
 			date: "01-01",
 			dateType: "SOLAR",
 			text: "元旦",
-			isRepeat: true,
 			emoji: "🎉",
 			color: "#ff7875",
 			type: "INTERNAT",

@@ -120,6 +120,17 @@ const translations: BaseMessage = {
 			name: "事件管理",
 			solar: "公历",
 			lunar: "农历",
+			actions: {
+				add: "添加新事件",
+				search: "搜索事件...",
+				clearSearch: "清除搜索",
+				delete: "刪除事件",
+				edit: "編輯",
+			},
+			empty: {
+				text: "無事件",
+				subtext: "點擊上方“添加新事件”按鈕創建",
+			},
 			form: {
 				edit: "編輯",
 				add: "添加",
@@ -152,6 +163,7 @@ const translations: BaseMessage = {
 			},
 			custom: {
 				name: "自定義事件",
+				repeat: "重複",
 			},
 		},
 	},

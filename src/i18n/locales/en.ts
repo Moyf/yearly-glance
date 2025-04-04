@@ -120,6 +120,17 @@ const translations: BaseMessage = {
 			name: "Event Manager",
 			solar: "Solar",
 			lunar: "Lunar",
+			actions: {
+				add: "Add New Event",
+				search: "Search Events...",
+				clearSearch: "Clear Search",
+				delete: "Delete Event",
+				edit: "Edit",
+			},
+			empty: {
+				text: "No Events",
+				subtext: "Click the 'Add New Event' button above to create",
+			},
 			form: {
 				edit: "Edit",
 				add: "Add",
@@ -152,6 +163,7 @@ const translations: BaseMessage = {
 			},
 			custom: {
 				name: "Custom Event",
+				repeat: "Repeat",
 			},
 		},
 	},

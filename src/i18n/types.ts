@@ -130,6 +130,17 @@ export type BaseMessage = {
 			name: string;
 			solar: string;
 			lunar: string;
+			actions: {
+				add: string;
+				edit: string;
+				delete: string;
+				search: string;
+				clearSearch: string;
+			};
+			empty: {
+				text: string;
+				subtext: string;
+			};
 			form: {
 				edit: string;
 				add: string;
@@ -162,6 +173,7 @@ export type BaseMessage = {
 			};
 			custom: {
 				name: string;
+				repeat: string;
 			};
 		};
 	};

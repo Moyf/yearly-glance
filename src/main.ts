@@ -1,18 +1,23 @@
 import { Plugin } from "obsidian";
 import { DEFAULT_CONFIG, YearlyGlanceConfig } from "./core/interfaces/types";
 import YearlyGlanceSettingsTab from "./components/settings/SettingsTab";
-import { YearlyGlanceView } from "./views/YearlyGlanceView";
-import { VIEW_TYPE_YEARLY_GLANCE } from "./views/YearlyGlanceView";
-import { EventManagerView } from "./views/EventManagerView";
-import { VIEW_TYPE_EVENT_MANAGER } from "./views/EventManagerView";
+import {
+	VIEW_TYPE_YEARLY_GLANCE,
+	YearlyGlanceView,
+} from "./views/YearlyGlanceView";
+import {
+	EventManagerView,
+	VIEW_TYPE_EVENT_MANAGER,
+} from "./views/EventManagerView";
 import {
 	Birthday,
 	CustomEvent,
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
-import { t } from "./i18n/i18n";
 import { EventFormModal } from "./components/YearlyCalendar/EventFormModal";
+import { YearlyGlanceBus } from "./core/hook/useYearlyGlanceConfig";
+import { t } from "./i18n/i18n";
 
 export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
@@ -79,6 +84,7 @@ export default class YearlyGlancePlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+		YearlyGlanceBus.publish();
 	}
 
 	private registerLeafViews() {

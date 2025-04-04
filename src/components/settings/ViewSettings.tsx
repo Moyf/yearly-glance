@@ -1,7 +1,7 @@
 import * as React from "react";
 import YearlyGlancePlugin from "@/src/main";
 import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
-import { useConfig } from "@/src/core/hook/useConfig";
+import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
 import {
 	EVENT_FONT_SIZE_OPTIONS,
 	LAYOUT_OPTIONS,
@@ -32,7 +32,7 @@ const eventFontSizeOptions = EVENT_FONT_SIZE_OPTIONS.map((eventFontSize) => ({
 }));
 
 export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
-	const { config, updateConfig } = useConfig(plugin);
+	const { config, updateConfig } = useYearlyGlanceConfig(plugin);
 
 	const handleUpdateConfig = async (
 		updates: Partial<YearlyGlanceConfig["config"]>

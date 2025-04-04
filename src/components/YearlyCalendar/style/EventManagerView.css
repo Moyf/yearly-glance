@@ -1,5 +1,5 @@
 /* 事件管理器容器 */
-.event-manager-container {
+.yg-event-manager-container {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
@@ -10,7 +10,7 @@
 }
 
 /* 事件管理器头部 */
-.event-manager-header {
+.yg-event-manager-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -19,76 +19,86 @@
 	border-bottom: 1px solid var(--background-modifier-border);
 }
 
-.event-type-selector {
+.yg-event-type-selector {
 	min-width: 140px;
 }
 
-.event-actions-bar {
+.yg-event-actions-bar {
 	display: flex;
 	align-items: center;
 	gap: 12px;
-}
 
-/* 搜索框 */
-.search-container {
-	position: relative;
-	display: flex;
-	align-items: center;
-	transition: all 0.3s ease;
-	width: 36px;
-	height: 36px;
-}
+	/* 搜索框 */
+	.search-container {
+		position: relative;
+		display: flex;
+		align-items: center;
+		transition: all 0.3s ease;
+		width: 36px;
+		height: 36px;
+	}
 
-.search-container.expanded {
-	width: 200px;
-	background-color: var(--background-primary);
-	border-radius: 18px;
-	border: 1px solid var(--background-modifier-border);
-	padding: 0 8px;
-}
+	.search-container.expanded {
+		width: 200px;
+		background-color: var(--background-primary);
+		border-radius: 18px;
+		border: 1px solid var(--background-modifier-border);
+		padding: 0 8px 0 12px;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+	}
 
-.search-toggle {
-	width: 36px;
-	height: 36px;
-	border-radius: 50%;
-	background-color: var(--interactive-normal);
-	border: none;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: background-color 0.2s ease;
-}
+	.search-toggle {
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		background-color: var(--interactive-normal);
+		border: none;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.2s ease;
 
-.search-toggle:hover {
-	background-color: var(--interactive-hover);
-}
+		&:hover {
+			background-color: var(--interactive-hover);
+		}
+	}
 
-.search-input {
-	flex: 1;
-	border: none;
-	background: transparent;
-	padding: 8px;
-	outline: none;
-	font-size: 14px;
-	color: var(--text-normal);
-}
+	.search-input {
+		flex: 1;
+		border: none;
+		background: transparent;
+		padding: 8px 4px;
+		outline: none;
+		font-size: 14px;
+		color: var(--text-normal);
+		width: 100%;
 
-.clear-search {
-	background: transparent;
-	border: none;
-	cursor: pointer;
-	color: var(--text-muted);
-	padding: 4px;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
+		&:focus {
+			border: none;
+			box-shadow: none;
+		}
+	}
 
-.clear-search:hover {
-	color: var(--text-normal);
-	background-color: var(--background-modifier-hover);
+	.clear-search {
+		width: 24px;
+		height: 24px;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		color: var(--text-muted);
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.2s ease;
+		font-size: 14px;
+
+		&:hover {
+			color: var(--text-normal);
+			background-color: var(--background-modifier-hover);
+		}
+	}
 }
 
 /* 添加事件按钮 */

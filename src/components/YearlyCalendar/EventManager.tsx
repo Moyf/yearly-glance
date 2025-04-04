@@ -9,11 +9,12 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
+import { EVENT_TYPE_OPTIONS } from "./EventFormModal";
+import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
 import { Select } from "../base/Select";
+import { Input } from "../base/Input";
 import { t } from "@/src/i18n/i18n";
 import "./style/EventManagerView.css";
-import { EVENT_TYPE_OPTIONS } from "./EventFormModal";
-import { useEvents } from "@/src/core/hook/useEvents";
 
 interface EventItemProps {
 	event: Holiday | Birthday | CustomEvent;
@@ -316,7 +317,7 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({
 	config,
 	plugin,
 }) => {
-	const { events, updateEvents } = useEvents(plugin);
+	const { events, updateEvents } = useYearlyGlanceConfig(plugin);
 	const [activeTab, setActiveTab] = React.useState<EventType>("holiday");
 	const [searchTerm, setSearchTerm] = React.useState("");
 	const [searchExpanded, setSearchExpanded] = React.useState(false);
@@ -416,9 +417,9 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({
 	};
 
 	return (
-		<div className="event-manager-container">
-			<div className="event-manager-header">
-				<div className="event-type-selector">
+		<div className="yg-event-manager-container">
+			<div className="yg-event-manager-header">
+				<div className="yg-event-type-selector">
 					<Select
 						value={activeTab}
 						onValueChange={(value) =>
@@ -428,7 +429,7 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({
 					/>
 				</div>
 
-				<div className="event-actions-bar">
+				<div className="yg-event-actions-bar">
 					<div
 						ref={searchContainerRef}
 						className={`search-container ${
@@ -437,16 +438,14 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({
 					>
 						{searchExpanded ? (
 							<>
-								<input
+								<Input
 									type="text"
 									className="search-input"
 									placeholder={t(
 										"view.eventManager.actions.search"
 									)}
 									value={searchTerm}
-									onChange={(e) =>
-										setSearchTerm(e.target.value)
-									}
+									onChange={(value) => setSearchTerm(value)}
 									onBlur={handleSearchBlur}
 								/>
 								<button

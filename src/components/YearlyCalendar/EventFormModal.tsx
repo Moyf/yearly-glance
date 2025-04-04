@@ -16,7 +16,6 @@ import { t } from "@/src/i18n/i18n";
 import { Select } from "../base/Select";
 import { Toggle } from "../base/Toggle";
 import "./style/EventFormModal.css";
-import { EventBus } from "@/src/core/hook/useEvents";
 
 interface EventFormProps {
 	event: Partial<Holiday | Birthday | CustomEvent>;
@@ -438,9 +437,6 @@ export class EventFormModal extends Modal {
 		}
 
 		await this.plugin.updateData(newEvents);
-
-		// 通知其他组件数据已更新
-		EventBus.publish();
 
 		this.close();
 	}

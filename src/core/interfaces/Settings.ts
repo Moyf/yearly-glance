@@ -13,7 +13,7 @@ export interface YearlyGlanceSettings {
 	showBirthdays: boolean; // 是否显示生日
 	showCustomEvents: boolean; // 是否显示自定义事件
 	mondayFirst: boolean; // 是否以周一为一周的第一天
-	title: string | null; // 年历标题
+	title: string; // 年历标题
 	showTooltips: boolean; // 是否显示提示
 	colorful: boolean; // 是否多彩
 }
@@ -32,7 +32,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	showBirthdays: true,
 	showCustomEvents: true,
 	mondayFirst: true,
-	title: null,
+	title: "",
 	showTooltips: true,
 	colorful: false,
 };

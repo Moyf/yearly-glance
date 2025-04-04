@@ -155,6 +155,7 @@ export type BaseMessage = {
 				eventRemark: string;
 				save: string;
 				cancel: string;
+				reset: string;
 			};
 			holiday: {
 				name: string;

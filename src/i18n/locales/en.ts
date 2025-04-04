@@ -145,6 +145,7 @@ const translations: BaseMessage = {
 				eventRemark: "Event Remark",
 				save: "Save",
 				cancel: "Cancel",
+				reset: "Reset",
 			},
 			holiday: {
 				name: "Holiday",

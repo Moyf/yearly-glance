@@ -6,15 +6,16 @@ import {
 	BaseEvent,
 	Birthday,
 	CustomEvent,
-	EVENT_TYPE_DEFAULT_EMOJI,
+	EVENT_TYPE_DEFAULT,
 	EVENT_TYPE_LIST,
 	Events,
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
-import { t } from "@/src/i18n/i18n";
+import { RotateCcw } from "lucide-react";
 import { Select } from "../base/Select";
 import { Toggle } from "../base/Toggle";
+import { t } from "@/src/i18n/i18n";
 import "./style/EventFormModal.css";
 
 interface EventFormProps {
@@ -134,6 +135,7 @@ const EventForm: React.FC<EventFormProps> = ({
 			{/* 事件日期 */}
 			<div className="form-group">
 				<label>{t("view.eventManager.form.eventDate")}</label>
+				{/* TODO: 添加日期选择器,支持公历和农历,支持忽略年份 */}
 				<input
 					type="text"
 					name="date"
@@ -146,6 +148,7 @@ const EventForm: React.FC<EventFormProps> = ({
 			{/* 事件日期类型(只读，由事件日期自动推断) */}
 			<div className="form-group read-only">
 				<label>{t("view.eventManager.form.eventDateType")}</label>
+				{/* TODO: 根据事件日期自动推断公历或农历的逻辑函数 */}
 				{renderReadOnlyValue(
 					formData.dateType === "LUNAR"
 						? t("view.eventManager.lunar")
@@ -168,22 +171,26 @@ const EventForm: React.FC<EventFormProps> = ({
 				<>
 					<div className="form-group read-only">
 						<label>{t("view.eventManager.birthday.age")}</label>
+						{/* TODO: 计算当前年龄 */}
 						{renderReadOnlyValue((formData as Birthday).age)}
 					</div>
 					<div className="form-group read-only">
 						<label>
 							{t("view.eventManager.birthday.nextBirthday")}
 						</label>
+						{/* TODO: 基于当前日期，计算下一次生日时间 */}
 						{renderReadOnlyValue(
 							(formData as Birthday).nextBirthday
 						)}
 					</div>
 					<div className="form-group read-only">
 						<label>{t("view.eventManager.birthday.animal")}</label>
+						{/* TODO: 在年月日信息完整前提下，计算生肖 */}
 						{renderReadOnlyValue((formData as Birthday).animal)}
 					</div>
 					<div className="form-group read-only">
 						<label>{t("view.eventManager.birthday.zodiac")}</label>
+						{/* TODO: 在年月日信息完整前提下，计算星座 */}
 						{renderReadOnlyValue((formData as Birthday).zodiac)}
 					</div>
 				</>
@@ -207,7 +214,7 @@ const EventForm: React.FC<EventFormProps> = ({
 						name="emoji"
 						value={formData.emoji || ""}
 						onChange={handleChange}
-						placeholder={EVENT_TYPE_DEFAULT_EMOJI[eventType]}
+						placeholder={EVENT_TYPE_DEFAULT[eventType].emoji}
 					/>
 				</div>
 				{/* 事件颜色 */}
@@ -216,9 +223,25 @@ const EventForm: React.FC<EventFormProps> = ({
 					<input
 						type="color"
 						name="color"
-						value={formData.color || "#000000"}
+						value={
+							formData.color ||
+							EVENT_TYPE_DEFAULT[eventType].color
+						}
 						onChange={handleChange}
 					/>
+					<button
+						type="button"
+						className="color-reset-button"
+						onClick={() => {
+							setFormData((prev) => ({
+								...prev,
+								color: EVENT_TYPE_DEFAULT[eventType].color,
+							}));
+						}}
+						title={t("view.eventManager.form.reset")}
+					>
+						<RotateCcw />
+					</button>
 				</div>
 				{/* 节日字段：是否显示，节日起源时间 */}
 				{eventType === "holiday" && (
@@ -228,7 +251,7 @@ const EventForm: React.FC<EventFormProps> = ({
 								{t("view.eventManager.holiday.isShow")}
 							</label>
 							<Toggle
-								checked={(formData as Holiday).isShow || false}
+								checked={(formData as Holiday).isShow || true}
 								onChange={(checked) =>
 									handleToggleChange("isShow", checked)
 								}

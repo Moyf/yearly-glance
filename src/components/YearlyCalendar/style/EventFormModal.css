@@ -62,6 +62,10 @@
 		}
 	}
 
+	.color-reset-button {
+		padding: 4px 8px;
+	}
+
 	.checkbox {
 		display: flex;
 		align-items: center;

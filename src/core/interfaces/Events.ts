@@ -9,7 +9,6 @@ export interface BaseEvent {
 	date: string; // 年月日，月日
 	dateType: "SOLAR" | "LUNAR"; // 公历或农历
 	text: string; // 事件名称
-
 	emoji?: string; // 事件图标
 	color?: string; // 事件颜色
 	remark?: string; // 事件备注
@@ -24,10 +23,11 @@ export interface Holiday extends BaseEvent {
 
 // 生日接口
 export interface Birthday extends BaseEvent {
-	nextBirthday: string; // 存放下一次生日的公历日期，年月日
-	age?: number; // 年龄
-	animal?: string; // 生肖
-	zodiac?: string; // 星座
+	birthdayInYear: string; // 生日在当前选择年份(config中的year)的公历日期，年月日
+	nextBirthday: string; // 存放下一次生日(基于当前时间)的公历日期，年月日
+	age?: number; // 年龄(基于当前时间)
+	animal?: string; // 生肖(年月日信息完整前提下)
+	zodiac?: string; // 星座(年月日信息完整前提下)
 }
 
 // 自定义事件接口
@@ -40,20 +40,24 @@ export type EventType = (typeof EVENT_TYPE_LIST)[number];
 export const EVENT_TYPE_LIST = ["holiday", "birthday", "custom"] as const;
 
 // 事件类型默认图标
-export const EVENT_TYPE_DEFAULT_EMOJI: Record<EventType, string> = {
-	holiday: "🎉",
-	birthday: "🎂",
-	custom: "📅",
+export const EVENT_TYPE_DEFAULT: Record<
+	EventType,
+	{ emoji: string; color: string }
+> = {
+	holiday: { emoji: "🎉", color: "#ff7875" },
+	birthday: { emoji: "🎂", color: "#fa8c16" },
+	custom: { emoji: "📌", color: "#73d13d" },
 };
 
 export const DEFAULT_EVENTS: Events = {
 	holidays: [
+		// TODO: 内置节日数据的添加
 		{
 			date: "01-01",
 			dateType: "SOLAR",
 			text: "元旦",
-			emoji: "🎉",
-			color: "#ff7875",
+			emoji: EVENT_TYPE_DEFAULT.holiday.emoji,
+			color: EVENT_TYPE_DEFAULT.holiday.color,
 			type: "INTERNAT",
 			isShow: true,
 			foundDate: "1949",

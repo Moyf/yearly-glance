@@ -69,8 +69,8 @@ const EventForm: React.FC<EventFormProps> = ({
 			date: formData.date || "",
 			dateType: formData.dateType || "SOLAR",
 			text: formData.text || "",
-			emoji: formData.emoji,
-			color: formData.color,
+			emoji: formData.emoji || EVENT_TYPE_DEFAULT[eventType].emoji,
+			color: formData.color || EVENT_TYPE_DEFAULT[eventType].color,
 			remark: formData.remark,
 		};
 
@@ -81,7 +81,10 @@ const EventForm: React.FC<EventFormProps> = ({
 			completeEvent = {
 				...baseEvent,
 				type: (formData as Holiday).type || "CUSTOM",
-				isShow: (formData as Holiday).isShow || true,
+				isShow:
+					(formData as Holiday).isShow !== undefined
+						? (formData as Holiday).isShow
+						: true,
 				foundDate: (formData as Holiday).foundDate,
 			} as Holiday;
 		} else if (eventType === "birthday") {
@@ -93,7 +96,13 @@ const EventForm: React.FC<EventFormProps> = ({
 				zodiac: (formData as Birthday).zodiac,
 			} as Birthday;
 		} else {
-			completeEvent = baseEvent as CustomEvent;
+			completeEvent = {
+				...baseEvent,
+				isRepeat:
+					(formData as CustomEvent).isRepeat !== undefined
+						? (formData as CustomEvent).isRepeat
+						: false,
+			} as CustomEvent;
 		}
 
 		onSave(completeEvent);

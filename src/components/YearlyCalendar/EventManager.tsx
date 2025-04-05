@@ -5,7 +5,6 @@ import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
 import {
 	Birthday,
 	CustomEvent,
-	EVENT_TYPE_DEFAULT,
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
@@ -139,14 +138,17 @@ const EventItem: React.FC<EventItemProps> = ({
 		<div className="event-item">
 			<div className="event-item-content">
 				<div className="event-header">
-					<span
-						className="event-emoji"
-						style={event.color ? { color: event.color } : {}}
+					<div
+						className="event-title"
+						style={{
+							color: event.color,
+							backgroundColor: `${event.color}20`,
+						}}
 					>
-						{event.emoji || EVENT_TYPE_DEFAULT[eventType].emoji}
-					</span>
-					<div className="event-title">
-						<span>{event.text}</span>
+						<span>
+							{event.emoji}
+							{event.text}
+						</span>
 					</div>
 				</div>
 

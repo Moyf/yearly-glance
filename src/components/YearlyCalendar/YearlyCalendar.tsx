@@ -313,8 +313,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 				<div
 					className="event-tooltip"
 					style={{
-						left: `${tooltipInfo.x + 15}px`, // 偏移一点，避免遮挡鼠标
-						top: `${tooltipInfo.y + 15}px`,
+						left: `${tooltipInfo.x}px`,
+						top: `${tooltipInfo.y}px`,
 						backgroundColor: `${tooltipInfo.event.color}15`,
 						borderLeft: `4px solid ${tooltipInfo.event.color}`,
 					}}

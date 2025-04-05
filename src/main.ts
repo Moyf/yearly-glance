@@ -17,6 +17,8 @@ import {
 } from "@/src/core/interfaces/Events";
 import { EventFormModal } from "./components/YearlyCalendar/EventFormModal";
 import { YearlyGlanceBus } from "./core/hook/useYearlyGlanceConfig";
+import { updateEventsDateObj } from "./core/utils/dateConverter";
+import { updateBirthdaysInfo } from "./core/utils/eventCalculator";
 import { t } from "./i18n/i18n";
 
 export default class YearlyGlancePlugin extends Plugin {
@@ -48,6 +50,9 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 验证并合并数据
 		this.settings = this.validateAndMergeSettings(savedData);
+
+		// 更新所有事件的dateObj字段
+		await this.updateAllEventsDateObj();
 	}
 
 	// 确保数据结构符合预期格式，移除未定义的配置
@@ -136,10 +141,17 @@ export default class YearlyGlancePlugin extends Plugin {
 	public async updateConfig(
 		newConfig: Partial<YearlyGlanceConfig["config"]>
 	) {
+		const oldYear = this.settings.config.year;
+
 		this.settings.config = {
 			...this.settings.config,
 			...newConfig,
 		};
+
+		// 检查年份是否变化，如果变化则更新所有事件的dateObj
+		if (newConfig.year && newConfig.year !== oldYear) {
+			await this.updateAllEventsDateObj();
+		}
 
 		await this.saveSettings();
 	}
@@ -155,6 +167,24 @@ export default class YearlyGlancePlugin extends Plugin {
 		};
 
 		await this.saveSettings();
+	}
+
+	/**
+	 * 更新所有事件的dateObj字段
+	 */
+	public async updateAllEventsDateObj() {
+		const year = this.settings.config.year;
+		const events = this.settings.data;
+
+		// 更新节日和自定义事件的dateObj
+		events.holidays = updateEventsDateObj(events.holidays, year);
+		events.customEvents = updateEventsDateObj(events.customEvents, year);
+
+		// 更新生日的完整信息（包含dateObj、nextBirthday、age、animal、zodiac等）
+		events.birthdays = updateBirthdaysInfo(events.birthdays, year);
+
+		// 不触发保存的通知，因为这是内部计算，不需要通知用户
+		await this.saveData(this.settings);
 	}
 
 	public async openPluginView(viewType: string) {

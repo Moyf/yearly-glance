@@ -97,10 +97,13 @@ export type BaseMessage = {
 			name: string;
 			yearlyCalendar: string;
 			legend: {
-				all: string;
 				holiday: string;
 				birthday: string;
-				custom: string;
+				customEvent: string;
+			};
+			actions: {
+				form: string;
+				manager: string;
 			};
 			month: {
 				jan: string;
@@ -172,7 +175,7 @@ export type BaseMessage = {
 				animal: string;
 				zodiac: string;
 			};
-			custom: {
+			customEvent: {
 				name: string;
 				repeat: string;
 			};

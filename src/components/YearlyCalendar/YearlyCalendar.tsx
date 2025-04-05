@@ -1,259 +1,62 @@
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import YearlyGlancePlugin from "@/src/main";
-import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
+import { VIEW_TYPE_EVENT_MANAGER } from "@/src/views/EventManagerView";
+import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
+import {
+	EVENT_TYPE_DEFAULT,
+	EVENT_TYPE_LIST,
+} from "@/src/core/interfaces/Events";
+import { layoutOptions, viewTypeOptions } from "../settings/ViewSettings";
+import { LayoutConfigMap } from "@/src/core/interfaces/Settings";
 import { useYearlyCalendar } from "@/src/core/hook/useYearlyCalendar";
+import { Select } from "../base/Select";
+import { t } from "@/src/i18n/i18n";
 import "./style/YearlyCalendarView.css";
 
 interface YearlyCalendarViewProps {
-	config: YearlyGlanceConfig;
 	plugin: YearlyGlancePlugin;
 }
 
-const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({
-	config,
-	plugin,
-}) => {
+const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
+	const { config, updateConfig, events } = useYearlyGlanceConfig(plugin);
+
 	const {
 		year,
+		title,
 		layout,
 		viewType,
-		showWeekdays,
 		showLegend,
 		limitListHeight,
 		eventFontSize,
+		showTooltips,
+		colorful,
 		showHolidays,
 		showBirthdays,
 		showCustomEvents,
-		mondayFirst,
-		title,
-		showTooltips,
-		colorful,
-	} = config.config;
+	} = config;
 
-	// 使用自定义 hook
-	const { monthsData, weekdays, getEventStyle } = useYearlyCalendar(config);
+	const { monthsData, weekdays, today } = useYearlyCalendar(plugin);
 
 	const calendarRef = React.useRef<HTMLDivElement>(null);
-	const [tooltipState, setTooltipState] = React.useState({
-		visible: false,
-		text: "",
-		x: 0,
-		y: 0,
-	});
 
-	// 处理事件悬浮提示
-	const handleEventMouseEnter = (
-		event: React.MouseEvent,
-		eventText: string
-	) => {
-		if (showTooltips) {
-			setTooltipState({
-				visible: true,
-				text: eventText,
-				x: event.clientX,
-				y: event.clientY,
-			});
-		}
+	const handleEventManager = () => {
+		plugin.openPluginView(VIEW_TYPE_EVENT_MANAGER);
 	};
-
-	const handleEventMouseLeave = () => {
-		setTooltipState((prev) => ({ ...prev, visible: false }));
-	};
-
-	// 渲染图例
-	const renderLegend = () => {
-		return (
-			<div className="event-legend">
-				{showHolidays && (
-					<div className="legend-item">
-						<span
-							className="legend-icon"
-							style={{
-								backgroundColor: "#ff787520",
-								color: "#ff7875",
-							}}
-						>
-							🎉
-						</span>
-						<span className="legend-text">Holidays</span>
-					</div>
-				)}
-				{showBirthdays && (
-					<div className="legend-item">
-						<span
-							className="legend-icon"
-							style={{
-								backgroundColor: "#fa8c1620",
-								color: "#fa8c16",
-							}}
-						>
-							🎂
-						</span>
-						<span className="legend-text">Birthdays</span>
-					</div>
-				)}
-				{showCustomEvents && (
-					<div className="legend-item">
-						<span
-							className="legend-icon"
-							style={{
-								backgroundColor: "#73d13d20",
-								color: "#73d13d",
-							}}
-						>
-							📌
-						</span>
-						<span className="legend-text">Custom Events</span>
-					</div>
-				)}
-			</div>
-		);
-	};
-
-	// 渲染星期几标题
-	const renderWeekdays = () => {
-		return (
-			<div className="weekdays">
-				{weekdays.map((day, i) => {
-					// 判断是否是周末
-					const isWeekend = mondayFirst
-						? i === 5 || i === 6 // 周一为第一天时，周六日是第6、7天
-						: i === 0 || i === 6; // 周日为第一天时，周六日是第1、7天
-
-					return (
-						<div
-							key={i}
-							className={`weekday${isWeekend ? " weekend" : ""}`}
-						>
-							{day}
-						</div>
-					);
-				})}
-			</div>
-		);
-	};
-
-	// 渲染事件
-	const renderEvent = (event: any, fontSizeClass: string) => {
-		const style = getEventStyle(event);
-
-		return (
-			<div
-				className={`event${fontSizeClass}`}
-				style={{
-					backgroundColor: style.backgroundColor,
-					color: style.color,
-				}}
-				onMouseEnter={(e) => handleEventMouseEnter(e, event.text)}
-				onMouseLeave={handleEventMouseLeave}
-			>
-				<span className="event-emoji">{style.emoji}</span>
-				<span className="event-text">{event.text}</span>
-			</div>
-		);
-	};
-
-	// 渲染单个月份的日历视图
-	const renderCalendarView = (monthData, fontSizeClass: string) => {
-		return (
-			<>
-				{showWeekdays && renderWeekdays()}
-
-				<div className="month-days">
-					{/* 添加月初的空白格子 */}
-					{Array.from(
-						{ length: monthData.firstDayPosition },
-						(_, i) => (
-							<div
-								key={`empty-start-${i}`}
-								className="day empty"
-							></div>
-						)
-					)}
-
-					{/* 只渲染当月日期 */}
-					{monthData.days.map((day) => {
-						const hasEvents = day.events.length > 0;
-
-						return (
-							<div
-								key={day.dayOfMonth}
-								className={`day${
-									hasEvents ? " has-events" : ""
-								}${day.isToday ? " today" : ""}${
-									day.isWeekend ? " weekend" : ""
-								}`}
-							>
-								<div className="day-number">
-									{day.dayOfMonth}
-								</div>
-
-								{hasEvents && (
-									<div className="events">
-										{day.events.map((event, eventIndex) => (
-											<React.Fragment key={eventIndex}>
-												{renderEvent(
-													event,
-													fontSizeClass
-												)}
-											</React.Fragment>
-										))}
-									</div>
-								)}
-							</div>
-						);
-					})}
-
-					{/* 添加月末的空白格子，确保网格完整 */}
-					{(() => {
-						const lastDayPosition =
-							(monthData.firstDayPosition +
-								monthData.days.length -
-								1) %
-							7;
-						const emptyEndCells =
-							lastDayPosition < 6 ? 6 - lastDayPosition : 0;
-						return Array.from({ length: emptyEndCells }, (_, i) => (
-							<div
-								key={`empty-end-${i}`}
-								className="day empty"
-							></div>
-						));
-					})()}
-				</div>
-			</>
-		);
+	const handleEventForm = () => {
+		plugin.openEventForm("holiday", {}, false, true);
 	};
 
 	// 渲染单个月份
 	const renderMonth = (monthIndex: number) => {
 		const monthData = monthsData[monthIndex];
-
-		// 获取字体大小类名
-		const fontSizeClass = ` font-${eventFontSize || "medium"}`;
-
-		// 获取月份主题色
-		const monthStyle = colorful
-			? ({
-					"--month-color": monthData.color,
-					"--month-color-rgb": monthData.colorRgb,
-			  } as React.CSSProperties)
-			: {};
-
-		// 确定视图类型：优先使用 viewType 配置，如果未设置则根据布局判断
-		const useListView =
-			viewType === "list" ||
-			(viewType === "calendar"
-				? false
-				: layout === "2x6" || layout === "1x12");
+		const fontSizeClass = ` font-${eventFontSize}`;
 
 		return (
 			<div
 				className={`month-container${
 					colorful ? " colorful-month" : ""
 				}`}
-				style={monthStyle}
 			>
 				<div
 					className={`month-header${
@@ -262,91 +65,105 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({
 				>
 					{monthData.name}
 				</div>
-
-				{useListView ? (
-					// 列表视图
-					<div
-						className={`month-days-list${
-							limitListHeight ? "" : " no-height-limit"
-						}`}
-					>
-						{renderCalendarView(monthData, fontSizeClass)}
-					</div>
-				) : (
-					// 传统周历视图
-					renderCalendarView(monthData, fontSizeClass)
-				)}
 			</div>
 		);
 	};
 
-	// 根据布局确定行数和列数
-	let rows, cols;
-	switch (layout) {
-		case "6x2":
-			rows = 6;
-			cols = 2;
-			break;
-		case "3x4":
-			rows = 3;
-			cols = 4;
-			break;
-		case "2x6":
-			rows = 2;
-			cols = 6;
-			break;
-		case "1x12":
-			rows = 1;
-			cols = 12;
-			break;
-		default: // "4x3"
-			rows = 4;
-			cols = 3;
-			break;
-	}
-
 	return (
 		<div className="yearly-calendar" ref={calendarRef}>
 			{/* 标题 */}
-			{title !== "" && (
-				<div className="yearly-calendar-title">
-					{title === null ? `${year}年 年历` : title}
-				</div>
-			)}
-
-			{/* 图例 */}
-			{showLegend && renderLegend()}
-
-			{/* 日历网格 */}
-			<div className={`calendar-grid layout-${layout}`}>
-				{Array.from({ length: rows }, (_, row) => (
-					<div key={row} className="month-row">
-						{Array.from({ length: cols }, (_, col) => {
-							const monthIndex = row * cols + col;
-							return monthIndex < 12 ? (
-								<React.Fragment key={monthIndex}>
-									{renderMonth(monthIndex)}
-								</React.Fragment>
-							) : null;
-						})}
-					</div>
-				))}
+			<div className="yearly-calendar-title">
+				{title === "" ? `${year}年 年历` : title}
 			</div>
-
-			{/* 悬浮提示 */}
-			{tooltipState.visible && (
-				<div
-					className="event-tooltip"
-					style={{
-						top: tooltipState.y + 10,
-						left: tooltipState.x + 10,
-						backgroundColor: "var(--day-bg-color)",
-						border: "1px solid var(--border-color)",
-					}}
+			{/* actionsBar */}
+			<div className="yearly-calendar-actions-bar">
+				{/* 图例 */}
+				{showLegend && (
+					<div className="event-legend">
+						{EVENT_TYPE_LIST.filter(
+							(type) =>
+								(type === "holiday" && showHolidays) ||
+								(type === "birthday" && showBirthdays) ||
+								(type === "customEvent" && showCustomEvents)
+						).map((type) => (
+							<div className="legend-item" key={type}>
+								<span
+									className="legend-icon"
+									style={{
+										color: EVENT_TYPE_DEFAULT[type].color,
+										backgroundColor: `${EVENT_TYPE_DEFAULT[type].color}20`,
+									}}
+								>
+									{EVENT_TYPE_DEFAULT[type].emoji}
+								</span>
+								<span className="legend-text">
+									{t(
+										`view.yearlyGlance.legend.${type}` as any
+									)}
+								</span>
+							</div>
+						))}
+					</div>
+				)}
+				{/* 布局选择 */}
+				<Select
+					options={layoutOptions}
+					value={layout}
+					onValueChange={(value) => updateConfig({ layout: value })}
+				/>
+				{/* 视图选择 */}
+				<Select
+					options={viewTypeOptions}
+					value={viewType}
+					onValueChange={(value) => updateConfig({ viewType: value })}
+				/>
+				{/* 事件管理 */}
+				<button
+					className="event-manager-button"
+					onClick={handleEventManager}
 				>
-					{tooltipState.text}
+					<span className="button-icon">🚧</span>
+				</button>
+				{/* 事件添加 */}
+				<button className="event-form-button" onClick={handleEventForm}>
+					<span className="button-icon">➕</span>
+				</button>
+			</div>
+			{/* 日历网格 */}
+			{viewType === "calendar" && (
+				<div className={`calendar-grid layout-${layout}`}>
+					{Array.from(
+						{ length: LayoutConfigMap[layout].rows },
+						(_, row) => (
+							<div key={row} className="month-row">
+								{Array.from(
+									{ length: LayoutConfigMap[layout].cols },
+									(_, col) => {
+										const monthIndex =
+											row * LayoutConfigMap[layout].cols +
+											col;
+										return (
+											<>
+												{monthIndex < 12 && (
+													<React.Fragment
+														key={monthIndex}
+													>
+														{renderMonth(
+															monthIndex
+														)}
+													</React.Fragment>
+												)}
+											</>
+										);
+									}
+								)}
+							</div>
+						)
+					)}
 				</div>
 			)}
+			{/* 列表视图 */}
+			{viewType === "list" && <></>}
 		</div>
 	);
 };
@@ -355,12 +172,10 @@ export class YearlyCalendar {
 	private container: HTMLElement;
 	private root: Root | null = null;
 	private plugin: YearlyGlancePlugin;
-	private config: YearlyGlanceConfig;
 
 	constructor(container: HTMLElement, plugin: YearlyGlancePlugin) {
 		this.container = container;
 		this.plugin = plugin;
-		this.config = this.plugin.getSettings();
 	}
 
 	async initialize(plugin: YearlyGlancePlugin) {
@@ -374,10 +189,7 @@ export class YearlyCalendar {
 		if (this.root) {
 			this.root.render(
 				<React.StrictMode>
-					<YearlyCalendarView
-						plugin={this.plugin}
-						config={this.config}
-					/>
+					<YearlyCalendarView plugin={this.plugin} />
 				</React.StrictMode>
 			);
 		}

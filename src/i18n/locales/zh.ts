@@ -87,10 +87,13 @@ const translations: BaseMessage = {
 			name: "年度概览",
 			yearlyCalendar: "{year}年 年历",
 			legend: {
-				all: "所有",
 				holiday: "节日",
 				birthday: "生日",
-				custom: "自定义事件",
+				customEvent: "自定义事件",
+			},
+			actions: {
+				form: "添加事件",
+				manager: "打开事件管理器",
 			},
 			month: {
 				jan: "一月",
@@ -162,7 +165,7 @@ const translations: BaseMessage = {
 				animal: "生肖",
 				zodiac: "星座",
 			},
-			custom: {
+			customEvent: {
 				name: "自定义事件",
 				repeat: "重复",
 			},

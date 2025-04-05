@@ -18,18 +18,22 @@ interface ViewSettingsProps {
 	plugin: YearlyGlancePlugin;
 }
 
-const layoutOptions = LAYOUT_OPTIONS.map((layout) => ({
+export const layoutOptions = LAYOUT_OPTIONS.map((layout) => ({
 	value: layout,
 	label: layout,
 }));
-const viewTypeOptions = VIEW_TYPE_OPTIONS.map((viewType) => ({
+export const viewTypeOptions = VIEW_TYPE_OPTIONS.map((viewType) => ({
 	value: viewType,
 	label: t(`setting.general.viewType.options.${viewType}` as any),
 }));
-const eventFontSizeOptions = EVENT_FONT_SIZE_OPTIONS.map((eventFontSize) => ({
-	value: eventFontSize,
-	label: t(`setting.general.eventFontSize.options.${eventFontSize}` as any),
-}));
+export const eventFontSizeOptions = EVENT_FONT_SIZE_OPTIONS.map(
+	(eventFontSize) => ({
+		value: eventFontSize,
+		label: t(
+			`setting.general.eventFontSize.options.${eventFontSize}` as any
+		),
+	})
+);
 
 export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 	const { config, updateConfig } = useYearlyGlanceConfig(plugin);

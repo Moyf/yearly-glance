@@ -87,10 +87,13 @@ const translations: BaseMessage = {
 			name: "Yearly Glance",
 			yearlyCalendar: "{year} Year Calendar",
 			legend: {
-				all: "All",
 				holiday: "Holiday",
 				birthday: "Birthday",
-				custom: "Custom Event",
+				customEvent: "Custom Event",
+			},
+			actions: {
+				form: "Add Event",
+				manager: "Open Event Manager",
 			},
 			month: {
 				jan: "January",
@@ -162,7 +165,7 @@ const translations: BaseMessage = {
 				animal: "Animal",
 				zodiac: "Zodiac",
 			},
-			custom: {
+			customEvent: {
 				name: "Custom Event",
 				repeat: "Repeat",
 			},

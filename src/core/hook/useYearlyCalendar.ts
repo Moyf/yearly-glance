@@ -1,10 +1,11 @@
 import * as React from "react";
-import { t } from "@/src/i18n/i18n";
-import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
+import YearlyGlancePlugin from "@/src/main";
 import {
 	CalendarDay,
 	CalendarEvent,
 } from "@/src/core/interfaces/CalendarEvent";
+import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
+import { t } from "@/src/i18n/i18n";
 
 export const MonthMap: Array<{ name: string; color: string }> = [
 	{
@@ -90,32 +91,30 @@ function hexToRgb(hex: string): string {
 	return `${r}, ${g}, ${b}`;
 }
 
-// 日期格式化工具函数
-export function formatDate(date: Date, format: string = "YYYY-MM-DD"): string {
-	const year = date.getFullYear();
-	const month = date.getMonth() + 1;
-	const day = date.getDate();
-
-	return format
-		.replace("YYYY", year.toString())
-		.replace("MM", month < 10 ? `0${month}` : month.toString())
-		.replace("DD", day < 10 ? `0${day}` : day.toString());
+// 判断两个日期是否同一天
+function isSameDay(date1: Date, date2: Date): boolean {
+	return (
+		date1.getDate() === date2.getDate() &&
+		date1.getMonth() === date2.getMonth() &&
+		date1.getFullYear() === date2.getFullYear()
+	);
 }
 
 // 主要 Hook
-export function useYearlyCalendar(config: YearlyGlanceConfig) {
+export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
+	const { config, events } = useYearlyGlanceConfig(plugin);
+
 	const {
-		config: {
-			year,
-			mondayFirst,
-			highlightToday,
-			highlightWeekends,
-			showHolidays,
-			showBirthdays,
-			showCustomEvents,
-		},
-		data: { holidays, birthdays, customEvents },
+		year,
+		highlightWeekends,
+		highlightToday,
+		mondayFirst,
+		showHolidays,
+		showBirthdays,
+		showCustomEvents,
 	} = config;
+
+	const { holidays, birthdays, customEvents } = events;
 
 	// 当前日期
 	const today = React.useMemo(() => new Date(), []);
@@ -128,12 +127,9 @@ export function useYearlyCalendar(config: YearlyGlanceConfig) {
 		if (showHolidays) {
 			holidays.forEach((holiday) => {
 				if (holiday.isShow) {
-					const [month, day] = holiday.date.split("-").map(Number);
-					const dateObj = new Date(year, month - 1, day);
 					events.push({
 						...holiday,
 						type: "holiday",
-						dateObj,
 					});
 				}
 			});
@@ -142,50 +138,34 @@ export function useYearlyCalendar(config: YearlyGlanceConfig) {
 		// 处理生日
 		if (showBirthdays) {
 			birthdays.forEach((birthday) => {
-				const [month, day] = birthday.date.split("-").map(Number);
-				const dateObj = new Date(year, month - 1, day);
 				events.push({
 					...birthday,
 					type: "birthday",
-					dateObj,
 				});
 			});
 		}
 
 		// 处理自定义事件
 		if (showCustomEvents) {
-			customEvents.forEach((event) => {
-				const [month, day] = event.date.split("-").map(Number);
-				const dateObj = new Date(year, month - 1, day);
+			customEvents.forEach((customEvent) => {
 				events.push({
-					...event,
-					type: "custom",
-					dateObj,
+					...customEvent,
+					type: "customEvent",
 				});
 			});
 		}
 
 		return events;
-	}, [
-		year,
-		holidays,
-		birthdays,
-		customEvents,
-		showHolidays,
-		showBirthdays,
-		showCustomEvents,
-	]);
+	}, [config, events]);
 
-	// 生成月份数据
+	// 月份数据
 	const monthsData = React.useMemo(() => {
 		return MonthMap.map((month, monthIndex) => {
-			// 获取当月第一天
+			// 当月第一天
 			const firstDayOfMonth = new Date(year, monthIndex, 1);
-
-			// 获取当月天数
+			// 当月天数
 			const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-
-			// 获取当月第一天是星期几 (0-6, 0是星期日)
+			// 当月第一天是星期几 (0-6, 0是星期日)
 			let firstDayWeekday = firstDayOfMonth.getDay();
 
 			// 如果配置了周一为一周的第一天，调整星期几的值
@@ -194,10 +174,10 @@ export function useYearlyCalendar(config: YearlyGlanceConfig) {
 					firstDayWeekday === 0 ? 6 : firstDayWeekday - 1;
 			}
 
-			// 生成当月所有日期数据
+			// 当月所有日期数据
 			const days: CalendarDay[] = [];
 
-			// 只添加当月日期
+			// 填充当月日期
 			for (let i = 1; i <= daysInMonth; i++) {
 				const date = new Date(year, monthIndex, i);
 				const isWeekend =
@@ -207,8 +187,8 @@ export function useYearlyCalendar(config: YearlyGlanceConfig) {
 				// 查找当天的事件
 				const dayEvents = allEvents.filter(
 					(event) =>
-						event.dateObj.getMonth() === monthIndex &&
-						event.dateObj.getDate() === i
+						new Date(event.dateObj).getMonth() === monthIndex &&
+						new Date(event.dateObj).getDate() === i
 				);
 
 				days.push({
@@ -223,11 +203,7 @@ export function useYearlyCalendar(config: YearlyGlanceConfig) {
 
 			return {
 				name: month.name,
-				color: month.color
-					.split(",")
-					.map((c) => parseInt(c))
-					.join(", "),
-				colorRgb: month.color,
+				color: month.color,
 				days,
 				isCurrentMonth:
 					today.getMonth() === monthIndex &&
@@ -235,89 +211,16 @@ export function useYearlyCalendar(config: YearlyGlanceConfig) {
 				firstDayPosition: firstDayWeekday,
 			};
 		});
-	}, [
-		year,
-		mondayFirst,
-		highlightToday,
-		highlightWeekends,
-		allEvents,
-		today,
-	]);
+	}, [config, events]);
 
 	// 获取星期几标题
 	const weekdays = React.useMemo(() => {
 		return mondayFirst ? WeekMap.mondayFirst : WeekMap.sundayFirst;
 	}, [mondayFirst]);
 
-	// 检查两个日期是否是同一天
-	function isSameDay(date1: Date, date2: Date): boolean {
-		return (
-			date1.getDate() === date2.getDate() &&
-			date1.getMonth() === date2.getMonth() &&
-			date1.getFullYear() === date2.getFullYear()
-		);
-	}
-
-	// 获取事件类型样式
-	function getEventStyle(event: CalendarEvent) {
-		let backgroundColor = "";
-		let color = "";
-		let emoji = "";
-
-		switch (event.type) {
-			case "holiday":
-				backgroundColor = "#ff787520";
-				color = "#ff7875";
-				emoji = event.emoji || "🎉";
-				break;
-			case "birthday":
-				backgroundColor = "#fa8c1620";
-				color = "#fa8c16";
-				emoji = event.emoji || "🎂";
-				break;
-			case "custom":
-				backgroundColor = "#73d13d20";
-				color = "#73d13d";
-				emoji = event.emoji || "📌";
-				break;
-		}
-
-		// 如果事件自定义了颜色，则使用自定义颜色
-		if (event.color) {
-			color = event.color;
-			backgroundColor = `${event.color}20`;
-		}
-
-		return {
-			backgroundColor,
-			color,
-			emoji,
-		};
-	}
-
-	// 获取指定月份的事件
-	function getMonthEvents(monthIndex: number) {
-		return allEvents.filter(
-			(event) => event.dateObj.getMonth() === monthIndex
-		);
-	}
-
-	// 获取指定日期的事件
-	function getDayEvents(date: Date) {
-		return allEvents.filter(
-			(event) =>
-				event.dateObj.getDate() === date.getDate() &&
-				event.dateObj.getMonth() === date.getMonth()
-		);
-	}
-
 	return {
 		monthsData,
 		weekdays,
-		getEventStyle,
-		getMonthEvents,
-		getDayEvents,
 		today,
-		formatDate,
 	};
 }

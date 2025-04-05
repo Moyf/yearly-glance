@@ -40,3 +40,15 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 export const LAYOUT_OPTIONS = ["12x1", "1x12", "6x2", "2x6", "3x4", "4x3"];
 export const VIEW_TYPE_OPTIONS = ["calendar", "list"];
 export const EVENT_FONT_SIZE_OPTIONS = ["small", "medium", "large"];
+
+interface LayoutConfig {
+	rows: number;
+	cols: number;
+}
+
+export const LayoutConfigMap: Record<string, LayoutConfig> =
+	LAYOUT_OPTIONS.reduce((acc, layout) => {
+		const [rows, cols] = layout.split("x").map(Number);
+		acc[layout] = { rows, cols };
+		return acc;
+	}, {});

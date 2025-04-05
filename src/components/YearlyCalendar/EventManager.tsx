@@ -31,7 +31,6 @@ interface EventListProps {
 }
 
 interface EventManagerViewProps {
-	config: YearlyGlanceConfig;
 	plugin: YearlyGlancePlugin;
 }
 
@@ -120,7 +119,7 @@ const EventItem: React.FC<EventItemProps> = ({
 			return (
 				<div className="event-info-row">
 					<span className="info-label">
-						{t("view.eventManager.custom.repeat")}:
+						{t("view.eventManager.customEvent.repeat")}:
 					</span>
 					<span
 						className={`info-value ${
@@ -315,10 +314,7 @@ const EventList: React.FC<EventListProps> = ({
 	);
 };
 
-const EventManagerView: React.FC<EventManagerViewProps> = ({
-	config,
-	plugin,
-}) => {
+const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 	const { events, updateEvents } = useYearlyGlanceConfig(plugin);
 	const [activeTab, setActiveTab] = React.useState<EventType>("holiday");
 	const [searchTerm, setSearchTerm] = React.useState("");
@@ -522,10 +518,7 @@ export class EventManager {
 		if (this.root) {
 			this.root.render(
 				<React.StrictMode>
-					<EventManagerView
-						plugin={this.plugin}
-						config={this.config}
-					/>
+					<EventManagerView plugin={this.plugin} />
 				</React.StrictMode>
 			);
 		}

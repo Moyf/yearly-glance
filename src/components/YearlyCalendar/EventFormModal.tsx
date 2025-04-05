@@ -16,6 +16,8 @@ import { RotateCcw } from "lucide-react";
 import { Select } from "../base/Select";
 import { Toggle } from "../base/Toggle";
 import { t } from "@/src/i18n/i18n";
+import { calculateDateObj } from "@/src/core/utils/dateConverter";
+import { updateBirthdayInfo } from "@/src/core/utils/eventCalculator";
 import "./style/EventFormModal.css";
 
 interface EventFormProps {
@@ -437,6 +439,20 @@ export class EventFormModal extends Modal {
 		const config = this.plugin.getSettings();
 		const events: Events = config.data;
 		const newEvents = { ...events };
+		const currentYear = config.config.year;
+
+		// 根据事件类型进行不同的处理
+		if (eventType === "holiday" || eventType === "customEvent") {
+			// 计算并设置dateObj
+			event.dateObj = calculateDateObj(
+				event.date,
+				event.dateType,
+				currentYear
+			);
+		} else if (eventType === "birthday") {
+			// 计算并更新生日的完整信息
+			event = updateBirthdayInfo(event, currentYear);
+		}
 
 		// 根据事件类型和是否编辑来更新事件
 		if (eventType === "holiday") {

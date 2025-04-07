@@ -7,7 +7,9 @@ export interface Events {
 // 基础事件接口
 export interface BaseEvent {
 	text: string; // 事件名称
-	date: string; // 年月日，月日
+	// 对于公历类型，可能的格式为`2025,1,1`或`1,1`
+	// 对于农历类型，可能的格式为`2025,-6,1`(二〇二五年闰六月初一)或`2,1`(二月初一)
+	date: string; // YYYY,MM,DD
 	dateType: "SOLAR" | "LUNAR"; // 公历或农历
 	dateObj?: string; // 基于当前选择年份的公历日期，格式为YYYY-MM-DD，由系统根据date和dateType自动计算
 	emoji?: string; // 事件图标
@@ -50,19 +52,7 @@ export const EVENT_TYPE_DEFAULT: Record<
 };
 
 export const DEFAULT_EVENTS: Events = {
-	holidays: [
-		// TODO: 内置节日数据的添加
-		{
-			date: "01-01",
-			dateType: "SOLAR",
-			text: "元旦",
-			emoji: EVENT_TYPE_DEFAULT.holiday.emoji,
-			color: EVENT_TYPE_DEFAULT.holiday.color,
-			type: "INTERNAT",
-			isShow: true,
-			foundDate: "1949",
-		},
-	],
+	holidays: [], // 内置节日将通过验证和合并机制添加
 	birthdays: [],
 	customEvents: [],
 };

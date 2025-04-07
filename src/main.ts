@@ -1,6 +1,6 @@
 import { Plugin } from "obsidian";
 import { DEFAULT_CONFIG, YearlyGlanceConfig } from "./core/interfaces/types";
-import YearlyGlanceSettingsTab from "./components/settings/SettingsTab";
+import YearlyGlanceSettingsTab from "./components/Settings/SettingsTab";
 import {
 	VIEW_TYPE_YEARLY_GLANCE,
 	YearlyGlanceView,
@@ -20,6 +20,7 @@ import { YearlyGlanceBus } from "./core/hook/useYearlyGlanceConfig";
 import { updateEventsDateObj } from "./core/utils/dateConverter";
 import { updateBirthdaysInfo } from "./core/utils/eventCalculator";
 import { t } from "./i18n/i18n";
+import { BUILTIN_HOLIDAYS } from "./core/data/builtinHolidays";
 
 export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
@@ -28,6 +29,9 @@ export default class YearlyGlancePlugin extends Plugin {
 		console.debug("[yearly-glance] 加载年度概览插件");
 		// 加载设置
 		await this.loadSettings();
+
+		// 验证并合并内置节日数据
+		await this.validateAndMergeBuiltinHolidays();
 
 		// 注册视图
 		this.registerLeafViews();
@@ -220,5 +224,54 @@ export default class YearlyGlancePlugin extends Plugin {
 			isEditing,
 			allowTypeChange
 		).open();
+	}
+
+	/**
+	 * 验证并合并内置节日数据
+	 * 确保所有内置节日(type=INTERNAT)都存在于用户数据中
+	 */
+	private async validateAndMergeBuiltinHolidays() {
+		try {
+			const currentHolidays = this.settings.data.holidays || [];
+			// 获取现有的内置节日
+			const existingBuiltinHolidays = currentHolidays.filter(
+				(holiday) => holiday.type === "INTERNAT"
+			);
+
+			// 构建现有内置节日的查询索引，使用text+date+dateType作为唯一键
+			const existingKeys = new Set(
+				existingBuiltinHolidays.map(
+					(h) => `${h.text}|${h.date}|${h.dateType}`
+				)
+			);
+
+			// 查找需要添加的内置节日
+			const holidaysToAdd = BUILTIN_HOLIDAYS.filter((builtinHoliday) => {
+				const key = `${builtinHoliday.text}|${builtinHoliday.date}|${builtinHoliday.dateType}`;
+				return !existingKeys.has(key);
+			});
+
+			if (holidaysToAdd.length > 0) {
+				console.debug(
+					`[yearly-glance] 添加 ${holidaysToAdd.length} 个内置节日`
+				);
+				// 合并节日数据
+				this.settings.data.holidays = [
+					...currentHolidays,
+					...holidaysToAdd,
+				];
+
+				// 更新节日的dateObj
+				this.settings.data.holidays = updateEventsDateObj(
+					this.settings.data.holidays,
+					this.settings.config.year
+				);
+
+				// 保存更新后的数据
+				await this.saveData(this.settings);
+			}
+		} catch (error) {
+			console.error("[yearly-glance] 验证内置节日数据失败", error);
+		}
 	}
 }

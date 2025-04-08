@@ -10,10 +10,11 @@ import {
 } from "@/src/core/interfaces/Events";
 import { EVENT_TYPE_OPTIONS } from "./EventFormModal";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
-import { Select } from "../base/Select";
-import { Input } from "../base/Input";
+import { Select } from "../Base/Select";
+import { Input } from "../Base/Input";
 import { t } from "@/src/i18n/i18n";
 import "./style/EventManagerView.css";
+import { parseDateValue } from "@/src/core/utils/dateParser";
 
 interface EventItemProps {
 	event: Holiday | Birthday | CustomEvent;
@@ -133,6 +134,28 @@ const EventItem: React.FC<EventItemProps> = ({
 		}
 	};
 
+	const displayDate = (date: string, dateType: "SOLAR" | "LUNAR") => {
+		const { hasYear, yearName, monthName, dayName } = parseDateValue(
+			date,
+			dateType
+		);
+		let dateStr;
+		if (hasYear) {
+			if (dateType === "SOLAR") {
+				dateStr = `${yearName}-${monthName}-${dayName}`;
+			} else {
+				dateStr = `${yearName}年${monthName}月${dayName}`;
+			}
+		} else {
+			if (dateType === "SOLAR") {
+				dateStr = `${monthName}-${dayName}`;
+			} else {
+				dateStr = `${monthName}月${dayName}`;
+			}
+		}
+		return dateStr;
+	};
+
 	return (
 		<div className="event-item">
 			<div className="event-item-content">
@@ -155,7 +178,7 @@ const EventItem: React.FC<EventItemProps> = ({
 					<span className="date-icon">
 						{event.dateType === "LUNAR" ? "🌙" : "☀️"}
 					</span>
-					<span>{event.date}</span>
+					<span>{displayDate(event.date, event.dateType)}</span>
 				</div>
 
 				{event.remark && (

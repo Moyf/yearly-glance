@@ -7,10 +7,10 @@ import {
 	EVENT_TYPE_DEFAULT,
 	EVENT_TYPE_LIST,
 } from "@/src/core/interfaces/Events";
-import { layoutOptions, viewTypeOptions } from "../settings/ViewSettings";
+import { layoutOptions, viewTypeOptions } from "../Settings/ViewSettings";
 import { LayoutConfigMap } from "@/src/core/interfaces/Settings";
 import { useYearlyCalendar } from "@/src/core/hook/useYearlyCalendar";
-import { Select } from "../base/Select";
+import { Select } from "../Base/Select";
 import { t } from "@/src/i18n/i18n";
 import "./style/YearlyCalendarView.css";
 

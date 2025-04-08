@@ -17,10 +17,14 @@ import {
 } from "@/src/core/interfaces/Events";
 import { EventFormModal } from "./components/YearlyCalendar/EventFormModal";
 import { YearlyGlanceBus } from "./core/hook/useYearlyGlanceConfig";
-import { updateEventsDateObj } from "./core/utils/dateConverter";
-import { updateBirthdaysInfo } from "./core/utils/eventCalculator";
+import {
+	updateBirthdaysInfo,
+	updateCustomEventsInfo,
+	updateHolidaysInfo,
+} from "./core/utils/eventCalculator";
 import { t } from "./i18n/i18n";
 import { BUILTIN_HOLIDAYS } from "./core/data/builtinHolidays";
+import { lunarTest } from "./test/date";
 
 export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
@@ -42,6 +46,9 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 添加设置选项卡
 		this.addSettingTab(new YearlyGlanceSettingsTab(this.app, this));
+
+		// 测试
+		lunarTest.test();
 	}
 
 	onunload() {
@@ -181,8 +188,8 @@ export default class YearlyGlancePlugin extends Plugin {
 		const events = this.settings.data;
 
 		// 更新节日和自定义事件的dateObj
-		events.holidays = updateEventsDateObj(events.holidays, year);
-		events.customEvents = updateEventsDateObj(events.customEvents, year);
+		events.holidays = updateHolidaysInfo(events.holidays, year);
+		events.customEvents = updateCustomEventsInfo(events.customEvents, year);
 
 		// 更新生日的完整信息（包含dateObj、nextBirthday、age、animal、zodiac等）
 		events.birthdays = updateBirthdaysInfo(events.birthdays, year);
@@ -262,7 +269,7 @@ export default class YearlyGlancePlugin extends Plugin {
 				];
 
 				// 更新节日的dateObj
-				this.settings.data.holidays = updateEventsDateObj(
+				this.settings.data.holidays = updateHolidaysInfo(
 					this.settings.data.holidays,
 					this.settings.config.year
 				);

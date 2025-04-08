@@ -185,8 +185,9 @@
 		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 		gap: 16px;
 		transition: max-height 0.3s ease, opacity 0.3s ease;
-		max-height: 2000px;
+		max-height: 30vh;
 		opacity: 1;
+		overflow: auto;
 	}
 
 	.event-items-grid.collapsed {

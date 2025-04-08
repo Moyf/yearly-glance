@@ -13,12 +13,17 @@ import {
 	Holiday,
 } from "@/src/core/interfaces/Events";
 import { RotateCcw } from "lucide-react";
-import { Select } from "../base/Select";
-import { Toggle } from "../base/Toggle";
+import { Select } from "../Base/Select";
+import { Toggle } from "../Base/Toggle";
+import { DatePicker } from "../DatePicker/DatePicker";
 import { t } from "@/src/i18n/i18n";
-import { calculateDateObj } from "@/src/core/utils/dateConverter";
-import { updateBirthdayInfo } from "@/src/core/utils/eventCalculator";
 import "./style/EventFormModal.css";
+import {
+	calculateDateObj,
+	updateBirthdayInfo,
+} from "@/src/core/utils/eventCalculator";
+import { parseDateValue } from "@/src/core/utils/dateParser";
+import { Solar } from "lunar-typescript";
 
 interface EventFormProps {
 	event: Partial<Holiday | Birthday | CustomEvent>;
@@ -114,6 +119,31 @@ const EventForm: React.FC<EventFormProps> = ({
 		setOptionalCollapsed(!optionalCollapsed);
 	};
 
+	const displayDate = (date: string, dateType: "SOLAR" | "LUNAR") => {
+		const { hasYear, yearName, monthName, dayName } = parseDateValue(
+			date,
+			dateType
+		);
+		let dateStr;
+		if (hasYear) {
+			if (dateType === "SOLAR") {
+				dateStr = `${yearName}-${monthName}-${dayName}`;
+			} else {
+				dateStr = `${yearName}年${monthName}月${dayName}`;
+			}
+		} else {
+			if (dateType === "SOLAR") {
+				dateStr = `${monthName}-${dayName}`;
+			} else {
+				dateStr = `${monthName}月${dayName}`;
+			}
+		}
+		return dateStr;
+	};
+
+	const today = Solar.fromDate(new Date());
+	const todayString = `${today.getYear()},${today.getMonth()},${today.getDay()}`;
+
 	// 渲染只读字段的值
 	const renderReadOnlyValue = (value: any) => {
 		if (value === undefined || value === null || value === "") {
@@ -133,28 +163,48 @@ const EventForm: React.FC<EventFormProps> = ({
 
 			{/* 必填字段 */}
 			{/* 事件名称 */}
-			<div className="form-group">
+			<div
+				className={`form-group ${
+					(formData as Holiday).type === "INTERNAT" ? "read-only" : ""
+				}`}
+			>
 				<label>{t("view.eventManager.form.eventName")}</label>
-				<input
-					type="text"
-					name="text"
-					value={formData.text || ""}
-					onChange={handleChange}
-					required
-				/>
+				{(formData as Holiday).type === "INTERNAT" ? (
+					renderReadOnlyValue(formData.text)
+				) : (
+					<input
+						type="text"
+						name="text"
+						value={formData.text || ""}
+						onChange={handleChange}
+						required
+					/>
+				)}
 			</div>
 			{/* 事件日期 */}
-			<div className="form-group">
+			<div
+				className={`form-group ${
+					(formData as Holiday).type === "INTERNAT" ? "read-only" : ""
+				}`}
+			>
 				<label>{t("view.eventManager.form.eventDate")}</label>
-				{/* TODO: 添加日期选择器,支持公历和农历,支持忽略年份 */}
-				<input
-					type="text"
-					name="date"
-					value={formData.date || ""}
-					onChange={handleChange}
-					placeholder="MM-DD or YYYY-MM-DD"
-					required
-				/>
+				{(formData as Holiday).type === "INTERNAT" ? (
+					renderReadOnlyValue(
+						displayDate(formData.date, formData.dateType)
+					)
+				) : (
+					<DatePicker
+						value={formData.date || todayString}
+						defaultLunar={formData.dateType === "LUNAR"}
+						onChange={(value, dateType) => {
+							setFormData((prev) => ({
+								...prev,
+								date: value,
+								dateType: dateType,
+							}));
+						}}
+					/>
+				)}
 			</div>
 			{/* 事件日期类型(只读，由事件日期自动推断) */}
 			<div className="form-group read-only">
@@ -223,7 +273,7 @@ const EventForm: React.FC<EventFormProps> = ({
 					<input
 						type="text"
 						name="emoji"
-						value={formData.emoji || ""}
+						value={formData.emoji ?? ""}
 						onChange={handleChange}
 						placeholder={EVENT_TYPE_DEFAULT[eventType].emoji}
 					/>
@@ -235,7 +285,7 @@ const EventForm: React.FC<EventFormProps> = ({
 						type="color"
 						name="color"
 						value={
-							formData.color ||
+							formData.color ??
 							EVENT_TYPE_DEFAULT[eventType].color
 						}
 						onChange={handleChange}
@@ -262,7 +312,7 @@ const EventForm: React.FC<EventFormProps> = ({
 								{t("view.eventManager.holiday.isShow")}
 							</label>
 							<Toggle
-								checked={(formData as Holiday).isShow || true}
+								checked={(formData as Holiday).isShow ?? true}
 								onChange={(checked) =>
 									handleToggleChange("isShow", checked)
 								}
@@ -278,19 +328,21 @@ const EventForm: React.FC<EventFormProps> = ({
 							<input
 								type="text"
 								name="foundDate"
-								value={(formData as Holiday).foundDate || ""}
+								value={(formData as Holiday).foundDate ?? ""}
 								onChange={handleChange}
-								placeholder="YYYY-MM-DD"
+								placeholder="YYYY or YYYY,MM or YYYY,MM,DD"
 							/>
 						</div>
 					</>
 				)}
 				{/* 自定义事件字段：是否重复 */}
-				{eventType === "custom" && (
+				{eventType === "customEvent" && (
 					<div className="form-group checkbox">
 						<label>{t("view.eventManager.form.eventRepeat")}</label>
 						<Toggle
-							checked={formData.isRepeat || false}
+							checked={
+								(formData as CustomEvent).isRepeat ?? false
+							}
 							onChange={(checked) =>
 								handleToggleChange("isRepeat", checked)
 							}
@@ -303,7 +355,7 @@ const EventForm: React.FC<EventFormProps> = ({
 					<label>{t("view.eventManager.form.eventRemark")}</label>
 					<textarea
 						name="remark"
-						value={formData.remark || ""}
+						value={(formData as BaseEvent).remark ?? ""}
 						onChange={handleChange}
 					/>
 				</div>
@@ -451,7 +503,7 @@ export class EventFormModal extends Modal {
 			);
 		} else if (eventType === "birthday") {
 			// 计算并更新生日的完整信息
-			event = updateBirthdayInfo(event, currentYear);
+			event = updateBirthdayInfo(event as Birthday, currentYear);
 		}
 
 		// 根据事件类型和是否编辑来更新事件

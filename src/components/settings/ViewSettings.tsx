@@ -8,11 +8,11 @@ import {
 	VIEW_TYPE_OPTIONS,
 } from "@/src/core/interfaces/Settings";
 import { t } from "@/src/i18n/i18n";
-import { SettingsBlock } from "@/src/components/settings/SettingsBlock";
-import { SettingsItem } from "@/src/components/settings/SettingsItem";
-import { Toggle } from "@/src/components/base/Toggle";
-import { Select } from "@/src/components/base/Select";
-import { Input } from "@/src/components/base/Input";
+import { SettingsBlock } from "@/src/components/Settings/SettingsBlock";
+import { SettingsItem } from "@/src/components/Settings/SettingsItem";
+import { Toggle } from "@/src/components/Base/Toggle";
+import { Select } from "@/src/components/Base/Select";
+import { Input } from "@/src/components/Base/Input";
 
 interface ViewSettingsProps {
 	plugin: YearlyGlancePlugin;

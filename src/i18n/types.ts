@@ -159,6 +159,7 @@ export type BaseMessage = {
 				save: string;
 				cancel: string;
 				reset: string;
+				eventDateHelp: string;
 			};
 			holiday: {
 				name: string;

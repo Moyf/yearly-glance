@@ -1,18 +1,13 @@
 import * as React from "react";
-import {
-	Lunar,
-	LunarMonth,
-	LunarYear,
-	Solar,
-	SolarUtil,
-} from "lunar-typescript";
-import { Calendar, Check, X } from "lucide-react"; // 引入 Lucide 图标
+import { Lunar, LunarMonth } from "lunar-typescript";
+import { Calendar } from "lucide-react";
 import { parseDateValue } from "@/src/core/utils/dateParser";
 import "./style/DatePicker.css";
+import { Select } from "../Base/Select";
 
 interface DatePickerProps {
 	value: string; // 日期选择器的初始值
-	defaultLunar: boolean; // 是否默认使用农历模式
+	type: "SOLAR" | "LUNAR"; // 日期类型
 	onChange: (value: string, dateType: "SOLAR" | "LUNAR") => void; // 日期变化时的回调函数，返回日期字符串和日期类型
 }
 
@@ -23,208 +18,132 @@ const todayString = `${new Date().getFullYear()},${
 
 export const DatePicker: React.FC<DatePickerProps> = ({
 	value = todayString, // 默认使用当前日期
+	type, // 默认使用公历
 	onChange,
-	defaultLunar = false,
 }) => {
-	const { hasYear } = parseDateValue(value, defaultLunar ? "LUNAR" : "SOLAR");
+	const { hasYear, year, month, day } = parseDateValue(value, type);
 
-	// 状态管理
-	const [isLunar, setIsLunar] = React.useState(defaultLunar);
-	const [ignoreYear, setIgnoreYear] = React.useState(!hasYear);
-	const [selectedDate, setSelectedDate] = React.useState(value);
+	// 可选项管理
+	const [isLunar, setIsLunar] = React.useState(type === "LUNAR");
+	const [isIgnoreYear, setIsIgnoreYear] = React.useState(!hasYear);
 
-	// 是否打开日期选择器
+	// 定位窗口容器
 	const [isOpen, setIsOpen] = React.useState(false);
-	// 分别为年、月、日创建编辑状态
+	const pickerRef = React.useRef<HTMLDivElement>(null);
+	const popupRef = React.useRef<HTMLDivElement>(null);
+
+	// 当前选择日期管理
+	const [selectedDate, setSelectedDate] = React.useState(value); // 格式为 YYYY,MM,DD 或 MM,DD; 首次加载，使用参数value，参数为空时，使用当前日期
+	const [selectedYear, setSelectedYear] = React.useState<number | undefined>(
+		year
+	);
+	const [selectedMonth, setSelectedMonth] = React.useState<number>(month);
+	const [selectedDay, setSelectedDay] = React.useState<number>(day);
+
+	// 编辑日期
 	const [editingYear, setEditingYear] = React.useState(false);
 	const [editingMonth, setEditingMonth] = React.useState(false);
 	const [editingDay, setEditingDay] = React.useState(false);
 
-	// 解析当前选择的日期
-	const parsedSelectedDate: {
-		Ld: Lunar;
-		Sd: Solar;
-		hasYear: boolean;
-		year: number;
-		month: number;
-		monthAbs: number;
-		day: number;
-		yearName: string;
-		monthName: string;
-		dayName: string;
-	} = React.useMemo(() => {
+	// 选择日期的解析
+	const parseSelectedDate = React.useMemo(() => {
 		return parseDateValue(selectedDate, isLunar ? "LUNAR" : "SOLAR");
 	}, [selectedDate, isLunar]);
 
-	// 当前选择的年月日
-	const [selectedYear, setSelectedYear] = React.useState(
-		parsedSelectedDate.year
-	);
-	const [selectedMonth, setSelectedMonth] = React.useState(
-		parsedSelectedDate.month
-	);
-	const [selectedDay, setSelectedDay] = React.useState(
-		parsedSelectedDate.day
-	);
+	// 选项
+	const monthOptions = React.useMemo(() => {
+		if (isLunar) {
+			const { LMonthsInYear } = parseSelectedDate;
+			return LMonthsInYear.map((month) => ({
+				value: (month as LunarMonth).getMonth(),
+				label: (month as LunarMonth).getMonth(),
+			}));
+		} else {
+			return Array.from({ length: 12 }, (_, i) => ({
+				value: i + 1,
+				label: i + 1,
+			}));
+		}
+	}, [isLunar, parseSelectedDate]);
 
-	const [savedData, setSavedData] = React.useState({
-		date: parsedSelectedDate,
-		isLunar: defaultLunar,
-		ignoreYear: ignoreYear,
-	});
-
-	// 只在保存时重新显示
-	const formatDate = React.useCallback(() => {
-		const { Ld, Sd } = parsedSelectedDate;
-		return ignoreYear
-			? isLunar
-				? Ld.toString().slice(5)
-				: Sd.toYmd().slice(5)
-			: isLunar
-			? Ld.toString()
-			: Sd.toYmd();
-	}, [savedData]);
-
-	// 当任何依赖项变化时，更新selectedDate
+	// 数据更新
 	React.useEffect(() => {
 		let dateString;
-		if (ignoreYear) {
+		if (isIgnoreYear) {
 			dateString = `${selectedMonth},${selectedDay}`;
 		} else {
 			dateString = `${selectedYear},${selectedMonth},${selectedDay}`;
 		}
 		setSelectedDate(dateString);
-	}, [selectedYear, selectedMonth, selectedDay, ignoreYear, isLunar]);
+	}, [selectedYear, selectedMonth, selectedDay, isIgnoreYear]);
 
+	// 切换isIgnoreYear
 	React.useEffect(() => {
-		const { year, month, day } = parseDateValue(
-			selectedDate,
-			isLunar ? "LUNAR" : "SOLAR"
-		);
-		setSelectedYear(year);
-		setSelectedMonth(month);
-		setSelectedDay(day);
-	}, [isLunar, ignoreYear]);
+		const today = new Date();
+		setSelectedYear(today.getFullYear());
+		setSelectedMonth(today.getMonth() + 1);
+		setSelectedDay(today.getDate());
+	}, [isIgnoreYear]);
 
-	// 用于定位弹出窗口的ref
-	const pickerRef = React.useRef<HTMLDivElement>(null);
-	const popupRef = React.useRef<HTMLDivElement>(null);
-
-	const toggleDatePicker = (e: React.MouseEvent) => {
-		e.stopPropagation(); // 阻止事件冒泡
-		setIsOpen((prev) => !prev);
-		// 重置所有编辑状态
-		setEditingYear(false);
-		setEditingMonth(false);
-		setEditingDay(false);
+	// 处理年份忽略状态变化
+	const handleToggleIgnoreYear = () => {
+		setIsIgnoreYear((prev) => !prev);
 	};
 
-	const toggleLunar = (e: React.ChangeEvent<HTMLInputElement>) => {
-		e.stopPropagation(); // 阻止事件冒泡
+	// 处理农历/公历切换
+	const handleToggleCalendarType = React.useCallback(() => {
+		// 切换日历类型时，需要保持日期一致
+		if (isIgnoreYear) {
+			// 无年份模式下，只需验证月日的有效性
+			const newMonth = selectedMonth;
+			let newDay = selectedDay;
 
-		const newDate = isLunar
-			? `${parsedSelectedDate.Sd.getYear()},${parsedSelectedDate.Sd.getMonth()},${parsedSelectedDate.Sd.getDay()}`
-			: `${parsedSelectedDate.Ld.getYear()},${parsedSelectedDate.Ld.getMonth()},${parsedSelectedDate.Ld.getDay()}`;
-		setSelectedDate(newDate);
-		setIsLunar((prev) => !prev);
-	};
-
-	const toggleIgnoreYear = (e: React.ChangeEvent<HTMLInputElement>) => {
-		e.stopPropagation(); // 阻止事件冒泡
-		setIgnoreYear((prev) => !prev);
-	};
-
-	// 处理直接输入的年份变化
-	const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		e.stopPropagation();
-		const value = parseInt(e.target.value);
-		if (value > 0) {
-			setSelectedYear(value);
-		}
-	};
-
-	// 处理直接输入的月份变化
-	const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		e.stopPropagation();
-		const value = parseInt(e.target.value);
-		if (!ignoreYear && isLunar) {
-			const lunarLeapMonth = LunarYear.fromYear(
-				parsedSelectedDate.year
-			).getLeapMonth();
-			if (value === lunarLeapMonth) {
-				setSelectedMonth(value);
-			} else if (value >= 1 && value <= 12) {
-				setSelectedMonth(value);
-			}
-		} else if (value >= 1 && value <= 12) {
-			setSelectedMonth(value);
-		}
-	};
-
-	// 处理直接输入的日期变化
-	const handleDayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		e.stopPropagation();
-		const value = parseInt(e.target.value);
-		if (!ignoreYear) {
 			if (isLunar) {
-				const lunarMonthDays = LunarMonth.fromYm(
-					parsedSelectedDate.year,
-					parsedSelectedDate.month
-				)?.getDayCount();
-				if (value >= 1 && value <= lunarMonthDays!) {
-					setSelectedDay(value);
+				// 从农历切换到公历
+				// 农历可能有30天，公历2月最少28天
+				if (selectedMonth === 2 && selectedDay > 29) {
+					newDay = 29; // 安全设置为公历2月的最大可能天数
 				}
 			} else {
-				const solarMonthDays = SolarUtil.getDaysOfMonth(
-					parsedSelectedDate.year,
-					parsedSelectedDate.month
-				);
-				if (value >= 1 && value <= solarMonthDays) {
-					setSelectedDay(value);
+				// 从公历切换到农历
+				// 农历月份最大30天
+				if (selectedDay > 30) {
+					newDay = 30;
 				}
 			}
-		} else if (value >= 1 && value <= 31) {
-			setSelectedDay(value);
-		}
-	};
 
+			setSelectedMonth(newMonth);
+			setSelectedDay(newDay);
+		} else {
+			// 有年份模式下, 直接使用解析数据
+			setSelectedYear(parseSelectedDate.year);
+			setSelectedMonth(parseSelectedDate.month);
+			setSelectedDay(parseSelectedDate.day);
+		}
+		setIsLunar((prev) => !prev);
+	}, [isLunar, isIgnoreYear]);
+
+	// 处理日期编辑
 	// 输入框失去焦点时的处理
 	const handleEditBlur = () => {
 		setEditingYear(false);
 		setEditingMonth(false);
 		setEditingDay(false);
 	};
-
-	// 输入框按键处理
-	const handleKeyDown = (
-		e: React.KeyboardEvent,
-		setEditingState: React.Dispatch<React.SetStateAction<boolean>>
-	) => {
-		if (e.key === "Enter" || e.key === "Escape") {
-			e.preventDefault();
-			setEditingState(false);
-		}
-	};
-
-	// 点击年份
 	const startEditingYear = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		if (!ignoreYear) {
+		if (!isIgnoreYear) {
 			setEditingYear(true);
 			setEditingMonth(false);
 			setEditingDay(false);
 		}
 	};
-
-	// 点击月份
 	const startEditingMonth = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		setEditingYear(false);
 		setEditingMonth(true);
 		setEditingDay(false);
 	};
-
-	// 点击日
 	const startEditingDay = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		setEditingYear(false);
@@ -232,188 +151,116 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 		setEditingDay(true);
 	};
 
-	const handleSave = (e: React.MouseEvent) => {
-		e.stopPropagation(); // 阻止事件冒泡
-		setSavedData({
-			date: parsedSelectedDate,
-			isLunar: isLunar,
-			ignoreYear: ignoreYear,
-		});
-		// 传递日期字符串和日期类型
+	// 提交日期变更
+	const handleSubmitDate = () => {
 		onChange(selectedDate, isLunar ? "LUNAR" : "SOLAR");
 		setIsOpen(false);
 	};
 
-	return (
-		<div className="yg-date-picker-container" ref={pickerRef}>
-			<div className="date-display-value" onClick={toggleDatePicker}>
-				<span className="date-display-value-text">{formatDate}</span>
-				<Calendar size={18} className="calendar-icon" />
-			</div>
-
-			{isOpen && (
-				<div className="date-picker-popup" ref={popupRef}>
-					<div className="popup-header">
-						<div className="calendar-controls">
-							<div className="control-checkbox">
-								<input
-									type="checkbox"
-									checked={isLunar}
-									onChange={toggleLunar}
-									onClick={(e) => e.stopPropagation()}
-								/>
-								<span className="control-label">农历</span>
-							</div>
-							<div className="control-checkbox">
-								<input
-									type="checkbox"
-									checked={ignoreYear}
-									onChange={toggleIgnoreYear}
-									onClick={(e) => e.stopPropagation()}
-								/>
-								<span className="control-label">忽略年份</span>
-							</div>
+	const renderPopupPicker = () => {
+		return (
+			<div className="date-picker-popup" ref={popupRef}>
+				<div className="popup-header">
+					<div className="calendar-controls">
+						<div className="control-checkbox">
+							<input
+								type="checkbox"
+								checked={isLunar}
+								onChange={handleToggleCalendarType}
+							/>
+							<span className="control-label">农历</span>
 						</div>
-
-						<div>
+						<div className="control-checkbox">
+							<input
+								type="checkbox"
+								checked={isIgnoreYear}
+								onChange={handleToggleIgnoreYear}
+							/>
+							<span className="control-label">忽略年份</span>
+						</div>
+						<div className="control-checkbox">
 							<button
-								className="save-button"
-								onClick={handleSave}
+								className="control-button"
+								onClick={handleSubmitDate}
 							>
-								<Check size={16} />
-							</button>
-							<button
-								className="close-button"
-								onClick={toggleDatePicker}
-							>
-								<X size={16} />
+								确认
 							</button>
 						</div>
 					</div>
-
-					<div className="popup-content">
-						<div className="date-selector-container">
-							{/* 年月日选择器 */}
-							<div className="date-selector-row">
-								{!ignoreYear && (
-									<div
-										className="date-selector"
-										onClick={(e) => e.stopPropagation()}
-									>
+				</div>
+				<div className="popup-content">
+					<div className="date-selector-container">
+						{/* 年月日选择器 */}
+						<div className="date-selector-row">
+							{!isIgnoreYear && (
+								<>
+									<div className="date-selector">
 										<div
 											className="date-value"
 											onClick={startEditingYear}
 										>
-											{editingYear && !ignoreYear ? (
-												<input
-													type="text"
-													className="date-edit-input"
+											{editingYear ? (
+												<select
 													value={selectedYear}
-													onChange={handleYearChange}
-													onClick={(e) =>
-														e.stopPropagation()
+													onValueChange={(value) =>
+														selectedYear(value)
 													}
-													onBlur={handleEditBlur}
-													onKeyDown={(e) =>
-														handleKeyDown(
-															e,
-															setEditingYear
-														)
-													}
-													autoFocus
+													options={Array.from(
+														{ length: 9999 },
+														(_, i) => ({
+															value: i + 1,
+															label: i + 1,
+														})
+													)}
 												/>
 											) : (
-												parsedSelectedDate.yearName
+												parseSelectedDate.yearName
 											)}
 										</div>
 									</div>
-								)}
-
-								<div
-									className="date-selector"
-									onClick={(e) => e.stopPropagation()}
-								>
-									<div
-										className="date-value"
-										onClick={startEditingMonth}
-									>
-										{editingMonth ? (
-											<input
-												type="text"
-												className="date-edit-input"
-												value={selectedMonth}
-												onChange={handleMonthChange}
-												onClick={(e) =>
-													e.stopPropagation()
-												}
-												onBlur={handleEditBlur}
-												onKeyDown={(e) =>
-													handleKeyDown(
-														e,
-														setEditingMonth
-													)
-												}
-												autoFocus
-											/>
-										) : (
-											parsedSelectedDate.monthName
-										)}
+									<div className="date-selector">
+										<div
+											className="date-value"
+											onClick={startEditingMonth}
+										>
+											{editingMonth ? (
+												<Select
+													value={selectedMonth}
+													onValueChange={(value) =>
+														selectedYear(value)
+													}
+													options={monthOptions}
+												/>
+											) : (
+												parseSelectedDate.monthName
+											)}
+										</div>
 									</div>
-								</div>
-
-								<div
-									className="date-selector"
-									onClick={(e) => e.stopPropagation()}
-								>
-									<div
-										className="date-value"
-										onClick={startEditingDay}
-									>
-										{editingDay ? (
-											<input
-												type="text"
-												className="date-edit-input"
-												value={selectedDay}
-												onChange={handleDayChange}
-												onClick={(e) =>
-													e.stopPropagation()
-												}
-												onBlur={handleEditBlur}
-												onKeyDown={(e) =>
-													handleKeyDown(
-														e,
-														setEditingDay
-													)
-												}
-												autoFocus
-											/>
-										) : (
-											parsedSelectedDate.dayName
-										)}
+									<div className="date-selector">
+										<div className="date-value">
+											{parseSelectedDate.dayName}
+										</div>
 									</div>
-								</div>
-							</div>
-
-							{/* 显示对应的公历或农历日期 */}
-							<div
-								className="date-conversion-info"
-								// onClick={(e) => e.stopPropagation()}
-							>
-								{isLunar ? "农历" : "公历"}：
-								{ignoreYear
-									? isLunar
-										? parsedSelectedDate.Ld.toString().slice(
-												5
-										  )
-										: parsedSelectedDate.Sd.toYmd().slice(5)
-									: isLunar
-									? parsedSelectedDate.Ld.toString()
-									: parsedSelectedDate.Sd.toYmd()}
-							</div>
+								</>
+							)}
 						</div>
+						<div className="date-conversion-info"></div>
 					</div>
 				</div>
-			)}
+			</div>
+		);
+	};
+
+	return (
+		<div className="yg-date-picker-container" ref={pickerRef}>
+			<div
+				className="date-display-value"
+				onClick={() => setIsOpen((prev) => !prev)}
+			>
+				<span className="date-display-value-text"></span>
+				<Calendar size={18} className="calendar-icon" />
+			</div>
+			{isOpen && renderPopupPicker()}
 		</div>
 	);
 };

@@ -1,0 +1,139 @@
+/* ------- 事件提示框样式 ------- */
+.yg-event-tooltip-content {
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+	background-color: var(--background-primary);
+	transition: all 0.2s ease;
+
+	.tooltip-header {
+		padding: 12px 16px;
+		color: white;
+		font-weight: 600;
+		border-radius: 10px 10px 0 0;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		position: relative;
+	}
+
+	.tooltip-header::after {
+		content: "";
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 4px;
+		background: linear-gradient(
+			90deg,
+			rgba(255, 255, 255, 0.2),
+			rgba(255, 255, 255, 0)
+		);
+	}
+
+	.tooltip-emoji {
+		font-size: 1.4em;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+	}
+
+	.tooltip-title {
+		font-size: 1.2em;
+		flex: 1;
+		letter-spacing: 0.02em;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+	}
+
+	.tooltip-body {
+		padding: 14px 16px;
+		font-size: 0.95em;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		background-color: var(--background-primary);
+	}
+
+	.tooltip-row {
+		display: flex;
+		align-items: flex-start;
+		padding: 3px 0;
+		transition: transform 0.15s ease;
+	}
+
+	.tooltip-row:hover {
+		transform: translateX(2px);
+	}
+
+	.tooltip-label {
+		font-weight: 600;
+		min-width: 100px;
+		color: var(--yg-title-color);
+		opacity: 0.85;
+	}
+
+	.tooltip-value {
+		flex: 1;
+		color: var(--text-normal);
+		padding-left: 4px;
+	}
+
+	.tooltip-remark {
+		margin-top: 8px;
+		padding-top: 10px;
+		border-top: 1px dashed var(--yg-border-color);
+		flex-direction: column;
+		gap: 6px;
+		background-color: var(--background-secondary-alt);
+		padding: 12px;
+		border-radius: 6px;
+	}
+
+	.tooltip-remark .tooltip-label {
+		margin-bottom: 6px;
+		color: var(--text-accent);
+	}
+
+	.tooltip-remark .tooltip-value {
+		line-height: 1.5;
+		white-space: pre-wrap;
+		word-break: break-word;
+		padding-left: 0;
+		font-style: italic;
+		color: var(--text-muted);
+	}
+
+	/* 添加动画效果 */
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	animation: fadeIn 0.2s ease forwards;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+	.yg-event-tooltip-content {
+		.tooltip-row {
+			flex-direction: column;
+			gap: 2px;
+		}
+
+		.tooltip-label {
+			min-width: auto;
+		}
+
+		.tooltip-value {
+			padding-left: 0;
+		}
+	}
+}

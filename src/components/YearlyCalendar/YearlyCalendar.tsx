@@ -13,6 +13,7 @@ import { useYearlyCalendar } from "@/src/core/hook/useYearlyCalendar";
 import { Select } from "../Base/Select";
 import { t } from "@/src/i18n/i18n";
 import "./style/YearlyCalendarView.css";
+import { EventTooltip } from "./EventTooltip";
 
 interface YearlyCalendarViewProps {
 	plugin: YearlyGlancePlugin;
@@ -39,17 +40,6 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 	const { monthsData, weekdays } = useYearlyCalendar(plugin);
 
 	const calendarRef = React.useRef<HTMLDivElement>(null);
-	const [tooltipInfo, setTooltipInfo] = React.useState<{
-		event: any;
-		x: number;
-		y: number;
-		visible: boolean;
-	}>({
-		event: null,
-		x: 0,
-		y: 0,
-		visible: false,
-	});
 
 	const handleEventManager = () => {
 		plugin.openPluginView(VIEW_TYPE_EVENT_MANAGER);
@@ -57,34 +47,11 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 	const handleEventForm = () => {
 		plugin.openEventForm("holiday", {}, false, true);
 	};
-
-	// 处理事件悬停显示提示
-	const handleEventMouseEnter = (e: React.MouseEvent, event: any) => {
+	const handleEventTooltip = (event: any) => {
 		if (showTooltips) {
-			// 使用鼠标位置
-			setTooltipInfo({
-				event,
-				x: e.clientX,
-				y: e.clientY,
-				visible: true,
-			});
-		}
-	};
-
-	const handleEventMouseLeave = () => {
-		if (showTooltips) {
-			setTooltipInfo((prev) => ({ ...prev, visible: false }));
-		}
-	};
-
-	// 处理鼠标移动更新提示框位置
-	const handleEventMouseMove = (e: React.MouseEvent) => {
-		if (showTooltips && tooltipInfo.visible) {
-			setTooltipInfo((prev) => ({
-				...prev,
-				x: e.clientX,
-				y: e.clientY,
-			}));
+			new EventTooltip(plugin, event).open();
+		} else {
+			return;
 		}
 	};
 
@@ -98,9 +65,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 					backgroundColor: `${event.color}20`,
 					borderLeft: `3px solid ${event.color}`,
 				}}
-				onMouseEnter={(e) => handleEventMouseEnter(e, event)}
-				onMouseLeave={handleEventMouseLeave}
-				onMouseMove={handleEventMouseMove}
+				onClick={(e) => handleEventTooltip(event)}
 			>
 				<span className="event-emoji">{event.emoji}</span>
 				<span className="event-text">{event.text}</span>
@@ -307,116 +272,6 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 					)
 				)}
 			</div>
-
-			{/* 事件提示框 */}
-			{tooltipInfo.visible && tooltipInfo.event && (
-				<div
-					className="event-tooltip"
-					style={{
-						left: `${tooltipInfo.x}px`,
-						top: `${tooltipInfo.y}px`,
-						backgroundColor: `${tooltipInfo.event.color}15`,
-						borderLeft: `4px solid ${tooltipInfo.event.color}`,
-					}}
-				>
-					<div
-						className="tooltip-header"
-						style={{
-							borderBottom: `1px solid ${tooltipInfo.event.color}40`,
-						}}
-					>
-						<span className="tooltip-emoji">
-							{tooltipInfo.event.emoji}
-						</span>
-						<span className="tooltip-title">
-							{tooltipInfo.event.text}
-						</span>
-					</div>
-					<div className="tooltip-content">
-						{/* 根据事件类型显示特定信息 */}
-						{tooltipInfo.event.type === "holiday" &&
-							tooltipInfo.event.foundDate && (
-								<div className="tooltip-row">
-									<span className="tooltip-label">
-										{t(
-											"view.eventManager.holiday.foundDate"
-										)}
-										:
-									</span>
-									<span className="tooltip-value">
-										{tooltipInfo.event.foundDate}
-									</span>
-								</div>
-							)}
-						{tooltipInfo.event.type === "birthday" && (
-							<>
-								{tooltipInfo.event.age && (
-									<div className="tooltip-row">
-										<span className="tooltip-label">
-											{t(
-												"view.eventManager.birthday.age"
-											)}
-											:
-										</span>
-										<span className="tooltip-value">
-											{tooltipInfo.event.age}
-										</span>
-									</div>
-								)}
-								{tooltipInfo.event.nextBirthday && (
-									<div className="tooltip-row">
-										<span className="tooltip-label">
-											{t(
-												"view.eventManager.birthday.nextBirthday"
-											)}
-											:
-										</span>
-										<span className="tooltip-value">
-											{tooltipInfo.event.nextBirthday}
-										</span>
-									</div>
-								)}
-								{tooltipInfo.event.animal && (
-									<div className="tooltip-row">
-										<span className="tooltip-label">
-											{t(
-												"view.eventManager.birthday.animal"
-											)}
-											:
-										</span>
-										<span className="tooltip-value">
-											{tooltipInfo.event.animal}
-										</span>
-									</div>
-								)}
-								{tooltipInfo.event.zodiac && (
-									<div className="tooltip-row">
-										<span className="tooltip-label">
-											{t(
-												"view.eventManager.birthday.zodiac"
-											)}
-											:
-										</span>
-										<span className="tooltip-value">
-											{tooltipInfo.event.zodiac}
-										</span>
-									</div>
-								)}
-							</>
-						)}
-						{tooltipInfo.event.remark && (
-							<div className="tooltip-remark">
-								<span className="tooltip-label">
-									{t("view.eventManager.form.eventRemark")}:
-								</span>
-								<span className="tooltip-value">
-									{tooltipInfo.event.remark}
-								</span>
-							</div>
-						)}
-					</div>
-				</div>
-			)}
 		</div>
 	);
 };

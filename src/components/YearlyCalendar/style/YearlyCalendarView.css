@@ -338,106 +338,6 @@
 	z-index: 10;
 }
 
-/* ------- 自定义事件悬浮提示 ------- */
-
-.event-tooltip {
-	position: fixed;
-	z-index: 1000;
-	padding: 0;
-	border-radius: 8px;
-	box-shadow: 0 6px 16px var(--yg-tooltip-shadow);
-	pointer-events: none;
-	min-width: 250px;
-	max-width: 350px;
-	backdrop-filter: blur(8px);
-	animation: fadeIn 0.2s ease-in-out;
-	transition: transform 0.1s ease, opacity 0.1s ease; /* 平滑过渡 */
-	border: 1px solid var(--yg-border-color);
-	overflow: hidden;
-	font-size: 0.9em;
-}
-
-.tooltip-header {
-	padding: 10px 14px;
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	background-color: rgba(255, 255, 255, 0.05);
-}
-
-.tooltip-emoji {
-	font-size: 1.2em;
-}
-
-.tooltip-title {
-	font-weight: 600;
-	font-size: 1.05em;
-}
-
-.tooltip-content {
-	padding: 10px 14px;
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-}
-
-.tooltip-row {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	line-height: 1.4;
-}
-
-.tooltip-label {
-	font-weight: 500;
-	color: var(--yg-title-color);
-	opacity: 0.7;
-	flex: 0 0 40%;
-}
-
-.tooltip-value {
-	text-align: right;
-	word-break: break-word;
-	flex: 1;
-}
-
-.tooltip-remark {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	margin-top: 6px;
-	padding-top: 6px;
-	border-top: 1px dashed var(--yg-border-color);
-}
-
-.tooltip-remark .tooltip-label {
-	margin-bottom: 2px;
-}
-
-.tooltip-remark .tooltip-value {
-	text-align: left;
-	font-style: italic;
-	opacity: 0.9;
-	line-height: 1.4;
-}
-
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-		transform: translateY(5px) scale(0.98);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0) scale(1);
-	}
-}
-
-/* 移除之前的工具提示样式 */
-.tooltip,
-.tooltip::after {
-	display: none;
-}
-
 /* ------- 事件文本字体大小 ------- */
 
 .event.font-small {
@@ -904,7 +804,7 @@
 	}
 
 	.month-row {
-		margin-bottom: 0; /* 已在month-container中设置了margin-bottom */
+		margin-bottom: 0;
 		gap: 0;
 	}
 
@@ -926,20 +826,6 @@
 
 	.button-icon {
 		font-size: 1.2em;
-	}
-
-	.event-tooltip {
-		min-width: 220px;
-		max-width: 280px;
-		font-size: 0.85em;
-	}
-
-	.tooltip-header {
-		padding: 8px 12px;
-	}
-
-	.tooltip-content {
-		padding: 8px 12px;
 	}
 }
 

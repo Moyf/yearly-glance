@@ -149,6 +149,13 @@ const translations: BaseMessage = {
 				save: "保存",
 				cancel: "取消",
 				reset: "重置",
+				eventDateHelp:
+					"<b>格式：</b>YYYY,MM,DD 或 MM,DD" +
+					"<b>公历：</b>" +
+					"• 2025,1,1 = 2025年1月1日" +
+					"<b>农历：</b>" +
+					"• 2025,1,1 = 二〇二五年正月初一<br>" +
+					"• 2025,-6,1 = 二〇二五年闰六月初一",
 			},
 			holiday: {
 				name: "节日",

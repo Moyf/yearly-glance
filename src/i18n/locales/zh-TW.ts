@@ -132,7 +132,7 @@ const translations: BaseMessage = {
 			},
 			empty: {
 				text: "無事件",
-				subtext: "點擊上方“添加新事件”按鈕創建",
+				subtext: "點擊上方「添加新事件」按鈕創建",
 			},
 			form: {
 				edit: "編輯",
@@ -149,6 +149,13 @@ const translations: BaseMessage = {
 				save: "保存",
 				cancel: "取消",
 				reset: "重置",
+				eventDateHelp:
+					"<b>格式：</b>YYYY,MM,DD 或 MM,DD" +
+					"<b>公曆：</b>" +
+					"• 2025,1,1 = 2025年1月1日" +
+					"<b>農曆：</b>" +
+					"• 2025,1,1 = 二〇二五年正月初一" +
+					"• 2025,-6,1 = 二〇二五年閏六月初一",
 			},
 			holiday: {
 				name: "節日",

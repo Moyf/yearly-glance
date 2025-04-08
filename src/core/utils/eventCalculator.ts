@@ -20,10 +20,10 @@ export function calculateDateObj(
 	// 自定义事件一般ymd齐全，在事件不重复的情况下，使用date本身的year
 	if (isRepeat === false && hasYear) {
 		if (dateType === "SOLAR") {
-			const solar = Solar.fromYmd(year, month, day);
+			const solar = Solar.fromYmd(year!, month, day);
 			return solar.toString();
 		} else if (dateType === "LUNAR") {
-			const lunar = Lunar.fromYmd(year, monthAbs, day);
+			const lunar = Lunar.fromYmd(year!, monthAbs, day);
 			return lunar.getSolar().toString();
 		} else {
 			return "";
@@ -87,7 +87,7 @@ export function updateBirthdaysInfo(
 export function updateBirthdayInfo(birthday: Birthday, yearSelected: number) {
 	const { date, dateType } = birthday;
 
-	const { Ld, Sd, hasYear, year, month, monthAbs, day } = parseDateValue(
+	const { Ld, Sd, hasYear, year, month, day } = parseDateValue(
 		date,
 		dateType
 	);
@@ -105,10 +105,10 @@ export function updateBirthdayInfo(birthday: Birthday, yearSelected: number) {
 		).toString();
 	} else if (dateType === "LUNAR") {
 		// 计算当前或下一次农历生日不考虑闰月的情况，以及有时候没有农历三十
-		if (isValidLunarDate(todaySolar.getYear() + 1, monthAbs, day)) {
+		if (isValidLunarDate(todaySolar.getYear() + 1, Math.abs(month), day)) {
 			nextBirthday = Lunar.fromYmd(
 				todaySolar.getYear() + 1,
-				monthAbs,
+				Math.abs(month),
 				day
 			)
 				.getSolar()
@@ -116,7 +116,7 @@ export function updateBirthdayInfo(birthday: Birthday, yearSelected: number) {
 		} else {
 			nextBirthday = Lunar.fromYmd(
 				todaySolar.getYear() + 1,
-				monthAbs,
+				Math.abs(month),
 				day - 1
 			)
 				.getSolar()
@@ -134,27 +134,27 @@ export function updateBirthdayInfo(birthday: Birthday, yearSelected: number) {
 		if (dateType === "SOLAR") {
 			dateObjSolar = Solar.fromYmd(todaySolar.getYear(), month, day);
 		} else if (dateType === "LUNAR") {
-			if (isValidLunarDate(todaySolar.getYear(), monthAbs, day)) {
+			if (isValidLunarDate(todaySolar.getYear(), Math.abs(month), day)) {
 				dateObjSolar = Lunar.fromYmd(
 					todaySolar.getYear(),
-					monthAbs,
+					Math.abs(month),
 					day
 				).getSolar();
 			} else {
 				dateObjSolar = Lunar.fromYmd(
 					todaySolar.getYear(),
-					monthAbs,
+					Math.abs(month),
 					day - 1
 				).getSolar();
 			}
 		}
 		// 当今天还未过生日时，年龄为当前年份减去出生年份再减1
 		age = todaySolar.isBefore(dateObjSolar)
-			? todaySolar.getYear() - year - 1
-			: todaySolar.getYear() - year;
+			? todaySolar.getYear() - year! - 1
+			: todaySolar.getYear() - year!;
 
-		animal = Ld.getYearShengXiao();
-		zodiac = Sd.getXingZuo();
+		animal = Ld?.getYearShengXiao();
+		zodiac = Sd?.getXingZuo();
 	} else {
 		age = "_需补全年份数据_";
 		animal = "_需补全年份数据_";

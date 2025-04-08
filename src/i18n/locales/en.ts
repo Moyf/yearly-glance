@@ -149,6 +149,13 @@ const translations: BaseMessage = {
 				save: "Save",
 				cancel: "Cancel",
 				reset: "Reset",
+				eventDateHelp:
+					"<b>Format:</b> YYYY,MM,DD or MM,DD" +
+					"<b>Solar Calendar:</b>" +
+					"• 2025,1,1 = January 1, 2025" +
+					"<b>Lunar Calendar:</b>" +
+					"• 2025,1,1 = First day of first month, 2025<br>" +
+					"• 2025,-6,1 = First day of intercalary sixth month, 2025",
 			},
 			holiday: {
 				name: "Holiday",

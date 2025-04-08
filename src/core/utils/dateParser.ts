@@ -64,7 +64,7 @@ export const LunarDayMap = [
  * hasYear: 是否包含年份
  */
 export function parseDateValue(dateValue: string, dateType: "SOLAR" | "LUNAR") {
-	let year: number;
+	let year: number | undefined;
 	let month: number;
 	let day: number;
 	let hasYear: boolean = true;
@@ -78,6 +78,9 @@ export function parseDateValue(dateValue: string, dateType: "SOLAR" | "LUNAR") {
 
 		return {
 			hasYear,
+			year,
+			month,
+			day,
 			...parseDateMD(month, day, dateType),
 		};
 	} else {
@@ -88,6 +91,9 @@ export function parseDateValue(dateValue: string, dateType: "SOLAR" | "LUNAR") {
 
 		return {
 			hasYear,
+			year,
+			month,
+			day,
 			...parseDateYMD(year, month, day, dateType),
 		};
 	}
@@ -118,9 +124,9 @@ export function parseDateYMD(
 	Sd: Solar;
 	LMonthsInYear: LunarMonth[];
 	SDaysInMonth: number;
-	YearName: string;
-	MonthName: string;
-	DayName: string;
+	yearName: string | undefined;
+	monthName: string;
+	dayName: string;
 } {
 	if (dateType === "LUNAR") {
 		const Ld = Lunar.fromYmd(dateYear, dateMonth, dateDay);
@@ -131,18 +137,18 @@ export function parseDateYMD(
 			Sd.getYear(),
 			Sd.getMonth()
 		);
-		const YearName = Ld.getYearInChinese();
-		const MonthName = Ld.getMonthInChinese();
-		const DayName = Ld.getDayInChinese();
+		const yearName = Ld.getYearInChinese();
+		const monthName = Ld.getMonthInChinese();
+		const dayName = Ld.getDayInChinese();
 
 		return {
 			Ld,
 			Sd,
 			LMonthsInYear,
 			SDaysInMonth,
-			YearName,
-			MonthName,
-			DayName,
+			yearName,
+			monthName,
+			dayName,
 		};
 	} else {
 		const Sd = Solar.fromYmd(dateYear, dateMonth, dateDay);
@@ -153,18 +159,18 @@ export function parseDateYMD(
 			Sd.getYear(),
 			Sd.getMonth()
 		);
-		const YearName = Sd.getYear().toString();
-		const MonthName = Sd.getMonth().toString();
-		const DayName = Sd.getDay().toString();
+		const yearName = Sd.getYear().toString();
+		const monthName = Sd.getMonth().toString();
+		const dayName = Sd.getDay().toString();
 
 		return {
 			Ld,
 			Sd,
 			LMonthsInYear,
 			SDaysInMonth,
-			YearName,
-			MonthName,
-			DayName,
+			yearName,
+			monthName,
+			dayName,
 		};
 	}
 }
@@ -183,14 +189,20 @@ export function parseDateMD(
 	dateDay: number,
 	dateType: "SOLAR" | "LUNAR"
 ): {
+	Ld: Lunar | undefined;
+	Sd: Solar | undefined;
 	LMonthsInYear: number[];
 	SDaysInMonth: number;
-	MonthName: string;
-	DayName: string;
+	yearName: string | undefined;
+	monthName: string;
+	dayName: string;
 } {
+	const Ld = undefined;
+	const Sd = undefined;
+	const yearName = undefined;
+
 	const LMonthsInYear = Array.from({ length: 12 }, (_, i) => {
-		const num = Math.floor((i + 1) / 2) + 1;
-		return i % 2 === 0 ? -num : num;
+		return i + 1;
 	}).filter((month) => month <= 12);
 
 	const SDaysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][
@@ -198,26 +210,32 @@ export function parseDateMD(
 	];
 
 	if (dateType === "LUNAR") {
-		let MonthName = LunarMonthMap[Math.abs(dateMonth) - 1];
+		let monthName = LunarMonthMap[Math.abs(dateMonth) - 1];
 		if (dateMonth < 0) {
-			MonthName = "闰" + MonthName;
+			monthName = "闰" + monthName;
 		}
 
-		const DayName = LunarDayMap[dateDay - 1];
+		const dayName = LunarDayMap[dateDay - 1];
 		return {
+			Ld,
+			Sd,
 			LMonthsInYear,
 			SDaysInMonth,
-			MonthName,
-			DayName,
+			yearName,
+			monthName,
+			dayName,
 		};
 	} else {
-		const MonthName = dateMonth.toString();
-		const DayName = dateDay.toString();
+		const monthName = dateMonth.toString();
+		const dayName = dateDay.toString();
 		return {
+			Ld,
+			Sd,
 			LMonthsInYear,
 			SDaysInMonth,
-			MonthName,
-			DayName,
+			yearName,
+			monthName,
+			dayName,
 		};
 	}
 }

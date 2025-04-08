@@ -12,7 +12,7 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
-import { RotateCcw } from "lucide-react";
+import { HelpCircle, RotateCcw } from "lucide-react";
 import { Select } from "../Base/Select";
 import { Toggle } from "../Base/Toggle";
 import { DatePicker } from "../DatePicker/DatePicker";
@@ -37,6 +37,33 @@ export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
 	value: type,
 	label: t(`view.eventManager.${type}.name` as any),
 }));
+
+// 添加一个工具提示组件
+interface TooltipProps {
+	text: string;
+}
+
+const Tooltip: React.FC<TooltipProps> = ({ text }) => {
+	const [isVisible, setIsVisible] = React.useState(false);
+
+	return (
+		<div className="tooltip-container">
+			<HelpCircle
+				size={16}
+				className="tooltip-icon"
+				onMouseEnter={() => setIsVisible(true)}
+				onMouseLeave={() => setIsVisible(false)}
+				aria-label="Help"
+			/>
+			{isVisible && (
+				<div
+					className="tooltip-content"
+					dangerouslySetInnerHTML={{ __html: text }}
+				/>
+			)}
+		</div>
+	);
+};
 
 const EventForm: React.FC<EventFormProps> = ({
 	event,
@@ -187,33 +214,66 @@ const EventForm: React.FC<EventFormProps> = ({
 					(formData as Holiday).type === "INTERNAT" ? "read-only" : ""
 				}`}
 			>
-				<label>{t("view.eventManager.form.eventDate")}</label>
+				<label>
+					{t("view.eventManager.form.eventDate")}
+					<Tooltip text={t("view.eventManager.form.eventDateHelp")} />
+				</label>
 				{(formData as Holiday).type === "INTERNAT" ? (
 					renderReadOnlyValue(
 						displayDate(formData.date, formData.dateType)
 					)
 				) : (
-					<DatePicker
+					<input
+						type="text"
+						name="date"
 						value={formData.date || todayString}
-						defaultLunar={formData.dateType === "LUNAR"}
-						onChange={(value, dateType) => {
-							setFormData((prev) => ({
-								...prev,
-								date: value,
-								dateType: dateType,
-							}));
-						}}
+						onChange={handleChange}
+						placeholder="YYYY,MM,DD or MM,DD"
+						required
 					/>
+					// <DatePicker
+					// 	value={formData.date || todayString}
+					// 	defaultLunar={formData.dateType === "LUNAR"}
+					// 	onChange={(value, dateType) => {
+					// 		setFormData((prev) => ({
+					// 			...prev,
+					// 			date: value,
+					// 			dateType: dateType,
+					// 		}));
+					// 	}}
+					// />
 				)}
 			</div>
 			{/* 事件日期类型(只读，由事件日期自动推断) */}
 			<div className="form-group read-only">
 				<label>{t("view.eventManager.form.eventDateType")}</label>
 				{/* TODO: 根据事件日期自动推断公历或农历的逻辑函数 */}
-				{renderReadOnlyValue(
-					formData.dateType === "LUNAR"
-						? t("view.eventManager.lunar")
-						: t("view.eventManager.solar")
+				{(formData as Holiday).type === "INTERNAT" ? (
+					renderReadOnlyValue(
+						formData.dateType === "LUNAR"
+							? t("view.eventManager.lunar")
+							: t("view.eventManager.solar")
+					)
+				) : (
+					<Select
+						value={formData.dateType || "SOLAR"}
+						onValueChange={(value) => {
+							setFormData((prev) => ({
+								...prev,
+								dateType: value as "SOLAR" | "LUNAR",
+							}));
+						}}
+						options={[
+							{
+								value: "SOLAR",
+								label: t("view.eventManager.solar"),
+							},
+							{
+								value: "LUNAR",
+								label: t("view.eventManager.lunar"),
+							},
+						]}
+					/>
 				)}
 			</div>
 			{/* 节日字段(只读)：类型 */}

@@ -140,15 +140,45 @@
 	display: flex;
 	align-items: center;
 	font-size: 0.9em;
-	transition: all 0.2s ease;
+	transition: all 0.3s ease;
 	cursor: pointer;
-	padding: 4px 8px;
+	padding: 5px 10px;
 	border-radius: 6px;
+	border: 1px solid transparent;
+	position: relative;
 }
 
 .legend-item:hover {
 	transform: translateY(-2px);
+	box-shadow: 0 3px 8px var(--yg-shadow-color);
+}
+
+.legend-item.enabled {
 	background-color: var(--yg-button-hover-bg-color);
+	border-color: var(--yg-button-hover-border-color);
+	box-shadow: 0 2px 4px var(--yg-shadow-color);
+}
+
+.legend-item.disabled {
+	border: 1px dashed var(--yg-border-color);
+	background-color: rgba(0, 0, 0, 0.03);
+	opacity: 0.8;
+}
+
+.legend-item.disabled .legend-icon,
+.legend-item.disabled .legend-text {
+	opacity: 0.6;
+}
+
+.legend-item.disabled:hover {
+	background-color: rgba(0, 0, 0, 0.05);
+	border-color: var(--yg-border-color);
+	opacity: 0.9;
+}
+
+.legend-item.disabled:hover .legend-icon,
+.legend-item.disabled:hover .legend-text {
+	opacity: 0.8;
 }
 
 .legend-icon {
@@ -159,10 +189,25 @@
 	height: 26px;
 	border-radius: 5px;
 	margin-right: 6px;
+	transition: all 0.3s ease;
 }
 
 .legend-text {
 	font-weight: 500;
+	transition: all 0.3s ease;
+}
+
+/* 暗色主题下的调整 */
+.theme-dark .legend-item.enabled {
+	background-color: var(--yg-button-hover-bg-color);
+}
+
+.theme-dark .legend-item.disabled {
+	background-color: rgba(255, 255, 255, 0.03);
+}
+
+.theme-dark .legend-item.disabled:hover {
+	background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* ------- 日历网格样式 ------- */

@@ -27,6 +27,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		title,
 		layout,
 		viewType,
+		showWeekdays,
 		showLegend,
 		limitListHeight,
 		eventFontSize,
@@ -35,6 +36,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		showHolidays,
 		showBirthdays,
 		showCustomEvents,
+		mondayFirst,
 	} = config;
 
 	const { monthsData, weekdays } = useYearlyCalendar(plugin);
@@ -53,6 +55,25 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		} else {
 			return;
 		}
+	};
+
+	// 切换事件类型可见性
+	const toggleEventTypeVisibility = (eventType: string) => {
+		const configUpdate: any = {};
+
+		switch (eventType) {
+			case "holiday":
+				configUpdate.showHolidays = !showHolidays;
+				break;
+			case "birthday":
+				configUpdate.showBirthdays = !showBirthdays;
+				break;
+			case "customEvent":
+				configUpdate.showCustomEvents = !showCustomEvents;
+				break;
+		}
+
+		updateConfig(configUpdate);
 	};
 
 	// 渲染单个事件
@@ -100,11 +121,13 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 				{viewType === "calendar" && (
 					<>
 						{/* 星期几标题 */}
-						<div className="weekdays">
-							{weekdays.map((day, i) => (
-								<div key={i}>{day}</div>
-							))}
-						</div>
+						{showWeekdays && (
+							<div className="weekdays">
+								{weekdays.map((day, i) => (
+									<div key={i}>{day}</div>
+								))}
+							</div>
+						)}
 
 						{/* 日期网格 */}
 						<div className="month-days">
@@ -165,7 +188,15 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 										{day.dayOfMonth}
 									</div>
 									<div className="weekday-name">
-										{weekdays[day.date.getDay()]}
+										{
+											weekdays[
+												mondayFirst
+													? day.date.getDay() === 0
+														? 6
+														: day.date.getDay() - 1
+													: day.date.getDay()
+											]
+										}
 									</div>
 								</div>
 								{day.events.length > 0 && (
@@ -198,25 +229,59 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 							(type) =>
 								(type === "holiday" && showHolidays) ||
 								(type === "birthday" && showBirthdays) ||
-								(type === "customEvent" && showCustomEvents)
-						).map((type) => (
-							<div className="legend-item" key={type}>
-								<span
-									className="legend-icon"
-									style={{
-										color: EVENT_TYPE_DEFAULT[type].color,
-										backgroundColor: `${EVENT_TYPE_DEFAULT[type].color}20`,
-									}}
+								(type === "customEvent" && showCustomEvents) ||
+								// 包含禁用的事件类型，以便可以重新启用它们
+								type === "holiday" ||
+								type === "birthday" ||
+								type === "customEvent"
+						).map((type) => {
+							// 确定当前事件类型是否启用
+							const isEnabled =
+								(type === "holiday" && showHolidays) ||
+								(type === "birthday" && showBirthdays) ||
+								(type === "customEvent" && showCustomEvents);
+
+							return (
+								<div
+									className={`legend-item ${
+										isEnabled ? "enabled" : "disabled"
+									}`}
+									key={type}
+									onClick={() =>
+										toggleEventTypeVisibility(type)
+									}
+									title={
+										isEnabled
+											? `${t(
+													"view.yearlyGlance.actions.clickToHide"
+											  )}${t(
+													`view.yearlyGlance.legend.${type}` as any
+											  )}`
+											: `${t(
+													"view.yearlyGlance.actions.clickToShow"
+											  )}${t(
+													`view.yearlyGlance.legend.${type}` as any
+											  )}`
+									}
 								>
-									{EVENT_TYPE_DEFAULT[type].emoji}
-								</span>
-								<span className="legend-text">
-									{t(
-										`view.yearlyGlance.legend.${type}` as any
-									)}
-								</span>
-							</div>
-						))}
+									<span
+										className="legend-icon"
+										style={{
+											color: EVENT_TYPE_DEFAULT[type]
+												.color,
+											backgroundColor: `${EVENT_TYPE_DEFAULT[type].color}20`,
+										}}
+									>
+										{EVENT_TYPE_DEFAULT[type].emoji}
+									</span>
+									<span className="legend-text">
+										{t(
+											`view.yearlyGlance.legend.${type}` as any
+										)}
+									</span>
+								</div>
+							);
+						})}
 					</div>
 				)}
 				{/* 布局选择 */}
@@ -236,7 +301,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 					className="event-manager-button"
 					onClick={handleEventManager}
 				>
-					<span className="button-icon">🚧</span>
+					<span className="button-icon">📜</span>
 				</button>
 				{/* 事件添加 */}
 				<button className="event-form-button" onClick={handleEventForm}>

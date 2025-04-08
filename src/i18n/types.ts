@@ -102,6 +102,8 @@ export type BaseMessage = {
 				customEvent: string;
 			};
 			actions: {
+				clickToShow: string;
+				clickToHide: string;
 				form: string;
 				manager: string;
 			};

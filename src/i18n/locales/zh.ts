@@ -92,6 +92,8 @@ const translations: BaseMessage = {
 				customEvent: "自定义事件",
 			},
 			actions: {
+				clickToShow: "点击显示",
+				clickToHide: "点击隐藏",
 				form: "添加事件",
 				manager: "打开事件管理器",
 			},

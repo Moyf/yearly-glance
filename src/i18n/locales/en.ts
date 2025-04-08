@@ -92,6 +92,8 @@ const translations: BaseMessage = {
 				customEvent: "Custom Event",
 			},
 			actions: {
+				clickToShow: "Click to Show ",
+				clickToHide: "Click to Hide ",
 				form: "Add Event",
 				manager: "Open Event Manager",
 			},

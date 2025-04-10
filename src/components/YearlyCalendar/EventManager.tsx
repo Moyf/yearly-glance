@@ -8,13 +8,14 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
+import { Telescope } from "lucide-react";
 import { EVENT_TYPE_OPTIONS } from "./EventFormModal";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
-import { Select } from "../Base/Select";
 import { Input } from "../Base/Input";
 import { t } from "@/src/i18n/i18n";
 import "./style/EventManagerView.css";
 import { parseDateValue } from "@/src/core/utils/dateParser";
+import { VIEW_TYPE_YEARLY_GLANCE } from "@/src/views/YearlyGlanceView";
 
 interface EventItemProps {
 	event: Holiday | Birthday | CustomEvent;
@@ -344,6 +345,10 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 	const [searchExpanded, setSearchExpanded] = React.useState(false);
 	const searchContainerRef = React.useRef<HTMLDivElement>(null);
 
+	const handleYearlyCalendar = () => {
+		plugin.openPluginView(VIEW_TYPE_YEARLY_GLANCE);
+	};
+
 	// 添加新事件
 	const handleAddEvent = () => {
 		plugin.openEventForm(activeTab, {}, false, false);
@@ -515,6 +520,16 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 							</button>
 						)}
 					</div>
+
+					<button
+						className="yearly-calendar-button"
+						onClick={handleYearlyCalendar}
+						title={t("view.eventManager.actions.yearlyCalendar")}
+					>
+						<div className="yearly-calendar-button-icon">
+							<Telescope size={20} />
+						</div>
+					</button>
 
 					<button
 						className="add-event-button"

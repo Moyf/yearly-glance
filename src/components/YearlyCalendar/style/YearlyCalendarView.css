@@ -100,6 +100,7 @@
 	box-shadow: 0 2px 8px var(--yg-shadow-color);
 }
 
+.limit-list-height-button,
 .event-manager-button,
 .event-form-button {
 	display: flex;
@@ -112,14 +113,13 @@
 	background-color: var(--yg-day-bg-color);
 	cursor: pointer;
 	transition: all 0.2s ease;
-}
 
-.event-manager-button:hover,
-.event-form-button:hover {
-	background-color: var(--yg-button-hover-bg-color);
-	border-color: var(--yg-button-hover-border-color);
-	transform: translateY(-2px);
-	box-shadow: 0 3px 8px var(--yg-shadow-color);
+	&:hover {
+		background-color: var(--yg-button-hover-bg-color);
+		border-color: var(--yg-button-hover-border-color);
+		transform: translateY(-2px);
+		box-shadow: 0 3px 8px var(--yg-shadow-color);
+	}
 }
 
 .button-icon {
@@ -224,7 +224,7 @@
 .month-row {
 	display: flex;
 	gap: 16px;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
 	justify-content: space-between;
 	width: 100%;
 	margin-bottom: 16px;
@@ -551,7 +551,7 @@
 .layout-1x12 {
 	display: flex;
 	overflow-x: auto;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
 	padding-bottom: 16px;
 	scrollbar-width: thin;
 	-webkit-overflow-scrolling: touch;
@@ -574,7 +574,7 @@
 }
 
 .layout-1x12 .month-row {
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
 	width: max-content;
 	gap: 20px;
 }

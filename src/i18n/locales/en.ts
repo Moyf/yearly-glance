@@ -96,6 +96,7 @@ const translations: BaseMessage = {
 				clickToHide: "Click to Hide ",
 				form: "Add Event",
 				manager: "Open Event Manager",
+				limitListHeight: "Limit List Height",
 			},
 			month: {
 				jan: "January",
@@ -131,6 +132,7 @@ const translations: BaseMessage = {
 				clearSearch: "Clear Search",
 				delete: "Delete Event",
 				edit: "Edit",
+				yearlyCalendar: "Open Yearly Calendar",
 			},
 			empty: {
 				text: "No Events",

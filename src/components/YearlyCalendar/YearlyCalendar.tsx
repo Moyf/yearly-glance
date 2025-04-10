@@ -10,10 +10,10 @@ import {
 import { layoutOptions, viewTypeOptions } from "../Settings/ViewSettings";
 import { LayoutConfigMap } from "@/src/core/interfaces/Settings";
 import { useYearlyCalendar } from "@/src/core/hook/useYearlyCalendar";
+import { EventTooltip } from "./EventTooltip";
 import { Select } from "../Base/Select";
 import { t } from "@/src/i18n/i18n";
 import "./style/YearlyCalendarView.css";
-import { EventTooltip } from "./EventTooltip";
 
 interface YearlyCalendarViewProps {
 	plugin: YearlyGlancePlugin;
@@ -296,15 +296,33 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 					value={viewType}
 					onValueChange={(value) => updateConfig({ viewType: value })}
 				/>
+				{viewType === "list" && (
+					<button
+						className="limit-list-height-button"
+						onClick={() =>
+							updateConfig({ limitListHeight: !limitListHeight })
+						}
+						title={t("view.yearlyGlance.actions.limitListHeight")}
+					>
+						<span className="button-icon">
+							{limitListHeight ? "🔼" : "🔽"}
+						</span>
+					</button>
+				)}
 				{/* 事件管理 */}
 				<button
 					className="event-manager-button"
 					onClick={handleEventManager}
+					title={t("view.yearlyGlance.actions.manager")}
 				>
 					<span className="button-icon">📜</span>
 				</button>
 				{/* 事件添加 */}
-				<button className="event-form-button" onClick={handleEventForm}>
+				<button
+					className="event-form-button"
+					onClick={handleEventForm}
+					title={t("view.yearlyGlance.actions.form")}
+				>
 					<span className="button-icon">➕</span>
 				</button>
 			</div>

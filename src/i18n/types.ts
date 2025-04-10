@@ -106,6 +106,7 @@ export type BaseMessage = {
 				clickToHide: string;
 				form: string;
 				manager: string;
+				limitListHeight: string;
 			};
 			month: {
 				jan: string;
@@ -141,6 +142,7 @@ export type BaseMessage = {
 				delete: string;
 				search: string;
 				clearSearch: string;
+				yearlyCalendar: string;
 			};
 			empty: {
 				text: string;

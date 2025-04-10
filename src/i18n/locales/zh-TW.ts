@@ -96,6 +96,7 @@ const translations: BaseMessage = {
 				clickToHide: "點擊隱藏",
 				form: "添加事件",
 				manager: "打開事件管理器",
+				limitListHeight: "是否限制列表高度",
 			},
 			month: {
 				jan: "一月",
@@ -131,6 +132,7 @@ const translations: BaseMessage = {
 				clearSearch: "清除搜索",
 				delete: "刪除事件",
 				edit: "編輯",
+				yearlyCalendar: "打開年度概覽",
 			},
 			empty: {
 				text: "無事件",

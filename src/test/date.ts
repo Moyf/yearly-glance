@@ -13,7 +13,7 @@ export class lunarTest {
 
 	static test() {
 		// this.testLunarDay();
-		this.testSolarDay();
+		// this.testSolarDay();
 	}
 
 	static testLunarDay() {

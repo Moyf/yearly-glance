@@ -259,3 +259,90 @@ export function isValidLunarDate(
 		return false;
 	}
 }
+
+// (y-m-d) -> (y,m,d)
+export function parseExtendedISO(dateValue: string) {
+	// 如果输入为空或undefined，返回空字符串
+	if (!dateValue || dateValue.trim() === "") {
+		return "";
+	}
+
+	// 确保输入格式正确
+	if (!dateValue.includes("-")) {
+		return dateValue; // 如果没有分隔符，直接返回原值
+	}
+
+	const parts = dateValue.split("-");
+	let year, month, day, dateStr;
+
+	// 格式验证：确保至少有月和日
+	if (parts.length < 2) {
+		return dateValue; // 如果格式不对，直接返回原值
+	}
+
+	try {
+		if (parts.length === 2) {
+			[month, day] = parts;
+			// 确保month和day都存在且有效
+			if (!month || !day) {
+				return dateValue;
+			}
+
+			// 检查闰月标记 "!"
+			if (day && day.endsWith && day.endsWith("!")) {
+				month = (-parseInt(month, 10)).toString();
+				day = day.replace("!", ""); // 移除闰月标记
+			}
+			dateStr = `${month},${day}`;
+		} else {
+			[year, month, day] = parts;
+			// 确保year、month和day都存在且有效
+			if (!year || !month || !day) {
+				return dateValue;
+			}
+
+			// 检查闰月标记 "!"
+			if (day && day.endsWith && day.endsWith("!")) {
+				month = (-parseInt(month, 10)).toString();
+				day = day.replace("!", ""); // 移除闰月标记
+			}
+			dateStr = `${year},${month},${day}`;
+		}
+		return dateStr;
+	} catch (error) {
+		console.error("Error parsing date:", error);
+		return dateValue; // 出错时返回原始输入
+	}
+}
+
+// (y,m,d) -> (y-m-d)
+export function formatToExtendedISO(dateValue: string) {
+	const parts = dateValue.split(",");
+	let year, month, day, dateStr;
+
+	if (parts.length === 2) {
+		// 无年份，如 "6,1" 或 "-6,1"（闰六月）
+		[month, day] = parts.map((part) => part.trim());
+		const monthNum = parseInt(month, 10);
+
+		if (monthNum < 0) {
+			// 闰月情况
+			dateStr = `${Math.abs(monthNum)}-${day}!`;
+		} else {
+			dateStr = `${month}-${day}`;
+		}
+	} else {
+		// 有年份，如 "2025,6,1" 或 "2025,-6,1"
+		[year, month, day] = parts.map((part) => part.trim());
+		const monthNum = parseInt(month, 10);
+
+		if (monthNum < 0) {
+			// 闰月情况
+			dateStr = `${year}-${Math.abs(monthNum)}-${day}!`;
+		} else {
+			dateStr = `${year}-${month}-${day}`;
+		}
+	}
+
+	return dateStr;
+}

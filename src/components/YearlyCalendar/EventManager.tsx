@@ -77,7 +77,7 @@ const EventItem: React.FC<EventItemProps> = ({
 			const birthday = event as Birthday;
 			return (
 				<>
-					{birthday.age && (
+					{birthday.age !== undefined && (
 						<div className="event-info-row">
 							<span className="info-label">
 								{t("view.eventManager.birthday.age")}:
@@ -93,7 +93,7 @@ const EventItem: React.FC<EventItemProps> = ({
 							{birthday.nextBirthday}
 						</span>
 					</div>
-					{birthday.animal && (
+					{birthday.animal !== undefined && (
 						<div className="event-info-row">
 							<span className="info-label">
 								{t("view.eventManager.birthday.animal")}:
@@ -103,7 +103,7 @@ const EventItem: React.FC<EventItemProps> = ({
 							</span>
 						</div>
 					)}
-					{birthday.zodiac && (
+					{birthday.zodiac !== undefined && (
 						<div className="event-info-row">
 							<span className="info-label">
 								{t("view.eventManager.birthday.zodiac")}:

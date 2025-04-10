@@ -22,7 +22,11 @@ import {
 	calculateDateObj,
 	updateBirthdayInfo,
 } from "@/src/core/utils/eventCalculator";
-import { parseDateValue } from "@/src/core/utils/dateParser";
+import {
+	formatToExtendedISO,
+	parseDateValue,
+	parseExtendedISO,
+} from "@/src/core/utils/dateParser";
 import { Solar } from "lunar-typescript";
 
 interface EventFormProps {
@@ -72,9 +76,37 @@ const EventForm: React.FC<EventFormProps> = ({
 	onCancel,
 	isEditing,
 }) => {
-	const [formData, setFormData] =
-		React.useState<Partial<Holiday | Birthday | CustomEvent>>(event);
+	// 获取今天的日期
+	const today = Solar.fromDate(new Date());
+	const todayString = `${today.getYear()},${today.getMonth()},${today.getDay()}`;
+	// 格式化为显示格式 y-m-d
+	const todayDisplayFormat = `${today.getYear()}-${today.getMonth()}-${today.getDay()}`;
+
+	const [formData, setFormData] = React.useState<
+		Partial<Holiday | Birthday | CustomEvent>
+	>({
+		...event,
+		// 如果是新建事件且没有提供date，默认使用今天的日期
+		date: event.date || (!isEditing ? todayString : undefined),
+		dateType: event.dateType || "SOLAR",
+	});
+
 	const [optionalCollapsed, setOptionalCollapsed] = React.useState(true);
+	const [displayDateValue, setDisplayDateValue] = React.useState(() => {
+		// 初始化时将内部y,m,d格式转换为显示用的y-m-d格式
+		if (formData.date) {
+			return formatToExtendedISO(formData.date);
+		}
+		// 如果是新建事件且没有date，使用今天的日期显示格式
+		return !isEditing ? todayDisplayFormat : "";
+	});
+
+	React.useEffect(() => {
+		// 当formData.date变化时更新显示值
+		if (formData.date) {
+			setDisplayDateValue(formatToExtendedISO(formData.date));
+		}
+	}, [formData.date]);
 
 	const handleChange = (
 		e: React.ChangeEvent<
@@ -83,7 +115,40 @@ const EventForm: React.FC<EventFormProps> = ({
 	) => {
 		const { name, value, type } = e.target;
 
-		if (type === "checkbox") {
+		if (name === "date") {
+			// 对日期字段特殊处理，仅更新显示值
+			setDisplayDateValue(value);
+
+			// 仅在日期格式完整时才转换
+			// 检查是否符合格式 YYYY-MM-DD 或 MM-DD
+			const isCompleteFormat =
+				/^\d{4}-\d{1,2}-\d{1,2}(!)?$/.test(value) ||
+				/^\d{1,2}-\d{1,2}(!)?$/.test(value);
+
+			if (isCompleteFormat) {
+				try {
+					// 将显示格式y-m-d转换为存储格式y,m,d
+					const internalDateValue = parseExtendedISO(value);
+					if (internalDateValue) {
+						setFormData((prev) => ({
+							...prev,
+							date: internalDateValue,
+						}));
+
+						// 如果日期包含闰月标记(!)，自动设置dateType为LUNAR
+						if (value.includes("!")) {
+							setFormData((prev) => ({
+								...prev,
+								dateType: "LUNAR",
+							}));
+						}
+					}
+				} catch (error) {
+					console.error("Error converting date format:", error);
+					// 发生错误时不更新内部日期值
+				}
+			}
+		} else if (type === "checkbox") {
 			const checked = (e.target as HTMLInputElement).checked;
 			setFormData((prev) => ({ ...prev, [name]: checked }));
 		} else {
@@ -98,14 +163,38 @@ const EventForm: React.FC<EventFormProps> = ({
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
+		const updatedFormData = { ...formData };
+
+		// 确保日期格式正确
+		if (!updatedFormData.date) {
+			// 如果用户输入了日期但未转换，尝试手动转换一次
+			if (displayDateValue) {
+				try {
+					const convertedDate = parseExtendedISO(displayDateValue);
+					if (convertedDate) {
+						updatedFormData.date = convertedDate;
+					} else {
+						// 如果转换失败，使用今天的日期作为默认值
+						updatedFormData.date = todayString;
+					}
+				} catch (error) {
+					console.error("Error converting date on submit:", error);
+					updatedFormData.date = todayString;
+				}
+			} else {
+				// 没有输入日期，使用今天的日期作为默认值
+				updatedFormData.date = todayString;
+			}
+		}
+
 		// 构建基础事件对象
 		const baseEvent: BaseEvent = {
-			date: formData.date || "",
-			dateType: formData.dateType || "SOLAR",
-			text: formData.text || "",
-			emoji: formData.emoji || EVENT_TYPE_DEFAULT[eventType].emoji,
-			color: formData.color || EVENT_TYPE_DEFAULT[eventType].color,
-			remark: formData.remark,
+			date: updatedFormData.date || todayString, // 确保始终有日期
+			dateType: updatedFormData.dateType || "SOLAR",
+			text: updatedFormData.text || "",
+			emoji: updatedFormData.emoji || EVENT_TYPE_DEFAULT[eventType].emoji,
+			color: updatedFormData.color || EVENT_TYPE_DEFAULT[eventType].color,
+			remark: updatedFormData.remark,
 		};
 
 		// 根据事件类型构建完整事件对象
@@ -114,27 +203,27 @@ const EventForm: React.FC<EventFormProps> = ({
 		if (eventType === "holiday") {
 			completeEvent = {
 				...baseEvent,
-				type: (formData as Holiday).type || "CUSTOM",
+				type: (updatedFormData as Holiday).type || "CUSTOM",
 				isShow:
-					(formData as Holiday).isShow !== undefined
-						? (formData as Holiday).isShow
+					(updatedFormData as Holiday).isShow !== undefined
+						? (updatedFormData as Holiday).isShow
 						: true,
-				foundDate: (formData as Holiday).foundDate,
+				foundDate: (updatedFormData as Holiday).foundDate,
 			} as Holiday;
 		} else if (eventType === "birthday") {
 			completeEvent = {
 				...baseEvent,
-				nextBirthday: (formData as Birthday).nextBirthday || "",
-				age: (formData as Birthday).age,
-				animal: (formData as Birthday).animal,
-				zodiac: (formData as Birthday).zodiac,
+				nextBirthday: (updatedFormData as Birthday).nextBirthday || "",
+				age: (updatedFormData as Birthday).age,
+				animal: (updatedFormData as Birthday).animal,
+				zodiac: (updatedFormData as Birthday).zodiac,
 			} as Birthday;
 		} else {
 			completeEvent = {
 				...baseEvent,
 				isRepeat:
-					(formData as CustomEvent).isRepeat !== undefined
-						? (formData as CustomEvent).isRepeat
+					(updatedFormData as CustomEvent).isRepeat !== undefined
+						? (updatedFormData as CustomEvent).isRepeat
 						: false,
 			} as CustomEvent;
 		}
@@ -167,9 +256,6 @@ const EventForm: React.FC<EventFormProps> = ({
 		}
 		return dateStr;
 	};
-
-	const today = Solar.fromDate(new Date());
-	const todayString = `${today.getYear()},${today.getMonth()},${today.getDay()}`;
 
 	// 渲染只读字段的值
 	const renderReadOnlyValue = (value: any) => {
@@ -226,9 +312,9 @@ const EventForm: React.FC<EventFormProps> = ({
 					<input
 						type="text"
 						name="date"
-						value={formData.date || todayString}
+						value={displayDateValue}
 						onChange={handleChange}
-						placeholder="YYYY,MM,DD or MM,DD"
+						placeholder="YYYY-MM-DD or MM-DD (加!表示闰月)"
 						required
 					/>
 					// <DatePicker

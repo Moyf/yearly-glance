@@ -37,7 +37,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({ event }) => {
 				{/* 生日特有信息 */}
 				{eventType === "birthday" && (
 					<>
-						{event.age && (
+						{event.age !== undefined && (
 							<div className="tooltip-row">
 								<span className="tooltip-label">
 									{t("view.eventManager.birthday.age")}:
@@ -47,7 +47,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({ event }) => {
 								</span>
 							</div>
 						)}
-						{event.nextBirthday && (
+						{event.nextBirthday !== undefined && (
 							<div className="tooltip-row">
 								<span className="tooltip-label">
 									{t(
@@ -60,7 +60,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({ event }) => {
 								</span>
 							</div>
 						)}
-						{event.animal && (
+						{event.animal !== undefined && (
 							<div className="tooltip-row">
 								<span className="tooltip-label">
 									{t("view.eventManager.birthday.animal")}:
@@ -70,7 +70,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({ event }) => {
 								</span>
 							</div>
 						)}
-						{event.zodiac && (
+						{event.zodiac !== undefined && (
 							<div className="tooltip-row">
 								<span className="tooltip-label">
 									{t("view.eventManager.birthday.zodiac")}:

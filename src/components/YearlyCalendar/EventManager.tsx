@@ -437,17 +437,37 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 		}
 	};
 
+	// 获取事件数量信息
+	const getEventCounts = () => {
+		return {
+			holiday: events.holidays.length,
+			birthday: events.birthdays.length,
+			customEvent: events.customEvents.length,
+		};
+	};
+
+	const eventCounts = getEventCounts();
+
 	return (
 		<div className="yg-event-manager-container">
 			<div className="yg-event-manager-header">
-				<div className="yg-event-type-selector">
-					<Select
-						value={activeTab}
-						onValueChange={(value) =>
-							setActiveTab(value as EventType)
-						}
-						options={EVENT_TYPE_OPTIONS}
-					/>
+				<div className="yg-event-tabs">
+					{EVENT_TYPE_OPTIONS.map((option) => (
+						<div
+							key={option.value}
+							className={`yg-event-tab ${
+								activeTab === option.value ? "active" : ""
+							}`}
+							onClick={() =>
+								setActiveTab(option.value as EventType)
+							}
+						>
+							<span className="tab-label">{option.label}</span>
+							<span className="tab-count">
+								{eventCounts[option.value as EventType]}
+							</span>
+						</div>
+					))}
 				</div>
 
 				<div className="yg-event-actions-bar">

@@ -655,25 +655,47 @@ export class EventFormModal extends Modal {
 		// 根据事件类型和是否编辑来更新事件
 		if (eventType === "holiday") {
 			if (this.isEditing) {
-				newEvents.holidays = events.holidays.map((h) =>
-					h === this.event ? (event as Holiday) : h
-				);
+				// 使用更可靠的匹配方式：基于日期和文本内容
+				newEvents.holidays = events.holidays.map((h) => {
+					// 检查是否为同一事件（使用多个属性进行匹配）
+					if (
+						h.date === this.event.date &&
+						h.text === this.event.text
+					) {
+						return event as Holiday;
+					}
+					return h;
+				});
 			} else {
 				newEvents.holidays = [...events.holidays, event as Holiday];
 			}
 		} else if (eventType === "birthday") {
 			if (this.isEditing) {
-				newEvents.birthdays = events.birthdays.map((b) =>
-					b === this.event ? (event as Birthday) : b
-				);
+				// 使用更可靠的匹配方式
+				newEvents.birthdays = events.birthdays.map((b) => {
+					if (
+						b.date === this.event.date &&
+						b.text === this.event.text
+					) {
+						return event as Birthday;
+					}
+					return b;
+				});
 			} else {
 				newEvents.birthdays = [...events.birthdays, event as Birthday];
 			}
 		} else {
 			if (this.isEditing) {
-				newEvents.customEvents = events.customEvents.map((c) =>
-					c === this.event ? (event as CustomEvent) : c
-				);
+				// 使用更可靠的匹配方式
+				newEvents.customEvents = events.customEvents.map((c) => {
+					if (
+						c.date === this.event.date &&
+						c.text === this.event.text
+					) {
+						return event as CustomEvent;
+					}
+					return c;
+				});
 			} else {
 				newEvents.customEvents = [
 					...events.customEvents,

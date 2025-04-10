@@ -2,16 +2,78 @@ import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import { Modal } from "obsidian";
 import YearlyGlancePlugin from "@/src/main";
-import { Birthday, CustomEvent, Holiday } from "@/src/core/interfaces/Events";
+import {
+	Birthday,
+	CustomEvent,
+	EventType,
+	Holiday,
+} from "@/src/core/interfaces/Events";
 import { t } from "@/src/i18n/i18n";
 import "./style/EventTooltip.css";
 
 interface EventTooltipContentProps {
+	plugin: YearlyGlancePlugin;
 	event: any;
+	onClose: () => void;
 }
 
-const EventTooltipContent: React.FC<EventTooltipContentProps> = ({ event }) => {
+const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
+	plugin,
+	event,
+	onClose,
+}) => {
 	const eventType = event.type;
+
+	// 编辑事件
+	const handleEditEvent = () => {
+		// 将类型从 CalendarEvent.type 转换为 EventType
+		const type = event.type as EventType;
+
+		// 关闭当前tooltip，否则可能会导致UI堆叠问题
+		onClose();
+
+		// 使用延迟确保tooltip已完全关闭
+		setTimeout(() => {
+			plugin.openEventForm(
+				type,
+				{
+					// 只传递基础事件需要的属性，避免传入CalendarEvent特有属性导致匹配问题
+					date: event.date,
+					dateType: event.dateType,
+					text: event.text,
+					emoji: event.emoji,
+					color: event.color,
+					remark: event.remark,
+
+					// 根据事件类型添加特定属性
+					...(type === "holiday"
+						? {
+								type: (event as Holiday).type,
+								isShow: (event as Holiday).isShow,
+								foundDate: (event as Holiday).foundDate,
+						  }
+						: {}),
+
+					...(type === "birthday"
+						? {
+								nextBirthday: (event as Birthday).nextBirthday,
+								age: (event as Birthday).age,
+								animal: (event as Birthday).animal,
+								zodiac: (event as Birthday).zodiac,
+						  }
+						: {}),
+
+					...(type === "customEvent"
+						? {
+								isRepeat: (event as CustomEvent).isRepeat,
+						  }
+						: {}),
+				},
+				true,
+				false
+			);
+		}, 100);
+	};
 
 	return (
 		<div className="yg-event-tooltip-content">
@@ -21,6 +83,15 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({ event }) => {
 			>
 				<span className="tooltip-emoji">{event.emoji}</span>
 				<span className="tooltip-title">{event.text}</span>
+				<div className="tooltip-actions">
+					<button
+						className="edit-button"
+						onClick={handleEditEvent}
+						title={t("view.eventManager.actions.edit")}
+					>
+						✏️
+					</button>
+				</div>
 			</div>
 
 			<div className="tooltip-body">
@@ -97,9 +168,11 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({ event }) => {
 export class EventTooltip extends Modal {
 	private root: Root | null = null;
 	private event: Partial<Holiday | Birthday | CustomEvent>;
+	private plugin: YearlyGlancePlugin;
 
 	constructor(plugin: YearlyGlancePlugin, event: any) {
 		super(plugin.app);
+		this.plugin = plugin;
 		this.event = event;
 	}
 
@@ -113,7 +186,11 @@ export class EventTooltip extends Modal {
 		// 渲染包装组件
 		this.root.render(
 			<React.StrictMode>
-				<EventTooltipContent event={this.event} />
+				<EventTooltipContent
+					plugin={this.plugin}
+					event={this.event}
+					onClose={() => this.close()}
+				/>
 			</React.StrictMode>
 		);
 	}

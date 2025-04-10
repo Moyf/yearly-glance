@@ -47,6 +47,10 @@
 		color: var(--text-normal);
 	}
 
+	input::placeholder {
+		opacity: 0.5;
+	}
+
 	textarea {
 		min-height: 80px;
 		resize: vertical;

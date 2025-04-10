@@ -1,0 +1,912 @@
+/* 年度日历视图 - 样式表 */
+/* 作者: Moy */
+/* 创建日期: 2025-03-25 */
+
+.theme-light {
+	--yg-month-bg-color: #f5f5f5;
+	--yg-day-bg-color: #fff;
+	--yg-day-weekend-bg-color: #f9f9f9;
+	--yg-border-color: #e8e8e8;
+	--yg-border-bottom-color: #d9d9d9;
+	--yg-today-bg-color: #e6f7ff;
+	--yg-today-border-color: #1890ff;
+	--yg-current-month-bg-color: #e6f7ff;
+	--yg-current-month-color: #1890ff;
+	--yg-current-month-border-color: #1890ff;
+	--yg-event-border-color: #d9d9d9;
+	--yg-weekdays-bg-color: #f5f5f5;
+	--yg-event-border-hover-color: #65bef1;
+	--yg-actions-bar-bg-color: #f9f9f9;
+	--yg-button-hover-bg-color: #e6f7ff;
+	--yg-button-hover-border-color: #1890ff;
+	--yg-title-color: #333;
+	--yg-shadow-color: rgba(0, 0, 0, 0.1);
+	--yg-tooltip-shadow: rgba(0, 0, 0, 0.2);
+	--yg-event-text-color: #333;
+}
+
+.theme-dark {
+	--yg-month-bg-color: #323232;
+	--yg-day-bg-color: #252525;
+	--yg-day-weekend-bg-color: #2a2a2a;
+	--yg-border-color: #3a3a3a;
+	--yg-border-bottom-color: #444;
+	--yg-today-bg-color: #1a1a1a;
+	--yg-today-border-color: #fac134;
+	--yg-current-month-bg-color: #1a1a1a;
+	--yg-current-month-color: #ff5252;
+	--yg-current-month-border-color: #ff5252;
+	--yg-event-border-color: #444;
+	--yg-weekdays-bg-color: #303030;
+	--yg-event-border-hover-color: rgba(250, 193, 52, 0.7);
+	--yg-actions-bar-bg-color: #282828;
+	--yg-button-hover-bg-color: #3a3a3a;
+	--yg-button-hover-border-color: #fac134;
+	--yg-title-color: #eee;
+	--yg-shadow-color: rgba(0, 0, 0, 0.3);
+	--yg-tooltip-shadow: rgba(0, 0, 0, 0.5);
+	--yg-event-text-color: #eee;
+}
+
+/* ------- 核心容器样式 ------- */
+
+.yearly-calendar {
+	/* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Helvetica, Arial, sans-serif; */
+	width: 100%;
+	max-width: 2600px;
+	margin: 0 auto;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+.yearly-calendar * {
+	box-sizing: border-box;
+}
+
+.yearly-calendar .yearly-calendar-title {
+	text-align: center;
+	margin-bottom: 24px;
+	font-size: 1.8em;
+	font-weight: 600;
+	color: var(--yg-title-color);
+	padding: 12px 0;
+	border-bottom: 2px solid var(--yg-border-color);
+	position: relative;
+}
+
+.yearly-calendar .yearly-calendar-title::after {
+	content: "";
+	position: absolute;
+	bottom: -2px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100px;
+	height: 2px;
+	background-color: var(--yg-current-month-color);
+}
+
+/* ------- 操作栏样式 ------- */
+
+.yearly-calendar-actions-bar {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 24px;
+	padding: 12px 16px;
+	background-color: var(--yg-actions-bar-bg-color);
+	border-radius: 8px;
+	box-shadow: 0 2px 8px var(--yg-shadow-color);
+}
+
+.event-manager-button,
+.event-form-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	border: 1px solid var(--yg-border-color);
+	border-radius: 6px;
+	background-color: var(--yg-day-bg-color);
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.event-manager-button:hover,
+.event-form-button:hover {
+	background-color: var(--yg-button-hover-bg-color);
+	border-color: var(--yg-button-hover-border-color);
+	transform: translateY(-2px);
+	box-shadow: 0 3px 8px var(--yg-shadow-color);
+}
+
+.button-icon {
+	font-size: 1.3em;
+}
+
+/* ------- 图例样式 ------- */
+
+.event-legend {
+	display: flex;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+	margin-right: auto;
+	gap: 14px;
+}
+
+.legend-item {
+	display: flex;
+	align-items: center;
+	font-size: 0.9em;
+	transition: all 0.3s ease;
+	cursor: pointer;
+	padding: 5px 10px;
+	border-radius: 6px;
+	border: 1px solid transparent;
+	position: relative;
+}
+
+.legend-item:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 3px 8px var(--yg-shadow-color);
+}
+
+.legend-item.enabled {
+	background-color: var(--yg-button-hover-bg-color);
+	border-color: var(--yg-button-hover-border-color);
+	box-shadow: 0 2px 4px var(--yg-shadow-color);
+}
+
+.legend-item.disabled {
+	border: 1px dashed var(--yg-border-color);
+	background-color: rgba(0, 0, 0, 0.03);
+	opacity: 0.8;
+}
+
+.legend-item.disabled .legend-icon,
+.legend-item.disabled .legend-text {
+	opacity: 0.6;
+}
+
+.legend-item.disabled:hover {
+	background-color: rgba(0, 0, 0, 0.05);
+	border-color: var(--yg-border-color);
+	opacity: 0.9;
+}
+
+.legend-item.disabled:hover .legend-icon,
+.legend-item.disabled:hover .legend-text {
+	opacity: 0.8;
+}
+
+.legend-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	border-radius: 5px;
+	margin-right: 6px;
+	transition: all 0.3s ease;
+}
+
+.legend-text {
+	font-weight: 500;
+	transition: all 0.3s ease;
+}
+
+/* 暗色主题下的调整 */
+.theme-dark .legend-item.enabled {
+	background-color: var(--yg-button-hover-bg-color);
+}
+
+.theme-dark .legend-item.disabled {
+	background-color: rgba(255, 255, 255, 0.03);
+}
+
+.theme-dark .legend-item.disabled:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ------- 日历网格样式 ------- */
+
+.calendar-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	width: 100%;
+	max-width: 100%;
+	overflow-x: hidden;
+}
+
+.month-row {
+	display: flex;
+	gap: 16px;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	width: 100%;
+	margin-bottom: 16px;
+	max-width: 100%;
+}
+
+/* ------- 月份容器样式 ------- */
+
+.month-container {
+	flex: 1;
+	border: 1px solid var(--yg-border-color);
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 2px 10px var(--yg-shadow-color);
+	min-width: 0;
+	max-width: 100%;
+	background-color: var(--yg-day-bg-color);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.month-container:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 6px 16px var(--yg-shadow-color);
+}
+
+/* 空白月份容器 */
+.empty-month {
+	background-color: transparent;
+	border: none;
+	box-shadow: none;
+}
+
+/* ------- 月份标题样式 ------- */
+
+.month-header {
+	background-color: var(--yg-month-bg-color);
+	padding: 12px;
+	text-align: center;
+	font-weight: bold;
+	border-bottom: 1px solid var(--yg-border-bottom-color);
+	font-size: 1.1em;
+}
+
+/* 当前月份标题样式 */
+.month-header.current-month {
+	background-color: var(--yg-current-month-bg-color);
+	color: var(--yg-current-month-color);
+	font-weight: bold;
+	border-bottom: 2px solid var(--yg-current-month-border-color);
+	box-shadow: 0 2px 4px var(--yg-shadow-color);
+}
+
+/* ------- 星期几样式 ------- */
+
+.weekdays {
+	display: grid;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+	text-align: center;
+	font-size: 0.85em;
+	background-color: var(--yg-weekdays-bg-color);
+	border-bottom: 1px solid var(--yg-border-bottom-color);
+	width: 100%;
+}
+
+.weekdays div {
+	padding: 6px 0;
+	font-weight: 500;
+}
+
+/* ------- 日期网格样式 ------- */
+
+.month-days {
+	display: grid;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+	grid-gap: 1px;
+	background-color: var(--yg-day-bg-color);
+	width: 100%;
+	overflow: hidden;
+	font-size: 0.95em;
+}
+
+/* ------- 日期样式 ------- */
+
+.day {
+	position: relative;
+	min-height: 32px;
+	padding: 3px;
+	text-align: right;
+	border: 1px solid transparent;
+	transition: all 0.2s ease;
+}
+
+.day:hover:not(.empty) {
+	background-color: var(--yg-today-bg-color);
+	opacity: 0.9;
+	z-index: 1;
+}
+
+.day.empty {
+	background-color: transparent;
+}
+
+.day.today {
+	font-weight: bold;
+	border: 2px solid var(--yg-today-border-color);
+	background-color: var(--yg-today-bg-color);
+	box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.day.weekend {
+	background-color: var(--yg-day-weekend-bg-color);
+}
+
+.day.has-events {
+	border-color: var(--yg-event-border-color);
+}
+
+.day-number {
+	font-size: 0.85em;
+	padding: 2px 4px 0 0;
+	font-weight: 500;
+}
+
+/* ------- 事件容器 ------- */
+
+.events {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	margin-top: 3px;
+}
+
+/* ------- 事件样式 ------- */
+
+.event {
+	display: flex;
+	align-items: center;
+	padding: 2px 4px;
+	margin-bottom: 2px;
+	border-radius: 3px;
+	font-size: 0.75em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	color: var(--yg-event-text-color);
+}
+
+/* 鼠标悬浮效果 */
+.event:hover {
+	transform: translateY(-1px);
+	outline: 1px solid var(--yg-event-border-hover-color);
+	box-shadow: 0 3px 8px var(--yg-tooltip-shadow);
+	z-index: 10;
+}
+
+/* ------- 事件文本字体大小 ------- */
+
+.event.font-small {
+	font-size: 0.7em;
+}
+
+.event.font-medium {
+	font-size: 0.85em;
+}
+
+.event.font-large {
+	font-size: 0.95em;
+}
+
+.events-list .event.font-small {
+	font-size: 0.8em;
+}
+
+.events-list .event.font-medium {
+	font-size: 0.95em;
+}
+
+.events-list .event.font-large {
+	font-size: 1.1em;
+}
+
+.event-emoji {
+	margin-right: 4px;
+	font-size: 1.1em;
+}
+
+.event-text {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* ------- 列表视图样式 ------- */
+
+.month-days-list {
+	display: flex;
+	flex-direction: column;
+	background-color: var(--yg-day-bg-color);
+	max-height: 400px;
+	overflow-y: auto;
+	scrollbar-width: thin;
+}
+
+.month-days-list::-webkit-scrollbar {
+	width: 6px;
+}
+
+.month-days-list::-webkit-scrollbar-thumb {
+	background-color: var(--yg-border-bottom-color);
+	border-radius: 3px;
+}
+
+.month-days-list::-webkit-scrollbar-track {
+	background-color: var(--yg-month-bg-color);
+}
+
+.month-days-list.no-height-limit {
+	max-height: none;
+	overflow-y: visible;
+}
+
+/* ------- 列表日期行样式 ------- */
+
+.day-row {
+	display: flex;
+	flex-direction: column;
+	padding: 8px 12px;
+	border-bottom: 1px solid var(--yg-border-bottom-color);
+	transition: all 0.2s ease;
+}
+
+.day-row:hover {
+	background-color: var(--yg-today-bg-color);
+	opacity: 0.9;
+}
+
+.day-row.today {
+	background-color: var(--yg-today-bg-color);
+	border: 2px solid var(--yg-today-border-color);
+	margin-bottom: 4px;
+	margin-top: 2px;
+	border-radius: 5px;
+	box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.day-row.weekend {
+	background-color: var(--yg-day-weekend-bg-color);
+}
+
+.day-info {
+	display: flex;
+	align-items: center;
+	margin-bottom: 6px;
+}
+
+.day-info .day-number {
+	font-weight: bold;
+	margin-right: 10px;
+	font-size: 1em;
+}
+
+.weekday-name {
+	font-size: 0.85em;
+	opacity: 0.8;
+}
+
+.events-list {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin-left: 20px;
+}
+
+.events-list .event {
+	font-size: 0.85em;
+	padding: 5px 10px;
+	border-radius: 4px;
+}
+
+/* ------- 彩色模式样式 ------- */
+
+.colorful-month .month-header {
+	color: rgb(var(--yg-month-color));
+	border-bottom-color: rgb(var(--yg-month-color));
+}
+
+.colorful-month .month-header.current-month {
+	background-color: rgba(var(--yg-month-color), 0.9);
+	color: white;
+	padding: 12px;
+	border-radius: 4px;
+	border-bottom: none;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.colorful-month .day.weekend {
+	background-color: rgba(var(--yg-month-color), 0.1);
+}
+
+.colorful-month .day-row.weekend {
+	background-color: rgba(var(--yg-month-color), 0.1);
+}
+
+.colorful-month .day.today {
+	border-color: rgb(var(--yg-month-color));
+}
+
+/* ------- 布局样式 ------- */
+
+/* 12x1 布局 */
+.layout-12x1 .month-container {
+	flex: 1 1 100%;
+	max-width: 100%;
+}
+
+.layout-12x1 .month-row {
+	flex-wrap: wrap;
+}
+
+/* 1x12 布局 */
+.layout-1x12 {
+	display: flex;
+	overflow-x: auto;
+	flex-wrap: nowrap;
+	padding-bottom: 16px;
+	scrollbar-width: thin;
+	-webkit-overflow-scrolling: touch;
+	scroll-behavior: smooth;
+	scroll-snap-type: x mandatory;
+}
+
+.layout-1x12::-webkit-scrollbar {
+	height: 10px;
+}
+
+.layout-1x12::-webkit-scrollbar-thumb {
+	background-color: var(--yg-border-bottom-color);
+	border-radius: 5px;
+}
+
+.layout-1x12::-webkit-scrollbar-track {
+	background-color: var(--yg-month-bg-color);
+	border-radius: 5px;
+}
+
+.layout-1x12 .month-row {
+	flex-wrap: nowrap;
+	width: max-content;
+	gap: 20px;
+}
+
+.layout-1x12 .month-container {
+	min-width: 260px;
+	max-width: 400px;
+	flex: 0 0 auto;
+	scroll-snap-align: start;
+}
+
+/* 6x2 布局 */
+.layout-6x2 .month-container {
+	flex: 0 0 calc(50% - 10px);
+	min-width: 0;
+}
+
+/* 2x6 布局 */
+.layout-2x6 .month-container {
+	flex: 0 0 calc(16.66% - 14px);
+	min-width: 180px;
+}
+
+/* 3x4 布局 */
+.layout-3x4 .month-container {
+	flex: 0 0 calc(25% - 14px);
+	min-width: 0;
+}
+
+/* 4x3 布局 */
+.layout-4x3 .month-container {
+	flex: 0 0 calc(33.33% - 12px);
+	min-width: 0;
+}
+
+/* ------- 响应式布局 ------- */
+
+/* 超大屏幕 (>2200px) */
+@media (min-width: 2201px) {
+	.yearly-calendar {
+		max-width: 2200px;
+		padding: 30px;
+	}
+
+	.layout-3x4 .month-container,
+	.layout-4x3 .month-container {
+		min-width: 240px;
+	}
+
+	.layout-2x6 .month-container {
+		min-width: 200px;
+	}
+}
+
+/* 大屏幕 (1801px-2200px) */
+@media (max-width: 2200px) and (min-width: 1801px) {
+	.yearly-calendar {
+		padding: 25px;
+	}
+
+	.month-row {
+		gap: 18px;
+	}
+
+	.layout-1x12 .month-container {
+		min-width: 240px;
+	}
+
+	.layout-3x4 .month-container,
+	.layout-4x3 .month-container {
+		min-width: 220px;
+	}
+}
+
+/* 中大屏幕 (1501px-1800px) */
+@media (max-width: 1800px) {
+	.layout-1x12 .month-container {
+		min-width: 220px;
+	}
+
+	.layout-2x6 .month-container {
+		flex: 0 0 calc(20% - 16px);
+		min-width: 170px;
+	}
+
+	.layout-3x4 .month-container {
+		flex: 0 0 calc(33.33% - 12px);
+		min-width: 160px;
+	}
+
+	.layout-4x3 .month-container {
+		flex: 0 0 calc(33.33% - 12px);
+		min-width: 170px;
+	}
+
+	.month-row {
+		gap: 15px;
+	}
+}
+
+/* 中等屏幕 (1201px-1500px) */
+@media (max-width: 1500px) {
+	.yearly-calendar {
+		padding: 18px;
+	}
+
+	.layout-1x12 .month-container {
+		min-width: 200px;
+	}
+
+	.layout-2x6 .month-container {
+		flex: 0 0 calc(25% - 15px);
+		min-width: 160px;
+	}
+
+	.layout-3x4 .month-container {
+		flex: 0 0 calc(33.33% - 12px);
+		min-width: 0;
+	}
+
+	.layout-4x3 .month-container {
+		flex: 0 0 calc(33.33% - 12px);
+		min-width: 0;
+	}
+
+	.month-days {
+		font-size: 0.95em;
+	}
+}
+
+/* 中小屏幕 (901px-1200px) */
+@media (max-width: 1200px) {
+	.yearly-calendar {
+		padding: 15px;
+		overflow-x: hidden;
+	}
+
+	.month-row {
+		gap: 12px;
+		margin-bottom: 12px;
+	}
+
+	.yearly-calendar-title {
+		font-size: 1.6em;
+		padding: 10px 0;
+	}
+
+	.layout-1x12 .month-container {
+		min-width: 180px;
+	}
+
+	.layout-2x6 .month-container {
+		flex: 0 0 calc(33.33% - 10px);
+	}
+
+	.layout-3x4 .month-container {
+		flex: 0 0 calc(50% - 8px);
+	}
+
+	.layout-4x3 .month-container {
+		flex: 0 0 calc(50% - 8px);
+	}
+
+	.layout-3x4 .month-row,
+	.layout-4x3 .month-row,
+	.layout-2x6 .month-row {
+		flex-wrap: wrap;
+	}
+}
+
+/* 平板屏幕 (601px-900px) */
+@media (max-width: 900px) {
+	.yearly-calendar {
+		padding: 12px;
+	}
+
+	.yearly-calendar-title {
+		font-size: 1.5em;
+		margin-bottom: 16px;
+		padding: 8px 0;
+	}
+
+	.yearly-calendar-title::after {
+		width: 80px;
+	}
+
+	.yearly-calendar-actions-bar {
+		padding: 10px 14px;
+	}
+
+	.layout-1x12 .month-container,
+	.layout-2x6 .month-container,
+	.layout-3x4 .month-container,
+	.layout-4x3 .month-container,
+	.layout-6x2 .month-container {
+		flex: 0 0 calc(50% - 8px);
+		min-width: 0;
+		max-width: 100%;
+	}
+
+	.month-row {
+		flex-wrap: wrap !important;
+		gap: 10px;
+		margin-bottom: 10px;
+		justify-content: space-between;
+	}
+
+	.layout-1x12 {
+		flex-wrap: wrap;
+		overflow-x: visible;
+		padding-bottom: 0;
+	}
+
+	.layout-1x12 .month-row {
+		width: 100%;
+		flex-wrap: wrap;
+	}
+
+	.month-days {
+		font-size: 0.9em;
+	}
+
+	.day {
+		min-height: 28px;
+		padding: 2px;
+	}
+}
+
+/* 手机屏幕 (≤600px) */
+@media (max-width: 600px) {
+	.yearly-calendar {
+		padding: 10px;
+	}
+
+	.layout-1x12 .month-container,
+	.layout-2x6 .month-container,
+	.layout-3x4 .month-container,
+	.layout-4x3 .month-container,
+	.layout-6x2 .month-container,
+	.layout-12x1 .month-container {
+		flex: 0 0 100%;
+		min-width: 0;
+		margin-bottom: 12px;
+	}
+
+	.yearly-calendar-actions-bar {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 10px;
+		padding: 10px;
+	}
+
+	.event-legend {
+		margin-bottom: 10px;
+		justify-content: flex-start;
+		width: 100%;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.legend-item {
+		padding: 3px 6px;
+	}
+
+	.month-header {
+		padding: 8px;
+		font-size: 1em;
+	}
+
+	.calendar-grid {
+		gap: 12px;
+	}
+
+	.month-row {
+		margin-bottom: 0;
+		gap: 0;
+	}
+
+	.month-days-list {
+		max-height: 350px;
+	}
+
+	.day-row {
+		padding: 6px 10px;
+	}
+
+	.events-list .event {
+		padding: 4px 8px;
+	}
+
+	.event-emoji {
+		font-size: 1em;
+	}
+
+	.button-icon {
+		font-size: 1.2em;
+	}
+}
+
+/* 特小屏幕 (≤400px) */
+@media (max-width: 400px) {
+	.yearly-calendar {
+		padding: 8px;
+	}
+
+	.yearly-calendar-title {
+		font-size: 1.3em;
+		margin-bottom: 12px;
+	}
+
+	.month-header {
+		padding: 6px;
+	}
+
+	.weekdays div {
+		padding: 4px 0;
+		font-size: 0.8em;
+	}
+
+	.day-number {
+		font-size: 0.8em;
+	}
+
+	.event.font-small {
+		font-size: 0.65em;
+	}
+
+	.event.font-medium {
+		font-size: 0.75em;
+	}
+
+	.event.font-large {
+		font-size: 0.85em;
+	}
+}

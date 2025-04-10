@@ -40,7 +40,7 @@ If your plugin does not need CSS, delete this file.
     --current-month-border-color: #bf2727;
     --event-border-color: #434343;
     --weekdays-bg-color: #2c2c2c;
-    --event-border-hover-color: #dcdd80;
+    --event-border-hover-color: #dcdd8099;
 }
 
 /* ------- */
@@ -245,6 +245,10 @@ If your plugin does not need CSS, delete this file.
     text-overflow: ellipsis;
 }
 
+/* 移除之前的工具提示样式 */
+.tooltip, .tooltip::after {
+    display: none;
+}
 
 /* 事件文本字体大小 */
 .event.font-small {

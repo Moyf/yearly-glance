@@ -1,0 +1,193 @@
+/* DatePicker 样式 */
+.yg-date-picker-container {
+	position: relative;
+	display: block;
+	width: 100%;
+
+	/* 日期显示框样式 */
+	.date-display-value {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 8px 12px;
+		border: 1px solid var(--background-modifier-border);
+		border-radius: 4px;
+		background-color: var(--background-primary);
+		cursor: pointer;
+		transition: all 0.2s ease;
+
+		&:hover {
+			border-color: var(--interactive-accent);
+			background-color: var(--background-primary-alt);
+		}
+	}
+
+	.date-display-value-text {
+		flex-grow: 1;
+		font-size: 14px;
+	}
+
+	.calendar-icon {
+		color: var(--text-muted);
+		margin-left: 8px;
+	}
+
+	/* 弹出窗口样式 */
+	.date-picker-popup {
+		position: absolute;
+		top: calc(100% + 8px);
+		left: 0;
+		width: 280px;
+		background-color: var(--background-primary);
+		border: 1px solid var(--background-modifier-border);
+		border-radius: 6px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		z-index: 1000;
+		animation: fadeIn 0.2s ease;
+	}
+
+	/* 弹出窗口头部 */
+	.popup-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 12px;
+		border-bottom: 1px solid var(--background-modifier-border);
+	}
+
+	.calendar-controls {
+		display: flex;
+		gap: 12px;
+	}
+
+	.control-checkbox {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		font-size: 13px;
+		cursor: pointer;
+	}
+
+	.control-label {
+		color: var(--text-normal);
+	}
+
+	/* 弹出窗口内容 */
+	.popup-content {
+		padding: 12px;
+	}
+
+	.date-selector-container {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.date-selector-row {
+		display: flex;
+		gap: 8px;
+		justify-content: center;
+	}
+
+	.date-selector {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		background-color: var(--background-secondary);
+		border-radius: 6px;
+		padding: 10px 6px;
+	}
+
+	.date-value {
+		font-size: 16px;
+		font-weight: 500;
+		margin-bottom: 8px;
+		min-height: 24px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		padding: 4px;
+		border-radius: 4px;
+		transition: background-color 0.2s;
+		min-width: 60px;
+	}
+
+	.date-value:hover {
+		background-color: rgba(0, 0, 0, 0.04);
+	}
+
+	.date-controls {
+		display: flex;
+		gap: 8px;
+	}
+
+	.control-button {
+		background-color: var(--background-modifier-hover);
+		border: none;
+		border-radius: 4px;
+		color: var(--text-normal);
+		width: 28px;
+		height: 28px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		position: relative;
+		z-index: 2;
+
+		&:hover {
+			background-color: var(--interactive-accent);
+			color: white;
+		}
+	}
+
+	.date-conversion-info {
+		margin-top: 12px;
+		padding: 8px;
+		background-color: var(--background-secondary-alt);
+		border-radius: 4px;
+		font-size: 13px;
+		color: var(--text-muted);
+		text-align: center;
+	}
+
+	/* 防止按钮样式被覆盖 */
+	.date-picker-popup button {
+		min-height: unset;
+		height: auto;
+	}
+
+	/* 数字编辑输入框样式 */
+	.date-edit-input {
+		width: 60px;
+		text-align: center;
+		border: 1px solid var(--background-modifier-border);
+		border-radius: 4px;
+		padding: 4px;
+		font-size: 14px;
+		font-weight: 500;
+		background-color: var(--background-primary);
+		color: var(--text-normal);
+		outline: none;
+	}
+
+	.date-edit-input:focus {
+		border-color: var(--interactive-accent);
+		box-shadow: 0 0 0 2px rgba(var(--interactive-accent-rgb), 0.2);
+	}
+
+	/* 去除数字输入框的上下箭头 */
+	.date-edit-input::-webkit-inner-spin-button,
+	.date-edit-input::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* Firefox */
+	.date-edit-input[type="number"] {
+		-moz-appearance: textfield;
+	}
+}

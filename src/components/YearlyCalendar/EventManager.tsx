@@ -389,7 +389,7 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 			case "birthday":
 				currentEvents = events.birthdays;
 				break;
-			case "custom":
+			case "customEvent":
 				currentEvents = events.customEvents;
 				break;
 		}

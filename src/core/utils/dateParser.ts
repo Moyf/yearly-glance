@@ -346,3 +346,29 @@ export function formatToExtendedISO(dateValue: string) {
 
 	return dateStr;
 }
+
+// (y,m,d) -> (y年m月d日)
+export function displayDate(dateValue: string, dateType: "SOLAR" | "LUNAR") {
+	const { hasYear, yearName, monthName, dayName } = parseDateValue(
+		dateValue,
+		dateType
+	);
+
+	let displayDate = "";
+
+	if (hasYear) {
+		if (dateType === "LUNAR") {
+			displayDate = `${yearName}年${monthName}月${dayName}`;
+		} else {
+			displayDate = `${yearName}年${monthName}月${dayName}日`;
+		}
+	} else {
+		if (dateType === "LUNAR") {
+			displayDate = `${monthName}月${dayName}`;
+		} else {
+			displayDate = `${monthName}月${dayName}日`;
+		}
+	}
+
+	return displayDate;
+}

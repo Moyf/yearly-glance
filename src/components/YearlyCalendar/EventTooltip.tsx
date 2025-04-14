@@ -10,6 +10,7 @@ import {
 } from "@/src/core/interfaces/Events";
 import { t } from "@/src/i18n/i18n";
 import "./style/EventTooltip.css";
+import { displayDate } from "@/src/core/utils/dateParser";
 
 interface EventTooltipContentProps {
 	plugin: YearlyGlancePlugin;
@@ -95,6 +96,16 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 			</div>
 
 			<div className="tooltip-body">
+				{/* 日期信息 */}
+				<div className="tooltip-row">
+					<span className="tooltip-label">
+						{t("view.eventManager.form.eventDate")}:
+					</span>
+					<span className="tooltip-value">
+						{displayDate(event.date, event.dateType)}
+					</span>
+				</div>
+
 				{/* 节日特有信息 */}
 				{eventType === "holiday" && event.foundDate && (
 					<div className="tooltip-row">

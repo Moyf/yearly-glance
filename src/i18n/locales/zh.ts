@@ -126,6 +126,7 @@ const translations: BaseMessage = {
 			name: "事件管理",
 			solar: "公历",
 			lunar: "农历",
+			date: "日期",
 			actions: {
 				add: "添加新事件",
 				search: "搜索事件...",

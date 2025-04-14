@@ -136,6 +136,7 @@ export type BaseMessage = {
 			name: string;
 			solar: string;
 			lunar: string;
+			date: string;
 			actions: {
 				add: string;
 				edit: string;

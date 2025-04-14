@@ -99,7 +99,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 				{/* 日期信息 */}
 				<div className="tooltip-row">
 					<span className="tooltip-label">
-						{t("view.eventManager.form.eventDate")}:
+						{t("view.eventManager.date")}:
 					</span>
 					<span className="tooltip-value">
 						{displayDate(event.date, event.dateType)}

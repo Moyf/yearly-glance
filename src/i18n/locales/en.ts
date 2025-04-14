@@ -126,6 +126,7 @@ const translations: BaseMessage = {
 			name: "Event Manager",
 			solar: "Solar",
 			lunar: "Lunar",
+			date: "Date",
 			actions: {
 				add: "Add New Event",
 				search: "Search Events...",

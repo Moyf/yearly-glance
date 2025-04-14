@@ -12,11 +12,11 @@ import { EVENT_TYPE_OPTIONS } from "./EventFormModal";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Input } from "../Base/Input";
+import { ConfirmDialog } from "../Base/ConfirmDialog";
 import { t } from "@/src/i18n/i18n";
 import { parseDateValue } from "@/src/core/utils/dateParser";
 import { VIEW_TYPE_YEARLY_GLANCE } from "@/src/views/YearlyGlanceView";
 import "./style/EventManagerView.css";
-
 
 interface EventItemProps {
 	event: Holiday | Birthday | CustomEvent;
@@ -264,7 +264,11 @@ const EventList: React.FC<EventListProps> = ({
 									{t("view.eventManager.holiday.internat")}
 								</h4>
 								<span className="collapse-icon">
-									{internatCollapsed ? <ChevronRight /> : <ChevronDown />}
+									{internatCollapsed ? (
+										<ChevronRight />
+									) : (
+										<ChevronDown />
+									)}
 								</span>
 							</div>
 							<span className="event-count">
@@ -370,19 +374,31 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 			return;
 		}
 
-		const newEvents = { ...events };
+		new ConfirmDialog(plugin, {
+			title: t("view.eventManager.actions.delete"),
+			message: t("view.eventManager.actions.deleteConfirm", {
+				name: event.text,
+			}),
+			onConfirm: async () => {
+				const newEvents = { ...events };
 
-		if (activeTab === "holiday") {
-			newEvents.holidays = events.holidays.filter((h) => h !== event);
-		} else if (activeTab === "birthday") {
-			newEvents.birthdays = events.birthdays.filter((b) => b !== event);
-		} else {
-			newEvents.customEvents = events.customEvents.filter(
-				(c) => c !== event
-			);
-		}
+				if (activeTab === "holiday") {
+					newEvents.holidays = events.holidays.filter(
+						(h) => h !== event
+					);
+				} else if (activeTab === "birthday") {
+					newEvents.birthdays = events.birthdays.filter(
+						(b) => b !== event
+					);
+				} else {
+					newEvents.customEvents = events.customEvents.filter(
+						(c) => c !== event
+					);
+				}
 
-		await updateEvents(newEvents);
+				await updateEvents(newEvents);
+			},
+		}).open();
 	};
 
 	// 获取当前标签页的事件列表

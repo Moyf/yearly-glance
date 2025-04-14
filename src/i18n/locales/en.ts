@@ -133,6 +133,7 @@ const translations: BaseMessage = {
 				delete: "Delete Event",
 				edit: "Edit",
 				yearlyCalendar: "Open Yearly Calendar",
+				deleteConfirm: "Are you sure you want to delete this event?",
 			},
 			empty: {
 				text: "No Events",
@@ -187,6 +188,10 @@ const translations: BaseMessage = {
 		openYearlyGlance: "Open Yearly Glance",
 		openEventManager: "Open Events Manager",
 		addEvent: "Add Event",
+	},
+	common: {
+		confirm: "Confirm",
+		cancel: "Cancel",
 	},
 };
 

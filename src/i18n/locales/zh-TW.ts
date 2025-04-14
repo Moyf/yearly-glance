@@ -133,6 +133,7 @@ const translations: BaseMessage = {
 				delete: "刪除事件",
 				edit: "編輯",
 				yearlyCalendar: "打開年度概覽",
+				deleteConfirm: "確認刪除事件",
 			},
 			empty: {
 				text: "無事件",
@@ -187,6 +188,10 @@ const translations: BaseMessage = {
 		openYearlyGlance: "打開年度概覽",
 		openEventManager: "打開事件管理",
 		addEvent: "添加事件",
+	},
+	common: {
+		confirm: "確認",
+		cancel: "取消",
 	},
 };
 

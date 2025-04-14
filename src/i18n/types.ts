@@ -143,6 +143,7 @@ export type BaseMessage = {
 				search: string;
 				clearSearch: string;
 				yearlyCalendar: string;
+				deleteConfirm: string;
 			};
 			empty: {
 				text: string;
@@ -190,6 +191,10 @@ export type BaseMessage = {
 		openYearlyGlance: string;
 		openEventManager: string;
 		addEvent: string;
+	};
+	common: {
+		confirm: string;
+		cancel: string;
 	};
 };
 

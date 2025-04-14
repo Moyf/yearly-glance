@@ -9,18 +9,18 @@ interface ConfirmDialogViewProps {
 	title: string;
 	message: string;
 	onConfirm: () => void;
-	onCancel?: () => void;
+	onClose?: () => void;
 }
 
 const ConfirmDialogView: React.FC<ConfirmDialogViewProps> = ({
 	title,
 	message,
 	onConfirm,
-	onCancel,
+	onClose,
 }) => {
 	const handleConfirm = () => {
 		onConfirm();
-		onCancel?.();
+		onClose?.();
 	};
 
 	return (
@@ -33,7 +33,7 @@ const ConfirmDialogView: React.FC<ConfirmDialogViewProps> = ({
 					<p>{message}</p>
 				</div>
 				<div className="yg-confirm-dialog-actions">
-					<button onClick={onCancel}>{t("common.cancel")}</button>
+					<button onClick={onClose}>{t("common.cancel")}</button>
 					<button onClick={handleConfirm}>
 						{t("common.confirm")}
 					</button>
@@ -66,7 +66,7 @@ export class ConfirmDialog extends Modal {
 					title={this.props.title}
 					message={this.props.message}
 					onConfirm={this.props.onConfirm}
-					onCancel={() => this.close()}
+					onClose={() => this.close()}
 				/>
 			</React.StrictMode>
 		);

@@ -51,7 +51,7 @@ const EventItem: React.FC<EventItemProps> = ({
 			const holiday = event as Holiday;
 			return (
 				<>
-					<div className="event-info-row">
+					<div className="event-info-row" data-property="isShow">
 						<span className="info-label">
 							{t("view.eventManager.holiday.isShow")}:
 						</span>
@@ -64,7 +64,10 @@ const EventItem: React.FC<EventItemProps> = ({
 						</span>
 					</div>
 					{holiday.foundDate && (
-						<div className="event-info-row">
+						<div
+							className="event-info-row"
+							data-property="foundDate"
+						>
 							<span className="info-label">
 								{t("view.eventManager.holiday.foundDate")}:
 							</span>
@@ -80,14 +83,17 @@ const EventItem: React.FC<EventItemProps> = ({
 			return (
 				<>
 					{birthday.age !== undefined && (
-						<div className="event-info-row">
+						<div className="event-info-row" data-property="age">
 							<span className="info-label">
 								{t("view.eventManager.birthday.age")}:
 							</span>
 							<span className="info-value">{birthday.age}</span>
 						</div>
 					)}
-					<div className="event-info-row">
+					<div
+						className="event-info-row"
+						data-property="nextBirthday"
+					>
 						<span className="info-label">
 							{t("view.eventManager.birthday.nextBirthday")}:
 						</span>
@@ -96,7 +102,7 @@ const EventItem: React.FC<EventItemProps> = ({
 						</span>
 					</div>
 					{birthday.animal !== undefined && (
-						<div className="event-info-row">
+						<div className="event-info-row" data-property="animal">
 							<span className="info-label">
 								{t("view.eventManager.birthday.animal")}:
 							</span>
@@ -106,7 +112,7 @@ const EventItem: React.FC<EventItemProps> = ({
 						</div>
 					)}
 					{birthday.zodiac !== undefined && (
-						<div className="event-info-row">
+						<div className="event-info-row" data-property="zodiac">
 							<span className="info-label">
 								{t("view.eventManager.birthday.zodiac")}:
 							</span>
@@ -120,7 +126,7 @@ const EventItem: React.FC<EventItemProps> = ({
 		} else {
 			const customEvent = event as CustomEvent;
 			return (
-				<div className="event-info-row">
+				<div className="event-info-row" data-property="isRepeat">
 					<span className="info-label">
 						{t("view.eventManager.customEvent.repeat")}:
 					</span>
@@ -178,7 +184,7 @@ const EventItem: React.FC<EventItemProps> = ({
 
 				<div className="event-date">
 					<span className="date-icon">
-						{event.dateType === "LUNAR" ? "🌙" : "☀️"}
+						{event.dateType === "LUNAR" ? "🌙" : "🌞"}
 					</span>
 					<span>{displayDate(event.date, event.dateType)}</span>
 				</div>

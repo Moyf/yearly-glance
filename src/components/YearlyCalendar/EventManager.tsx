@@ -10,11 +10,13 @@ import {
 } from "@/src/core/interfaces/Events";
 import { EVENT_TYPE_OPTIONS } from "./EventFormModal";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { Input } from "../Base/Input";
 import { t } from "@/src/i18n/i18n";
 import { parseDateValue } from "@/src/core/utils/dateParser";
 import { VIEW_TYPE_YEARLY_GLANCE } from "@/src/views/YearlyGlanceView";
 import "./style/EventManagerView.css";
+
 
 interface EventItemProps {
 	event: Holiday | Birthday | CustomEvent;
@@ -262,7 +264,7 @@ const EventList: React.FC<EventListProps> = ({
 									{t("view.eventManager.holiday.internat")}
 								</h4>
 								<span className="collapse-icon">
-									{internatCollapsed ? "▶" : "▼"}
+									{internatCollapsed ? <ChevronRight /> : <ChevronDown />}
 								</span>
 							</div>
 							<span className="event-count">

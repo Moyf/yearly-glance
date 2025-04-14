@@ -12,7 +12,7 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
-import { HelpCircle, RotateCcw } from "lucide-react";
+import { ChevronDown, ChevronRight, HelpCircle, RotateCcw } from "lucide-react";
 import { Select } from "../Base/Select";
 import { Toggle } from "../Base/Toggle";
 import { DatePicker } from "@/src/components/DatePicker/DatePicker";
@@ -91,7 +91,7 @@ const EventForm: React.FC<EventFormProps> = ({
 		dateType: event.dateType || "SOLAR",
 	});
 
-	const [optionalCollapsed, setOptionalCollapsed] = React.useState(true);
+	const [optionalCollapsed, setOptionalCollapsed] = React.useState(false);
 	const [displayDateValue, setDisplayDateValue] = React.useState(() => {
 		// 初始化时将内部y,m,d格式转换为显示用的y-m-d格式
 		if (formData.date) {
@@ -411,6 +411,7 @@ const EventForm: React.FC<EventFormProps> = ({
 			>
 				<h5 onClick={toggleOptional}>
 					{t("view.eventManager.form.optional")}
+					{optionalCollapsed ? <ChevronRight /> : <ChevronDown />}
 				</h5>
 
 				{/* 事件图标 */}

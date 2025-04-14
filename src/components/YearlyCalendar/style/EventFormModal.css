@@ -230,14 +230,6 @@
 		align-items: center;
 		color: var(--text-accent);
 		transition: color 0.2s ease;
-
-		&::after {
-			content: "▼";
-			margin-left: 5px;
-			font-size: 0.8em;
-			transition: transform 0.3s ease;
-			transform: rotate(180deg);
-		}
 	}
 }
 
@@ -248,10 +240,5 @@
 		margin: 0;
 		padding: 0;
 		pointer-events: none;
-	}
-	h5 {
-		&::after {
-			transform: rotate(0deg);
-		}
 	}
 }

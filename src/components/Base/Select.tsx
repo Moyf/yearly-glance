@@ -1,5 +1,6 @@
 import * as React from "react";
 import "./style/Select.css";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface SelectOption {
 	value: any;
@@ -52,7 +53,9 @@ export const Select: React.FC<SelectProps> = ({
 				<span className="yg-select-value">
 					{selectedOption ? selectedOption.label : placeholder}
 				</span>
-				<span className="yg-select-arrow">▼</span>
+				<span className="yg-select-arrow">
+					{isOpen ? <ChevronUp /> : <ChevronDown />}
+				</span>
 			</div>
 			{isOpen && (
 				<div className="yg-select-dropdown">

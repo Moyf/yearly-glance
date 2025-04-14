@@ -33,18 +33,17 @@
 
 .yg-select-arrow {
 	flex: 0 0 auto; /* 不允许收缩或增长 */
-	font-size: 0.75rem;
-	transition: transform 0.2s;
 	margin-left: auto; /* 确保箭头靠右 */
+	color: var(--text-muted); /* 使箭头色彩稍微柔和 */
+	display: flex; /* 确保图标居中 */
+	align-items: center;
+	justify-content: center;
+	padding: 0 0.25rem; /* 添加内边距 */
 }
 
 .yg-select.yg-select-open {
 	border-color: var(--interactive-accent);
 	box-shadow: 0 0 0 2px rgba(var(--interactive-accent-rgb), 0.1);
-
-	.yg-select-arrow {
-		transform: rotate(180deg);
-	}
 }
 
 .yg-select-dropdown {

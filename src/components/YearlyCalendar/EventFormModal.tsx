@@ -544,20 +544,6 @@ interface TabProps {
 	children: React.ReactNode;
 }
 
-const Tab: React.FC<TabProps> = ({ value, active, onClick, children }) => {
-	return (
-		<button
-			type="button"
-			className={`event-type-tab ${active ? "active" : ""}`}
-			onClick={onClick}
-			aria-selected={active}
-			role="tab"
-		>
-			{children}
-		</button>
-	);
-};
-
 // 添加TabNav组件
 interface TabNavProps {
 	value: string;
@@ -569,14 +555,15 @@ const TabNav: React.FC<TabNavProps> = ({ value, onChange, tabs }) => {
 	return (
 		<div className="event-type-tabs" role="tablist">
 			{tabs.map((tab) => (
-				<Tab
+				<div
 					key={tab.value}
-					value={tab.value}
-					active={value === tab.value}
+					className={`event-type-tab ${
+						value === tab.value ? "active" : ""
+					}`}
 					onClick={() => onChange(tab.value)}
 				>
-					{tab.label}
-				</Tab>
+					<span className="tab-label">{tab.label}</span>
+				</div>
 			))}
 		</div>
 	);

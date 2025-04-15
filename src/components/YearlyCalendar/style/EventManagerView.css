@@ -42,6 +42,22 @@
 	transition: all 0.2s ease;
 	user-select: none;
 
+	&:hover {
+		background-color: var(--background-modifier-hover);
+		color: var(--text-normal);
+	}
+
+	&.active {
+		background-color: var(--background-primary);
+		color: var(--text-normal);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+		.tab-count {
+			background-color: var(--interactive-accent);
+			color: var(--text-on-accent);
+		}
+	}
+
 	.tab-count {
 		display: inline-flex;
 		align-items: center;
@@ -54,22 +70,6 @@
 		font-size: 12px;
 		font-weight: 600;
 	}
-}
-
-.yg-event-tab:hover {
-	background-color: var(--background-modifier-hover);
-	color: var(--text-normal);
-}
-
-.yg-event-tab.active {
-	background-color: var(--background-primary);
-	color: var(--text-normal);
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.yg-event-tab.active .tab-count {
-	background-color: var(--interactive-accent);
-	color: var(--text-on-accent);
 }
 
 .yg-event-actions-bar {

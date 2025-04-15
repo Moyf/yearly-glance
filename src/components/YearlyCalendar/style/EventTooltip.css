@@ -48,6 +48,10 @@
 	}
 
 	.tooltip-actions {
+		display: flex;
+		gap: 4px;
+
+		.location-button,
 		.edit-button {
 			width: 32px;
 			height: 32px;
@@ -59,10 +63,10 @@
 			align-items: center;
 			justify-content: center;
 			transition: background-color 0.2s ease;
-		}
 
-		.edit-button:hover {
-			background-color: var(--interactive-hover);
+			:hover {
+				background-color: var(--interactive-hover);
+			}
 		}
 	}
 

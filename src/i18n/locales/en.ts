@@ -140,6 +140,7 @@ const translations: BaseMessage = {
 				edit: "Edit",
 				yearlyCalendar: "Open Yearly Calendar",
 				deleteConfirm: "Are you sure you want to delete this event?",
+				location: "Open in Event Manager",
 			},
 			empty: {
 				text: "No Events",

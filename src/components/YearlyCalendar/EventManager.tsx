@@ -1,7 +1,6 @@
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import YearlyGlancePlugin from "@/src/main";
-import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
 import {
 	Birthday,
 	CustomEvent,
@@ -17,6 +16,10 @@ import { ConfirmDialog } from "../Base/ConfirmDialog";
 import { t } from "@/src/i18n/i18n";
 import { parseDateValue } from "@/src/core/utils/dateParser";
 import { VIEW_TYPE_YEARLY_GLANCE } from "@/src/views/YearlyGlanceView";
+import {
+	EVENT_SEARCH_REQUESTED,
+	EventManagerBus,
+} from "@/src/core/hook/useEventBus";
 import "./style/EventManagerView.css";
 
 interface EventItemProps {
@@ -363,6 +366,27 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 	const [searchExpanded, setSearchExpanded] = React.useState(false);
 	const searchContainerRef = React.useRef<HTMLDivElement>(null);
 
+	// 订阅事件总线，处理搜索请求
+	React.useEffect(() => {
+		// 订阅搜索请求事件
+		const unsubscribe = EventManagerBus.subscribe(
+			EVENT_SEARCH_REQUESTED,
+			(data) => {
+				if (data.searchType === "id") {
+					// 设置搜索词为@id格式
+					setSearchTerm(`@id ${data.searchValue}`);
+					// 确保搜索框展开
+					setSearchExpanded(true);
+				}
+			}
+		);
+
+		// 组件卸载时取消订阅
+		return () => {
+			unsubscribe();
+		};
+	}, []);
+
 	const handleYearlyCalendar = () => {
 		plugin.openPluginView(VIEW_TYPE_YEARLY_GLANCE);
 	};
@@ -416,33 +440,67 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 
 	// 获取当前标签页的事件列表
 	const getCurrentEvents = () => {
-		let currentEvents: Array<Holiday | Birthday | CustomEvent> = [];
+		// 如果有搜索词，从所有事件中搜索
+		if (searchTerm.trim()) {
+			const term = searchTerm.trim().toLowerCase();
 
+			// 检查是否使用 @id 语法进行搜索
+			const idMatch = term.match(/^@id\s+(.+)$/);
+			if (idMatch) {
+				const idTerm = idMatch[1].trim();
+				// 在所有事件类型中搜索指定ID - 使用精确匹配
+				const results: Array<Holiday | Birthday | CustomEvent> = [
+					...events.holidays.filter(
+						(event) => event.id?.toString() === idTerm
+					),
+					...events.birthdays.filter(
+						(event) => event.id?.toString() === idTerm
+					),
+					...events.customEvents.filter(
+						(event) => event.id?.toString() === idTerm
+					),
+				];
+				return results;
+			}
+
+			// 常规搜索 - 从所有事件类型中搜索
+			const results: Array<Holiday | Birthday | CustomEvent> = [
+				...events.holidays.filter(
+					(event) =>
+						event.text.toLowerCase().includes(term) ||
+						(event.remark &&
+							event.remark.toLowerCase().includes(term)) ||
+						event.date.includes(term)
+				),
+				...events.birthdays.filter(
+					(event) =>
+						event.text.toLowerCase().includes(term) ||
+						(event.remark &&
+							event.remark.toLowerCase().includes(term)) ||
+						event.date.includes(term)
+				),
+				...events.customEvents.filter(
+					(event) =>
+						event.text.toLowerCase().includes(term) ||
+						(event.remark &&
+							event.remark.toLowerCase().includes(term)) ||
+						event.date.includes(term)
+				),
+			];
+			return results;
+		}
+
+		// 没有搜索词时，只显示当前激活标签页的事件
 		switch (activeTab) {
 			case "holiday":
-				currentEvents = events.holidays;
-				break;
+				return events.holidays;
 			case "birthday":
-				currentEvents = events.birthdays;
-				break;
+				return events.birthdays;
 			case "customEvent":
-				currentEvents = events.customEvents;
-				break;
+				return events.customEvents;
+			default:
+				return [];
 		}
-
-		// 如果有搜索词，过滤事件
-		if (searchTerm.trim()) {
-			const term = searchTerm.toLowerCase();
-			return currentEvents.filter(
-				(event) =>
-					event.text.toLowerCase().includes(term) ||
-					(event.remark &&
-						event.remark.toLowerCase().includes(term)) ||
-					event.date.includes(term)
-			);
-		}
-
-		return currentEvents;
 	};
 
 	// 切换搜索框展开状态
@@ -473,6 +531,9 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 		}
 	};
 
+	// 判断是否在搜索模式
+	const isSearching = searchTerm.trim() !== "";
+
 	// 获取事件数量信息
 	const getEventCounts = () => {
 		return {
@@ -492,8 +553,10 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 						<div
 							key={option.value}
 							className={`yg-event-tab ${
-								activeTab === option.value ? "active" : ""
-							}`}
+								activeTab === option.value && !isSearching
+									? "active"
+									: ""
+							} ${isSearching ? "search-mode" : ""}`}
 							onClick={() =>
 								setActiveTab(option.value as EventType)
 							}
@@ -586,12 +649,10 @@ export class EventManager {
 	private container: HTMLElement;
 	private root: Root | null = null;
 	private plugin: YearlyGlancePlugin;
-	private config: YearlyGlanceConfig;
 
 	constructor(container: HTMLElement, plugin: YearlyGlancePlugin) {
 		this.container = container;
 		this.plugin = plugin;
-		this.config = this.plugin.getSettings();
 	}
 
 	async initialize(plugin: YearlyGlancePlugin) {

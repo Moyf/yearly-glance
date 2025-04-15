@@ -140,6 +140,7 @@ const translations: BaseMessage = {
 				edit: "編輯",
 				yearlyCalendar: "打開年度概覽",
 				deleteConfirm: "確認刪除事件",
+				location: "在事件管理中打開",
 			},
 			empty: {
 				text: "無事件",

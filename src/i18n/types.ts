@@ -150,6 +150,7 @@ export type BaseMessage = {
 				clearSearch: string;
 				yearlyCalendar: string;
 				deleteConfirm: string;
+				location: string;
 			};
 			empty: {
 				text: string;

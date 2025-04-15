@@ -9,9 +9,14 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
+import { displayDate } from "@/src/core/utils/dateParser";
+import { VIEW_TYPE_EVENT_MANAGER } from "@/src/views/EventManagerView";
+import {
+	EVENT_SEARCH_REQUESTED,
+	EventManagerBus,
+} from "@/src/core/hook/useEventBus";
 import { t } from "@/src/i18n/i18n";
 import "./style/EventTooltip.css";
-import { displayDate } from "@/src/core/utils/dateParser";
 
 interface EventTooltipContentProps {
 	plugin: YearlyGlancePlugin;
@@ -77,6 +82,26 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 		}, 100);
 	};
 
+	// 在事件管理中打开
+	const handleLocationEvent = () => {
+		// 关闭当前tooltip
+		onClose();
+
+		// 使用延迟确保tooltip已完全关闭
+		setTimeout(() => {
+			// 打开事件管理器视图
+			plugin.openPluginView(VIEW_TYPE_EVENT_MANAGER);
+
+			// 使用延迟确保事件管理器视图已完全加载
+			setTimeout(() => {
+				// 通过事件总线发送搜索请求
+				EventManagerBus.publish(EVENT_SEARCH_REQUESTED, {
+					searchType: "id",
+					searchValue: event.id,
+				});
+			}, 500);
+		}, 100);
+	};
 	return (
 		<div className="yg-event-tooltip-content">
 			<div
@@ -91,6 +116,13 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 				</span>
 				<span className="tooltip-title">{event.text}</span>
 				<div className="tooltip-actions">
+					<button
+						className="location-button"
+						onClick={handleLocationEvent}
+						title={t("view.eventManager.actions.location")}
+					>
+						📍
+					</button>
 					<button
 						className="edit-button"
 						onClick={handleEditEvent}

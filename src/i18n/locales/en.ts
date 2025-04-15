@@ -91,6 +91,11 @@ const translations: BaseMessage = {
 				birthday: "Birthday",
 				customEvent: "Custom Event",
 			},
+			viewPreset: {
+				yearOverview: "Year Overview",
+				classicCalendar: "Classic Calendar",
+				custom: "Custom layout",
+			},
 			actions: {
 				clickToShow: "Click to Show ",
 				clickToHide: "Click to Hide ",

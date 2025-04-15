@@ -22,6 +22,25 @@ interface YearlyCalendarViewProps {
 	plugin: YearlyGlancePlugin;
 }
 
+// 定义视图预设选项
+const viewPresetOptions = [
+	{
+		value: "yearOverview",
+		label: t("view.yearlyGlance.viewPreset.yearOverview"),
+	},
+	{
+		value: "classicCalendar",
+		label: t("view.yearlyGlance.viewPreset.classicCalendar"),
+	},
+	{ value: "custom", label: t("view.yearlyGlance.viewPreset.custom") },
+];
+
+// 预设配置映射
+const presetConfigs = {
+	yearOverview: { layout: "2x6", viewType: "list" },
+	classicCalendar: { layout: "4x3", viewType: "calendar" },
+};
+
 const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 	const { config, updateConfig } = useYearlyGlanceConfig(plugin);
 
@@ -42,9 +61,33 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		mondayFirst,
 	} = config;
 
+	// 新增状态跟踪当前选择的预设
+	const [currentPreset, setCurrentPreset] = React.useState<string>(() => {
+		// 根据当前配置确定初始预设
+		if (layout === "2x6" && viewType === "list") return "yearOverview";
+		if (layout === "4x3" && viewType === "calendar")
+			return "classicCalendar";
+		return "custom";
+	});
+
 	const { monthsData, weekdays } = useYearlyCalendar(plugin);
 
 	const calendarRef = React.useRef<HTMLDivElement>(null);
+
+	// 预设更改处理函数
+	const handlePresetChange = (preset: string) => {
+		setCurrentPreset(preset);
+
+		if (preset !== "custom") {
+			// 应用预设配置
+			const presetConfig =
+				presetConfigs[preset as keyof typeof presetConfigs];
+			updateConfig({
+				layout: presetConfig.layout,
+				viewType: presetConfig.viewType,
+			});
+		}
+	};
 
 	const handleEventManager = () => {
 		plugin.openPluginView(VIEW_TYPE_EVENT_MANAGER);
@@ -293,18 +336,35 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 						})}
 					</div>
 				)}
-				{/* 布局选择 */}
+				{/* 视图预设选择 */}
 				<Select
-					options={layoutOptions}
-					value={layout}
-					onValueChange={(value) => updateConfig({ layout: value })}
+					options={viewPresetOptions}
+					value={currentPreset}
+					onValueChange={handlePresetChange}
 				/>
-				{/* 视图选择 */}
-				<Select
-					options={viewTypeOptions}
-					value={viewType}
-					onValueChange={(value) => updateConfig({ viewType: value })}
-				/>
+
+				{/* 自定义模式下显示布局和视图类型选择器 */}
+				{currentPreset === "custom" && (
+					<>
+						{/* 布局选择 */}
+						<Select
+							options={layoutOptions}
+							value={layout}
+							onValueChange={(value) =>
+								updateConfig({ layout: value })
+							}
+						/>
+						{/* 视图选择 */}
+						<Select
+							options={viewTypeOptions}
+							value={viewType}
+							onValueChange={(value) =>
+								updateConfig({ viewType: value })
+							}
+						/>
+					</>
+				)}
+
 				{viewType === "list" && (
 					<button
 						className="limit-list-height-button"

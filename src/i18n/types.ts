@@ -101,6 +101,11 @@ export type BaseMessage = {
 				birthday: string;
 				customEvent: string;
 			};
+			viewPreset: {
+				yearOverview: string;
+				classicCalendar: string;
+				custom: string;
+			};
 			actions: {
 				clickToShow: string;
 				clickToHide: string;

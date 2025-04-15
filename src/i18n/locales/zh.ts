@@ -91,6 +91,11 @@ const translations: BaseMessage = {
 				birthday: "生日",
 				customEvent: "自定义事件",
 			},
+			viewPreset: {
+				yearOverview: "全年一览",
+				classicCalendar: "经典年历",
+				custom: "自定义布局",
+			},
 			actions: {
 				clickToShow: "点击显示",
 				clickToHide: "点击隐藏",

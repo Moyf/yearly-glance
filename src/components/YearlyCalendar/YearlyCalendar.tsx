@@ -86,8 +86,12 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 				key={`${event.text}-${event.date}`}
 				className={`event font-${eventFontSize}`}
 				style={{
-					backgroundColor: `${event.color}20`,
-					borderLeft: `3px solid ${event.color}`,
+					backgroundColor: `${
+						event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color
+					}20`,
+					borderLeft: `3px solid ${
+						event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color
+					}`,
 				}}
 				onClick={(e) => handleEventTooltip(event)}
 			>
@@ -232,7 +236,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 							(eventType) =>
 								(eventType === "holiday" && showHolidays) ||
 								(eventType === "birthday" && showBirthdays) ||
-								(eventType === "customEvent" && showCustomEvents) ||
+								(eventType === "customEvent" &&
+									showCustomEvents) ||
 								// 包含禁用的事件类型，以便可以重新启用它们
 								eventType === "holiday" ||
 								eventType === "birthday" ||
@@ -242,7 +247,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 							const isEnabled =
 								(eventType === "holiday" && showHolidays) ||
 								(eventType === "birthday" && showBirthdays) ||
-								(eventType === "customEvent" && showCustomEvents);
+								(eventType === "customEvent" &&
+									showCustomEvents);
 
 							return (
 								<div

@@ -25,6 +25,7 @@ import {
 import { t } from "./i18n/i18n";
 import { BUILTIN_HOLIDAYS } from "./core/data/builtinHolidays";
 import { lunarTest } from "./test/date";
+import { generateUUID } from "./core/utils/uuid";
 
 export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
@@ -61,6 +62,9 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 验证并合并数据
 		this.settings = this.validateAndMergeSettings(savedData);
+
+		// 确保所有事件都有id
+		await this.ensureEventsHaveIds();
 
 		// 更新所有事件的dateObj字段
 		await this.updateAllEventsDateObj();
@@ -177,6 +181,9 @@ export default class YearlyGlancePlugin extends Plugin {
 			...newData,
 		};
 
+		// 确保所有事件都有id
+		await this.ensureEventsHaveIds();
+
 		await this.saveSettings();
 	}
 
@@ -245,17 +252,14 @@ export default class YearlyGlancePlugin extends Plugin {
 				(holiday) => holiday.type === "INTERNAT"
 			);
 
-			// 构建现有内置节日的查询索引，使用text+date+dateType作为唯一键
-			const existingKeys = new Set(
-				existingBuiltinHolidays.map(
-					(h) => `${h.text}|${h.date}|${h.dateType}`
-				)
+			// 构建现有内置节日的ID索引
+			const existingIds = new Set(
+				existingBuiltinHolidays.map((h) => h.id)
 			);
 
 			// 查找需要添加的内置节日
 			const holidaysToAdd = BUILTIN_HOLIDAYS.filter((builtinHoliday) => {
-				const key = `${builtinHoliday.text}|${builtinHoliday.date}|${builtinHoliday.dateType}`;
-				return !existingKeys.has(key);
+				return !existingIds.has(builtinHoliday.id);
 			});
 
 			if (holidaysToAdd.length > 0) {
@@ -280,5 +284,43 @@ export default class YearlyGlancePlugin extends Plugin {
 		} catch (error) {
 			console.error("[yearly-glance] 验证内置节日数据失败", error);
 		}
+	}
+
+	private generateEventId(eventType?: EventType): string {
+		const prefixMap: Record<EventType, string> = {
+			birthday: "birth",
+			holiday: "holi",
+			customEvent: "event",
+		};
+
+		const prefix = eventType ? prefixMap[eventType] : "event";
+
+		return generateUUID({
+			prefix: prefix,
+		});
+	}
+
+	private async ensureEventsHaveIds(): Promise<void> {
+		const events = this.settings.data;
+
+		events.birthdays.forEach((birthday) => {
+			if (!birthday.id) {
+				birthday.id = this.generateEventId("birthday");
+			}
+		});
+
+		events.holidays.forEach((holiday) => {
+			if (!holiday.id) {
+				holiday.id = this.generateEventId("holiday");
+			}
+		});
+
+		events.customEvents.forEach((customEvent) => {
+			if (!customEvent.id) {
+				customEvent.id = this.generateEventId("customEvent");
+			}
+		});
+
+		await this.saveData(this.settings);
 	}
 }

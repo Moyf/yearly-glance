@@ -5,6 +5,7 @@ import YearlyGlancePlugin from "@/src/main";
 import {
 	Birthday,
 	CustomEvent,
+	EVENT_TYPE_DEFAULT,
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
@@ -80,9 +81,14 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 		<div className="yg-event-tooltip-content">
 			<div
 				className="tooltip-header"
-				style={{ backgroundColor: event.color }}
+				style={{
+					backgroundColor:
+						event.color ?? EVENT_TYPE_DEFAULT[eventType].color,
+				}}
 			>
-				<span className="tooltip-emoji">{event.emoji}</span>
+				<span className="tooltip-emoji">
+					{event.emoji ?? EVENT_TYPE_DEFAULT[eventType].emoji}
+				</span>
 				<span className="tooltip-title">{event.text}</span>
 				<div className="tooltip-actions">
 					<button

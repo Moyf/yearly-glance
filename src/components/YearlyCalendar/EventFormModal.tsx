@@ -30,9 +30,9 @@ import {
 import { Solar } from "lunar-typescript";
 
 interface EventFormProps {
-	event: Partial<CustomEvent | Birthday | Holiday >;
+	event: Partial<CustomEvent | Birthday | Holiday>;
 	eventType: EventType;
-	onSave: (event: CustomEvent | Birthday | Holiday ) => void;
+	onSave: (event: CustomEvent | Birthday | Holiday) => void;
 	onCancel: () => void;
 	isEditing: boolean;
 }
@@ -189,11 +189,12 @@ const EventForm: React.FC<EventFormProps> = ({
 
 		// 构建基础事件对象
 		const baseEvent: BaseEvent = {
+			id: updatedFormData.id,
 			date: updatedFormData.date || todayString, // 确保始终有日期
 			dateType: updatedFormData.dateType || "SOLAR",
 			text: updatedFormData.text || "",
-			emoji: updatedFormData.emoji || EVENT_TYPE_DEFAULT[eventType].emoji,
-			color: updatedFormData.color || EVENT_TYPE_DEFAULT[eventType].color,
+			emoji: updatedFormData.emoji,
+			color: updatedFormData.color,
 			remark: updatedFormData.remark,
 		};
 
@@ -420,7 +421,7 @@ const EventForm: React.FC<EventFormProps> = ({
 					<input
 						type="text"
 						name="emoji"
-						value={formData.emoji ?? ""}
+						value={formData.emoji || ""}
 						onChange={handleChange}
 						placeholder={EVENT_TYPE_DEFAULT[eventType].emoji}
 					/>
@@ -431,10 +432,7 @@ const EventForm: React.FC<EventFormProps> = ({
 					<input
 						type="color"
 						name="color"
-						value={
-							formData.color ??
-							EVENT_TYPE_DEFAULT[eventType].color
-						}
+						value={formData.color || ""}
 						onChange={handleChange}
 					/>
 					<button
@@ -443,7 +441,7 @@ const EventForm: React.FC<EventFormProps> = ({
 						onClick={() => {
 							setFormData((prev) => ({
 								...prev,
-								color: EVENT_TYPE_DEFAULT[eventType].color,
+								color: undefined,
 							}));
 						}}
 						title={t("view.eventManager.form.reset")}
@@ -528,11 +526,11 @@ const EventForm: React.FC<EventFormProps> = ({
 interface EventFormWrapperProps {
 	plugin: YearlyGlancePlugin;
 	initialEventType: EventType;
-	event: Partial<CustomEvent | Birthday | Holiday >;
+	event: Partial<CustomEvent | Birthday | Holiday>;
 	isEditing: boolean;
 	allowTypeChange: boolean;
 	onSave: (
-		event: CustomEvent | Birthday | Holiday ,
+		event: CustomEvent | Birthday | Holiday,
 		eventType: EventType
 	) => Promise<void>;
 	onCancel: () => void;
@@ -550,7 +548,7 @@ const Tab: React.FC<TabProps> = ({ value, active, onClick, children }) => {
 	return (
 		<button
 			type="button"
-			className={`event-type-tab ${active ? 'active' : ''}`}
+			className={`event-type-tab ${active ? "active" : ""}`}
 			onClick={onClick}
 			aria-selected={active}
 			role="tab"
@@ -603,7 +601,7 @@ const EventFormWrapper: React.FC<EventFormWrapperProps> = ({
 	};
 
 	// 处理保存事件
-	const handleSave = (event: CustomEvent | Birthday | Holiday ) => {
+	const handleSave = (event: CustomEvent | Birthday | Holiday) => {
 		onSave(event, eventType);
 	};
 
@@ -632,7 +630,7 @@ const EventFormWrapper: React.FC<EventFormWrapperProps> = ({
 export class EventFormModal extends Modal {
 	private plugin: YearlyGlancePlugin;
 	private root: Root | null = null;
-	private event: Partial<CustomEvent | Birthday | Holiday >;
+	private event: Partial<CustomEvent | Birthday | Holiday>;
 	private eventType: EventType;
 	private isEditing: boolean;
 	private allowTypeChange: boolean;
@@ -640,7 +638,7 @@ export class EventFormModal extends Modal {
 	constructor(
 		plugin: YearlyGlancePlugin,
 		eventType: EventType = "customEvent",
-		event: Partial<CustomEvent | Birthday | Holiday > = {},
+		event: Partial<CustomEvent | Birthday | Holiday> = {},
 		isEditing: boolean = false,
 		allowTypeChange: boolean = false
 	) {

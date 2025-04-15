@@ -5,6 +5,7 @@ import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
 import {
 	Birthday,
 	CustomEvent,
+	EVENT_TYPE_DEFAULT,
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
@@ -171,12 +172,17 @@ const EventItem: React.FC<EventItemProps> = ({
 					<div
 						className="event-title"
 						style={{
-							color: event.color,
-							backgroundColor: `${event.color}20`,
+							color:
+								event.color ??
+								EVENT_TYPE_DEFAULT[eventType].color,
+							backgroundColor: `${
+								event.color ??
+								EVENT_TYPE_DEFAULT[eventType].color
+							}20`,
 						}}
 					>
 						<span>
-							{event.emoji}
+							{event.emoji ?? EVENT_TYPE_DEFAULT[eventType].emoji}
 							{event.text}
 						</span>
 					</div>
@@ -387,18 +393,19 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 			}),
 			onConfirm: async () => {
 				const newEvents = { ...events };
+				const eventId = event.id;
 
 				if (activeTab === "holiday") {
 					newEvents.holidays = events.holidays.filter(
-						(h) => h !== event
+						(h) => h.id !== eventId
 					);
 				} else if (activeTab === "birthday") {
 					newEvents.birthdays = events.birthdays.filter(
-						(b) => b !== event
+						(b) => b.id !== eventId
 					);
 				} else {
 					newEvents.customEvents = events.customEvents.filter(
-						(c) => c !== event
+						(c) => c.id !== eventId
 					);
 				}
 

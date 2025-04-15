@@ -1,6 +1,7 @@
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import YearlyGlancePlugin from "@/src/main";
+import { Solar } from "lunar-typescript";
 import { VIEW_TYPE_EVENT_MANAGER } from "@/src/views/EventManagerView";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
 import {
@@ -103,6 +104,13 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		}
 	};
 
+	const handleAddEventInDay = (day: any) => {
+		const solar = Solar.fromDate(day.date);
+		plugin.openEventForm("customEvent", {}, false, true, {
+			date: `${solar.getYear()},${solar.getMonth()},${solar.getDay()}`,
+		});
+	};
+
 	// 切换事件类型可见性
 	const toggleEventTypeVisibility = (eventType: string) => {
 		const configUpdate: any = {};
@@ -169,7 +177,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 				</div>
 
 				{viewType === "calendar" && (
-					<>
+					<div className="month-days-calendar">
 						{/* 星期几标题 */}
 						{showWeekdays && (
 							<div className="weekdays">
@@ -204,8 +212,18 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 											: ""
 									}`}
 								>
-									<div className="day-number">
-										{day.dayOfMonth}
+									<div className="day-info">
+										<div
+											className="add-event"
+											onClick={() =>
+												handleAddEventInDay(day)
+											}
+										>
+											+
+										</div>
+										<div className="day-number">
+											{day.dayOfMonth}
+										</div>
 									</div>
 									{day.events.length > 0 && (
 										<div className="events">
@@ -217,7 +235,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 								</div>
 							))}
 						</div>
-					</>
+					</div>
 				)}
 
 				{viewType === "list" && (
@@ -234,19 +252,29 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 								}${day.isWeekend ? " weekend" : ""}`}
 							>
 								<div className="day-info">
-									<div className="day-number">
-										{day.dayOfMonth}
+									<div className="day-info-left">
+										<div className="day-number">
+											{day.dayOfMonth}
+										</div>
+										<div className="weekday-name">
+											{
+												weekdays[
+													mondayFirst
+														? day.date.getDay() ===
+														  0
+															? 6
+															: day.date.getDay() -
+															  1
+														: day.date.getDay()
+												]
+											}
+										</div>
 									</div>
-									<div className="weekday-name">
-										{
-											weekdays[
-												mondayFirst
-													? day.date.getDay() === 0
-														? 6
-														: day.date.getDay() - 1
-													: day.date.getDay()
-											]
-										}
+									<div
+										className="add-event"
+										onClick={() => handleAddEventInDay(day)}
+									>
+										+
 									</div>
 								</div>
 								{day.events.length > 0 && (

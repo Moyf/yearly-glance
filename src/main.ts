@@ -229,14 +229,16 @@ export default class YearlyGlancePlugin extends Plugin {
 		eventType: EventType = "customEvent",
 		event: Partial<CustomEvent | Birthday | Holiday> = {},
 		isEditing: boolean = false,
-		allowTypeChange: boolean = false
+		allowTypeChange: boolean = false,
+		props?: any
 	) {
 		new EventFormModal(
 			this,
 			eventType,
 			event,
 			isEditing,
-			allowTypeChange
+			allowTypeChange,
+			props
 		).open();
 	}
 

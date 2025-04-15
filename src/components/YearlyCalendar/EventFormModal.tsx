@@ -35,6 +35,7 @@ interface EventFormProps {
 	onSave: (event: CustomEvent | Birthday | Holiday) => void;
 	onCancel: () => void;
 	isEditing: boolean;
+	props?: any;
 }
 
 export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
@@ -75,6 +76,7 @@ const EventForm: React.FC<EventFormProps> = ({
 	onSave,
 	onCancel,
 	isEditing,
+	props,
 }) => {
 	// 获取今天的日期
 	const today = Solar.fromDate(new Date());
@@ -87,7 +89,9 @@ const EventForm: React.FC<EventFormProps> = ({
 	>({
 		...event,
 		// 如果是新建事件且没有提供date，默认使用今天的日期
-		date: event.date || (!isEditing ? todayString : undefined),
+		date:
+			event.date ||
+			(!isEditing && !props ? todayString : props.date ?? undefined),
 		dateType: event.dateType || "SOLAR",
 	});
 
@@ -536,14 +540,6 @@ interface EventFormWrapperProps {
 	onCancel: () => void;
 }
 
-// 添加Tab组件
-interface TabProps {
-	value: string;
-	active: boolean;
-	onClick: () => void;
-	children: React.ReactNode;
-}
-
 // 添加TabNav组件
 interface TabNavProps {
 	value: string;
@@ -577,6 +573,7 @@ const EventFormWrapper: React.FC<EventFormWrapperProps> = ({
 	allowTypeChange,
 	onSave,
 	onCancel,
+	props,
 }) => {
 	// 使用 React 状态来管理事件类型
 	const [eventType, setEventType] =
@@ -609,6 +606,7 @@ const EventFormWrapper: React.FC<EventFormWrapperProps> = ({
 				onSave={handleSave}
 				onCancel={onCancel}
 				isEditing={isEditing}
+				props={props}
 			/>
 		</div>
 	);
@@ -621,13 +619,15 @@ export class EventFormModal extends Modal {
 	private eventType: EventType;
 	private isEditing: boolean;
 	private allowTypeChange: boolean;
+	private props: any;
 
 	constructor(
 		plugin: YearlyGlancePlugin,
 		eventType: EventType = "customEvent",
 		event: Partial<CustomEvent | Birthday | Holiday> = {},
 		isEditing: boolean = false,
-		allowTypeChange: boolean = false
+		allowTypeChange: boolean = false,
+		props: any = {}
 	) {
 		super(plugin.app);
 		this.plugin = plugin;
@@ -635,6 +635,7 @@ export class EventFormModal extends Modal {
 		this.event = event;
 		this.isEditing = isEditing;
 		this.allowTypeChange = allowTypeChange;
+		this.props = props;
 	}
 
 	onOpen() {
@@ -655,6 +656,7 @@ export class EventFormModal extends Modal {
 					allowTypeChange={this.allowTypeChange}
 					onSave={this.handleSave.bind(this)}
 					onCancel={this.close.bind(this)}
+					props={this.props}
 				/>
 			</React.StrictMode>
 		);

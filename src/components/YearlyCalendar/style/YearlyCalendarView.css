@@ -101,9 +101,8 @@
 		box-shadow: 0 2px 8px var(--yg-shadow-color);
 	}
 
-	.limit-list-height-button,
-	.event-manager-button,
-	.event-form-button {
+	/* 操作按钮（统一样式） */
+	.actions-button {
 		display: flex;
 		align-items: center;
 		justify-content: center;

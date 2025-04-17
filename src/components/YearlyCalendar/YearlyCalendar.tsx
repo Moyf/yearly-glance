@@ -60,6 +60,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		showBirthdays,
 		showCustomEvents,
 		mondayFirst,
+		hideEmptyDates,
 	} = config;
 
 	// 新增状态跟踪当前选择的预设
@@ -244,7 +245,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 							!limitListHeight ? " no-height-limit" : ""
 						}`}
 					>
-						{monthData.days.map((day) => (
+						{(hideEmptyDates ? monthData.days.filter(day => day.events.length > 0) : monthData.days).map((day) => (
 							<div
 								key={day.dayOfMonth}
 								className={`day-row${
@@ -394,21 +395,32 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 				)}
 
 				{viewType === "list" && (
-					<button
-						className="limit-list-height-button"
-						onClick={() =>
-							updateConfig({ limitListHeight: !limitListHeight })
-						}
-						title={t("view.yearlyGlance.actions.limitListHeight")}
-					>
-						<span className="button-icon">
-							{limitListHeight ? "🚧" : "♾️"}
-						</span>
-					</button>
+					<>
+						<button
+							className="actions-button limit-list-height-button"
+							onClick={() =>
+								updateConfig({ limitListHeight: !limitListHeight })
+							}
+							title={t("view.yearlyGlance.actions.limitListHeight")}
+						>
+							<span className="button-icon">
+								{limitListHeight ? "🚧" : "♾️"}
+							</span>
+						</button>
+						<button
+							className="actions-button hide-empty-dates-button"
+							onClick={() => updateConfig({ hideEmptyDates: !hideEmptyDates })}
+							title={t("view.yearlyGlance.actions.hideEmptyDates")}
+						>
+							<span className="button-icon">
+								{hideEmptyDates ? "🙈" : "👀"}
+							</span>
+						</button>
+					</>
 				)}
 				{/* 事件管理 */}
 				<button
-					className="event-manager-button"
+					className="actions-button event-manager-button"
 					onClick={handleEventManager}
 					title={t("view.yearlyGlance.actions.manager")}
 				>
@@ -416,7 +428,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 				</button>
 				{/* 事件添加 */}
 				<button
-					className="event-form-button"
+					className="actions-button event-form-button"
 					onClick={handleEventForm}
 					title={t("view.yearlyGlance.actions.form")}
 				>

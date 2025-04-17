@@ -102,6 +102,10 @@ const translations: BaseMessage = {
 				form: "添加事件",
 				manager: "打开事件管理器",
 				limitListHeight: "是否限制列表高度",
+				hideEmptyDates: "是否隐藏空日期",
+			// 其他 action
+
+				
 			},
 			month: {
 				jan: "一月",
@@ -117,7 +121,8 @@ const translations: BaseMessage = {
 				nov: "十一月",
 				dec: "十二月",
 			},
-			week: {
+			
+				week: {
 				sun: "周日",
 				mon: "周一",
 				tue: "周二",

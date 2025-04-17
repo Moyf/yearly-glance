@@ -102,6 +102,7 @@ const translations: BaseMessage = {
 				form: "添加事件",
 				manager: "打開事件管理器",
 				limitListHeight: "是否限制列表高度",
+				hideEmptyDates: "是否隱藏空日期",
 			},
 			month: {
 				jan: "一月",

@@ -102,6 +102,9 @@ const translations: BaseMessage = {
 				form: "Add Event",
 				manager: "Open Event Manager",
 				limitListHeight: "Limit List Height",
+				hideEmptyDates: "Hide Empty Dates",
+			// other actions
+				
 			},
 			month: {
 				jan: "January",
@@ -117,7 +120,8 @@ const translations: BaseMessage = {
 				nov: "November",
 				dec: "December",
 			},
-			week: {
+			
+				week: {
 				sun: "Sun.",
 				mon: "Mon.",
 				tue: "Tue.",

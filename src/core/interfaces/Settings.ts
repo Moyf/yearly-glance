@@ -1,5 +1,6 @@
 // 插件设置接口
 export interface YearlyGlanceSettings {
+	hideEmptyDates: boolean; // 是否隐藏空日期
 	year: number; // 当前选择的年份
 	layout: (typeof LAYOUT_OPTIONS)[number]; // 布局方式
 	viewType: (typeof VIEW_TYPE_OPTIONS)[number]; // 视图类型
@@ -19,6 +20,7 @@ export interface YearlyGlanceSettings {
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
+	hideEmptyDates: false,
 	year: new Date().getFullYear(),
 	layout: "4x3",
 	viewType: "calendar",

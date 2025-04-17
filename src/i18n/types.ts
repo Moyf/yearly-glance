@@ -112,6 +112,7 @@ export type BaseMessage = {
 				form: string;
 				manager: string;
 				limitListHeight: string;
+				hideEmptyDates: string;
 			};
 			month: {
 				jan: string;

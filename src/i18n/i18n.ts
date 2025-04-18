@@ -13,7 +13,7 @@ export class I18n {
 
 	private constructor() {
 		// 获取系统语言，默认为英文
-		let lang = window.localStorage.getItem("language") || "en";
+		const lang = window.localStorage.getItem("language") || "en";
 
 		this.currentLocale = lang;
 		this.flattenTranslations();

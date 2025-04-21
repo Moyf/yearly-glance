@@ -10,27 +10,27 @@ console.log(`📦 Preparing to release version: ${version}`);
 
 try {
 	// 执行 git add 操作
-	console.log("📝 Adding files to git...");
+	console.log("📝 添加文件到 git...");
 	execSync("git add .", { stdio: "inherit" });
 
 	// 执行 git commit 操作
-	console.log("💾 Creating commit...");
+	console.log("💾 创建提交...");
 	execSync(`git commit -m "build: ${version}"`, { stdio: "inherit" });
 
 	// 执行 git push 操作
-	console.log("🚀 Pushing to remote...");
+	console.log("🚀 推送到远程...");
 	execSync("git push", { stdio: "inherit" });
 
 	// 创建版本标签
-	console.log(`🏷️ Creating tag: ${version}`);
+	console.log(`🏷️ 创建标签: ${version}`);
 	execSync(`git tag ${version}`, { stdio: "inherit" });
 
 	// 推送标签到远程
-	console.log("📤 Pushing tags to remote...");
+	console.log("📤 推送标签到远程...");
 	execSync("git push --tags", { stdio: "inherit" });
 
-	console.log(`✅ Successfully released version ${version}!`);
+	console.log(`✅ 成功发布版本 ${version}!`);
 } catch (error) {
-	console.error(`❌ Release process failed: ${error.message}`);
+	console.error(`❌ 发布失败: ${error.message}`);
 	process.exit(1);
 }

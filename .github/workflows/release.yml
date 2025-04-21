@@ -86,6 +86,7 @@ jobs:
                   CURRENT_VERSION=$(git tag --sort version:refname | tail -n 1)
                   echo "Current version: $CURRENT_VERSION"
 
+                  # 检查版本号格式，确定标题级别
                   # 提取并格式化 changelog 内容的函数
                   format_changelog() {
                     local changelog_file=$1
@@ -99,21 +100,37 @@ jobs:
                     
                     > "$output_file"  # 初始化空文件
                     
+                    # 确定版本的标题级别 (# 或 ##)
+                    # 分解版本号，检查是否为小版本
+                    IFS='.' read -r major minor patch <<< "$target_version"
+                    # 如果patch不是0，那么是小版本，使用二级标题 (##)
+                    if [[ -n "$patch" && "$patch" != "0" ]]; then
+                      local title_level="##"
+                    else
+                      # 大版本或次版本，使用一级标题 (#)
+                      local title_level="#"
+                    fi
+                    
+                    echo "Looking for version $target_version with title level: $title_level"
+                    
                     # 查找特定版本的正则表达式
-                    # 格式为：## [版本号](URL) 或 # [版本号](URL)
-                    local version_pattern="^[#]+\\s+\\[${target_version}\\]"
+                    # 格式为：# [版本号] 或 ## [版本号]
+                    local version_pattern="^${title_level}\\s+\\[${target_version}\\]"
                     
                     # 第一遍处理：提取破坏性变更
                     while IFS= read -r line; do
                       if [[ $line =~ $version_pattern ]]; then
                         found_target_version=true
+                        echo "Found target version: $line"
                         continue
                       fi
                       
                       if $found_target_version; then
                         # 如果遇到下一个版本的标题，则结束处理
+                        # 注意：这里需要检测任何级别的标题（# 或 ##）
                         if [[ $line =~ ^[#]+\s+\[ ]]; then
                           found_target_version=false
+                          echo "Reached next version: $line"
                           break
                         fi
                         
@@ -193,6 +210,12 @@ jobs:
                         fi
                       fi
                     done < "$changelog_file"
+                    
+                    # 如果没有找到目标版本，输出警告信息
+                    if ! $found_target_version && [[ $(cat "$output_file" | wc -l) -eq 0 ]]; then
+                      echo "Warning: Version $target_version not found in $changelog_file with title level $title_level" >&2
+                      echo -e "## Changes\n\nNo changelog found for version $target_version.\n" >> "$output_file"
+                    fi
                     
                     # 添加安装说明
                     if [ "$is_chinese" = true ]; then

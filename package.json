@@ -1,6 +1,6 @@
 {
 	"name": "yearly-glance",
-	"version": "2.1.4",
+	"version": "2.1.5",
 	"description": "Yearly event overview with customizable management.",
 	"main": "main.js",
 	"scripts": {
@@ -11,7 +11,7 @@
 		"changelog:u": "conventional-changelog -p angular -i CHANGELOG.md -s -u -n ./scripts/changelog-option.js && conventional-changelog -p angular -i CHANGELOG-zh.md -s -u -n ./scripts/changelog-option-zh.js",
 		"changelog:all": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 -n ./scripts/changelog-option.js && conventional-changelog -p angular -i CHANGELOG-zh.md -s -r 0 -n ./scripts/changelog-option-zh.js",
 		"release:pre": "npm run build && npm run version && npm run changelog:u",
-		"release:tag": "git add . && git commit -m 'build: $npm_package_version' && git push && git tag $npm_package_version && git push --tags",
+		"release:tag": "node scripts/release-tag.mjs",
 		"lint": "eslint . --ext .ts,.tsx",
 		"lint:fix": "eslint . --ext .ts,.tsx --fix"
 	},

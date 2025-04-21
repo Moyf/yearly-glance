@@ -1,3 +1,10 @@
+## [2.1.5](https://github.com/Moyf/yearly-glance/compare/2.1.4...2.1.5) (2025-04-21)
+
+### ✨ 新功能
+
+* 测试
+
+
 ## [2.1.4](https://github.com/Moyf/yearly-glance/compare/2.1.3...2.1.4) (2025-04-21)
 
 

@@ -47,7 +47,7 @@ jobs:
             - name: Generate Changelog
               id: changelog
               run: |
-                  # 定义部分名称（不包含表情符号）
+                  # 定义部分名称
                   declare -A SECTION_MAP
                   SECTION_MAP["BREAKING CHANGES"]="BREAKING CHANGES"
                   SECTION_MAP["Features"]="Features"

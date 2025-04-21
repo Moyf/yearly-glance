@@ -8,9 +8,10 @@
 		"build": "tsc -noEmit -skipLibCheck && node scripts/esbuild.config.mjs production",
 		"build:local": "tsc -noEmit -skipLibCheck && node scripts/esbuild.config.mjs production && node scripts/copy-to-vault.mjs",
 		"version": "node scripts/version-bump.mjs",
-		"release": "npm run build && npm run version",
 		"changelog:u": "conventional-changelog -p angular -i CHANGELOG.md -s -u -n ./scripts/changelog-option.js && conventional-changelog -p angular -i CHANGELOG-zh.md -s -u -n ./scripts/changelog-option-zh.js",
 		"changelog:all": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 -n ./scripts/changelog-option.js && conventional-changelog -p angular -i CHANGELOG-zh.md -s -r 0 -n ./scripts/changelog-option-zh.js",
+		"release:pre": "npm run build && npm run version && npm run changelog:u",
+		"release:tag": "git add . && git commit -m 'build: $npm_package_version' && git push && git tag $npm_package_version && git push --tags",
 		"lint": "eslint . --ext .ts,.tsx",
 		"lint:fix": "eslint . --ext .ts,.tsx --fix"
 	},

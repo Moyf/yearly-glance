@@ -82,28 +82,38 @@ jobs:
                   CHANGELOG_ZH="CHANGELOG-zh.md"
                   TEMP_CHANGELOG="temp_changelog.md"
 
+                  # 获取当前版本号（从 git tag）
+                  CURRENT_VERSION=$(git tag --sort version:refname | tail -n 1)
+                  echo "Current version: $CURRENT_VERSION"
+
                   # 提取并格式化 changelog 内容的函数
                   format_changelog() {
                     local changelog_file=$1
                     local output_file=$2
                     local is_chinese=$3
-                    local in_first_version=false
+                    local target_version=$4
+                    local found_target_version=false
                     local in_section=false
                     local current_section=""
                     local found_breaking_changes=""
                     
                     > "$output_file"  # 初始化空文件
                     
+                    # 查找特定版本的正则表达式
+                    # 格式为：## [版本号](URL) 或 # [版本号](URL)
+                    local version_pattern="^[#]+\\s+\\[${target_version}\\]"
+                    
                     # 第一遍处理：提取破坏性变更
                     while IFS= read -r line; do
-                      if [[ $line =~ ^#\ \[.*\].*$ ]] && ! $in_first_version; then
-                        in_first_version=true
+                      if [[ $line =~ $version_pattern ]]; then
+                        found_target_version=true
                         continue
                       fi
                       
-                      if $in_first_version; then
-                        if [[ $line =~ ^#\ \[.*\].*$ ]]; then
-                          # 已到达下一个版本，停止处理
+                      if $found_target_version; then
+                        # 如果遇到下一个版本的标题，则结束处理
+                        if [[ $line =~ ^[#]+\s+\[ ]]; then
+                          found_target_version=false
                           break
                         fi
                         
@@ -139,21 +149,22 @@ jobs:
                     fi
                     
                     # 第二遍处理：处理其他部分
-                    in_first_version=false
+                    found_target_version=false
                     in_section=false
                     current_section=""
                     
                     while IFS= read -r line; do
-                      if [[ $line =~ ^#\ \[.*\].*$ ]] && ! $in_first_version; then
+                      if [[ $line =~ $version_pattern ]]; then
                         # 提取并写入版本标题
                         echo -e "## Changes\n" >> "$output_file"
-                        in_first_version=true
+                        found_target_version=true
                         continue
                       fi
                       
-                      if $in_first_version; then
-                        if [[ $line =~ ^#\ \[.*\].*$ ]]; then
-                          # 已到达下一个版本，停止处理
+                      if $found_target_version; then
+                        # 如果遇到下一个版本的标题，则结束处理
+                        if [[ $line =~ ^[#]+\s+\[ ]]; then
+                          found_target_version=false
                           break
                         fi
                         
@@ -201,7 +212,7 @@ jobs:
 
                   # 处理英文 changelog
                   if [ -f "$CHANGELOG_EN" ]; then
-                    format_changelog "$CHANGELOG_EN" "en_$TEMP_CHANGELOG" false
+                    format_changelog "$CHANGELOG_EN" "en_$TEMP_CHANGELOG" false "$CURRENT_VERSION"
                   else
                     echo "英文 changelog 文件未找到。使用备用方案。"
                     echo -e "## Changes\n\nNo changelog available.\n\n## Installation\n\n1. Download the files from the Assets section below\n2. Copy them to your vault's plugins folder: \`<vault>/.obsidian/plugins/yearly-glance/\`\n3. Reload Obsidian\n4. Enable plugin in settings" > "en_$TEMP_CHANGELOG"
@@ -209,7 +220,7 @@ jobs:
 
                   # 处理中文 changelog
                   if [ -f "$CHANGELOG_ZH" ]; then
-                    format_changelog "$CHANGELOG_ZH" "zh_$TEMP_CHANGELOG" true
+                    format_changelog "$CHANGELOG_ZH" "zh_$TEMP_CHANGELOG" true "$CURRENT_VERSION"
                     
                     # 合并两个 changelogs
                     echo -e "# English Changelog\n" > "$TEMP_CHANGELOG"

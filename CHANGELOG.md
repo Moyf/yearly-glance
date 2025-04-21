@@ -1,4 +1,4 @@
-# [2.1.4](https://github.com/Moyf/yearly-glance/compare/2.1.3...2.1.4) (2025-04-21)
+## [2.1.4](https://github.com/Moyf/yearly-glance/compare/2.1.3...2.1.4) (2025-04-21)
 
 
 ### ✨ Features
@@ -18,7 +18,7 @@
 
 
 
-# [2.1.3](https://github.com/Moyf/yearly-glance/compare/2.1.2...2.1.3) (2025-04-19)
+## [2.1.3](https://github.com/Moyf/yearly-glance/compare/2.1.2...2.1.3) (2025-04-19)
 
 
 ### ✨ Features
@@ -35,7 +35,7 @@
 
 * [@linglilongyi](https://github.com/linglilongyi)
 
-# [2.1.2](https://github.com/Moyf/yearly-glance/compare/2.1.1...2.1.2) (2025-04-18)
+## [2.1.2](https://github.com/Moyf/yearly-glance/compare/2.1.1...2.1.2) (2025-04-18)
 
 
 ### 🐛 Bug Fixes
@@ -55,7 +55,7 @@
 
 
 
-# [2.1.1](https://github.com/Moyf/yearly-glance/compare/2.1.0...2.1.1) (2025-04-18)
+## [2.1.1](https://github.com/Moyf/yearly-glance/compare/2.1.0...2.1.1) (2025-04-18)
 
 
 ### 🐛 Bug Fixes

@@ -150,7 +150,9 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 				onClick={(e) => handleEventTooltip(event)}
 			>
 				<span className="event-emoji">
-					{event.emoji ?? EVENT_TYPE_DEFAULT[event.eventType].emoji}
+					{!event.emoji
+						? EVENT_TYPE_DEFAULT[event.eventType].emoji
+						: event.emoji}
 				</span>
 				<span className="event-text">{event.text}</span>
 			</div>
@@ -251,7 +253,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 					>
 						{(hideEmptyDates
 							? monthData.days.filter(
-									(day: CalendarDay) => day.events.length > 0 || day.isToday
+									(day: CalendarDay) =>
+										day.events.length > 0 || day.isToday
 							  )
 							: monthData.days
 						).map((day: CalendarDay) => (

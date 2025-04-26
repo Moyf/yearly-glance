@@ -208,7 +208,9 @@ export const EventItem: React.FC<EventItemProps> = ({
 						}}
 					>
 						<span>
-							{event.emoji ?? EVENT_TYPE_DEFAULT[eventType].emoji}
+							{!event.emoji
+								? EVENT_TYPE_DEFAULT[eventType].emoji
+								: event.emoji}
 							{event.text}
 						</span>
 					</div>

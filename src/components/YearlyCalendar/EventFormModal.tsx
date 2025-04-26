@@ -96,44 +96,14 @@ const EventForm: React.FC<EventFormProps> = ({
 	) => {
 		const { name, value, type } = e.target;
 
-		if (name === "date") {
-			// 对日期字段特殊处理，仅更新显示值
-			setDisplayDateValue(value);
-
-			// 仅在日期格式完整时才转换
-			// 检查是否符合格式 YYYY-MM-DD 或 MM-DD
-			const isCompleteFormat =
-				/^\d{4}-\d{1,2}-\d{1,2}(!)?$/.test(value) ||
-				/^\d{1,2}-\d{1,2}(!)?$/.test(value);
-
-			if (isCompleteFormat) {
-				try {
-					// 将显示格式y-m-d转换为存储格式y,m,d
-					const internalDateValue = parseExtendedISO(value);
-					if (internalDateValue) {
-						setFormData((prev) => ({
-							...prev,
-							date: internalDateValue,
-						}));
-
-						// 如果日期包含闰月标记(!)，自动设置dateType为LUNAR
-						if (value.includes("!")) {
-							setFormData((prev) => ({
-								...prev,
-								dateType: "LUNAR",
-							}));
-						}
-					}
-				} catch (error) {
-					console.error("Error converting date format:", error);
-					// 发生错误时不更新内部日期值
-				}
-			}
-		} else if (type === "checkbox") {
+		if (type === "checkbox") {
 			const checked = (e.target as HTMLInputElement).checked;
 			setFormData((prev) => ({ ...prev, [name]: checked }));
 		} else {
-			setFormData((prev) => ({ ...prev, [name]: value }));
+			setFormData((prev) => ({
+				...prev,
+				[name]: !value ? undefined : value,
+			}));
 		}
 	};
 

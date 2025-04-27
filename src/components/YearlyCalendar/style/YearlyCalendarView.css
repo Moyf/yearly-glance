@@ -74,6 +74,10 @@
 		padding: 12px 0;
 		border-bottom: 2px solid var(--yg-border-color);
 		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		white-space: pre-wrap;
 
 		&::after {
 			content: "";
@@ -84,6 +88,45 @@
 			width: 100px;
 			height: 2px;
 			background-color: var(--yg-current-month-color);
+		}
+	}
+
+	/* ------- 年份控制样式 ------- */
+
+	.year-number-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 4px;
+		position: relative;
+		cursor: pointer;
+		border-radius: 4px;
+
+		&:hover {
+			background-color: var(--background-modifier-border);
+			padding: 0 4px;
+		}
+
+		&.expanded {
+			background-color: var(--background-modifier-border);
+			padding: 0 4px;
+		}
+
+		.year-control {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			border: 1px solid var(--yg-border-color);
+			border-radius: 50%;
+			background-color: var(--yg-day-bg-color);
+			cursor: pointer;
+			transition: all 0.2s ease;
+
+			&:hover {
+				background-color: var(--yg-button-hover-bg-color);
+				border-color: var(--yg-button-hover-border-color);
+				box-shadow: 0 3px 8px var(--yg-shadow-color);
+			}
 		}
 	}
 
@@ -354,8 +397,6 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-
-				
 			}
 
 			&:hover {

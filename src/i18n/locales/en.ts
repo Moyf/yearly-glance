@@ -9,7 +9,7 @@ const translations: BaseMessage = {
 			desc: "View configuration",
 			title: {
 				name: "Title",
-				desc: "Customize annual event overview title, leave blank for default title",
+				desc: "Use {{year}} placeholder when customizing, otherwise use the default title",
 			},
 			layout: {
 				name: "Layout",
@@ -85,7 +85,7 @@ const translations: BaseMessage = {
 	view: {
 		yearlyGlance: {
 			name: "Yearly Glance",
-			yearlyCalendar: "{year} Year Calendar",
+			yearlyCalendar: " Year Calendar",
 			legend: {
 				holiday: "Holiday",
 				birthday: "Birthday",

@@ -9,7 +9,7 @@ const translations: BaseMessage = {
 			desc: "视图配置",
 			title: {
 				name: "标题",
-				desc: "自定义年历标题，留空则使用默认标题",
+				desc: "自定义时使用{{year}}占位符才会显示当前年份，留空则使用默认标题",
 			},
 			layout: {
 				name: "布局",
@@ -85,7 +85,7 @@ const translations: BaseMessage = {
 	view: {
 		yearlyGlance: {
 			name: "年度概览",
-			yearlyCalendar: "{year}年 年历",
+			yearlyCalendar: "年 年历",
 			legend: {
 				holiday: "节日",
 				birthday: "生日",

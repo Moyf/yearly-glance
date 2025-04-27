@@ -1,5 +1,6 @@
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import YearlyGlancePlugin from "@/src/main";
 import { Solar } from "lunar-typescript";
 import { VIEW_TYPE_EVENT_MANAGER } from "@/src/views/EventManagerView";
@@ -65,6 +66,44 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		hideEmptyDates,
 	} = config;
 
+	// 添加状态来跟踪年份控制按钮是否显示
+	const [showYearControls, setShowYearControls] = React.useState(false);
+
+	const calendarRef = React.useRef<HTMLDivElement>(null);
+	const yearControlsRef = React.useRef<HTMLDivElement>(null);
+
+	// 切换年份控制按钮的显示状态
+	const toggleYearControls = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		setShowYearControls(!showYearControls);
+	};
+
+	// 调整年份
+	const adjustYear = (delta: number, e: React.MouseEvent) => {
+		e.stopPropagation();
+		updateConfig({ year: year + delta });
+	};
+
+	React.useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				yearControlsRef.current &&
+				!yearControlsRef.current.contains(event.target as Node)
+			) {
+				setShowYearControls(false);
+			}
+		};
+
+		// 只有当控制按钮显示时才添加事件监听器
+		if (showYearControls) {
+			document.addEventListener("mousedown", handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [showYearControls]);
+
 	// 新增状态跟踪当前选择的预设
 	const [currentPreset, setCurrentPreset] = React.useState<string>(() => {
 		// 根据当前配置确定初始预设
@@ -74,9 +113,41 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		return "custom";
 	});
 
-	const { monthsData, weekdays } = useYearlyCalendar(plugin);
+	const parsedTitle = React.useMemo(() => {
+		const yearPlaceholder = "{{year}}";
 
-	const calendarRef = React.useRef<HTMLDivElement>(null);
+		// 处理空标题情况
+		if (!title || title.trim() === "") {
+			return {
+				prefix: "",
+				suffix: t("view.yearlyGlance.yearlyCalendar"),
+				showYear: true,
+			};
+		}
+
+		const yearIndex = title.indexOf(yearPlaceholder);
+
+		// 如果不存在 yearPlaceholder, 则使用整个 title 作为 prefix
+		if (yearIndex === -1) {
+			return {
+				prefix: title,
+				suffix: "",
+				showYear: false,
+			};
+		}
+
+		// 确保空格也被正确保留
+		const prefix = title.substring(0, yearIndex);
+		const suffix = title.substring(yearIndex + yearPlaceholder.length);
+
+		return {
+			prefix,
+			suffix,
+			showYear: true,
+		};
+	}, [title, year]);
+
+	const { monthsData, weekdays } = useYearlyCalendar(plugin);
 
 	// 预设更改处理函数
 	const handlePresetChange = (preset: string) => {
@@ -309,7 +380,47 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		<div className="yearly-calendar" ref={calendarRef}>
 			{/* 标题 */}
 			<div className="yearly-calendar-title">
-				{title === "" ? `${year}年 年历` : title}
+				{parsedTitle.prefix && (
+					<span className="year-title-prefix">
+						{parsedTitle.prefix}
+					</span>
+				)}
+				{parsedTitle.showYear && (
+					<div
+						ref={yearControlsRef}
+						className={`year-number-container ${
+							showYearControls ? "expanded" : ""
+						}`}
+					>
+						{showYearControls && (
+							<span
+								className="year-control prev-year"
+								onClick={(e) => adjustYear(-1, e)}
+							>
+								<ChevronLeft />
+							</span>
+						)}
+						<span
+							className="year-number"
+							onClick={toggleYearControls}
+						>
+							{year}
+						</span>
+						{showYearControls && (
+							<span
+								className="year-control next-year"
+								onClick={(e) => adjustYear(1, e)}
+							>
+								<ChevronRight />
+							</span>
+						)}
+					</div>
+				)}
+				{parsedTitle.suffix && (
+					<span className="year-title-suffix">
+						{parsedTitle.suffix}
+					</span>
+				)}
 			</div>
 			{/* actionsBar */}
 			<div className="yearly-calendar-actions-bar">
@@ -518,6 +629,10 @@ export class YearlyCalendar {
 	}
 
 	destroy() {
+		// Reset the year configuration to current year when view is closed
+		const currentYear = new Date().getFullYear();
+		this.plugin.updateConfig({ year: currentYear });
+
 		if (this.root) {
 			this.root.unmount();
 			this.root = null;

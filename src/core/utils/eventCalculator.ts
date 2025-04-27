@@ -2,6 +2,7 @@ import { Lunar, Solar } from "lunar-typescript";
 import { Birthday, CustomEvent, Holiday } from "@/src/core/interfaces/Events";
 import { constructLunar, isValidLunarDate, parseDateValue } from "./dateParser";
 import { getBirthdayTranslation } from "../data/birthday";
+import { getSolarTermDate } from "../data/builtinHolidays";
 
 // 计算当前选择年份下时间的的公历日期
 export function calculateDateObj(
@@ -60,11 +61,26 @@ export function updateHolidaysInfo(holidays: Holiday[], yearSelected: number) {
 }
 
 function updateHolidayInfo(holiday: Holiday, yearSelected: number) {
-	const { date, dateType } = holiday;
+	let { date } = holiday;
+	const { dateType, id } = holiday;
+
+	// 检查是否是需要更新日期的节气节日
+	if (id === "holi-wblqm") {
+		// 清明节
+		const qingMing = getSolarTermDate(yearSelected, "清明");
+		date = `${qingMing.getYear()},${qingMing.getMonth()},${qingMing.getDay()}`;
+	} else if (id === "holi-wbldz") {
+		// 冬至
+		const dongZhi = getSolarTermDate(yearSelected, "DONG_ZHI");
+		date = `${dongZhi.getYear()},${dongZhi.getMonth()},${dongZhi.getDay()}`;
+	}
+
+	// 更新dateArr
 	const dateArr = calculateDateObj(date, dateType, yearSelected);
 
 	return {
 		...holiday,
+		date, // 更新date字段
 		dateArr,
 	};
 }

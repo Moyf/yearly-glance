@@ -23,7 +23,6 @@ import {
 	updateHolidaysInfo,
 } from "./core/utils/eventCalculator";
 import { t } from "./i18n/i18n";
-import { BUILTIN_HOLIDAYS } from "./core/data/builtinHolidays";
 import { lunarTest } from "./test/date";
 import { generateUUID } from "./core/utils/uuid";
 import { migrateData } from "./core/utils/dataMerge";
@@ -37,7 +36,7 @@ export default class YearlyGlancePlugin extends Plugin {
 		await this.loadSettings();
 
 		// 数据迁移
-		this.settings = migrateData(this.settings);
+		this.settings = migrateData(this);
 		await this.saveSettings();
 
 		// 注册视图

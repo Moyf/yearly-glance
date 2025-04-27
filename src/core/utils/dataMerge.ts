@@ -1,13 +1,15 @@
 import { YearlyGlanceConfig } from "../interfaces/types";
 import { BUILTIN_HOLIDAYS } from "../data/builtinHolidays";
 import { Holiday } from "../interfaces/Events";
+import YearlyGlancePlugin from "@/src/main";
 
 /**
  * 数据迁移工具：将配置数据升级到最新版本
  * @param savedData 从存储中加载的原始数据
  * @returns 迁移后的数据
  */
-export function migrateData(savedData: YearlyGlanceConfig): YearlyGlanceConfig {
+export function migrateData(plugin: YearlyGlancePlugin): YearlyGlanceConfig {
+	const savedData = plugin.settings;
 	if (!savedData) return savedData;
 
 	// 创建数据的深拷贝，避免修改原始数据
@@ -16,7 +18,7 @@ export function migrateData(savedData: YearlyGlanceConfig): YearlyGlanceConfig {
 	// 执行各种迁移操作
 	migrateHolidayTypes(migratedData.data);
 	migrateDateObjToDateArr(migratedData.data);
-	migrateBuiltinHolidays(migratedData.data);
+	migrateBuiltinHolidays(migratedData.data, plugin.settings.config.year);
 
 	return migratedData;
 }
@@ -25,7 +27,10 @@ export function migrateData(savedData: YearlyGlanceConfig): YearlyGlanceConfig {
  * 合并内置节日数据，确保添加新的内置节日同时保留用户自定义设置
  * @param data 需要合并内置节日的数据
  */
-function migrateBuiltinHolidays(data: YearlyGlanceConfig["data"]): void {
+function migrateBuiltinHolidays(
+	data: YearlyGlanceConfig["data"],
+	year: number
+): void {
 	// 确保数据对象存在
 	if (!data) {
 		return;
@@ -49,7 +54,7 @@ function migrateBuiltinHolidays(data: YearlyGlanceConfig["data"]): void {
 	const newHolidayIds = new Set<string>(); // 用于跟踪新添加的节日ID
 
 	// 遍历所有内置节日
-	for (const builtinHoliday of BUILTIN_HOLIDAYS) {
+	for (const builtinHoliday of BUILTIN_HOLIDAYS(year)) {
 		let existingHoliday: Holiday | undefined;
 
 		// 首先通过ID查找匹配

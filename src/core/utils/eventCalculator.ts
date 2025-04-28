@@ -18,10 +18,7 @@ export function calculateDateObj(
 	const { Sd, Ld, hasYear, month, day } = parseDateValue(date, dateType);
 
 	// 自定义事件一般ymd齐全，在事件不重复，且有年份的情况下，只需要计算出公历日期
-	if (
-		(isRepeat === false && hasYear) ||
-		(isRepeat === undefined && hasYear)
-	) {
+	if (isRepeat !== undefined && isRepeat === false && hasYear) {
 		if (dateType === "SOLAR") {
 			return [Sd!.toString()];
 		} else if (dateType === "LUNAR") {

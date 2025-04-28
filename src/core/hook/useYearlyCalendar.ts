@@ -193,6 +193,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 					event.dateArr?.some((dateStr: string) => {
 						const eventDate = new Date(dateStr);
 						return (
+							eventDate.getFullYear() === year &&
 							eventDate.getMonth() === monthIndex &&
 							eventDate.getDate() === i
 						);

@@ -17,6 +17,7 @@ export interface YearlyGlanceSettings {
 	title: string; // 年历标题
 	showTooltips: boolean; // 是否显示提示
 	colorful: boolean; // 是否多彩
+	showLunarDay: boolean; // 是否显示农历日
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -37,6 +38,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	title: "",
 	showTooltips: true,
 	colorful: false,
+	showLunarDay: false,
 };
 
 export const LAYOUT_OPTIONS = ["12x1", "1x12", "6x2", "2x6", "3x4", "4x3"];

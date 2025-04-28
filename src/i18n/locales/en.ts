@@ -25,15 +25,15 @@ const translations: BaseMessage = {
 			},
 			showWeekdays: {
 				name: "Show Weekdays",
-				desc: "Show weekdays in calendar view",
+				desc: "Show weekdays in view",
 			},
 			highlightToday: {
 				name: "Highlight Today",
-				desc: "Highlight today in calendar view",
+				desc: "Highlight today in view",
 			},
 			highlightWeekends: {
 				name: "Highlight Weekends",
-				desc: "Highlight weekends in calendar view",
+				desc: "Highlight weekends in view",
 			},
 			showLegend: {
 				name: "Show Legend",
@@ -54,15 +54,15 @@ const translations: BaseMessage = {
 			},
 			showHolidays: {
 				name: "Show Holidays",
-				desc: "Show holidays in calendar view",
+				desc: "Show holidays in view",
 			},
 			showBirthdays: {
 				name: "Show Birthdays",
-				desc: "Show birthdays in calendar view",
+				desc: "Show birthdays in view",
 			},
 			showCustomEvents: {
 				name: "Show Custom Events",
-				desc: "Show custom events in calendar view",
+				desc: "Show custom events in view",
 			},
 			mondayFirst: {
 				name: "Monday as the first day of the week",
@@ -75,6 +75,10 @@ const translations: BaseMessage = {
 			colorful: {
 				name: "Colorful Theme",
 				desc: "Use different colors for each month",
+			},
+			showLunarDay: {
+				name: "Show Lunar Day",
+				desc: "Show lunar day in view",
 			},
 		},
 		events: {
@@ -104,30 +108,6 @@ const translations: BaseMessage = {
 				limitListHeight: "Limit List Height",
 				hideEmptyDates: "Hide Empty Dates",
 				// other actions
-			},
-			month: {
-				jan: "January",
-				feb: "February",
-				mar: "March",
-				apr: "April",
-				may: "May",
-				jun: "June",
-				jul: "July",
-				aug: "August",
-				sep: "September",
-				oct: "October",
-				nov: "November",
-				dec: "December",
-			},
-
-			week: {
-				sun: "Sun.",
-				mon: "Mon.",
-				tue: "Tue.",
-				wed: "Wed.",
-				thu: "Thu.",
-				fri: "Fri.",
-				sat: "Sat.",
 			},
 		},
 		eventManager: {
@@ -220,6 +200,30 @@ const translations: BaseMessage = {
 		cancel: "Cancel",
 	},
 	data: {
+		month: {
+			jan: "January",
+			feb: "February",
+			mar: "March",
+			apr: "April",
+			may: "May",
+			jun: "June",
+			jul: "July",
+			aug: "August",
+			sep: "September",
+			oct: "October",
+			nov: "November",
+			dec: "December",
+		},
+
+		week: {
+			sun: "Sun.",
+			mon: "Mon.",
+			tue: "Tue.",
+			wed: "Wed.",
+			thu: "Thu.",
+			fri: "Fri.",
+			sat: "Sat.",
+		},
 		animal: {
 			rat: "Rat",
 			ox: "Ox",

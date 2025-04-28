@@ -423,3 +423,15 @@ export function displayDateValue(
 		return "";
 	}
 }
+
+export function getDayOfLunarMonth(date: Date) {
+	const Sd = Solar.fromDate(date);
+	const Ld = Sd.getLunar();
+	let dayOfLunarMonth = "";
+	if (Ld.getDay() === 1) {
+		dayOfLunarMonth = Ld.getMonthInChinese() + "月";
+	} else {
+		dayOfLunarMonth = Ld.getDayInChinese();
+	}
+	return dayOfLunarMonth;
+}

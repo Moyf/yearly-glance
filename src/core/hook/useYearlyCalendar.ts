@@ -5,77 +5,78 @@ import {
 	CalendarEvent,
 } from "@/src/core/interfaces/CalendarEvent";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
+import { getDayOfLunarMonth } from "../utils/dateParser";
 import { t } from "@/src/i18n/i18n";
 
 export const MonthMap: Array<{ name: string; color: string }> = [
 	{
-		name: t("view.yearlyGlance.month.jan"),
+		name: t("data.month.jan"),
 		color: hexToRgb("#e74c3c"), // 红色
 	},
 	{
-		name: t("view.yearlyGlance.month.feb"),
+		name: t("data.month.feb"),
 		color: hexToRgb("#e67e22"), // 橙色
 	},
 	{
-		name: t("view.yearlyGlance.month.mar"),
+		name: t("data.month.mar"),
 		color: hexToRgb("#f1c40f"), // 黄色
 	},
 	{
-		name: t("view.yearlyGlance.month.apr"),
+		name: t("data.month.apr"),
 		color: hexToRgb("#2ecc71"), // 绿色
 	},
 	{
-		name: t("view.yearlyGlance.month.may"),
+		name: t("data.month.may"),
 		color: hexToRgb("#1abc9c"), // 青绿色
 	},
 	{
-		name: t("view.yearlyGlance.month.jun"),
+		name: t("data.month.jun"),
 		color: hexToRgb("#3498db"), // 蓝色
 	},
 	{
-		name: t("view.yearlyGlance.month.jul"),
+		name: t("data.month.jul"),
 		color: hexToRgb("#9b59b6"), // 紫色
 	},
 	{
-		name: t("view.yearlyGlance.month.aug"),
+		name: t("data.month.aug"),
 		color: hexToRgb("#e84393"), // 粉色
 	},
 	{
-		name: t("view.yearlyGlance.month.sep"),
+		name: t("data.month.sep"),
 		color: hexToRgb("#fd79a8"), // 浅粉色
 	},
 	{
-		name: t("view.yearlyGlance.month.oct"),
+		name: t("data.month.oct"),
 		color: hexToRgb("#fdcb6e"), // 浅黄色
 	},
 	{
-		name: t("view.yearlyGlance.month.nov"),
+		name: t("data.month.nov"),
 		color: hexToRgb("#00cec9"), // 青色
 	},
 	{
-		name: t("view.yearlyGlance.month.dec"),
+		name: t("data.month.dec"),
 		color: hexToRgb("#6c5ce7"), // 靛蓝色
 	},
 ];
 
 export const WeekMap: Record<string, string[]> = {
 	sundayFirst: [
-		t("view.yearlyGlance.week.sun"),
-		t("view.yearlyGlance.week.mon"),
-		t("view.yearlyGlance.week.tue"),
-		t("view.yearlyGlance.week.wed"),
-		t("view.yearlyGlance.week.thu"),
-		t("view.yearlyGlance.week.fri"),
-		t("view.yearlyGlance.week.sat"),
+		t("data.week.sun"),
+		t("data.week.mon"),
+		t("data.week.tue"),
+		t("data.week.wed"),
+		t("data.week.thu"),
+		t("data.week.fri"),
+		t("data.week.sat"),
 	],
 	mondayFirst: [
-		t("view.yearlyGlance.week.mon"),
-		t("view.yearlyGlance.week.tue"),
-		t("view.yearlyGlance.week.wed"),
-		t("view.yearlyGlance.week.thu"),
-		t("view.yearlyGlance.week.fri"),
-		t("view.yearlyGlance.week.sat"),
-		t("view.yearlyGlance.week.sun"),
+		t("data.week.mon"),
+		t("data.week.tue"),
+		t("data.week.wed"),
+		t("data.week.thu"),
+		t("data.week.fri"),
+		t("data.week.sat"),
+		t("data.week.sun"),
 	],
 };
 
@@ -203,6 +204,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 				days.push({
 					date,
 					dayOfMonth: i,
+					dayOfLunarMonth: getDayOfLunarMonth(date),
 					isCurrentMonth: true,
 					isToday: highlightToday && isSameDay(date, today),
 					isWeekend,

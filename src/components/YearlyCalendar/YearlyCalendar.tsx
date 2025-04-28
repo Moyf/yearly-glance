@@ -64,6 +64,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		showCustomEvents,
 		mondayFirst,
 		hideEmptyDates,
+		showLunarDay,
 	} = config;
 
 	// 添加状态来跟踪年份控制按钮是否显示
@@ -291,16 +292,25 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 									}`}
 								>
 									<div className="day-info">
-										<div
-											className="add-event"
-											onClick={() =>
-												handleAddEventInDay(day)
-											}
-										>
-											+
+										<div className="day-info-left">
+											<div
+												className="add-event"
+												onClick={() =>
+													handleAddEventInDay(day)
+												}
+											>
+												+
+											</div>
 										</div>
-										<div className="day-number">
-											{day.dayOfMonth}
+										<div className="day-info-right">
+											<div className="day-number">
+												{day.dayOfMonth}
+											</div>
+											{showLunarDay && (
+												<div className="day-lunar">
+													{day.dayOfLunarMonth}
+												</div>
+											)}
 										</div>
 									</div>
 									{day.events.length > 0 && (
@@ -340,6 +350,11 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 										<div className="day-number">
 											{day.dayOfMonth}
 										</div>
+										{showLunarDay && (
+											<div className="day-lunar">
+												{day.dayOfLunarMonth}
+											</div>
+										)}
 										<div className="weekday-name">
 											{
 												weekdays[
@@ -354,11 +369,15 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 											}
 										</div>
 									</div>
-									<div
-										className="add-event"
-										onClick={() => handleAddEventInDay(day)}
-									>
-										+
+									<div className="day-info-right">
+										<div
+											className="add-event"
+											onClick={() =>
+												handleAddEventInDay(day)
+											}
+										>
+											+
+										</div>
 									</div>
 								</div>
 								{day.events.length > 0 && (

@@ -412,10 +412,25 @@
 				}
 			}
 
-			.day-number {
-				font-size: 0.85em;
-				padding: 2px 4px 0 0;
-				font-weight: 500;
+			.day-info-right {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 4px;
+
+				.day-number {
+					display: flex;
+					align-items: center;
+					font-size: 0.85em;
+					font-weight: bold;
+				}
+
+				.day-lunar {
+					display: flex;
+					align-items: center;
+					font-size: 0.75em;
+					color: var(--text-faint);
+				}
 			}
 		}
 
@@ -527,18 +542,28 @@
 			.day-info-left {
 				display: flex;
 				align-items: center;
+				justify-content: center;
 				flex-direction: row;
-			}
+				gap: 8px;
 
-			.day-number {
-				font-weight: bold;
-				margin-right: 10px;
-				font-size: 1em;
-			}
+				.day-number {
+					display: flex;
+					align-items: center;
+					font-weight: bold;
+					font-size: 1em;
+				}
 
-			.weekday-name {
-				font-size: 0.85em;
-				opacity: 0.8;
+				.day-lunar {
+					display: flex;
+					align-items: center;
+					font-size: 0.85em;
+					color: var(--text-faint);
+				}
+
+				.weekday-name {
+					font-size: 0.85em;
+					opacity: 0.8;
+				}
 			}
 
 			.add-event {

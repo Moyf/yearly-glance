@@ -86,6 +86,10 @@ export type BaseMessage = {
 				name: string;
 				desc: string;
 			};
+			showLunarDay: {
+				name: string;
+				desc: string;
+			};
 		};
 		events: {
 			name: string;
@@ -113,29 +117,6 @@ export type BaseMessage = {
 				manager: string;
 				limitListHeight: string;
 				hideEmptyDates: string;
-			};
-			month: {
-				jan: string;
-				feb: string;
-				mar: string;
-				apr: string;
-				may: string;
-				jun: string;
-				jul: string;
-				aug: string;
-				sep: string;
-				oct: string;
-				nov: string;
-				dec: string;
-			};
-			week: {
-				sun: string;
-				mon: string;
-				tue: string;
-				wed: string;
-				thu: string;
-				fri: string;
-				sat: string;
 			};
 		};
 		eventManager: {
@@ -221,6 +202,29 @@ export type BaseMessage = {
 		cancel: string;
 	};
 	data: {
+		month: {
+			jan: string;
+			feb: string;
+			mar: string;
+			apr: string;
+			may: string;
+			jun: string;
+			jul: string;
+			aug: string;
+			sep: string;
+			oct: string;
+			nov: string;
+			dec: string;
+		};
+		week: {
+			sun: string;
+			mon: string;
+			tue: string;
+			wed: string;
+			thu: string;
+			fri: string;
+			sat: string;
+		};
 		animal: {
 			rat: string; // 鼠
 			ox: string; // 牛

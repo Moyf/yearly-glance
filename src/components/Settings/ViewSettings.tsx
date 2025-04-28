@@ -101,6 +101,18 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 					}
 				/>
 			</SettingsItem>
+			{/* 显示农历日 */}
+			<SettingsItem
+				name={t("setting.general.showLunarDay.name")}
+				desc={t("setting.general.showLunarDay.desc")}
+			>
+				<Toggle
+					checked={config.showLunarDay}
+					onChange={(value) =>
+						handleUpdateConfig({ showLunarDay: value })
+					}
+				/>
+			</SettingsItem>
 			{/* 高亮今天 */}
 			<SettingsItem
 				name={t("setting.general.highlightToday.name")}

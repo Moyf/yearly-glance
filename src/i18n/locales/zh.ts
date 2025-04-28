@@ -25,15 +25,15 @@ const translations: BaseMessage = {
 			},
 			showWeekdays: {
 				name: "显示周几",
-				desc: "在日历视图中显示周几",
+				desc: "在视图中显示周几",
 			},
 			highlightToday: {
 				name: "高亮今天",
-				desc: "在日历视图中高亮今天",
+				desc: "在视图中高亮今天",
 			},
 			highlightWeekends: {
 				name: "高亮周末",
-				desc: "在日历视图中高亮周末",
+				desc: "在视图中高亮周末",
 			},
 			showLegend: {
 				name: "显示图例",
@@ -54,15 +54,15 @@ const translations: BaseMessage = {
 			},
 			showHolidays: {
 				name: "显示节假日",
-				desc: "在日历视图中显示节假日",
+				desc: "在视图中显示节假日",
 			},
 			showBirthdays: {
 				name: "显示生日",
-				desc: "在日历视图中显示生日",
+				desc: "在视图中显示生日",
 			},
 			showCustomEvents: {
 				name: "显示自定义事件",
-				desc: "在日历视图中显示自定义事件",
+				desc: "在视图中显示自定义事件",
 			},
 			mondayFirst: {
 				name: "周一作为一周的第一天",
@@ -75,6 +75,10 @@ const translations: BaseMessage = {
 			colorful: {
 				name: "彩色主题",
 				desc: "为每个月使用不同的主题色",
+			},
+			showLunarDay: {
+				name: "显示农历日",
+				desc: "在视图中显示农历日",
 			},
 		},
 		events: {
@@ -104,30 +108,6 @@ const translations: BaseMessage = {
 				limitListHeight: "是否限制列表高度",
 				hideEmptyDates: "是否隐藏空日期",
 				// 其他 action
-			},
-			month: {
-				jan: "一月",
-				feb: "二月",
-				mar: "三月",
-				apr: "四月",
-				may: "五月",
-				jun: "六月",
-				jul: "七月",
-				aug: "八月",
-				sep: "九月",
-				oct: "十月",
-				nov: "十一月",
-				dec: "十二月",
-			},
-
-			week: {
-				sun: "周日",
-				mon: "周一",
-				tue: "周二",
-				wed: "周三",
-				thu: "周四",
-				fri: "周五",
-				sat: "周六",
 			},
 		},
 		eventManager: {
@@ -220,6 +200,29 @@ const translations: BaseMessage = {
 		cancel: "取消",
 	},
 	data: {
+		month: {
+			jan: "一月",
+			feb: "二月",
+			mar: "三月",
+			apr: "四月",
+			may: "五月",
+			jun: "六月",
+			jul: "七月",
+			aug: "八月",
+			sep: "九月",
+			oct: "十月",
+			nov: "十一月",
+			dec: "十二月",
+		},
+		week: {
+			sun: "周日",
+			mon: "周一",
+			tue: "周二",
+			wed: "周三",
+			thu: "周四",
+			fri: "周五",
+			sat: "周六",
+		},
 		animal: {
 			rat: "鼠",
 			ox: "牛",

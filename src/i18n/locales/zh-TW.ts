@@ -24,16 +24,16 @@ const translations: BaseMessage = {
 				},
 			},
 			showWeekdays: {
-				name: "顯示周幾",
-				desc: "在日曆視圖中顯示周幾",
+				name: "顯示週幾",
+				desc: "在視圖中顯示週幾",
 			},
 			highlightToday: {
 				name: "高亮今天",
-				desc: "在日曆視圖中高亮今天",
+				desc: "在視圖中高亮今天",
 			},
 			highlightWeekends: {
-				name: "高亮周末",
-				desc: "在日曆視圖中高亮周末",
+				name: "高亮週末",
+				desc: "在視圖中高亮週末",
 			},
 			showLegend: {
 				name: "顯示圖例",
@@ -54,19 +54,19 @@ const translations: BaseMessage = {
 			},
 			showHolidays: {
 				name: "顯示節假日",
-				desc: "在日曆視圖中顯示節假日",
+				desc: "在視圖中顯示節假日",
 			},
 			showBirthdays: {
 				name: "顯示生日",
-				desc: "在日曆視圖中顯示生日",
+				desc: "在視圖中顯示生日",
 			},
 			showCustomEvents: {
 				name: "顯示自定義事件",
-				desc: "在日曆視圖中顯示自定義事件",
+				desc: "在視圖中顯示自定義事件",
 			},
 			mondayFirst: {
-				name: "周一作為一周的第一天",
-				desc: "設置周一（而不是周日）作為一周的第一天",
+				name: "週一作為一週的第一天",
+				desc: "設置週一（而不是週日）作為一週的第一天",
 			},
 			showTooltips: {
 				name: "顯示事件懸浮提示",
@@ -75,6 +75,10 @@ const translations: BaseMessage = {
 			colorful: {
 				name: "彩色主題",
 				desc: "為每個月使用不同的主題色",
+			},
+			showLunarDay: {
+				name: "顯示農曆日",
+				desc: "在視圖中顯示農曆日",
 			},
 		},
 		events: {
@@ -104,34 +108,11 @@ const translations: BaseMessage = {
 				limitListHeight: "是否限制列表高度",
 				hideEmptyDates: "是否隱藏空日期",
 			},
-			month: {
-				jan: "一月",
-				feb: "二月",
-				mar: "三月",
-				apr: "四月",
-				may: "五月",
-				jun: "六月",
-				jul: "七月",
-				aug: "八月",
-				sep: "九月",
-				oct: "十月",
-				nov: "十一月",
-				dec: "十二月",
-			},
-			week: {
-				sun: "周日",
-				mon: "周一",
-				tue: "周二",
-				wed: "周三",
-				thu: "周四",
-				fri: "周五",
-				sat: "周六",
-			},
 		},
 		eventManager: {
 			name: "事件管理",
-			solar: "公历",
-			lunar: "农历",
+			solar: "公曆",
+			lunar: "農曆",
 			date: "日期",
 			actions: {
 				add: "添加新事件",
@@ -218,6 +199,29 @@ const translations: BaseMessage = {
 		cancel: "取消",
 	},
 	data: {
+		month: {
+			jan: "一月",
+			feb: "二月",
+			mar: "三月",
+			apr: "四月",
+			may: "五月",
+			jun: "六月",
+			jul: "七月",
+			aug: "八月",
+			sep: "九月",
+			oct: "十月",
+			nov: "十一月",
+			dec: "十二月",
+		},
+		week: {
+			sun: "週日",
+			mon: "週一",
+			tue: "週二",
+			wed: "週三",
+			thu: "週四",
+			fri: "週五",
+			sat: "週六",
+		},
 		animal: {
 			rat: "鼠",
 			ox: "牛",

@@ -9,6 +9,7 @@ export interface CalendarEvent extends BaseEvent {
 export interface CalendarDay {
 	date: Date;
 	dayOfMonth: number;
+	dayOfLunarMonth: string;
 	isCurrentMonth: boolean;
 	isToday: boolean;
 	isWeekend: boolean;

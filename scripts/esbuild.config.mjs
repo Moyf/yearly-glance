@@ -13,6 +13,7 @@ if you want to view the source, please visit the github repository of this plugi
 `;
 
 const prod = process.argv[2] === "production";
+const keepConsole = process.argv[3] === "keep-console";
 
 const renamePlugin = () => ({
 	name: "rename-plugin",
@@ -38,52 +39,52 @@ const renamePlugin = () => ({
 });
 
 const cssReBuild = () => ({
-  name: "css-rebuild",
-  
-  setup(build) {
-    // 注册一个加载器，用于处理所有 CSS 文件
-    // filter 参数是一个正则表达式，匹配所有 .css 扩展名的文件
-    build.onLoad({ filter: /\.css$/ }, async (args) => {
-      try {
-        // 读取 CSS 文件内容
-        // args.path 包含当前处理的 CSS 文件的完整路径
-        const css = await fs.promises.readFile(args.path, "utf8");
-        
-        // 使用 PostCSS 处理 CSS 文件
-        // postcssNesting 插件允许在 CSS 中使用嵌套语法（类似 SCSS）
-        const result = await postcss([postcssNesting]).process(css, {
-          from: args.path, // 指定源文件路径，用于生成正确的源映射
-        });
+	name: "css-rebuild",
 
-        // 获取输出目录路径
-        // build.initialOptions.outfile 是最终 JS 输出文件的路径
-        const outDir = path.dirname(build.initialOptions.outfile);
-        
-        // 确保输出目录存在，如果不存在则创建
-        if (!fs.existsSync(outDir)) {
-          fs.mkdirSync(outDir, { recursive: true });
-        }
+	setup(build) {
+		// 注册一个加载器，用于处理所有 CSS 文件
+		// filter 参数是一个正则表达式，匹配所有 .css 扩展名的文件
+		build.onLoad({ filter: /\.css$/ }, async (args) => {
+			try {
+				// 读取 CSS 文件内容
+				// args.path 包含当前处理的 CSS 文件的完整路径
+				const css = await fs.promises.readFile(args.path, "utf8");
 
-        // 返回处理后的 CSS 内容
-        // contents: 处理后的 CSS 代码
-        // loader: 告诉 esbuild 如何解释这些内容（作为 CSS）
-        return {
-          contents: result.css,
-          loader: "css",
-        };
-      } catch (error) {
-        // 错误处理：如果 CSS 处理过程中出现任何错误
-        console.error("Error processing CSS:", error);
-        
-        // 返回空内容，避免构建完全失败
-        // 这样即使 CSS 处理失败，构建过程仍然可以继续
-        return {
-          contents: "",
-          loader: "css",
-        };
-      }
-    });
-  },
+				// 使用 PostCSS 处理 CSS 文件
+				// postcssNesting 插件允许在 CSS 中使用嵌套语法（类似 SCSS）
+				const result = await postcss([postcssNesting]).process(css, {
+					from: args.path, // 指定源文件路径，用于生成正确的源映射
+				});
+
+				// 获取输出目录路径
+				// build.initialOptions.outfile 是最终 JS 输出文件的路径
+				const outDir = path.dirname(build.initialOptions.outfile);
+
+				// 确保输出目录存在，如果不存在则创建
+				if (!fs.existsSync(outDir)) {
+					fs.mkdirSync(outDir, { recursive: true });
+				}
+
+				// 返回处理后的 CSS 内容
+				// contents: 处理后的 CSS 代码
+				// loader: 告诉 esbuild 如何解释这些内容（作为 CSS）
+				return {
+					contents: result.css,
+					loader: "css",
+				};
+			} catch (error) {
+				// 错误处理：如果 CSS 处理过程中出现任何错误
+				console.error("Error processing CSS:", error);
+
+				// 返回空内容，避免构建完全失败
+				// 这样即使 CSS 处理失败，构建过程仍然可以继续
+				return {
+					contents: "",
+					loader: "css",
+				};
+			}
+		});
+	},
 });
 
 const context = await esbuild.context({
@@ -116,6 +117,7 @@ const context = await esbuild.context({
 	treeShaking: true,
 	outfile: "main.js",
 	minify: prod,
+	drop: prod && !keepConsole ? ["console"] : [],
 	loader: {
 		".ttf": "base64",
 	},

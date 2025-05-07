@@ -9,7 +9,7 @@ permissions:
     contents: write
 
 env:
-    PLUGIN_NAME: yearly-glance
+    PLUGIN_ID: yearly-glance
 
 jobs:
     build:
@@ -38,53 +38,29 @@ jobs:
                   npm install -g yarn
                   yarn
                   yarn run build --if-present
-                  mkdir ${{ env.PLUGIN_NAME }}
-                  cp main.js manifest.json styles.css ${{ env.PLUGIN_NAME }}
-                  zip -r ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}
+                  mkdir ${{ env.PLUGIN_ID }}
+                  cp main.js manifest.json styles.css ${{ env.PLUGIN_ID }}
+                  zip -r ${{ env.PLUGIN_ID }}.zip ${{ env.PLUGIN_ID }}
                   ls
                   echo "tag_name=$(git tag --sort version:refname | tail -n 1)" >> $GITHUB_OUTPUT
 
             - name: Generate Changelog
               id: changelog
               run: |
-                  # 定义部分名称
-                  declare -A SECTION_MAP
-                  SECTION_MAP["BREAKING CHANGES"]="BREAKING CHANGES"
-                  SECTION_MAP["Features"]="Features"
-                  SECTION_MAP["Bug Fixes"]="Bug Fixes"
-                  SECTION_MAP["Documentation"]="Documentation"
-                  SECTION_MAP["Styles"]="Styles"
-                  SECTION_MAP["Refactors"]="Refactors"
-                  SECTION_MAP["Performance"]="Performance"
-                  SECTION_MAP["Tests"]="Tests"
-                  SECTION_MAP["Build"]="Build"
-                  SECTION_MAP["CI"]="CI"
-                  SECTION_MAP["Chore"]="Chore"
-                  SECTION_MAP["Reverts"]="Reverts"
-
-                  # 定义中文翻译
-                  declare -A ZH_SECTION_MAP
-                  ZH_SECTION_MAP["BREAKING CHANGES"]="破坏性变更"
-                  ZH_SECTION_MAP["Features"]="新功能"
-                  ZH_SECTION_MAP["Bug Fixes"]="修复"
-                  ZH_SECTION_MAP["Documentation"]="文档"
-                  ZH_SECTION_MAP["Styles"]="样式"
-                  ZH_SECTION_MAP["Refactors"]="重构"
-                  ZH_SECTION_MAP["Performance"]="性能优化"
-                  ZH_SECTION_MAP["Tests"]="测试"
-                  ZH_SECTION_MAP["Build"]="构建"
-                  ZH_SECTION_MAP["CI"]="持续集成"
-                  ZH_SECTION_MAP["Chore"]="杂项"
-                  ZH_SECTION_MAP["Reverts"]="回退"
-
                   # 初始化 changelog 文件
                   CHANGELOG_EN="CHANGELOG.md"
                   CHANGELOG_ZH="CHANGELOG-zh.md"
                   TEMP_CHANGELOG="temp_changelog.md"
+                  EN_TEMP_CHANGELOG="en_temp_changelog.md"
+                  ZH_TEMP_CHANGELOG="zh_temp_changelog.md"
 
                   # 获取当前版本号（从 git tag）
                   CURRENT_VERSION=$(git tag --sort version:refname | tail -n 1)
                   echo "Current version: $CURRENT_VERSION"
+
+                  # 确保 PLUGIN_ID 变量可用
+                  PLUGIN_ID="${{ env.PLUGIN_ID }}"
+                  echo "Using plugin name: $PLUGIN_ID"
 
                   # 使用 awk 提取特定版本的 changelog 内容
                   extract_changelog() {
@@ -140,49 +116,57 @@ jobs:
                     # 检查提取内容
                     if [ ! -s "temp_version_content.md" ]; then
                       echo "Warning: No content found for version $target_version in $changelog_file" >&2
-                      echo -e "## Changes\n\nNo changelog found for version $target_version.\n" >> "$output_file"
+                      if [ "$is_chinese" = true ]; then
+                        echo -e "## 更新内容\n\n该版本 $target_version 没有找到更新日志。\n" >> "$output_file"
+                      else
+                        echo -e "## Changes\n\nNo changelog found for version $target_version.\n" >> "$output_file"
+                      fi
                     else
                       echo "Successfully extracted changelog for version $target_version"
-                      echo -e "## Changes\n" >> "$output_file"
+                      if [ "$is_chinese" = true ]; then
+                        echo -e "## 更新内容\n" >> "$output_file"
+                      else
+                        echo -e "## Changes\n" >> "$output_file"
+                      fi
                       cat "temp_version_content.md" >> "$output_file"
                     fi
                     
                     # 添加安装说明
                     if [ "$is_chinese" = true ]; then
                       echo -e "\n## 如何安装\n" >> "$output_file"
-                      echo -e "1. 下载 \`yearly-glance.zip\` 压缩文件" >> "$output_file"
-                      echo -e "2. 解压到你的 Obsidian 库的插件文件夹内: \`<vault>/.obsidian/plugins/yearly-glance/\`" >> "$output_file"
+                      echo -e "1. 下载 \`$PLUGIN_ID.zip\` 压缩文件" >> "$output_file"
+                      echo -e "2. 解压到你的 Obsidian 库的插件文件夹内: \`<vault>/.obsidian/plugins/$PLUGIN_ID/\`" >> "$output_file"
                       echo -e "3. 重启 Obsidian" >> "$output_file"
-                      echo -e "4. 在设置中启用 **Yearly Glance**" >> "$output_file"
+                      echo -e "4. 在设置中启用 **$PLUGIN_ID** 插件" >> "$output_file"
                     else
                       echo -e "\n## Installation\n" >> "$output_file"
-                      echo -e "1. Download the files from the Assets section below" >> "$output_file"
-                      echo -e "2. Copy them to your vault's plugins folder: \`<vault>/.obsidian/plugins/yearly-glance/\`" >> "$output_file"
+                      echo -e "1. Download \`$PLUGIN_ID.zip\`" >> "$output_file"
+                      echo -e "2. Unzip it to your Obsidian vault's plugins folder: \`<vault>/.obsidian/plugins/$PLUGIN_ID/\`" >> "$output_file"
                       echo -e "3. Reload Obsidian" >> "$output_file"
-                      echo -e "4. Enable **Yearly Glance** plugin in settings" >> "$output_file"
+                      echo -e "4. Enable **$PLUGIN_ID** plugin in settings" >> "$output_file"
                     fi
                   }
 
                   # 处理英文 changelog
                   if [ -f "$CHANGELOG_EN" ]; then
-                    extract_changelog "$CHANGELOG_EN" "en_$TEMP_CHANGELOG" false "$CURRENT_VERSION"
+                    extract_changelog "$CHANGELOG_EN" "$EN_TEMP_CHANGELOG" false "$CURRENT_VERSION"
                   else
                     echo "英文 changelog 文件未找到。使用备用方案。"
-                    echo -e "## Changes\n\nNo changelog available.\n\n## Installation\n\n1. Download the files from the Assets section below\n2. Copy them to your vault's plugins folder: \`<vault>/.obsidian/plugins/yearly-glance/\`\n3. Reload Obsidian\n4. Enable plugin in settings" > "en_$TEMP_CHANGELOG"
+                    echo -e "## Changes\n\nNo changelog available.\n\n## Installation\n\n1. Download \`$PLUGIN_ID.zip\`\n2. Unzip it to your Obsidian vault's plugins folder: \`<vault>/.obsidian/plugins/$PLUGIN_ID/\`\n3. Reload Obsidian\n4. Enable **$PLUGIN_ID** plugin in settings" > "$EN_TEMP_CHANGELOG"
                   fi
 
                   # 处理中文 changelog
                   if [ -f "$CHANGELOG_ZH" ]; then
-                    extract_changelog "$CHANGELOG_ZH" "zh_$TEMP_CHANGELOG" true "$CURRENT_VERSION"
+                    extract_changelog "$CHANGELOG_ZH" "$ZH_TEMP_CHANGELOG" true "$CURRENT_VERSION"
                     
-                    # 合并两个 changelogs
+                    # 合并两个 changelogs，保持良好的格式
                     echo -e "# English Changelog\n" > "$TEMP_CHANGELOG"
-                    cat "en_$TEMP_CHANGELOG" >> "$TEMP_CHANGELOG"
-                    echo -e "\n\n___\n\n# 中文更新日志\n" >> "$TEMP_CHANGELOG"
-                    cat "zh_$TEMP_CHANGELOG" >> "$TEMP_CHANGELOG"
+                    cat "$EN_TEMP_CHANGELOG" >> "$TEMP_CHANGELOG"
+                    echo -e "\n\n---\n\n# 中文更新日志\n" >> "$TEMP_CHANGELOG"
+                    cat "$ZH_TEMP_CHANGELOG" >> "$TEMP_CHANGELOG"
                   else
                     # 如果没有中文 changelog，只使用英文版本
-                    cp "en_$TEMP_CHANGELOG" "$TEMP_CHANGELOG"
+                    cp "$EN_TEMP_CHANGELOG" "$TEMP_CHANGELOG"
                   fi
 
                   # 输出 changelog 给 GitHub Actions
@@ -216,8 +200,8 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./${{ env.PLUGIN_NAME }}.zip
-                  asset_name: ${{ env.PLUGIN_NAME }}.zip
+                  asset_path: ./${{ env.PLUGIN_ID }}.zip
+                  asset_name: ${{ env.PLUGIN_ID }}.zip
                   asset_content_type: application/zip
 
             - name: Upload main.js

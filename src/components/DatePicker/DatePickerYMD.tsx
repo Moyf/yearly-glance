@@ -70,8 +70,19 @@ export const DatePickerYMD: React.FC<DatePickerYMDProps> = ({
 				label: displayDateValue(day, "SOLAR", "day"),
 			}));
 		} else {
-			const LMonth = LunarMonth.fromYm(selectYear, selectMonth);
+			const lunarYear = LunarYear.fromYear(selectYear);
+			const lunarMonthsInYear = lunarYear.getMonthsInYear();
+			// 检查月份是否存在于当年的月份列表中
+			const monthExists = lunarMonthsInYear.some(
+				(month) => month.getMonth() === selectMonth
+			);
+			// 如果不存在，使用非闰月版本
+			const effectiveMonth = monthExists
+				? selectMonth
+				: Math.abs(selectMonth);
+			const LMonth = LunarMonth.fromYm(selectYear, effectiveMonth);
 			const LunarDaysOfMonth = LMonth!.getDayCount();
+
 			return Array.from(
 				{ length: LunarDaysOfMonth },
 				(_, i) => i + 1
@@ -84,15 +95,18 @@ export const DatePickerYMD: React.FC<DatePickerYMDProps> = ({
 
 	// 闰月处理
 	React.useEffect(() => {
-		if (type === "LUNAR" && selectMonth < 0) {
-			const monthExists = monthOptions.some(
-				(option) => option.value === selectMonth
+		if (type === "LUNAR") {
+			const lunarYear = LunarYear.fromYear(selectYear);
+			const lunarMonthsInYear = lunarYear.getMonthsInYear();
+			const monthExists = lunarMonthsInYear.some(
+				(month) => month.getMonth() === selectMonth
 			);
-			if (!monthExists) {
+
+			if (!monthExists && selectMonth < 0) {
 				setSelectMonth(Math.abs(selectMonth));
 			}
 		}
-	}, [type, monthOptions, selectYear, selectMonth]);
+	}, [type, selectYear, selectMonth]);
 
 	// 日期类型改变处理
 	React.useEffect(() => {
@@ -133,9 +147,9 @@ export const DatePickerYMD: React.FC<DatePickerYMDProps> = ({
 		if (selectYear && selectMonth && selectDay) {
 			const newValue = `${selectYear},${selectMonth},${selectDay}`;
 
-			onChange(newValue);
+			onChange(newValue, type);
 		}
-	}, [selectYear, selectMonth, selectDay]);
+	}, [selectYear, selectMonth, selectDay, type, onChange]);
 
 	return (
 		<div className="date-selector-YMD">

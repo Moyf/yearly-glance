@@ -1,3 +1,0 @@
-ancestorEntries = ["src/i18n/locales/en.ts", "src/i18n/locales/zh-TW.ts", "src/i18n/locales/zh.ts", "src/i18n/types.ts"]
-ourEntries = ["src/i18n/locales/en.ts", "src/i18n/locales/zh-TW.ts", "src/i18n/locales/zh.ts", "src/i18n/types.ts"]
-theirEntries = ["src/i18n/locales/en.ts", "src/i18n/locales/zh-TW.ts", "src/i18n/locales/zh.ts", "src/i18n/types.ts"]

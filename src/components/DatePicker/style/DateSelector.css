@@ -1,49 +1,59 @@
 .yg-date-selector {
 	display: flex;
-	align-items: center;
-	gap: 4px;
-	position: relative;
-	border: 1px solid var(--background-modifier-border);
-	border-radius: 4px;
-	background: var(--background-primary-alt);
-
-	&:hover {
-		border-color: var(--interactive-accent);
-	}
-}
-
-.yg-date-selector-select {
-	.yg-select-arrow {
-		visibility: hidden;
-		width: 0;
-	}
-}
-
-.yg-date-selector-arrows {
-	display: flex;
 	flex-direction: column;
-	height: 100%;
-	justify-content: space-between;
-}
+	gap: 1rem;
+	width: 100%;
 
-.yg-date-selector-arrow {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 2px;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	color: var(--text-muted);
-	transition: all 0.2s ease;
-	height: 50%;
-
-	&:hover {
-		color: var(--text-normal);
-		background-color: var(--background-modifier-hover);
+	.yg-date-selector-select {
+		position: relative;
+		width: 100%;
+		flex-shrink: 0;
 	}
 
-	&:active {
-		background-color: var(--background-modifier-active);
+	.yg-date-selector-input {
+		width: 100%;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid var(--background-modifier-border);
+		border-radius: 6px;
+		background: var(--background-primary);
+		color: var(--text-normal);
+		font-size: 0.9rem;
+		transition: all 0.2s ease;
+
+		&:focus {
+			border-color: var(--interactive-accent);
+			box-shadow: 0 0 0 2px rgba(var(--interactive-accent-rgb), 0.1);
+			outline: none;
+		}
+	}
+
+	.yg-date-selector-suggestions {
+		position: absolute;
+		top: calc(100% + 4px);
+		left: 0;
+		right: 0;
+		background: var(--background-primary);
+		border: 1px solid var(--background-modifier-border);
+		border-radius: 6px;
+		max-height: 200px;
+		overflow-y: auto;
+		z-index: 100;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	}
+
+	.yg-date-selector-suggestion {
+		padding: 0.5rem 0.75rem;
+		cursor: pointer;
+		font-size: 0.9rem;
+		color: var(--text-normal);
+		transition: background-color 0.2s ease;
+
+		&:hover {
+			background: var(--background-modifier-hover);
+		}
+
+		&.selected {
+			background-color: var(--background-modifier-hover);
+		}
 	}
 }

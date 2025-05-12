@@ -3,12 +3,9 @@ import { DateSelector } from "./DateSelector";
 import {
 	displayDateValue,
 	getMonthOptions,
+	isValidLunarDate,
 	parseDateValue,
 } from "@/src/core/utils/dateParser";
-import {
-	LunarYearOptions,
-	SolarYearOptions,
-} from "@/src/core/data/dateOptions";
 import {
 	Lunar,
 	LunarMonth,
@@ -34,14 +31,6 @@ export const DatePickerYMD: React.FC<DatePickerYMDProps> = ({
 	const [selectMonth, setSelectMonth] = React.useState<number>(month);
 	const [selectDay, setSelectDay] = React.useState<number>(day);
 	const [prevType, setPrevType] = React.useState<"SOLAR" | "LUNAR">(type);
-
-	const yearOptions = React.useMemo(() => {
-		if (type === "SOLAR") {
-			return SolarYearOptions;
-		} else {
-			return LunarYearOptions;
-		}
-	}, [type]);
 
 	const monthOptions = React.useMemo(() => {
 		if (type === "SOLAR") {
@@ -145,7 +134,14 @@ export const DatePickerYMD: React.FC<DatePickerYMDProps> = ({
 	// 当选择的年、月或日发生变化时，触发onChange
 	React.useEffect(() => {
 		if (selectYear && selectMonth && selectDay) {
-			const newValue = `${selectYear},${selectMonth},${selectDay}`;
+			let newValue = `${selectYear},${selectMonth},${selectDay}`;
+			if (type === "LUNAR") {
+				if (!isValidLunarDate(selectYear, selectMonth, selectDay)) {
+					newValue = `${selectYear},${Math.abs(
+						selectMonth
+					)},${selectDay}`;
+				}
+			}
 
 			onChange(newValue, type);
 		}
@@ -156,8 +152,9 @@ export const DatePickerYMD: React.FC<DatePickerYMDProps> = ({
 			<DateSelector
 				value={selectYear}
 				type="year"
-				options={yearOptions}
 				onChange={(value) => setSelectYear(value)}
+				min={1}
+				max={9999}
 			/>
 			<DateSelector
 				value={selectMonth}

@@ -14,12 +14,14 @@ interface DatePickerProps {
 }
 
 // 获取当前日期,格式为YYYY,MM,DD
-const todayString = `${new Date().getFullYear()},${
-	new Date().getMonth() + 1
-},${new Date().getDate()}`;
+const getTodayString = () => {
+	return `${new Date().getFullYear()},${
+		new Date().getMonth() + 1
+	},${new Date().getDate()}`;
+};
 
 export const DatePicker: React.FC<DatePickerProps> = ({
-	value = todayString, // 默认使用当前日期
+	value = getTodayString(), // 默认使用当前日期
 	type, // 默认使用公历
 	onChange,
 }) => {

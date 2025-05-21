@@ -15,7 +15,7 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
-import { EventFormModal } from "./components/YearlyCalendar/EventFormModal";
+import { EventFormModal } from "./components/EventForm/EventFormModal";
 import { YearlyGlanceBus } from "./core/hook/useYearlyGlanceConfig";
 import {
 	updateBirthdaysInfo,

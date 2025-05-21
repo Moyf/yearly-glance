@@ -1,13 +1,10 @@
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import { Modal } from "obsidian";
-import { Solar } from "lunar-typescript";
 import YearlyGlancePlugin from "@/src/main";
 import {
-	BaseEvent,
 	Birthday,
 	CustomEvent,
-	EVENT_TYPE_DEFAULT,
 	EVENT_TYPE_LIST,
 	Events,
 	EventType,
@@ -17,18 +14,10 @@ import {
 	calculateDateObj,
 	updateBirthdayInfo,
 } from "@/src/core/utils/eventCalculator";
-import {
-	formatToExtendedISO,
-	parseDateValue,
-	parseExtendedISO,
-} from "@/src/core/utils/dateParser";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import { Select } from "../Base/Select";
-import { Toggle } from "../Base/Toggle";
-import { Tooltip } from "../Base/Tooltip";
 import { NavTabs } from "../Base/NavTabs";
-import { DatePicker } from "@/src/components/DatePicker/DatePicker";
-import { ColorSelector } from "../Base/ColorSelector";
+import { CustomEventForm } from "./CustomEventForm";
+import { BirthdayForm } from "./BirthdayForm";
+import { HolidayForm } from "./HolidayForm";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
 import "./style/EventFormModal.css";
@@ -55,383 +44,49 @@ const EventForm: React.FC<EventFormProps> = ({
 	isEditing,
 	props,
 }) => {
-	// 获取今天的日期
-	const today = Solar.fromDate(new Date());
-	const todayString = `${today.getYear()},${today.getMonth()},${today.getDay()}`;
-	// 格式化为显示格式 y-m-d
-	const todayDisplayFormat = `${today.getYear()}-${today.getMonth()}-${today.getDay()}`;
+	const handleSave = (event: CustomEvent | Birthday | Holiday) => {
+		onSave(event, eventType);
+	};
 
-	const [formData, setFormData] = React.useState<
-		Partial<CustomEvent | Birthday | Holiday>
-	>({
-		...event,
-		// 如果是新建事件且没有提供date，默认使用今天的日期
-		date:
-			event.date ||
-			(!isEditing && !props ? todayString : props.date ?? undefined),
-		dateType: event.dateType || "SOLAR",
-	});
-
-	const [optionalCollapsed, setOptionalCollapsed] = React.useState(false);
-	const [displayDateValue, setDisplayDateValue] = React.useState(() => {
-		// 初始化时将内部y,m,d格式转换为显示用的y-m-d格式
-		if (formData.date) {
-			return formatToExtendedISO(formData.date);
-		}
-		// 如果是新建事件且没有date，使用今天的日期显示格式
-		return !isEditing ? todayDisplayFormat : "";
-	});
-
-	React.useEffect(() => {
-		// 当formData.date变化时更新显示值
-		if (formData.date) {
-			setDisplayDateValue(formatToExtendedISO(formData.date));
-		}
-	}, [formData.date]);
-
-	const handleChange = (
-		e: React.ChangeEvent<
-			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-		>
-	) => {
-		const { name, value, type } = e.target;
-
-		if (type === "checkbox") {
-			const checked = (e.target as HTMLInputElement).checked;
-			setFormData((prev) => ({ ...prev, [name]: checked }));
-		} else {
-			setFormData((prev) => ({
-				...prev,
-				[name]: !value ? undefined : value,
-			}));
+	// 根据事件类型渲染不同的表单组件
+	const renderEventForm = () => {
+		switch (eventType) {
+			case "customEvent":
+				return (
+					<CustomEventForm
+						event={event as Partial<CustomEvent>}
+						onSave={handleSave}
+						onCancel={onCancel}
+						isEditing={isEditing}
+						props={props}
+					/>
+				);
+			case "birthday":
+				return (
+					<BirthdayForm
+						event={event as Partial<Birthday>}
+						onSave={handleSave}
+						onCancel={onCancel}
+						isEditing={isEditing}
+						props={props}
+					/>
+				);
+			case "holiday":
+				return (
+					<HolidayForm
+						event={event as Partial<Holiday>}
+						onSave={handleSave}
+						onCancel={onCancel}
+						isEditing={isEditing}
+						props={props}
+					/>
+				);
+			default:
+				return null;
 		}
 	};
 
-	const handleToggleChange = (name: string, checked: boolean) => {
-		setFormData((prev) => ({ ...prev, [name]: checked }));
-	};
-
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-
-		const updatedFormData = { ...formData };
-
-		// 确保日期格式正确
-		if (!updatedFormData.date) {
-			// 如果用户输入了日期但未转换，尝试手动转换一次
-			if (displayDateValue) {
-				try {
-					const convertedDate = parseExtendedISO(displayDateValue);
-					if (convertedDate) {
-						updatedFormData.date = convertedDate;
-					} else {
-						// 如果转换失败，使用今天的日期作为默认值
-						updatedFormData.date = todayString;
-					}
-				} catch (error) {
-					console.error("Error converting date on submit:", error);
-					updatedFormData.date = todayString;
-				}
-			} else {
-				// 没有输入日期，使用今天的日期作为默认值
-				updatedFormData.date = todayString;
-			}
-		}
-
-		// 构建基础事件对象
-		const baseEvent: BaseEvent = {
-			id: updatedFormData.id,
-			date: updatedFormData.date || todayString, // 确保始终有日期
-			dateType: updatedFormData.dateType || "SOLAR",
-			text: updatedFormData.text || "",
-			emoji: updatedFormData.emoji,
-			color: updatedFormData.color,
-			remark: updatedFormData.remark,
-		};
-
-		// 根据事件类型构建完整事件对象
-		let completeEvent: CustomEvent | Birthday | Holiday;
-
-		if (eventType === "holiday") {
-			completeEvent = {
-				...baseEvent,
-				type: (updatedFormData as Holiday).type || "CUSTOM",
-				isHidden:
-					(updatedFormData as Holiday).isHidden !== undefined
-						? (updatedFormData as Holiday).isHidden
-						: false,
-				foundDate: (updatedFormData as Holiday).foundDate,
-			} as Holiday;
-		} else if (eventType === "birthday") {
-			completeEvent = {
-				...baseEvent,
-				nextBirthday: (updatedFormData as Birthday).nextBirthday || "",
-				age: (updatedFormData as Birthday).age,
-				animal: (updatedFormData as Birthday).animal,
-				zodiac: (updatedFormData as Birthday).zodiac,
-				isHidden:
-					(updatedFormData as Birthday).isHidden !== undefined
-						? (updatedFormData as Birthday).isHidden
-						: false,
-			} as Birthday;
-		} else {
-			completeEvent = {
-				...baseEvent,
-				isRepeat:
-					(updatedFormData as CustomEvent).isRepeat !== undefined
-						? (updatedFormData as CustomEvent).isRepeat
-						: false,
-				isHidden:
-					(updatedFormData as CustomEvent).isHidden !== undefined
-						? (updatedFormData as CustomEvent).isHidden
-						: false,
-			} as CustomEvent;
-		}
-
-		onSave(completeEvent);
-	};
-
-	const toggleOptional = () => {
-		setOptionalCollapsed(!optionalCollapsed);
-	};
-
-	const displayDate = (date: string, dateType: "SOLAR" | "LUNAR") => {
-		const { hasYear, yearName, monthName, dayName } = parseDateValue(
-			date,
-			dateType
-		);
-		let dateStr;
-		if (hasYear) {
-			if (dateType === "SOLAR") {
-				dateStr = `${yearName}-${monthName}-${dayName}`;
-			} else {
-				dateStr = `${yearName}年${monthName}月${dayName}`;
-			}
-		} else {
-			if (dateType === "SOLAR") {
-				dateStr = `${monthName}-${dayName}`;
-			} else {
-				dateStr = `${monthName}月${dayName}`;
-			}
-		}
-		return dateStr;
-	};
-
-	// 渲染只读字段的值
-	const renderReadOnlyValue = (value: any) => {
-		if (value === undefined || value === null || value === "") {
-			return <span className="empty-value">-</span>;
-		}
-		return <span className="field-value">{value}</span>;
-	};
-
-	return (
-		<form className="yg-event-form" onSubmit={handleSubmit}>
-			<h3 className="yg-event-form-title">
-				{isEditing
-					? t("view.eventManager.form.edit")
-					: t("view.eventManager.form.add")}
-				{t(`view.eventManager.${eventType}.name` as TranslationKeys)}
-			</h3>
-
-			{/* 必填字段 */}
-			{/* 事件名称 */}
-			<div
-				className={`form-group ${
-					(formData as Holiday).type === "BUILTIN" ? "read-only" : ""
-				}`}
-			>
-				<label>{t("view.eventManager.form.eventName")}</label>
-				{(formData as Holiday).type === "BUILTIN" ? (
-					renderReadOnlyValue(formData.text)
-				) : (
-					<input
-						type="text"
-						name="text"
-						value={formData.text || ""}
-						onChange={handleChange}
-						required
-					/>
-				)}
-			</div>
-			{/* 事件日期 */}
-			<div
-				className={`form-group ${
-					(formData as Holiday).type === "BUILTIN" ? "read-only" : ""
-				}`}
-			>
-				<label>
-					{t("view.eventManager.form.eventDate")}
-					<Tooltip text={t("view.eventManager.form.eventDateHelp")} />
-				</label>
-				{(formData as Holiday).type === "BUILTIN" ? (
-					renderReadOnlyValue(
-						displayDate(formData.date, formData.dateType)
-					)
-				) : (
-					<DatePicker
-						value={formData.date || todayString}
-						type={formData.dateType}
-						onChange={(value, dateType) => {
-							setFormData((prev) => ({
-								...prev,
-								date: value,
-								dateType: dateType,
-							}));
-						}}
-					/>
-				)}
-			</div>
-			{/* 事件日期类型(只读，由事件日期自动推断) */}
-			<div className="form-group read-only">
-				<label>{t("view.eventManager.form.eventDateType")}</label>
-				{renderReadOnlyValue(
-					formData.dateType === "LUNAR"
-						? t("view.eventManager.lunar")
-						: t("view.eventManager.solar")
-				)}
-			</div>
-			{/* 节日字段(只读)：类型 */}
-			{eventType === "holiday" && isEditing && (
-				<div className="form-group read-only">
-					<label>{t("view.eventManager.holiday.type")}</label>
-					{renderReadOnlyValue(
-						(formData as Holiday).type === "BUILTIN"
-							? t("view.eventManager.holiday.builtin")
-							: t("view.eventManager.holiday.custom")
-					)}
-				</div>
-			)}
-			{/* 生日字段(只读)：年龄、下一次生日、生肖、星座 */}
-			{eventType === "birthday" && isEditing && (
-				<>
-					<div className="form-group read-only">
-						<label>{t("view.eventManager.birthday.age")}</label>
-						{renderReadOnlyValue((formData as Birthday).age)}
-					</div>
-					<div className="form-group read-only">
-						<label>
-							{t("view.eventManager.birthday.nextBirthday")}
-						</label>
-						{renderReadOnlyValue(
-							(formData as Birthday).nextBirthday
-						)}
-					</div>
-					<div className="form-group read-only">
-						<label>{t("view.eventManager.birthday.animal")}</label>
-						{renderReadOnlyValue((formData as Birthday).animal)}
-					</div>
-					<div className="form-group read-only">
-						<label>{t("view.eventManager.birthday.zodiac")}</label>
-						{renderReadOnlyValue((formData as Birthday).zodiac)}
-					</div>
-				</>
-			)}
-
-			{/* 可选字段 */}
-			<div
-				className={`yg-event-form-optional ${
-					optionalCollapsed ? "collapsed" : ""
-				}`}
-			>
-				<h5 onClick={toggleOptional}>
-					{t("view.eventManager.form.optional")}
-					{optionalCollapsed ? <ChevronRight /> : <ChevronDown />}
-				</h5>
-
-				{/* 事件图标 */}
-				<div className="form-group">
-					<label>{t("view.eventManager.form.eventEmoji")}</label>
-					<input
-						type="text"
-						name="emoji"
-						value={formData.emoji || ""}
-						onChange={handleChange}
-						placeholder={EVENT_TYPE_DEFAULT[eventType].emoji}
-					/>
-				</div>
-				{/* 事件颜色 */}
-				<div className="form-group">
-					<label>{t("view.eventManager.form.eventColor")}</label>
-					<ColorSelector
-						value={formData.color || ""}
-						defaultColor={EVENT_TYPE_DEFAULT[eventType].color}
-						onChange={(color) => {
-							setFormData((prev) => ({
-								...prev,
-								color: color,
-							}));
-						}}
-						resetTitle={t("view.eventManager.form.reset")}
-						submitDefaultAsValue={false}
-					/>
-				</div>
-				{/* 是否隐藏 */}
-				<div className="form-group checkbox">
-					<label>{t("view.eventManager.form.eventHidden")}</label>
-					<Toggle
-						checked={(formData as BaseEvent).isHidden ?? false}
-						onChange={(checked) =>
-							handleToggleChange("isHidden", checked)
-						}
-						aria-label={t("view.eventManager.form.eventHidden")}
-					/>
-				</div>
-				{/* 节日字段：节日起源时间 */}
-				{eventType === "holiday" && (
-					<div className="form-group">
-						<label>
-							{t("view.eventManager.holiday.foundDate")}
-						</label>
-						<input
-							type="text"
-							name="foundDate"
-							value={(formData as Holiday).foundDate ?? ""}
-							onChange={handleChange}
-							placeholder="YYYY or YYYY,MM or YYYY,MM,DD"
-						/>
-					</div>
-				)}
-				{/* 自定义事件字段：是否重复 */}
-				{eventType === "customEvent" && (
-					<div className="form-group checkbox">
-						<label>{t("view.eventManager.form.eventRepeat")}</label>
-						<Toggle
-							checked={
-								(formData as CustomEvent).isRepeat ?? false
-							}
-							onChange={(checked) =>
-								handleToggleChange("isRepeat", checked)
-							}
-							aria-label={t("view.eventManager.form.eventRepeat")}
-						/>
-					</div>
-				)}
-				{/* 事件备注 */}
-				<div className="form-group">
-					<label>{t("view.eventManager.form.eventRemark")}</label>
-					<textarea
-						name="remark"
-						value={(formData as BaseEvent).remark ?? ""}
-						onChange={handleChange}
-					/>
-				</div>
-			</div>
-
-			<div className="form-actions">
-				<button type="submit" className="save-button">
-					{t("view.eventManager.form.save")}
-				</button>
-				<button
-					type="button"
-					className="cancel-button"
-					onClick={onCancel}
-				>
-					{t("view.eventManager.form.cancel")}
-				</button>
-			</div>
-		</form>
-	);
+	return renderEventForm();
 };
 
 // 创建一个包装组件来管理状态

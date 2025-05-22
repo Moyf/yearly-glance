@@ -16,6 +16,7 @@ import {
 	Holiday,
 } from "@/src/core/interfaces/Events";
 import { EventFormModal } from "./components/EventForm/EventFormModal";
+import { ImportExportModal } from "./components/ImportExportManager/ImportExportModal";
 import { YearlyGlanceBus } from "./core/hook/useYearlyGlanceConfig";
 import {
 	updateBirthdaysInfo,
@@ -136,6 +137,12 @@ export default class YearlyGlancePlugin extends Plugin {
 		});
 
 		this.addCommand({
+			id: "import-export-events",
+			name: t("command.importExportEvents"),
+			callback: () => this.importExportEvents(),
+		});
+
+		this.addCommand({
 			id: "reload-plugin",
 			name: t("command.reloadPlugin"),
 			callback: () => this.reloadPlugin(),
@@ -245,6 +252,11 @@ export default class YearlyGlancePlugin extends Plugin {
 		).open();
 	}
 
+	// 导入导出
+	importExportEvents() {
+		new ImportExportModal(this).open();
+	}
+
 	// 重载插件
 	public async reloadPlugin() {
 		try {
@@ -258,7 +270,7 @@ export default class YearlyGlancePlugin extends Plugin {
 		}
 	}
 
-	private generateEventId(eventType?: EventType): string {
+	public generateEventId(eventType?: EventType): string {
 		const prefixMap: Record<EventType, string> = {
 			birthday: "birth",
 			holiday: "holi",

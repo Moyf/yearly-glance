@@ -90,14 +90,14 @@ const translations: BaseMessage = {
 			desc: "Event management",
 		},
 		group: {
-		  basic: "Basic",
-		  basicDesc: "Configure the basic information of the calendar.",
-		  layout: "Layout",
-		  layoutDesc: "Overall layout and view type of the calendar.",
-		  displayContent: "Style",
-		  displayContentDesc: "Appearance-related options for the calendar.",
-		  eventDisplay: "Event Display",
-		  eventDisplayDesc: "Settings for events, holidays, birthdays, etc."
+			basic: "Basic",
+			basicDesc: "Configure the basic information of the calendar.",
+			layout: "Layout",
+			layoutDesc: "Overall layout and view type of the calendar.",
+			displayContent: "Style",
+			displayContentDesc: "Appearance-related options for the calendar.",
+			eventDisplay: "Event Display",
+			eventDisplayDesc: "Settings for events, holidays, birthdays, etc.",
 		},
 	},
 	view: {
@@ -202,12 +202,23 @@ const translations: BaseMessage = {
 				repeat: "Repeat",
 			},
 		},
+		importExportManager: {
+			import: {
+				title: "Import events",
+				tab: "Import",
+			},
+			export: {
+				title: "Export events",
+				tab: "Export",
+			},
+		},
 	},
 	command: {
 		openYearlyGlance: "Open yearly glance",
 		openEventManager: "Open events manager",
 		addEvent: "Add event",
 		reloadPlugin: "Reload plugin",
+		importExportEvents: "Open import export window",
 	},
 	common: {
 		confirm: "Confirm",

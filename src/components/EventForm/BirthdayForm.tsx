@@ -8,7 +8,6 @@ import { DatePicker } from "@/src/components/DatePicker/DatePicker";
 import { ColorSelector } from "../Base/ColorSelector";
 import { t } from "@/src/i18n/i18n";
 import { EVENT_TYPE_DEFAULT } from "@/src/core/interfaces/Events";
-import "./style/EventFormModal.css";
 
 interface BirthdayFormProps {
 	event: Partial<Birthday>;

@@ -221,13 +221,8 @@ export class EventFormModal extends Modal {
 		// 根据事件类型和是否编辑来更新事件
 		if (eventType === "holiday") {
 			if (this.isEditing) {
-				// 使用更可靠的匹配方式：基于日期和文本内容
 				newEvents.holidays = events.holidays.map((h) => {
-					// 检查是否为同一事件（使用多个属性进行匹配）
-					if (
-						h.date === this.event.date &&
-						h.text === this.event.text
-					) {
+					if (h.id === event.id) {
 						return event as Holiday;
 					}
 					return h;
@@ -237,12 +232,8 @@ export class EventFormModal extends Modal {
 			}
 		} else if (eventType === "birthday") {
 			if (this.isEditing) {
-				// 使用更可靠的匹配方式
 				newEvents.birthdays = events.birthdays.map((b) => {
-					if (
-						b.date === this.event.date &&
-						b.text === this.event.text
-					) {
+					if (b.id === event.id) {
 						return event as Birthday;
 					}
 					return b;
@@ -252,12 +243,8 @@ export class EventFormModal extends Modal {
 			}
 		} else {
 			if (this.isEditing) {
-				// 使用更可靠的匹配方式
 				newEvents.customEvents = events.customEvents.map((c) => {
-					if (
-						c.date === this.event.date &&
-						c.text === this.event.text
-					) {
+					if (c.id === event.id) {
 						return event as CustomEvent;
 					}
 					return c;

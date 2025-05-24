@@ -10,6 +10,7 @@
 
 .yg-event-form {
 	display: flex;
+	flex-direction: column;
 	flex-wrap: wrap;
 	gap: 15px;
 	padding: 0px;

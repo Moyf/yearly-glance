@@ -83,7 +83,7 @@ const translations: BaseMessage = {
 			showDebugInfo: {
 				name: "顯示除錯資訊",
 				desc: "在控制台中顯示除錯資訊",
-			}
+			},
 		},
 		events: {
 			name: "事件",
@@ -97,7 +97,7 @@ const translations: BaseMessage = {
 			displayContent: "樣式設定",
 			displayContentDesc: "年曆外觀相關的內容。",
 			eventDisplay: "事件顯示",
-			eventDisplayDesc: "事件、節假日、生日等相關顯示設定。"
+			eventDisplayDesc: "事件、節假日、生日等相關顯示設定。",
 		},
 	},
 	view: {
@@ -201,12 +201,23 @@ const translations: BaseMessage = {
 				repeat: "重複",
 			},
 		},
+		importExportManager: {
+			import: {
+				title: "導入事件",
+				tab: "導入",
+			},
+			export: {
+				title: "導出事件",
+				tab: "導出",
+			},
+		},
 	},
 	command: {
 		openYearlyGlance: "打開年度概覽",
 		openEventManager: "打開事件管理",
 		addEvent: "添加事件",
 		reloadPlugin: "重載插件",
+		importExportEvents: "打開導入導出窗口",
 	},
 	common: {
 		confirm: "確認",

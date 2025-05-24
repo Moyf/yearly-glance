@@ -23,34 +23,62 @@ interface ImportedEvents {
 	customEvents?: CustomEvent[];
 }
 
+/**
+ * 事件检查
+ * -----
+ * - 事件必需字段 -
+ * id：事件id，要求唯一
+ * text：事件名称
+ * date：事件时间
+ * dateType：事件时间类型，农历或公历
+ * -----
+ * eventType：事件类型
+ * selected：是否被选择导入
+ * -----
+ * - 数据验证 -
+ * valid：事件是否正常构造
+ * errorMessage：错误构造的信息
+ * fixed：是否有修复字段
+ * -----
+ */
 interface EventCheckStatus {
-	id: string;
-	text: string;
-	dateType: "SOLAR" | "LUNAR";
-	date: string;
-	type: EventType;
+	validateEvent: Partial<Holiday | Birthday | CustomEvent>;
+	eventType: EventType;
 	selected: boolean;
 	valid: boolean;
 	errorMessage?: string;
 	fixed: boolean;
-	fixedId?: string;
-	fixedText?: string;
-	fixedDate?: string;
-	fixedDateType?: "SOLAR" | "LUNAR";
 }
 
 export const ImportHandle: React.FC<ImportHandleProps> = ({ plugin }) => {
+	const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
 	const [importedData, setImportedData] =
 		React.useState<ImportedEvents | null>(null);
 	const [eventChecks, setEventChecks] = React.useState<EventCheckStatus[]>(
 		[]
 	);
+	const [isDragging, setIsDragging] = React.useState(false);
 
 	const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+	// 验证数据
+	React.useEffect(() => {
+		if (importedData) {
+			validateImportedData(importedData);
+		}
+	}, [importedData]);
+
+	const resetFileInput = (e: React.MouseEvent<HTMLDivElement>) => {
+		e.stopPropagation();
+		if (fileInputRef.current) {
+			fileInputRef.current.value = "";
+		}
+	};
 
 	// 读取文件数据
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0] || null;
+		setSelectedFile(file);
 		if (!file) return;
 
 		const reader = new FileReader();
@@ -59,26 +87,74 @@ export const ImportHandle: React.FC<ImportHandleProps> = ({ plugin }) => {
 				const jsonData = JSON.parse(
 					e.target?.result as string
 				) as ImportedEvents;
-				console.debug(jsonData);
 				setImportedData(jsonData);
 			} catch (error) {
 				new Notice("导入出错，请检查文件内容是否为json格式");
+				setSelectedFile(null);
+				setImportedData(null);
+				setEventChecks([]);
 			}
 		};
 
 		reader.onerror = () => {
 			new Notice("读取文件时出错，请重试。");
+			setSelectedFile(null);
+			setImportedData(null);
+			setEventChecks([]);
 		};
 
 		reader.readAsText(file);
 	};
 
-	// 验证数据
-	React.useEffect(() => {
-		if (importedData) {
-			validateImportedData(importedData);
+	// 拖拽三件套
+	const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragging(true);
+	};
+	const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragging(false);
+	};
+	const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+	};
+
+	const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragging(false);
+
+		const file = e.dataTransfer.files?.[0];
+		if (file && file.type === "application/json") {
+			setSelectedFile(file);
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				try {
+					const jsonData = JSON.parse(
+						e.target?.result as string
+					) as ImportedEvents;
+					setImportedData(jsonData);
+				} catch (error) {
+					new Notice("导入出错，请检查文件内容是否为json格式");
+					setSelectedFile(null);
+					setImportedData(null);
+					setEventChecks([]);
+				}
+			};
+			reader.onerror = () => {
+				new Notice("读取文件时出错，请重试。");
+				setSelectedFile(null);
+				setImportedData(null);
+				setEventChecks([]);
+			};
+			reader.readAsText(file);
+		} else {
+			new Notice("请选择JSON格式的文件");
 		}
-	}, [importedData]);
+	};
 
 	const validateImportedData = (data: ImportedEvents) => {
 		const checks: EventCheckStatus[] = [];
@@ -88,19 +164,12 @@ export const ImportHandle: React.FC<ImportHandleProps> = ({ plugin }) => {
 			data.holidays.forEach((holiday) => {
 				const validationResult = validateEvent(holiday, "holiday");
 				checks.push({
-					id: holiday.id || validationResult.fixedId,
-					text: holiday.text,
-					dateType: holiday.dateType,
-					date: holiday.date,
-					type: "holiday",
+					validateEvent: validationResult.fixedEvent as Holiday,
+					eventType: "holiday",
 					selected: validationResult.valid,
 					valid: validationResult.valid,
 					errorMessage: validationResult.errorMessage,
 					fixed: validationResult.fixed,
-					fixedId: validationResult.fixedId,
-					fixedText: validationResult.fixedText,
-					fixedDate: validationResult.fixedDate,
-					fixedDateType: validationResult.fixedDateType,
 				});
 			});
 		}
@@ -110,19 +179,12 @@ export const ImportHandle: React.FC<ImportHandleProps> = ({ plugin }) => {
 			data.birthdays.forEach((birthday) => {
 				const validationResult = validateEvent(birthday, "birthday");
 				checks.push({
-					id: birthday.id || validationResult.fixedId,
-					text: birthday.text,
-					dateType: birthday.dateType,
-					date: birthday.date,
-					type: "birthday",
+					validateEvent: validationResult.fixedEvent as Birthday,
+					eventType: "birthday",
 					selected: validationResult.valid,
 					valid: validationResult.valid,
 					errorMessage: validationResult.errorMessage,
 					fixed: validationResult.fixed,
-					fixedId: validationResult.fixedId,
-					fixedText: validationResult.fixedText,
-					fixedDate: validationResult.fixedDate,
-					fixedDateType: validationResult.fixedDateType,
 				});
 			});
 		}
@@ -135,19 +197,12 @@ export const ImportHandle: React.FC<ImportHandleProps> = ({ plugin }) => {
 					"customEvent"
 				);
 				checks.push({
-					id: customEvent.id || validationResult.fixedId,
-					text: customEvent.text,
-					dateType: customEvent.dateType,
-					date: customEvent.date,
-					type: "customEvent",
+					validateEvent: validationResult.fixedEvent as CustomEvent,
+					eventType: "customEvent",
 					selected: validationResult.valid,
 					valid: validationResult.valid,
 					errorMessage: validationResult.errorMessage,
 					fixed: validationResult.fixed,
-					fixedId: validationResult.fixedId,
-					fixedText: validationResult.fixedText,
-					fixedDate: validationResult.fixedDate,
-					fixedDateType: validationResult.fixedDateType,
 				});
 			});
 		}
@@ -157,45 +212,38 @@ export const ImportHandle: React.FC<ImportHandleProps> = ({ plugin }) => {
 
 	// 验证事件构造
 	const validateEvent = (
-		event: Partial<BaseEvent>,
+		event: Partial<Holiday | Birthday | CustomEvent>,
 		eventType: EventType
 	): {
 		valid: boolean;
 		errorMessage: string;
 		fixed: boolean;
-		fixedId: string;
-		fixedText: string;
-		fixedDate: string;
-		fixedDateType: "SOLAR" | "LUNAR";
+		fixedEvent: Partial<Holiday | Birthday | CustomEvent>;
 	} => {
 		let valid = true;
 		let errorMessage = "";
 		let fixed = false;
-		let fixedId = "";
-		let fixedText = "";
-		let fixedDate = "";
-		let fixedDateType = "SOLAR";
+		const fixedEvent = { ...event };
 
 		// 无值处理
 		if (!event.id) {
-			valid = true;
 			fixed = true;
-			fixedId = plugin.generateEventId(eventType);
-			errorMessage += `事件ID为空, 已自动生成${fixedId}|`;
+			fixedEvent.id = plugin.generateEventId(eventType);
+			errorMessage += `未设置事件ID, 已自动生成${fixedEvent.id}|`;
 		}
 
 		if (!event.text) {
 			valid = false;
 			fixed = true;
-			fixedText = generateUUID({ prefix: "未命名" });
-			errorMessage += `事件名称为空, 坚持导入将使用${fixedText}|`;
+			fixedEvent.text = generateUUID({ prefix: "未命名" });
+			errorMessage += `未设置事件名称, 坚持导入将使用${fixedEvent.text}|`;
 		}
 
 		if (!event.dateType) {
 			valid = false;
 			fixed = true;
-			fixedDateType = "SOLAR";
-			errorMessage += `事件日期类型为空, 坚持导入将使用${fixedDateType}|`;
+			fixedEvent.dateType = "SOLAR";
+			errorMessage += `未设置事件日期类型, 坚持导入将使用${fixedEvent.dateType}|`;
 		}
 
 		if (!event.date) {
@@ -203,24 +251,48 @@ export const ImportHandle: React.FC<ImportHandleProps> = ({ plugin }) => {
 			fixed = true;
 			if (event.dateType === "SOLAR") {
 				const today = Solar.fromDate(new Date());
-				fixedDate = `${today.getYear()},${today.getMonth()},${today.getDay()}`;
+				fixedEvent.date = `${today.getYear()},${today.getMonth()},${today.getDay()}`;
 			} else {
 				const today = Lunar.fromDate(new Date());
-				fixedDate = `${today.getYear()},${today.getMonth()},${today.getDay()}`;
+				fixedEvent.date = `${today.getYear()},${today.getMonth()},${today.getDay()}`;
 			}
-			errorMessage += `事件日期为空, 坚持导入将使用${fixedDateType} ${fixedDate}|`;
+			errorMessage += `未设置事件日期, 坚持导入将使用${fixedEvent.dateType} ${fixedEvent.date}|`;
 		}
 
-		// TODO:日期构造错误处理
+		if (eventType === "holiday") {
+			if (!(event as Holiday).type) {
+				fixed = true;
+				(fixedEvent as Holiday).type = "CUSTOM";
+				errorMessage += `未设置节日类型, 坚持导入将使用${
+					(fixedEvent as Holiday).type
+				}|`;
+			}
+			if (!(event as Holiday).isHidden) {
+				fixed = true;
+				(fixedEvent as Holiday).isHidden = false;
+				errorMessage += `未设置节日是否隐藏, 坚持导入将使用${
+					(fixedEvent as Holiday).isHidden
+				}|`;
+			}
+		}
+
+		if (eventType === "customEvent" && !(event as CustomEvent).isRepeat) {
+			fixed = true;
+			(fixedEvent as CustomEvent).isRepeat = false;
+			errorMessage += `未设置自定义事件是否重复, 坚持导入将使用${
+				(fixedEvent as CustomEvent).isRepeat
+			}|`;
+		}
+
+		// TODO: 重复事件检查
+
+		// TODO: 事件日期构造有效性检查
 
 		return {
 			valid,
 			errorMessage,
 			fixed,
-			fixedId,
-			fixedText,
-			fixedDate,
-			fixedDateType: fixedDateType as "SOLAR" | "LUNAR",
+			fixedEvent,
 		};
 	};
 
@@ -246,7 +318,7 @@ export const ImportHandle: React.FC<ImportHandleProps> = ({ plugin }) => {
 	};
 
 	// 导入
-	const handleImport = () => {
+	const handleImport = async () => {
 		if (!importedData) return;
 
 		// 筛选用户选择的事件
@@ -259,84 +331,25 @@ export const ImportHandle: React.FC<ImportHandleProps> = ({ plugin }) => {
 		// 收集选中的事件
 		for (const check of eventChecks) {
 			if (check.selected) {
-				// 创建基本事件对象，应用修复数据（如果有）
-				const baseEvent: BaseEvent = {
-					id: check.fixed && check.fixedId ? check.fixedId : check.id,
-					text:
-						check.fixed && check.fixedText
-							? check.fixedText
-							: check.text,
-					dateType:
-						check.fixed && check.fixedDateType
-							? check.fixedDateType
-							: check.dateType,
-					date:
-						check.fixed && check.fixedDate
-							? check.fixedDate
-							: check.date,
-				};
-
-				// 根据类型添加到不同的集合
-				switch (check.type) {
-					case "holiday": {
-						const holiday: Holiday = (() => {
-							if (
-								importedData.holidays &&
-								importedData.holidays.length > 0
-							) {
-								const foundHoliday = importedData.holidays.find(
-									(h) => h.id === check.id
-								);
-								if (foundHoliday) {
-									return { ...foundHoliday, ...baseEvent };
-								}
-							}
-							return baseEvent as Holiday;
-						})();
-						selectedEvents.holidays.push(holiday);
+				switch (check.eventType) {
+					case "holiday":
+						selectedEvents.holidays = [
+							...selectedEvents.holidays,
+							check.validateEvent as Holiday,
+						];
 						break;
-					}
-					case "birthday": {
-						const birthday: Birthday = (() => {
-							if (
-								importedData.birthdays &&
-								importedData.birthdays.length > 0
-							) {
-								const foundBirthday =
-									importedData.birthdays.find(
-										(b) => b.id === check.id
-									);
-								if (foundBirthday) {
-									return { ...foundBirthday, ...baseEvent };
-								}
-							}
-							return baseEvent as Birthday;
-						})();
-						selectedEvents.birthdays.push(birthday);
+					case "birthday":
+						selectedEvents.birthdays = [
+							...selectedEvents.birthdays,
+							check.validateEvent as Birthday,
+						];
 						break;
-					}
-					case "customEvent": {
-						const customEvent: CustomEvent = (() => {
-							if (
-								importedData.customEvents &&
-								importedData.customEvents.length > 0
-							) {
-								const foundCustomEvent =
-									importedData.customEvents.find(
-										(c) => c.id === check.id
-									);
-								if (foundCustomEvent) {
-									return {
-										...foundCustomEvent,
-										...baseEvent,
-									};
-								}
-							}
-							return baseEvent as CustomEvent;
-						})();
-						selectedEvents.customEvents.push(customEvent);
+					case "customEvent":
+						selectedEvents.customEvents = [
+							...selectedEvents.customEvents,
+							check.validateEvent as CustomEvent,
+						];
 						break;
-					}
 					default:
 						break;
 				}
@@ -344,6 +357,30 @@ export const ImportHandle: React.FC<ImportHandleProps> = ({ plugin }) => {
 		}
 
 		console.debug(selectedEvents);
+
+		const events = plugin.getData();
+		const newEvents = { ...events };
+
+		if (selectedEvents.holidays.length > 0) {
+			newEvents.holidays = [
+				...newEvents.holidays,
+				...selectedEvents.holidays,
+			];
+		}
+		if (selectedEvents.birthdays.length > 0) {
+			newEvents.birthdays = [
+				...newEvents.birthdays,
+				...selectedEvents.birthdays,
+			];
+		}
+		if (selectedEvents.customEvents.length > 0) {
+			newEvents.customEvents = [
+				...newEvents.customEvents,
+				...selectedEvents.customEvents,
+			];
+		}
+
+		await plugin.updateData(newEvents);
 	};
 
 	return (
@@ -353,14 +390,34 @@ export const ImportHandle: React.FC<ImportHandleProps> = ({ plugin }) => {
 			</h3>
 
 			<div className="yg-import-handle">
-				<div className="yg-upload-section">
+				<div
+					className="yg-upload-section"
+					onClick={() => fileInputRef.current?.click()}
+					onDragEnter={handleDragEnter}
+					onDragOver={handleDragOver}
+					onDragLeave={handleDragLeave}
+					onDrop={handleDrop}
+				>
 					<div className="yg-file-input">
 						<input
 							ref={fileInputRef}
 							type="file"
 							accept=".json"
 							onChange={handleFileChange}
+							onClick={resetFileInput}
 						/>
+						<div className="yg-upload-content">
+							{selectedFile && (
+								<span className="yg-upload-file-name">
+									{selectedFile.name}
+								</span>
+							)}
+							<span className="yg-upload-file-placeholder">
+								{isDragging
+									? "松开鼠标导入文件"
+									: "点击或拖拽文件到此处"}
+							</span>
+						</div>
 					</div>
 				</div>
 
@@ -413,10 +470,12 @@ export const ImportHandle: React.FC<ImportHandleProps> = ({ plugin }) => {
 									/>
 									<div className="yg-import-event-info">
 										<span className="yg-import-event-name">
-											{event.text} ({event.type})
+											{event.validateEvent.text} (
+											{event.validateEvent.type})
 										</span>
 										<span className="yg-import-event-date">
-											{event.dateType}: {event.date}
+											{event.validateEvent.dateType}:{" "}
+											{event.validateEvent.date}
 										</span>
 										{event.fixed && (
 											<span className="yg-import-event-error">

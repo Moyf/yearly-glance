@@ -35,10 +35,52 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 20px;
+		padding: 24px;
 		border: 2px dashed var(--background-modifier-border);
 		border-radius: 8px;
 		margin-bottom: 20px;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		background-color: var(--background-primary-alt);
+		min-height: 120px;
+
+		&:hover {
+			border-color: var(--text-accent);
+			background-color: var(--background-modifier-hover);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		.yg-file-input input[type="file"] {
+			display: none;
+		}
+
+		.yg-upload-content {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 12px;
+			text-align: center;
+			color: var(--text-muted);
+
+			.yg-upload-file-name {
+				font-weight: 500;
+				color: var(--text-normal);
+				background-color: var(--background-primary);
+				padding: 6px 12px;
+				border-radius: 4px;
+				border: 1px solid var(--background-modifier-border);
+				max-width: 300px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
+			.yg-upload-file-placeholder {
+				font-size: 0.95em;
+				color: var(--text-accent);
+			}
+		}
 	}
 
 	.yg-import-select-section {
@@ -65,9 +107,8 @@
 		gap: 8px;
 		overflow-y: auto;
 		max-height: 400px;
-		border: 1px solid var(--background-modifier-border);
-		border-radius: 4px;
-		padding: 8px;
+		border-top: 2px dashed var(--background-modifier-border);
+		padding: 8px 2px;
 
 		.yg-import-event-item {
 			padding: 8px;
@@ -126,8 +167,4 @@
 			}
 		}
 	}
-}
-
-.yg-export-handle {
-	display: flex;
 }

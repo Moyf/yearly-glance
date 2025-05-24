@@ -31,7 +31,6 @@ export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
 
 	async onload() {
-		// console.debug("[yearly-glance] 加载年度概览插件");
 		// 加载设置
 		await this.loadSettings();
 
@@ -53,9 +52,7 @@ export default class YearlyGlancePlugin extends Plugin {
 		lunarTest.test();
 	}
 
-	onunload() {
-		// console.debug("[yearly-glance] Unloaded.");
-	}
+	onunload() {}
 
 	async loadSettings() {
 		// 加载数据
@@ -75,7 +72,6 @@ export default class YearlyGlancePlugin extends Plugin {
 	private validateAndMergeSettings(savedData: any): YearlyGlanceConfig {
 		// 创建默认配置的深拷贝
 		const validatedSettings = structuredClone(DEFAULT_CONFIG);
-		// console.debug(validatedSettings);
 
 		try {
 			// 如果savedData存在且是对象

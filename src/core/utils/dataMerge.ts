@@ -39,13 +39,11 @@ function migrateBuiltinHolidays(
 	// 如果holidays数组不存在，初始化为空数组
 	if (!data.holidays) {
 		data.holidays = [];
-		console.debug(`[yearly-glance] 初始化节日数组`);
 	}
 
 	// 确保holidays是数组类型
 	if (!Array.isArray(data.holidays)) {
 		data.holidays = [];
-		console.debug(`[yearly-glance] 重置非数组类型的节日数据为空数组`);
 	}
 
 	// 创建用户节日的副本，我们将在此基础上进行修改
@@ -91,24 +89,13 @@ function migrateBuiltinHolidays(
 				type: "BUILTIN", // 确保类型正确
 			});
 			newHolidayIds.add(builtinHoliday.id);
-			console.debug(
-				`[yearly-glance] 添加新的内置节日: ${builtinHoliday.text}`
-			);
 		}
 	}
 
 	// 更新数据中的节日列表
 	if (finalHolidays.length > userHolidays.length) {
-		console.debug(
-			`[yearly-glance] 共添加 ${
-				finalHolidays.length - userHolidays.length
-			} 个新的内置节日`
-		);
 		data.holidays = finalHolidays;
 	} else if (userHolidays.length === 0 && finalHolidays.length > 0) {
-		console.debug(
-			`[yearly-glance] 初始化 ${finalHolidays.length} 个内置节日`
-		);
 		data.holidays = finalHolidays;
 	}
 }
@@ -128,9 +115,6 @@ function migrateHolidayTypes(data: YearlyGlanceConfig["data"]): void {
 		// 使用类型断言解决类型不兼容问题
 		// 因为我们正在处理的是旧版数据，可能包含不在当前类型定义中的值
 		if ((holiday as { type: string }).type === "INTERNAT") {
-			console.debug(
-				`[yearly-glance] 迁移节日类型: ${holiday.text} (INTERNAT -> BUILTIN)`
-			);
 			holiday.type = "BUILTIN";
 		}
 	}

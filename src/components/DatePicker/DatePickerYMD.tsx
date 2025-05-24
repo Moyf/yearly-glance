@@ -3,12 +3,9 @@ import { DateSelector } from "./DateSelector";
 import {
 	displayDateValue,
 	getMonthOptions,
+	isValidLunarDate,
 	parseDateValue,
 } from "@/src/core/utils/dateParser";
-import {
-	LunarYearOptions,
-	SolarYearOptions,
-} from "@/src/core/data/dateOptions";
 import {
 	Lunar,
 	LunarMonth,
@@ -34,14 +31,6 @@ export const DatePickerYMD: React.FC<DatePickerYMDProps> = ({
 	const [selectMonth, setSelectMonth] = React.useState<number>(month);
 	const [selectDay, setSelectDay] = React.useState<number>(day);
 	const [prevType, setPrevType] = React.useState<"SOLAR" | "LUNAR">(type);
-
-	const yearOptions = React.useMemo(() => {
-		if (type === "SOLAR") {
-			return SolarYearOptions;
-		} else {
-			return LunarYearOptions;
-		}
-	}, [type]);
 
 	const monthOptions = React.useMemo(() => {
 		if (type === "SOLAR") {
@@ -70,8 +59,19 @@ export const DatePickerYMD: React.FC<DatePickerYMDProps> = ({
 				label: displayDateValue(day, "SOLAR", "day"),
 			}));
 		} else {
-			const LMonth = LunarMonth.fromYm(selectYear, selectMonth);
+			const lunarYear = LunarYear.fromYear(selectYear);
+			const lunarMonthsInYear = lunarYear.getMonthsInYear();
+			// 检查月份是否存在于当年的月份列表中
+			const monthExists = lunarMonthsInYear.some(
+				(month) => month.getMonth() === selectMonth
+			);
+			// 如果不存在，使用非闰月版本
+			const effectiveMonth = monthExists
+				? selectMonth
+				: Math.abs(selectMonth);
+			const LMonth = LunarMonth.fromYm(selectYear, effectiveMonth);
 			const LunarDaysOfMonth = LMonth!.getDayCount();
+
 			return Array.from(
 				{ length: LunarDaysOfMonth },
 				(_, i) => i + 1
@@ -84,15 +84,18 @@ export const DatePickerYMD: React.FC<DatePickerYMDProps> = ({
 
 	// 闰月处理
 	React.useEffect(() => {
-		if (type === "LUNAR" && selectMonth < 0) {
-			const monthExists = monthOptions.some(
-				(option) => option.value === selectMonth
+		if (type === "LUNAR") {
+			const lunarYear = LunarYear.fromYear(selectYear);
+			const lunarMonthsInYear = lunarYear.getMonthsInYear();
+			const monthExists = lunarMonthsInYear.some(
+				(month) => month.getMonth() === selectMonth
 			);
-			if (!monthExists) {
+
+			if (!monthExists && selectMonth < 0) {
 				setSelectMonth(Math.abs(selectMonth));
 			}
 		}
-	}, [type, monthOptions, selectYear, selectMonth]);
+	}, [type, selectYear, selectMonth]);
 
 	// 日期类型改变处理
 	React.useEffect(() => {
@@ -131,19 +134,27 @@ export const DatePickerYMD: React.FC<DatePickerYMDProps> = ({
 	// 当选择的年、月或日发生变化时，触发onChange
 	React.useEffect(() => {
 		if (selectYear && selectMonth && selectDay) {
-			const newValue = `${selectYear},${selectMonth},${selectDay}`;
+			let newValue = `${selectYear},${selectMonth},${selectDay}`;
+			if (type === "LUNAR") {
+				if (!isValidLunarDate(selectYear, selectMonth, selectDay)) {
+					newValue = `${selectYear},${Math.abs(
+						selectMonth
+					)},${selectDay}`;
+				}
+			}
 
-			onChange(newValue);
+			onChange(newValue, type);
 		}
-	}, [selectYear, selectMonth, selectDay]);
+	}, [selectYear, selectMonth, selectDay, type, onChange]);
 
 	return (
 		<div className="date-selector-YMD">
 			<DateSelector
 				value={selectYear}
 				type="year"
-				options={yearOptions}
 				onChange={(value) => setSelectYear(value)}
+				min={1}
+				max={9999}
 			/>
 			<DateSelector
 				value={selectMonth}

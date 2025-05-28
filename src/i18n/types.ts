@@ -9,97 +9,53 @@ export const SupportedLocales: Record<string, BaseMessage> = {
 	"zh-TW": zhTW,
 };
 
+interface IBaseSettingsItem {
+	name: string;
+	desc: string;
+}
+type SettingsItem<T = Record<string, never>> = IBaseSettingsItem & T;
+
 // 定义翻译结构类型
 export type BaseMessage = {
 	setting: {
 		title: string;
 		desc: string;
-		general: {
-			name: string;
-			desc: string;
-			title: {
-				name: string;
-				desc: string;
-			};
-			layout: {
-				name: string;
-				desc: string;
-			};
-			viewType: {
-				name: string;
-				desc: string;
+		general: SettingsItem<{
+			title: IBaseSettingsItem;
+			layout: IBaseSettingsItem;
+			viewType: SettingsItem<{
 				options: {
 					calendar: string;
 					list: string;
 				};
-			};
-			showWeekdays: {
-				name: string;
-				desc: string;
-			};
-			highlightToday: {
-				name: string;
-				desc: string;
-			};
-			highlightWeekends: {
-				name: string;
-				desc: string;
-			};
-			showLegend: {
-				name: string;
-				desc: string;
-			};
-			limitListHeight: {
-				name: string;
-				desc: string;
-			};
-			eventFontSize: {
-				name: string;
-				desc: string;
+			}>;
+			showWeekdays: IBaseSettingsItem;
+			highlightToday: IBaseSettingsItem;
+			highlightWeekends: IBaseSettingsItem;
+			showLegend: IBaseSettingsItem;
+			limitListHeight: IBaseSettingsItem;
+			eventFontSize: SettingsItem<{
 				options: {
 					small: string;
 					medium: string;
 					large: string;
 				};
-			};
-			showHolidays: {
-				name: string;
-				desc: string;
-			};
-			showBirthdays: {
-				name: string;
-				desc: string;
-			};
-			showCustomEvents: {
-				name: string;
-				desc: string;
-			};
-			mondayFirst: {
-				name: string;
-				desc: string;
-			};
-			showTooltips: {
-				name: string;
-				desc: string;
-			};
-			colorful: {
-				name: string;
-				desc: string;
-			};
-			showLunarDay: {
-				name: string;
-				desc: string;
-			};
-			showDebugInfo: {
-				name: string;
-				desc: string;
-			};
-		};
-		events: {
-			name: string;
-			desc: string;
-		};
+			}>;
+			showHolidays: IBaseSettingsItem;
+			showBirthdays: IBaseSettingsItem;
+			showCustomEvents: IBaseSettingsItem;
+			mondayFirst: IBaseSettingsItem;
+			showTooltips: IBaseSettingsItem;
+			colorful: IBaseSettingsItem;
+			showLunarDay: IBaseSettingsItem;
+			showDebugInfo: IBaseSettingsItem;
+			presetColors: SettingsItem<{
+				newColor: string;
+			}>;
+		}>;
+		events: IBaseSettingsItem;
 		group: {
+<<<<<<< Updated upstream
 			basic: string;
 			basicDesc: string;
 			layout: string;
@@ -109,6 +65,14 @@ export type BaseMessage = {
 			eventDisplay: string;
 			eventDisplayDesc: string;
 		},
+=======
+			basic: IBaseSettingsItem;
+			layout: IBaseSettingsItem;
+			displayContent: IBaseSettingsItem;
+			eventDisplay: IBaseSettingsItem;
+			colorSets: IBaseSettingsItem;
+		};
+>>>>>>> Stashed changes
 	};
 	view: {
 		yearlyGlance: {
@@ -183,6 +147,7 @@ export type BaseMessage = {
 				year: string;
 				month: string;
 				day: string;
+				selectPresetColor: string;
 			};
 			holiday: {
 				name: string;
@@ -292,6 +257,15 @@ export type BaseMessage = {
 			you: string; // 酉
 			xu: string; // 戌
 			hai: string; // 亥
+		};
+		color: {
+			red: string;
+			orange: string;
+			yellow: string;
+			green: string;
+			blue: string;
+			purple: string;
+			brown: string;
 		};
 	};
 };

@@ -1,0 +1,122 @@
+.yg-preset-colors {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	width: 100%;
+}
+
+.yg-preset-colors-header {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+
+	.yg-color-add {
+		padding: 8px;
+		margin-right: 0.75rem;
+		border-radius: 6px;
+		background: var(--interactive-accent);
+		color: var(--text-on-accent);
+		transition: all 0.2s ease;
+
+		&:hover {
+			transform: scale(1.05);
+			background: var(--interactive-accent-hover);
+		}
+	}
+}
+
+.yg-preset-colors-container {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
+}
+
+.yg-color-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding: 0.5rem 0.75rem;
+	background: var(--background-primary);
+	border-radius: 8px;
+	color: var(--text-normal);
+	user-select: none;
+	transition: all 0.2s ease;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+	border: 1px solid var(--background-modifier-border);
+	cursor: grab;
+
+	&:hover {
+		background: var(--interactive-hover);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+	}
+
+	&.dragging {
+		opacity: 0.6;
+		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+	}
+
+	&.drag-over {
+		transform: translateX(8px);
+		border: 2px dashed var(--interactive-accent);
+	}
+}
+
+.yg-color-input-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.75rem;
+	flex: 1;
+
+	.yg-drag-handle {
+		color: var(--text-muted);
+		cursor: grab;
+		font-size: 1.2em;
+		padding: 4px;
+
+		&:hover {
+			color: var(--text-normal);
+		}
+	}
+
+	.yg-color-preview {
+		width: 24px;
+		height: 24px;
+
+		input[type="color"] {
+			&:disabled {
+				cursor: not-allowed;
+			}
+		}
+	}
+
+	.yg-color-input-label,
+	.yg-color-input-value {
+		flex: 1;
+		min-width: 0;
+		padding: 6px 8px;
+		border-radius: 4px;
+		background: var(--background-secondary);
+		transition: all 0.2s ease;
+
+		&:disabled {
+			cursor: not-allowed;
+		}
+	}
+}
+
+.yg-color-actions {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.75rem;
+
+	.yg-color-remove {
+		padding: 8px;
+		border-radius: 6px;
+		transition: all 0.2s ease;
+	}
+}

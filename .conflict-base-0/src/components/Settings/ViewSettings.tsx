@@ -14,6 +14,7 @@ import { SettingsItem } from "@/src/components/Settings/SettingsItem";
 import { Toggle } from "../Base/Toggle";
 import { Select } from "../Base/Select";
 import { Input } from "../Base/Input";
+import { PresetColorSettings } from "./PresetColorSettings";
 
 interface ViewSettingsProps {
 	plugin: YearlyGlancePlugin;
@@ -49,8 +50,8 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 		<>
 			{/* 基本设置分组 */}
 			<SettingsBlock
-				name={t("setting.group.basic")}
-				desc={t("setting.group.basicDesc")}
+				name={t("setting.group.basic.name")}
+				desc={t("setting.group.basic.desc")}
 				collapsible
 				defaultCollapsed={false}
 			>
@@ -62,7 +63,9 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 					<Input
 						type="text"
 						value={config.title}
-						onChange={(value) => handleUpdateConfig({ title: value })}
+						onChange={(value) =>
+							handleUpdateConfig({ title: value })
+						}
 					/>
 				</SettingsItem>
 				{/* 显示周几 */}
@@ -93,8 +96,8 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 
 			{/* 布局相关设置 */}
 			<SettingsBlock
-				name={t("setting.group.layout") as TranslationKeys}
-				desc={t("setting.group.layoutDesc") as TranslationKeys}
+				name={t("setting.group.layout.name") as TranslationKeys}
+				desc={t("setting.group.layout.desc") as TranslationKeys}
 				collapsible
 				defaultCollapsed={false}
 			>
@@ -140,8 +143,8 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 
 			{/* 显示内容相关设置 */}
 			<SettingsBlock
-				name={t("setting.group.displayContent") as TranslationKeys}
-				desc={t("setting.group.displayContentDesc") as TranslationKeys}
+				name={t("setting.group.displayContent.name") as TranslationKeys}
+				desc={t("setting.group.displayContent.desc") as TranslationKeys}
 				collapsible
 				defaultCollapsed={false}
 			>
@@ -221,8 +224,8 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 
 			{/* 事件显示相关设置 */}
 			<SettingsBlock
-				name={t("setting.group.eventDisplay") as TranslationKeys}
-				desc={t("setting.group.eventDisplayDesc") as TranslationKeys}
+				name={t("setting.group.eventDisplay.name") as TranslationKeys}
+				desc={t("setting.group.eventDisplay.desc") as TranslationKeys}
 				collapsible
 				defaultCollapsed={false}
 			>
@@ -272,6 +275,27 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						checked={config.showCustomEvents}
 						onChange={(value) =>
 							handleUpdateConfig({ showCustomEvents: value })
+						}
+					/>
+				</SettingsItem>
+			</SettingsBlock>
+
+			{/* 颜色设置 */}
+			<SettingsBlock
+				name={t("setting.group.colorSets.name")}
+				desc={t("setting.group.colorSets.desc")}
+			>
+				{/* 事件颜色预设 */}
+				<SettingsItem
+					name={t("setting.general.presetColors.name")}
+					desc={t("setting.general.presetColors.desc")}
+					collapsible
+					defaultCollapsed={true}
+				>
+					<PresetColorSettings
+						presetColors={config.presetColors}
+						onChange={(value) =>
+							handleUpdateConfig({ presetColors: value })
 						}
 					/>
 				</SettingsItem>

@@ -23,7 +23,6 @@ import {
 	parseExtendedISO,
 } from "@/src/core/utils/dateParser";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { Select } from "../Base/Select";
 import { Toggle } from "../Base/Toggle";
 import { Tooltip } from "../Base/Tooltip";
 import { NavTabs } from "../Base/NavTabs";

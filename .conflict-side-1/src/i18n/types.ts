@@ -55,24 +55,12 @@ export type BaseMessage = {
 		}>;
 		events: IBaseSettingsItem;
 		group: {
-<<<<<<< Updated upstream
-			basic: string;
-			basicDesc: string;
-			layout: string;
-			layoutDesc: string;
-			displayContent: string;
-			displayContentDesc: string;
-			eventDisplay: string;
-			eventDisplayDesc: string;
-		},
-=======
 			basic: IBaseSettingsItem;
 			layout: IBaseSettingsItem;
 			displayContent: IBaseSettingsItem;
 			eventDisplay: IBaseSettingsItem;
 			colorSets: IBaseSettingsItem;
 		};
->>>>>>> Stashed changes
 	};
 	view: {
 		yearlyGlance: {

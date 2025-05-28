@@ -95,16 +95,6 @@ const translations: BaseMessage = {
 			desc: "各事件的管理",
 		},
 		group: {
-<<<<<<< Updated upstream
-		  basic: "基本设置",
-		  basicDesc: "年历的基础信息配置。",
-		  layout: "布局相关",
-		  layoutDesc: "年历的整体布局与视图类型。",
-		  displayContent: "样式设置",
-		  displayContentDesc: "年历外观相关的内容。",
-		  eventDisplay: "事件显示",
-		  eventDisplayDesc: "事件、节假日、生日等相关显示设置。"
-=======
 			basic: {
 				name: "基本设置",
 				desc: "年历的基础信息配置",
@@ -125,7 +115,6 @@ const translations: BaseMessage = {
 				name: "颜色设置",
 				desc: "颜色配置相关内容",
 			},
->>>>>>> Stashed changes
 		},
 	},
 	view: {

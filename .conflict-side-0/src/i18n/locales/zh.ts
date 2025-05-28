@@ -115,6 +115,28 @@ const translations: BaseMessage = {
 				name: "颜色设置",
 				desc: "颜色配置相关内容",
 			},
+=======
+			basic: {
+				name: "基本设置",
+				desc: "年历的基础信息配置",
+			},
+			layout: {
+				name: "布局相关",
+				desc: "年历的整体布局与视图类型",
+			},
+			displayContent: {
+				name: "样式设置",
+				desc: "年历外观相关的内容",
+			},
+			eventDisplay: {
+				name: "事件显示",
+				desc: "事件、节假日、生日等相关显示设置",
+			},
+			colorSets: {
+				name: "颜色设置",
+				desc: "颜色配置相关内容",
+			},
+>>>>>>> Stashed changes
 		},
 	},
 	view: {

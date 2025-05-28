@@ -136,7 +136,6 @@ const translations: BaseMessage = {
 				name: "Color",
 				desc: "Color configuration related content",
 			},
->>>>>>> Stashed changes
 		},
 	},
 	view: {

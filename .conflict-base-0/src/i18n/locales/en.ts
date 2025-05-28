@@ -84,12 +84,18 @@ const translations: BaseMessage = {
 				name: "Debug information",
 				desc: "Show debug information for development",
 			},
+			presetColors: {
+				name: "Preset colors",
+				desc: "Color presets for different events",
+				newColor: "New color",
+			},
 		},
 		events: {
 			name: "Events",
 			desc: "Event management",
 		},
 		group: {
+<<<<<<< Updated upstream
 		  basic: "Basic",
 		  basicDesc: "Configure the basic information of the calendar.",
 		  layout: "Layout",
@@ -98,6 +104,28 @@ const translations: BaseMessage = {
 		  displayContentDesc: "Appearance-related options for the calendar.",
 		  eventDisplay: "Event Display",
 		  eventDisplayDesc: "Settings for events, holidays, birthdays, etc."
+=======
+			basic: {
+				name: "Basic",
+				desc: "Configure the basic information of the calendar.",
+			},
+			layout: {
+				name: "Layout",
+				desc: "Overall layout and view type of the calendar.",
+			},
+			displayContent: {
+				name: "Style",
+				desc: "Appearance-related options for the calendar.",
+			},
+			eventDisplay: {
+				name: "Event Display",
+				desc: "Settings for events, holidays, birthdays, etc.",
+			},
+			colorSets: {
+				name: "Color",
+				desc: "Color configuration related content",
+			},
+>>>>>>> Stashed changes
 		},
 	},
 	view: {
@@ -181,6 +209,7 @@ const translations: BaseMessage = {
 				year: "Year",
 				month: "Month",
 				day: "Day",
+				selectPresetColor: "Select preset",
 			},
 			holiday: {
 				name: "Holiday",
@@ -291,6 +320,15 @@ const translations: BaseMessage = {
 			you: "Yǒu ",
 			xu: "Xū ",
 			hai: "Hài ",
+		},
+		color: {
+			red: "System-Red",
+			orange: "System-Orange",
+			yellow: "System-Yellow",
+			green: "System-Green",
+			blue: "System-Blue",
+			purple: "System-Purple",
+			brown: "System-Brown",
 		},
 	},
 };

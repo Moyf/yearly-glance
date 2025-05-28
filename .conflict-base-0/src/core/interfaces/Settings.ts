@@ -1,3 +1,36 @@
+export const LAYOUT_OPTIONS = ["12x1", "1x12", "6x2", "2x6", "3x4", "4x3"];
+export const VIEW_TYPE_OPTIONS = ["calendar", "list"];
+export const EVENT_FONT_SIZE_OPTIONS = ["small", "medium", "large"];
+
+interface LayoutConfig {
+	rows: number;
+	cols: number;
+}
+
+export interface IPresetColor {
+	label: string;
+	value: any;
+	enable: boolean;
+	id?: string;
+}
+
+export const LayoutConfigMap: Record<string, LayoutConfig> =
+	LAYOUT_OPTIONS.reduce((acc, layout) => {
+		const [rows, cols] = layout.split("x").map(Number);
+		acc[layout] = { rows, cols };
+		return acc;
+	}, {});
+
+const DEFAULT_PRESET_COLORS: IPresetColor[] = [
+	{ label: "", value: "#FF2D55", enable: true, id: "red" },
+	{ label: "", value: "#FF9500", enable: true, id: "orange" },
+	{ label: "", value: "#FFCC00", enable: true, id: "yellow" },
+	{ label: "", value: "#65DB39", enable: true, id: "green" },
+	{ label: "", value: "#34AADC", enable: true, id: "blue" },
+	{ label: "", value: "#CC73E1", enable: true, id: "purple" },
+	{ label: "", value: "#A2845E", enable: true, id: "brown" },
+];
+
 // 插件设置接口
 export interface YearlyGlanceSettings {
 	year: number; // 当前选择的年份
@@ -19,6 +52,7 @@ export interface YearlyGlanceSettings {
 	colorful: boolean; // 是否多彩
 	showLunarDay: boolean; // 是否显示农历日
 	showDebugInfo: boolean; // 是否显示调试信息
+	presetColors: IPresetColor[];
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -41,20 +75,5 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	colorful: false,
 	showLunarDay: false,
 	showDebugInfo: false,
+	presetColors: DEFAULT_PRESET_COLORS,
 };
-
-export const LAYOUT_OPTIONS = ["12x1", "1x12", "6x2", "2x6", "3x4", "4x3"];
-export const VIEW_TYPE_OPTIONS = ["calendar", "list"];
-export const EVENT_FONT_SIZE_OPTIONS = ["small", "medium", "large"];
-
-interface LayoutConfig {
-	rows: number;
-	cols: number;
-}
-
-export const LayoutConfigMap: Record<string, LayoutConfig> =
-	LAYOUT_OPTIONS.reduce((acc, layout) => {
-		const [rows, cols] = layout.split("x").map(Number);
-		acc[layout] = { rows, cols };
-		return acc;
-	}, {});

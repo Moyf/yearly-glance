@@ -136,7 +136,6 @@ const translations: BaseMessage = {
 				name: "颜色设置",
 				desc: "颜色配置相关内容",
 			},
->>>>>>> Stashed changes
 		},
 	},
 	view: {

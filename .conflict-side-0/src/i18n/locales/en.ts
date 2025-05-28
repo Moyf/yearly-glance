@@ -115,6 +115,28 @@ const translations: BaseMessage = {
 				name: "Color",
 				desc: "Color configuration related content",
 			},
+=======
+			basic: {
+				name: "Basic",
+				desc: "Configure the basic information of the calendar.",
+			},
+			layout: {
+				name: "Layout",
+				desc: "Overall layout and view type of the calendar.",
+			},
+			displayContent: {
+				name: "Style",
+				desc: "Appearance-related options for the calendar.",
+			},
+			eventDisplay: {
+				name: "Event Display",
+				desc: "Settings for events, holidays, birthdays, etc.",
+			},
+			colorSets: {
+				name: "Color",
+				desc: "Color configuration related content",
+			},
+>>>>>>> Stashed changes
 		},
 	},
 	view: {

@@ -15,7 +15,7 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
-import { EventFormModal } from "./components/YearlyCalendar/EventFormModal";
+import { EventFormModal } from "./components/EventForm/EventFormModal";
 import { YearlyGlanceBus } from "./core/hook/useYearlyGlanceConfig";
 import {
 	updateBirthdaysInfo,
@@ -235,9 +235,16 @@ export default class YearlyGlancePlugin extends Plugin {
 		allowTypeChange: boolean = false,
 		props?: any
 	) {
-		new EventFormModal(this, eventType, event, isEditing, allowTypeChange, {
-			plugin: this,
-		}).open();
+		new EventFormModal(
+			this,
+			eventType,
+			event,
+			isEditing,
+			allowTypeChange,
+			(props = {
+				plugin: this,
+			})
+		).open();
 	}
 
 	// 重载插件

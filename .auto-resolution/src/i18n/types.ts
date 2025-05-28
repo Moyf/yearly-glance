@@ -68,7 +68,6 @@ export type BaseMessage = {
 			eventDisplay: IBaseSettingsItem;
 			colorSets: IBaseSettingsItem;
 		};
->>>>>>> Stashed changes
 	};
 	view: {
 		yearlyGlance: {

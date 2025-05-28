@@ -1,5 +1,9 @@
 import * as React from "react";
 import { RotateCcw } from "lucide-react";
+import { IPresetColor } from "@/src/core/interfaces/Settings";
+import { Select, SelectOption } from "./Select";
+import { t } from "@/src/i18n/i18n";
+import { TranslationKeys } from "@/src/i18n/types";
 import "./style/ColorSelector.css";
 
 /**
@@ -20,6 +24,7 @@ import "./style/ColorSelector.css";
 interface ColorSelectorProps {
 	value?: string;
 	defaultColor?: string;
+	presetColors?: IPresetColor[];
 	onChange: (color: string | undefined) => void;
 	label?: string;
 	resetTitle?: string;
@@ -30,6 +35,7 @@ interface ColorSelectorProps {
 export const ColorSelector: React.FC<ColorSelectorProps> = ({
 	value,
 	defaultColor,
+	presetColors,
 	onChange,
 	label,
 	resetTitle,
@@ -45,6 +51,17 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 
 	// 实际显示的颜色值
 	const displayColor = value || defaultColor;
+
+	const presetColorOptions: SelectOption = presetColors.map((color) => {
+		if (color.id) {
+			color.label = t(`data.color.${color.id}` as TranslationKeys);
+		}
+
+		return {
+			label: color.label,
+			value: color.value,
+		};
+	});
 
 	// 检测value变化来更新修改状态和实际颜色
 	React.useEffect(() => {
@@ -77,6 +94,19 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 		setIsModified(false);
 	};
 
+	// 选择预设颜色
+	const handlePresetColorSelect = (color: string) => {
+		setActualColor(color);
+
+		if (color === defaultColor && !submitDefaultAsValue) {
+			onChange(undefined);
+		} else {
+			onChange(color);
+		}
+
+		setIsModified(true);
+	};
+
 	return (
 		<div className="yg-color-selector-container">
 			{label && <label>{label}</label>}
@@ -100,6 +130,15 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 					</button>
 				)}
 			</div>
+			{presetColors.length > 0 && (
+				<Select
+					value={displayColor}
+					onValueChange={handlePresetColorSelect}
+					options={presetColorOptions}
+					placeholder={t("view.eventManager.form.selectPresetColor")}
+					className="yg-color-presets-selector"
+				/>
+			)}
 		</div>
 	);
 };

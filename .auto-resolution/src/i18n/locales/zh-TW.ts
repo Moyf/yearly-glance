@@ -96,7 +96,6 @@ const translations: BaseMessage = {
 				desc: "各事件的配色預設選項",
 				newColor: "新顏色",
 			},
->>>>>>> Stashed changes
 		},
 		events: {
 			name: "事件",
@@ -144,7 +143,6 @@ const translations: BaseMessage = {
 				name: "顏色設定",
 				desc: "各事件的配色預設選項",
 			},
->>>>>>> Stashed changes
 		},
 	},
 	view: {

@@ -89,6 +89,14 @@ const translations: BaseMessage = {
 				desc: "各事件的配色預設選項",
 				newColor: "新顏色",
 			},
+=======
+			},
+			presetColors: {
+				name: "預設顏色",
+				desc: "各事件的配色預設選項",
+				newColor: "新顏色",
+			},
+>>>>>>> Stashed changes
 		},
 		events: {
 			name: "事件",
@@ -115,6 +123,28 @@ const translations: BaseMessage = {
 				name: "顏色設定",
 				desc: "各事件的配色預設選項",
 			},
+=======
+			basic: {
+				name: "基本設定",
+				desc: "年曆的基礎資訊配置",
+			},
+			layout: {
+				name: "佈局相關",
+				desc: "年曆的整體佈局與視圖類型",
+			},
+			displayContent: {
+				name: "樣式設定",
+				desc: "年曆外觀相關的內容",
+			},
+			eventDisplay: {
+				name: "事件顯示",
+				desc: "事件、節假日、生日等相關顯示設定",
+			},
+			colorSets: {
+				name: "顏色設定",
+				desc: "各事件的配色預設選項",
+			},
+>>>>>>> Stashed changes
 		},
 	},
 	view: {

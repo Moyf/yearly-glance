@@ -1,6 +1,9 @@
 import * as React from "react";
 import { RotateCcw } from "lucide-react";
-import { IPresetColor } from "@/src/core/interfaces/Settings";
+import {
+	DEFAULT_PRESET_COLORS,
+	IPresetColor,
+} from "@/src/core/interfaces/Settings";
 import { Select, SelectOption } from "./Select";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
@@ -35,7 +38,7 @@ interface ColorSelectorProps {
 export const ColorSelector: React.FC<ColorSelectorProps> = ({
 	value,
 	defaultColor,
-	presetColors,
+	presetColors = DEFAULT_PRESET_COLORS,
 	onChange,
 	label,
 	resetTitle,
@@ -52,16 +55,21 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 	// 实际显示的颜色值
 	const displayColor = value || defaultColor;
 
-	const presetColorOptions: SelectOption = presetColors.map((color) => {
-		if (color.id) {
-			color.label = t(`data.color.${color.id}` as TranslationKeys);
-		}
+	const presetColorOptions: SelectOption[] =
+		presetColors
+			.filter((color) => color.enable)
+			.map((color) => {
+				if (color.id) {
+					color.label = t(
+						`data.color.${color.id}` as TranslationKeys
+					);
+				}
 
-		return {
-			label: color.label,
-			value: color.value,
-		};
-	});
+				return {
+					label: color.label,
+					value: color.value,
+				};
+			}) || [];
 
 	// 检测value变化来更新修改状态和实际颜色
 	React.useEffect(() => {
@@ -130,7 +138,7 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 					</button>
 				)}
 			</div>
-			{presetColors.length > 0 && (
+			{presetColors && (
 				<Select
 					value={displayColor}
 					onValueChange={handlePresetColorSelect}

@@ -95,16 +95,6 @@ const translations: BaseMessage = {
 			desc: "Event management",
 		},
 		group: {
-<<<<<<< Updated upstream
-		  basic: "Basic",
-		  basicDesc: "Configure the basic information of the calendar.",
-		  layout: "Layout",
-		  layoutDesc: "Overall layout and view type of the calendar.",
-		  displayContent: "Style",
-		  displayContentDesc: "Appearance-related options for the calendar.",
-		  eventDisplay: "Event Display",
-		  eventDisplayDesc: "Settings for events, holidays, birthdays, etc."
-=======
 			basic: {
 				name: "Basic",
 				desc: "Configure the basic information of the calendar.",
@@ -125,7 +115,6 @@ const translations: BaseMessage = {
 				name: "Color",
 				desc: "Color configuration related content",
 			},
->>>>>>> Stashed changes
 		},
 	},
 	view: {

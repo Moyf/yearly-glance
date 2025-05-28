@@ -1,0 +1,196 @@
+.yg-settings-container {
+	padding: 1rem;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.yg-settings-header {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 0.75rem;
+
+	.yg-settings-item-name {
+		font-size: var(--font-ui-large);
+		color: var(--text-normal);
+		letter-spacing: -0.01em;
+		margin: 0;
+		font-weight: 600;
+		line-height: 1.5;
+		flex: 1;
+	}
+
+	.yg-settings-item-description {
+		font-size: var(--font-ui-smaller);
+		color: var(--text-muted);
+		line-height: var(--line-height-tight);
+		padding: 0.25rem;
+	}
+
+}
+
+/* 设置块 */
+.yg-settings-block {
+	margin: 0.5rem 0 1.0rem;
+	border: none;
+	background: var(--background-secondary);
+	border-radius: 12px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+	transition: all 0.2s ease;
+}
+.yg-settings-block.is-collapsible {
+	flex-direction: column;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+
+	.yg-settings-block-control {
+		max-height: 100%;
+		opacity: 1;
+		padding: 0 1.25rem 1rem;
+	}
+}
+
+.yg-settings-block-info {
+	.yg-settings-block-heading {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1rem 1.25rem;
+		background: transparent;
+		cursor: pointer;
+		user-select: none;
+		transition: background-color 0.2s ease;
+	}
+
+	.yg-settings-block-icon {
+		display: flex;
+		align-items: center;
+		color: var(--text-muted);
+		transition: color 0.2s ease;
+	}
+
+	.yg-settings-block-name {
+		font-size: var(--font-ui-large);
+		color: var(--text-normal);
+		font-weight: var(--font-semibold);
+		letter-spacing: -0.01em;
+		margin: 0;
+		font-weight: 600;
+		line-height: 1.5;
+		flex: 1;
+	}
+
+	.yg-settings-block-description {
+		font-size: var(--font-ui-smaller);
+		color: var(--text-muted);
+		line-height: var(--line-height-tight);
+		padding: 0.75rem 1.25rem;
+		margin-top: -1.5rem;
+		letter-spacing: 0.01em;
+	}
+
+	.yg-settings-block-collapse-icon {
+		background: transparent;
+		border: none;
+		color: var(--text-muted);
+		cursor: pointer;
+		padding: 0.5rem;
+		border-radius: 4px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.2s ease;
+
+		&:hover {
+			background: var(--background-modifier-hover);
+			color: var(--text-normal);
+		}
+	}
+}
+
+.yg-settings-block-control {
+	padding: 0 1.25rem 1.25rem;
+	max-height: none;
+	opacity: 1;
+	overflow: visible;
+	transition: all 0.3s ease-out;
+}
+
+/* 设置项 */
+.yg-settings-item {
+	display: flex;
+	justify-content: space-between;
+	padding: 0.5rem 0 0.5rem;
+	border-top: 1px solid var(--background-modifier-border);
+}
+
+.yg-settings-item.is-collapsible {
+	flex-direction: column;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+
+	.yg-settings-item-info {
+		margin-right: 0;
+		margin-bottom: 0.75rem;
+		width: 100%;
+		min-width: 0;
+	}
+
+	.yg-settings-item-control {
+		width: 100%;
+		min-width: 0;
+	}
+}
+
+.yg-settings-item-info {
+	flex: 1;
+	margin-right: 1.5rem;
+	padding: 0.25rem 0;
+
+	.yg-settings-item-heading {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.yg-settings-item-icon {
+		color: var(--interactive-accent);
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+	.yg-settings-item-name {
+		font-size: var(--font-ui-medium);
+		color: var(--text-normal);
+		font-weight: var(--font-semibold);
+	}
+
+	.yg-settings-item-description {
+		font-size: var(--font-ui-smaller);
+		color: var(--text-muted);
+		line-height: var(--line-height-tight);
+	}
+
+	.yg-settings-item-collapse-icon {
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--text-muted);
+		transition: color 0.2s ease;
+		margin-left: auto;
+	}
+}
+
+.yg-settings-item-control {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	flex-shrink: 0;
+	gap: 0.5rem;
+
+	.yg-select-wrapper {
+		width: auto;
+	}
+}

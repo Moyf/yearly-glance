@@ -1,0 +1,49 @@
+.yg-date-selector {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	position: relative;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	background: var(--background-primary-alt);
+
+	&:hover {
+		border-color: var(--interactive-accent);
+	}
+}
+
+.yg-date-selector-select {
+	.yg-select-arrow {
+		visibility: hidden;
+		width: 0;
+	}
+}
+
+.yg-date-selector-arrows {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	justify-content: space-between;
+}
+
+.yg-date-selector-arrow {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	color: var(--text-muted);
+	transition: all 0.2s ease;
+	height: 50%;
+
+	&:hover {
+		color: var(--text-normal);
+		background-color: var(--background-modifier-hover);
+	}
+
+	&:active {
+		background-color: var(--background-modifier-active);
+	}
+}

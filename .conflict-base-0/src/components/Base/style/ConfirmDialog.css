@@ -1,0 +1,53 @@
+.yg-confirm-dialog-overlay {
+	z-index: 1000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.yg-confirm-dialog {
+	background-color: var(--background-primary);
+	width: 100%;
+	max-width: 90%;
+}
+
+.yg-confirm-dialog-header {
+	margin-bottom: 12px;
+
+	h3 {
+		margin: 0;
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--text-normal);
+	}
+}
+
+.yg-confirm-dialog-content {
+	margin-bottom: 16px;
+
+	p {
+		margin: 0;
+		color: var(--text-muted);
+		font-size: 14px;
+		line-height: 1.5;
+	}
+}
+
+.yg-confirm-dialog-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+
+	button {
+		padding: 6px 12px;
+		border-radius: 4px;
+		font-size: 14px;
+		font-weight: 500;
+		cursor: pointer;
+		transition: background-color 0.2s;
+
+		&:hover {
+			background-color: var(--background-modifier-hover);
+		}
+	}
+}

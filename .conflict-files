@@ -1,0 +1,3 @@
+ancestorEntries = ["src/components/Base/ColorSelector.tsx", "src/core/interfaces/Settings.ts", "src/i18n/locales/en.ts", "src/i18n/locales/zh-TW.ts", "src/i18n/locales/zh.ts", "src/i18n/types.ts", "src/main.ts"]
+ourEntries = ["src/components/Base/ColorSelector.tsx", "src/core/interfaces/Settings.ts", "src/i18n/locales/en.ts", "src/i18n/locales/zh-TW.ts", "src/i18n/locales/zh.ts", "src/i18n/types.ts", "src/main.ts"]
+theirEntries = ["src/components/Base/ColorSelector.tsx", "src/core/interfaces/Settings.ts", "src/i18n/locales/en.ts", "src/i18n/locales/zh-TW.ts", "src/i18n/locales/zh.ts", "src/i18n/types.ts", "src/main.ts"]

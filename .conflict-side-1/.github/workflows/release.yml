@@ -1,0 +1,238 @@
+name: Release Obsidian plugin
+
+on:
+    push:
+        tags:
+            - "[0-9]+.[0-9]+.[0-9]+*" # 匹配类似 1.0.0 或 1.0.0-beta.1 的格式
+
+permissions:
+    contents: write
+
+env:
+    PLUGIN_ID: yearly-glance
+
+jobs:
+    build:
+        runs-on: ubuntu-22.04
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0 # 获取完整的git历史
+
+            - name: Use Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "18.x"
+
+            - name: Prepare manifest
+              id: prepare_manifest
+              run: |
+                  if [[ ${{ github.ref }} == *"beta"* ]]; then
+                    cp manifest-beta.json manifest.json
+                  fi
+
+            - name: Build
+              id: build
+              run: |
+                  npm install -g yarn
+                  yarn
+                  yarn run build --if-present
+                  mkdir ${{ env.PLUGIN_ID }}
+                  cp main.js manifest.json styles.css ${{ env.PLUGIN_ID }}
+                  zip -r ${{ env.PLUGIN_ID }}.zip ${{ env.PLUGIN_ID }}
+                  ls
+                  echo "tag_name=$(git tag --sort version:refname | tail -n 1)" >> $GITHUB_OUTPUT
+
+            - name: Generate Changelog
+              id: changelog
+              run: |
+                  # 初始化 changelog 文件
+                  CHANGELOG_EN="CHANGELOG.md"
+                  CHANGELOG_ZH="CHANGELOG-zh.md"
+                  TEMP_CHANGELOG="temp_changelog.md"
+                  EN_TEMP_CHANGELOG="en_temp_changelog.md"
+                  ZH_TEMP_CHANGELOG="zh_temp_changelog.md"
+
+                  # 获取当前版本号（从 git tag）
+                  CURRENT_VERSION=$(git tag --sort version:refname | tail -n 1)
+                  echo "Current version: $CURRENT_VERSION"
+
+                  # 确保 PLUGIN_ID 变量可用
+                  PLUGIN_ID="${{ env.PLUGIN_ID }}"
+                  echo "Using plugin name: $PLUGIN_ID"
+
+                  # 使用 awk 提取特定版本的 changelog 内容
+                  extract_changelog() {
+                    local changelog_file=$1
+                    local output_file=$2
+                    local is_chinese=$3
+                    local target_version=$4
+                    
+                    > "$output_file"  # 初始化空文件
+                    
+                    # 确定版本的标题级别 (# 或 ##)
+                    # 分解版本号，检查是否为小版本
+                    IFS='.' read -r major minor patch <<< "$target_version"
+                    # 如果patch不是0，那么是小版本，使用二级标题 (##)
+                    if [[ -n "$patch" && "$patch" != "0" ]]; then
+                      local title_level="##"
+                    else
+                      # 大版本或次版本，使用一级标题 (#)
+                      local title_level="#"
+                    fi
+                    
+                    echo "Looking for version $target_version with title level: $title_level"
+                    
+                    # 使用 awk 提取目标版本的内容到临时文件
+                    awk -v version="$target_version" -v level="$title_level" '
+                    BEGIN { found = 0; printing = 0; }
+                    
+                    # 当找到目标版本标题时
+                    $0 ~ "^" level " +\\[" version "\\]" { 
+                      found = 1; 
+                      printing = 1; 
+                      next;  # 跳过版本标题行
+                    }
+                    
+                    # 当找到下一个版本标题时停止打印
+                    printing && $0 ~ "^#+ +\\[" { 
+                      printing = 0; 
+                    }
+                    
+                    # 打印匹配到的内容
+                    printing { 
+                      print; 
+                    }
+                    
+                    # 文件结束时，如果没有找到目标版本，输出警告
+                    END { 
+                      if (!found) {
+                        print "Warning: Version " version " not found with title level " level > "/dev/stderr";
+                        exit 1;
+                      }
+                    }' "$changelog_file" > "temp_version_content.md"
+                    
+                    # 检查提取内容
+                    if [ ! -s "temp_version_content.md" ]; then
+                      echo "Warning: No content found for version $target_version in $changelog_file" >&2
+                      if [ "$is_chinese" = true ]; then
+                        echo -e "## 更新内容\n\n该版本 $target_version 没有找到更新日志。\n" >> "$output_file"
+                      else
+                        echo -e "## Changes\n\nNo changelog found for version $target_version.\n" >> "$output_file"
+                      fi
+                    else
+                      echo "Successfully extracted changelog for version $target_version"
+                      if [ "$is_chinese" = true ]; then
+                        echo -e "## 更新内容\n" >> "$output_file"
+                      else
+                        echo -e "## Changes\n" >> "$output_file"
+                      fi
+                      cat "temp_version_content.md" >> "$output_file"
+                    fi
+                    
+                    # 添加安装说明
+                    if [ "$is_chinese" = true ]; then
+                      echo -e "\n## 如何安装\n" >> "$output_file"
+                      echo -e "1. 下载 \`$PLUGIN_ID.zip\` 压缩文件" >> "$output_file"
+                      echo -e "2. 解压到你的 Obsidian 库的插件文件夹内: \`<vault>/.obsidian/plugins/$PLUGIN_ID/\`" >> "$output_file"
+                      echo -e "3. 重启 Obsidian" >> "$output_file"
+                      echo -e "4. 在设置中启用 **$PLUGIN_ID** 插件" >> "$output_file"
+                    else
+                      echo -e "\n## Installation\n" >> "$output_file"
+                      echo -e "1. Download \`$PLUGIN_ID.zip\`" >> "$output_file"
+                      echo -e "2. Unzip it to your Obsidian vault's plugins folder: \`<vault>/.obsidian/plugins/$PLUGIN_ID/\`" >> "$output_file"
+                      echo -e "3. Reload Obsidian" >> "$output_file"
+                      echo -e "4. Enable **$PLUGIN_ID** plugin in settings" >> "$output_file"
+                    fi
+                  }
+
+                  # 处理英文 changelog
+                  if [ -f "$CHANGELOG_EN" ]; then
+                    extract_changelog "$CHANGELOG_EN" "$EN_TEMP_CHANGELOG" false "$CURRENT_VERSION"
+                  else
+                    echo "英文 changelog 文件未找到。使用备用方案。"
+                    echo -e "## Changes\n\nNo changelog available.\n\n## Installation\n\n1. Download \`$PLUGIN_ID.zip\`\n2. Unzip it to your Obsidian vault's plugins folder: \`<vault>/.obsidian/plugins/$PLUGIN_ID/\`\n3. Reload Obsidian\n4. Enable **$PLUGIN_ID** plugin in settings" > "$EN_TEMP_CHANGELOG"
+                  fi
+
+                  # 处理中文 changelog
+                  if [ -f "$CHANGELOG_ZH" ]; then
+                    extract_changelog "$CHANGELOG_ZH" "$ZH_TEMP_CHANGELOG" true "$CURRENT_VERSION"
+                    
+                    # 合并两个 changelogs，保持良好的格式
+                    echo -e "# English Changelog\n" > "$TEMP_CHANGELOG"
+                    cat "$EN_TEMP_CHANGELOG" >> "$TEMP_CHANGELOG"
+                    echo -e "\n\n---\n\n# 中文更新日志\n" >> "$TEMP_CHANGELOG"
+                    cat "$ZH_TEMP_CHANGELOG" >> "$TEMP_CHANGELOG"
+                  else
+                    # 如果没有中文 changelog，只使用英文版本
+                    cp "$EN_TEMP_CHANGELOG" "$TEMP_CHANGELOG"
+                  fi
+
+                  # 输出 changelog 给 GitHub Actions
+                  echo "changelog<<EOF" >> $GITHUB_OUTPUT
+                  cat "$TEMP_CHANGELOG" >> $GITHUB_OUTPUT
+                  echo "EOF" >> $GITHUB_OUTPUT
+
+            - name: Create Release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ github.ref }}
+                  release_name: ${{ github.ref }}
+                  draft: false
+                  prerelease: ${{ contains(github.ref, 'beta') }}
+                  body: |
+                      ${{ contains(github.ref, 'beta') && '🚧 This is a beta release' || '🎉 This is a stable release' }}
+
+                      **Version:** ${{ github.ref_name }}
+
+                      [English Changelog](https://github.com/Moyf/yearly-glance/blob/master/CHANGELOG.md) | [中文更新日志](https://github.com/Moyf/yearly-glance/blob/master/CHANGELOG-zh.md)
+
+                      ${{ steps.changelog.outputs.changelog }}
+
+            - name: Upload zip file
+              id: upload-zip
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./${{ env.PLUGIN_ID }}.zip
+                  asset_name: ${{ env.PLUGIN_ID }}.zip
+                  asset_content_type: application/zip
+
+            - name: Upload main.js
+              id: upload-main
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./main.js
+                  asset_name: main.js
+                  asset_content_type: text/javascript
+
+            - name: Upload manifest.json
+              id: upload-manifest
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./manifest.json
+                  asset_name: manifest.json
+                  asset_content_type: application/json
+
+            - name: Upload styles.css
+              id: upload-styles
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./styles.css
+                  asset_name: styles.css
+                  asset_content_type: text/css

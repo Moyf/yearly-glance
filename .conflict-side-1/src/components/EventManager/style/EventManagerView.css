@@ -1,0 +1,424 @@
+/* 事件管理器容器 */
+.yg-event-manager-container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	background-color: var(--background-primary);
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* 事件管理器头部 */
+.yg-event-manager-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 20px;
+	background-color: var(--background-secondary);
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.yg-event-actions-bar {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	justify-content: flex-end;
+
+	/* 搜索框 */
+	.search-container {
+		position: relative;
+		display: flex;
+		align-items: center;
+		transition: all 0.3s ease;
+		width: 36px;
+		height: 36px;
+	}
+
+	.search-container.expanded {
+		width: 200px;
+		background-color: var(--background-primary);
+		border-radius: 18px;
+		border: 1px solid var(--background-modifier-border);
+		padding: 0 8px 0 12px;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+	}
+
+	.search-toggle {
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		background-color: var(--interactive-normal);
+		border: none;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.2s ease;
+
+		&:hover {
+			background-color: var(--interactive-hover);
+		}
+	}
+
+	.search-input {
+		flex: 1;
+		border: none;
+		background: transparent;
+		padding: 8px 4px;
+		outline: none;
+		font-size: 14px;
+		color: var(--text-normal);
+		width: 100%;
+
+		&:focus {
+			border: none;
+			box-shadow: none;
+		}
+	}
+
+	.clear-search {
+		width: 24px;
+		height: 24px;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		color: var(--text-muted);
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.2s ease;
+		font-size: 14px;
+
+		&:hover {
+			color: var(--text-normal);
+			background-color: var(--background-modifier-hover);
+		}
+	}
+
+	/* 添加事件按钮 */
+	.add-event-button {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 8px 16px;
+		background-color: var(--interactive-accent);
+		color: var(--text-on-accent);
+		border: none;
+		border-radius: 18px;
+		cursor: pointer;
+		font-weight: 500;
+		transition: background-color 0.2s ease;
+
+		&:hover {
+			background-color: var(--interactive-accent-hover);
+		}
+	}
+
+	.add-icon {
+		font-size: 16px;
+		font-weight: bold;
+	}
+
+	.yearly-calendar-button {
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		background-color: var(--interactive-normal);
+		border: none;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.2s ease;
+
+		&:hover {
+			background-color: var(--interactive-hover);
+		}
+	}
+}
+
+/* 事件管理器内容区域 */
+.yg-event-manager-container .event-manager-content {
+	flex: 1;
+	padding: 20px;
+	overflow-y: auto;
+
+	/* 事件列表 */
+	.event-list {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+	}
+
+	.event-group {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.event-group-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 8px 0;
+		border-bottom: 1px solid var(--background-modifier-border);
+	}
+
+	.event-group-header.collapsible {
+		cursor: pointer;
+
+		&:hover {
+			color: var(--text-accent);
+		}
+	}
+
+	.header-left {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		cursor: pointer;
+	}
+
+	.collapse-icon {
+		font-size: 12px;
+		transition: transform 0.2s ease;
+	}
+
+	.header-right {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.builtin-event-hidden-toggle {
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		background-color: var(--interactive-normal);
+		border: none;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.2s ease;
+
+		&:hover {
+			background-color: var(--interactive-hover);
+		}
+	}
+
+	.event-count {
+		font-size: 12px;
+		color: var(--text-muted);
+		background-color: var(--background-modifier-hover);
+		padding: 2px 8px;
+		border-radius: 10px;
+	}
+
+	/* 事件网格布局 */
+	.event-items-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: 16px;
+		transition: max-height 0.3s ease, opacity 0.3s ease;
+		/* max-height: 30vh; */
+		opacity: 1;
+		overflow: auto;
+	}
+
+	.event-items-grid.collapsed {
+		max-height: 0;
+		opacity: 0;
+		overflow: hidden;
+		margin: 0;
+		padding: 0;
+	}
+
+	/* 事件项 */
+	.event-item {
+		display: flex;
+		flex-direction: column;
+		background-color: var(--background-secondary);
+		border-radius: 8px;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		position: relative;
+		border: 1px solid var(--background-modifier-border);
+		min-width: max-content;
+
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+		}
+	}
+
+	.event-item-content {
+		padding: 16px;
+		flex: 1;
+	}
+
+	.event-header {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		margin-bottom: 12px;
+	}
+
+	.event-title {
+		font-weight: 600;
+		font-size: 16px;
+		word-break: break-word;
+	}
+
+	.event-date {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin-bottom: 8px;
+		color: var(--text-muted);
+		font-size: 14px;
+	}
+
+	.date-icon {
+		font-size: 14px;
+	}
+
+	.event-remark {
+		display: flex;
+		align-items: flex-start;
+		gap: 8px;
+		margin-bottom: 12px;
+		padding: 8px;
+		background-color: var(--background-primary);
+		border-radius: 6px;
+		font-size: 14px;
+		color: var(--text-normal);
+	}
+
+	.remark-icon {
+		font-size: 14px;
+		margin-top: 2px;
+	}
+
+	.event-specific-info {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		margin-top: 12px;
+		padding-top: 12px;
+		border-top: 1px dashed var(--background-modifier-border);
+	}
+
+	.event-info-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: 13px;
+	}
+
+	.info-label {
+		color: var(--text-muted);
+	}
+
+	.info-value {
+		font-weight: 500;
+	}
+
+	.info-value.active {
+		color: var(--text-accent);
+	}
+
+	.info-value.inactive {
+		color: var(--text-muted);
+	}
+
+	/* 事件操作按钮 */
+	.event-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+		padding: 8px 16px;
+		background-color: var(--background-secondary-alt);
+		border-top: 1px solid var(--background-modifier-border);
+	}
+
+	.edit-button,
+	.delete-button {
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		border: none;
+		background-color: var(--background-modifier-hover);
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.2s ease;
+	}
+
+	.edit-button:hover {
+		background-color: var(--interactive-hover);
+	}
+
+	.delete-button:hover {
+		background-color: var(--text-error-hover);
+	}
+
+	/* 空列表状态 */
+	.empty-list {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 60px 20px;
+		text-align: center;
+		color: var(--text-muted);
+	}
+
+	.empty-icon {
+		font-size: 48px;
+		margin-bottom: 16px;
+	}
+
+	.empty-text {
+		font-size: 18px;
+		font-weight: 500;
+		margin-bottom: 8px;
+	}
+
+	.empty-subtext {
+		font-size: 14px;
+		max-width: 400px;
+	}
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+	.yg-event-manager-container {
+		.event-items-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.event-manager-header {
+			flex-direction: column;
+			gap: 16px;
+			align-items: stretch;
+		}
+
+		/* .search-container.expanded {
+			width: 100%;
+		} */
+
+		.yg-event-manager-header {
+			flex-direction: column;
+			gap: 16px;
+			align-items: stretch;
+		}
+	}
+
+	/* 移动设备上的标签样式 */
+	.yg-event-tabs {
+		width: 100%;
+	}
+}

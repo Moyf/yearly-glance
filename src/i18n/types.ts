@@ -157,12 +157,23 @@ export type BaseMessage = {
 				repeat: string;
 			};
 		};
+		importExportManager: {
+			import: {
+				title: string;
+				tab: string;
+			};
+			export: {
+				title: string;
+				tab: string;
+			};
+		};
 	};
 	command: {
 		openYearlyGlance: string;
 		openEventManager: string;
 		addEvent: string;
 		reloadPlugin: string;
+		importExportEvents: string;
 	};
 	common: {
 		confirm: string;

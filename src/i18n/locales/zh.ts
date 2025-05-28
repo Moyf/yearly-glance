@@ -220,12 +220,23 @@ const translations: BaseMessage = {
 				repeat: "重复",
 			},
 		},
+		importExportManager: {
+			import: {
+				title: "导入事件",
+				tab: "导入",
+			},
+			export: {
+				title: "导出事件",
+				tab: "导出",
+			},
+		},
 	},
 	command: {
 		openYearlyGlance: "打开年度概览",
 		openEventManager: "打开事件管理",
 		addEvent: "添加事件",
 		reloadPlugin: "重载插件",
+		importExportEvents: "打开导入导出窗口",
 	},
 	common: {
 		confirm: "确认",

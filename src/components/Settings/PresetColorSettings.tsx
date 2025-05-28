@@ -177,7 +177,7 @@ export const PresetColorSettings: React.FC<PresetColorSettingsProps> = ({
 								onClick={() => handleRemove(index)}
 								disabled={color.id !== undefined}
 							>
-								<Trash2 />
+								<Trash2 size={18} />
 							</button>
 						</div>
 					</div>

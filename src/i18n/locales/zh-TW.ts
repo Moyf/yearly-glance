@@ -83,13 +83,23 @@ const translations: BaseMessage = {
 			showDebugInfo: {
 				name: "顯示除錯資訊",
 				desc: "在控制台中顯示除錯資訊",
+<<<<<<< Updated upstream
 			}
+=======
+			},
+			presetColors: {
+				name: "預設顏色",
+				desc: "各事件的配色預設選項",
+				newColor: "新顏色",
+			},
+>>>>>>> Stashed changes
 		},
 		events: {
 			name: "事件",
 			desc: "各事件的管理",
 		},
 		group: {
+<<<<<<< Updated upstream
 			basic: "基本設定",
 			basicDesc: "年曆的基礎資訊配置。",
 			layout: "佈局相關",
@@ -98,6 +108,28 @@ const translations: BaseMessage = {
 			displayContentDesc: "年曆外觀相關的內容。",
 			eventDisplay: "事件顯示",
 			eventDisplayDesc: "事件、節假日、生日等相關顯示設定。"
+=======
+			basic: {
+				name: "基本設定",
+				desc: "年曆的基礎資訊配置",
+			},
+			layout: {
+				name: "佈局相關",
+				desc: "年曆的整體佈局與視圖類型",
+			},
+			displayContent: {
+				name: "樣式設定",
+				desc: "年曆外觀相關的內容",
+			},
+			eventDisplay: {
+				name: "事件顯示",
+				desc: "事件、節假日、生日等相關顯示設定",
+			},
+			colorSets: {
+				name: "顏色設定",
+				desc: "各事件的配色預設選項",
+			},
+>>>>>>> Stashed changes
 		},
 	},
 	view: {
@@ -180,6 +212,7 @@ const translations: BaseMessage = {
 				year: "年",
 				month: "月",
 				day: "日",
+				selectPresetColor: "選擇預設",
 			},
 			holiday: {
 				name: "節日",
@@ -289,6 +322,15 @@ const translations: BaseMessage = {
 			you: "酉",
 			xu: "戌",
 			hai: "亥",
+		},
+		color: {
+			red: "系統-紅色",
+			orange: "系統-橙色",
+			yellow: "系統-黃色",
+			green: "系統-綠色",
+			blue: "系統-藍色",
+			purple: "系統-紫色",
+			brown: "系統-棕色",
 		},
 	},
 };

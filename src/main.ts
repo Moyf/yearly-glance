@@ -235,14 +235,9 @@ export default class YearlyGlancePlugin extends Plugin {
 		allowTypeChange: boolean = false,
 		props?: any
 	) {
-		new EventFormModal(
-			this,
-			eventType,
-			event,
-			isEditing,
-			allowTypeChange,
-			props
-		).open();
+		new EventFormModal(this, eventType, event, isEditing, allowTypeChange, {
+			plugin: this,
+		}).open();
 	}
 
 	// 重载插件

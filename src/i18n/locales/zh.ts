@@ -84,12 +84,18 @@ const translations: BaseMessage = {
 				name: "显示调试信息",
 				desc: "在控制台中显示调试信息",
 			},
+			presetColors: {
+				name: "预设颜色",
+				desc: "各事件的配色预设选项",
+				newColor: "新颜色",
+			},
 		},
 		events: {
 			name: "事件",
 			desc: "各事件的管理",
 		},
 		group: {
+<<<<<<< Updated upstream
 		  basic: "基本设置",
 		  basicDesc: "年历的基础信息配置。",
 		  layout: "布局相关",
@@ -98,6 +104,28 @@ const translations: BaseMessage = {
 		  displayContentDesc: "年历外观相关的内容。",
 		  eventDisplay: "事件显示",
 		  eventDisplayDesc: "事件、节假日、生日等相关显示设置。"
+=======
+			basic: {
+				name: "基本设置",
+				desc: "年历的基础信息配置",
+			},
+			layout: {
+				name: "布局相关",
+				desc: "年历的整体布局与视图类型",
+			},
+			displayContent: {
+				name: "样式设置",
+				desc: "年历外观相关的内容",
+			},
+			eventDisplay: {
+				name: "事件显示",
+				desc: "事件、节假日、生日等相关显示设置",
+			},
+			colorSets: {
+				name: "颜色设置",
+				desc: "颜色配置相关内容",
+			},
+>>>>>>> Stashed changes
 		},
 	},
 	view: {
@@ -181,6 +209,7 @@ const translations: BaseMessage = {
 				year: "年",
 				month: "月",
 				day: "日",
+				selectPresetColor: "选择预设",
 			},
 			holiday: {
 				name: "节日",
@@ -290,6 +319,15 @@ const translations: BaseMessage = {
 			you: "酉",
 			xu: "戌",
 			hai: "亥",
+		},
+		color: {
+			red: "系统-红色",
+			orange: "系统-橙色",
+			yellow: "系统-黄色",
+			green: "系统-绿色",
+			blue: "系统-蓝色",
+			purple: "系统-紫色",
+			brown: "系统-棕色",
 		},
 	},
 };

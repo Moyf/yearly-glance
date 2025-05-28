@@ -21,7 +21,7 @@ export const LayoutConfigMap: Record<string, LayoutConfig> =
 		return acc;
 	}, {});
 
-const DEFAULT_PRESET_COLORS: IPresetColor[] = [
+export const DEFAULT_PRESET_COLORS: IPresetColor[] = [
 	{ label: "", value: "#FF2D55", enable: true, id: "red" },
 	{ label: "", value: "#FF9500", enable: true, id: "orange" },
 	{ label: "", value: "#FFCC00", enable: true, id: "yellow" },

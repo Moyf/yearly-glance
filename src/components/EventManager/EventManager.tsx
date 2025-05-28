@@ -7,8 +7,8 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
-import { EVENT_TYPE_OPTIONS } from "../YearlyCalendar/EventFormModal";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
+import { EVENT_TYPE_OPTIONS } from "../EventForm/EventFormModal";
 import { SortControls, SortDirection, SortField } from "./SortControls";
 import { EventList } from "./EventList";
 import { Input } from "../Base/Input";

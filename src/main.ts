@@ -250,7 +250,11 @@ export default class YearlyGlancePlugin extends Plugin {
 			allowTypeChange,
 			(props = {
 				plugin: this,
-			})
+			})(
+				(props = {
+					plugin: this,
+				})
+			)
 		).open();
 	}
 

@@ -220,12 +220,23 @@ const translations: BaseMessage = {
 				repeat: "Repeat",
 			},
 		},
+		importExportManager: {
+			import: {
+				title: "Import events",
+				tab: "Import",
+			},
+			export: {
+				title: "Export events",
+				tab: "Export",
+			},
+		},
 	},
 	command: {
 		openYearlyGlance: "Open yearly glance",
 		openEventManager: "Open events manager",
 		addEvent: "Add event",
 		reloadPlugin: "Reload plugin",
+		importExportEvents: "Open import export window",
 	},
 	common: {
 		confirm: "Confirm",

@@ -1,28 +1,20 @@
+import { EventDate } from "./Date";
+
 export interface Events {
 	holidays: Holiday[];
 	birthdays: Birthday[];
 	customEvents: CustomEvent[];
 }
 
-/**
- * 基础事件接口, 所有事件的基类
- * id: 事件id, 由系统自动生成, 用于唯一标识事件
- * text: 事件名称
- * date: 事件日期, 格式为YYYY,MM,DD
- * 对于公历类型，可能的格式为`2025,1,1`或`1,1`
- * 对于农历类型，可能的格式为`2025,-6,1`(二〇二五年闰六月初一)或`2,1`(二月初一)
- * dateType: 日期类型, 公历或农历
- * dateArr: 基于当前选择年份的公历日期，格式为YYYY-MM-DD，由系统根据date和dateType自动计算
- * emoji: 事件图标
- * color: 事件颜色
- * remark: 事件备注
- * isHidden: 是否隐藏，默认 false
- */
 export interface BaseEvent {
 	id: string;
 	text: string;
-	date: string;
-	dateType: "SOLAR" | "LUNAR";
+	eventDate: EventDate;
+	/** @deprecated 使用 core.isoDate 替代 */
+	date?: string;
+	/** @deprecated 使用 core.calendar 替代 */
+	dateType?: "SOLAR" | "LUNAR";
+	/** 计算后的公历日期数组（运行时生成） */
 	dateArr?: string[];
 	emoji?: string;
 	color?: string;

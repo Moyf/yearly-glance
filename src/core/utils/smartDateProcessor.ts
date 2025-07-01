@@ -1,0 +1,376 @@
+import {
+	CalendarType,
+	chineseDigits,
+	lunarDays,
+	lunarKeywords,
+	lunarMonths,
+	StandardDate,
+} from "../interfaces/Date";
+
+/**
+ * 智能日期处理器
+ * 解析用户输入的各种日期格式，返回标准化的日期对象
+ */
+export class SmartDateProcessor {
+	/**
+	 * 解析用户输入的日期字符串
+	 * @param input 用户输入的日期字符串
+	 * @param calendar 用户指定的日历类型（可选）
+	 * @returns StandardDate 标准化日期对象
+	 */
+	static parseUserInput(
+		input: string,
+		calendar?: CalendarType
+	): StandardDate {
+		// 清理输入字符串
+		const cleanInput = input.trim();
+
+		// 如果用户指定了日历类型，优先使用
+		if (calendar) {
+			return this.parseWithCalendarType(cleanInput, calendar);
+		}
+
+		// 自动识别日历类型
+		const detectedCalendar = this.detectCalendarType(cleanInput);
+		return this.parseWithCalendarType(cleanInput, detectedCalendar);
+	}
+
+	/**
+	 * 自动检测日历类型
+	 * @param input 清理后的输入字符串
+	 * @returns CalendarType 检测到的日历类型
+	 */
+	private static detectCalendarType(input: string): CalendarType {
+		// 检查是否包含农历关键词
+		const hasLunarKeywords = lunarKeywords.some((keyword) =>
+			input.includes(keyword)
+		);
+
+		// 检查是否包含闰月标识
+		const hasLeapMonth = input.includes("闰");
+
+		if (hasLeapMonth) {
+			return "LUNAR_LEAP";
+		} else if (hasLunarKeywords) {
+			return "LUNAR";
+		} else {
+			return "GREGORIAN";
+		}
+	}
+
+	/**
+	 * 根据指定的日历类型解析日期
+	 * @param input 清理后的输入字符串
+	 * @param calendar 日历类型
+	 * @returns StandardDate 标准化日期对象
+	 */
+	private static parseWithCalendarType(
+		input: string,
+		calendar: CalendarType
+	): StandardDate {
+		switch (calendar) {
+			case "GREGORIAN":
+				return this.parseGregorianDate(input);
+			case "LUNAR":
+				return this.parseLunarDate(input, false);
+			case "LUNAR_LEAP":
+				return this.parseLunarDate(input, true);
+			default:
+				throw new Error(`Unsupported calendar type: ${calendar}`);
+		}
+	}
+
+	/**
+	 * 解析公历日期
+	 * @param input 输入字符串
+	 * @returns StandardDate 标准化日期对象
+	 */
+	private static parseGregorianDate(input: string): StandardDate {
+		// 支持的公历格式：
+		// 约束使用的日期顺序是YMD
+		// 标准格式：2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01
+		// 旧格式：2025,01,01, 01,01
+		// 中文格式：2025年01月01日, 01月01日
+		// 混合格式：2025年1月1日, 2025-1-1 等
+
+		let year: number | undefined;
+		let month: number;
+		let day: number;
+
+		// 提取数字部分
+		const numbers = this.extractNumbers(input);
+
+		if (numbers.length === 2) {
+			// MM-DD 格式
+			[month, day] = numbers;
+		} else if (numbers.length === 3) {
+			// YYYY-MM-DD 格式
+			[year, month, day] = numbers;
+		} else {
+			throw new Error(`Unexpected numbers length: ${numbers.length}`);
+		}
+
+		// 生成ISO日期字符串
+		let isoDate: string;
+		if (year !== undefined) {
+			isoDate = `${year.toString().padStart(4, "0")}-${month
+				.toString()
+				.padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+		} else {
+			isoDate = `${month.toString().padStart(2, "0")}-${day
+				.toString()
+				.padStart(2, "0")}`;
+		}
+
+		return {
+			isoDate: `${isoDate}#GREGORIAN`,
+			calendar: "GREGORIAN",
+		};
+	}
+
+	/**
+	 * 从输入字符串中提取所有数字
+	 * @param input 输入字符串
+	 * @returns number[] 提取的数字数组
+	 */
+	private static extractNumbers(input: string): number[] {
+		// 使用正则表达式提取所有数字序列
+		const numberMatches = input.match(/\d+/g);
+
+		if (!numberMatches) {
+			return [];
+		}
+
+		// 转换为数字并过滤无效值
+		return numberMatches
+			.map((match) => parseInt(match, 10))
+			.filter((num) => !isNaN(num));
+	}
+
+	/**
+	 * 解析农历日期
+	 * @param input 输入字符串
+	 * @param isLeap 是否为闰月
+	 * @returns StandardDate 标准化日期对象
+	 */
+	private static parseLunarDate(
+		input: string,
+		isLeap: boolean
+	): StandardDate {
+		// 支持的农历格式：
+		// 中文格式：2025年正月初一, 正月初一, 闰二月初一, 二〇二五年闰六月初一
+		// 数字格式：2025,6,1  2025,-6,1  6,1  -6,1
+		const isLeapMonth = isLeap;
+
+		// 首先尝试解析数字格式
+		if (this.isNumericLunarFormat(input)) {
+			return this.parseNumericLunarDate(input);
+		}
+
+		// 解析中文格式
+		return this.parseChineseLunarDate(input, isLeapMonth);
+	}
+
+	/**
+	 * 检查是否为数字格式的农历日期
+	 * @param input 输入字符串
+	 * @returns boolean
+	 */
+	private static isNumericLunarFormat(input: string): boolean {
+		// 匹配格式：2025,6,1  2025,-6,1  6,1  -6,1
+		return /^\d{1,4},-?\d{1,2},\d{1,2}$|^-?\d{1,2},\d{1,2}$/.test(
+			input.trim()
+		);
+	}
+
+	/**
+	 * 解析数字格式的农历日期
+	 * @param input 输入字符串
+	 * @returns StandardDate 标准化日期对象
+	 */
+	private static parseNumericLunarDate(input: string): StandardDate {
+		const parts = input
+			.trim()
+			.split(",")
+			.map((part) => parseInt(part.trim(), 10));
+
+		let year: number | undefined;
+		let month: number;
+		let day: number;
+		let isLeapMonth = false;
+
+		if (parts.length === 3) {
+			// 格式：2025,6,1 或 2025,-6,1
+			[year, month, day] = parts;
+		} else if (parts.length === 2) {
+			// 格式：6,1 或 -6,1
+			[month, day] = parts;
+		} else {
+			throw new Error(`Invalid numeric lunar date format: ${input}`);
+		}
+
+		// 检查是否为闰月（负数表示闰月）
+		if (month < 0) {
+			isLeapMonth = true;
+			month = Math.abs(month);
+		}
+
+		// TODO: 如果有年份，验证农历日期有效性
+
+		// 生成ISO日期字符串
+		const monthValue = isLeapMonth ? -month : month;
+		let isoDate: string;
+
+		if (year !== undefined) {
+			isoDate = `${year.toString().padStart(4, "0")}-${Math.abs(
+				monthValue
+			)
+				.toString()
+				.padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+		} else {
+			isoDate = `${Math.abs(monthValue).toString().padStart(2, "0")}-${day
+				.toString()
+				.padStart(2, "0")}`;
+		}
+
+		const calendarType = isLeapMonth ? "LUNAR_LEAP" : "LUNAR";
+
+		return {
+			isoDate: `${isoDate}#${calendarType}`,
+			calendar: calendarType,
+		};
+	}
+
+	/**
+	 * 解析中文格式的农历日期
+	 * @param input 输入字符串
+	 * @param isLeap 是否为闰月
+	 * @returns StandardDate 标准化日期对象
+	 */
+	private static parseChineseLunarDate(
+		input: string,
+		isLeap: boolean
+	): StandardDate {
+		let isLeapMonth = isLeap;
+
+		// 检测闰月
+		if (input.includes("闰")) {
+			isLeapMonth = true;
+		}
+
+		// 提取年份 - 支持阿拉伯数字和中文数字
+		const year = this.extractChineseYear(input);
+		const month = this.extractChineseMonth(input, lunarMonths);
+		const day = this.extractChineseDay(input, lunarDays);
+
+		// TODO: 如果有年份，验证农历日期有效性
+
+		// 生成ISO日期字符串
+		let isoDate: string;
+
+		if (year !== undefined) {
+			isoDate = `${year.toString().padStart(4, "0")}-${month
+				.toString()
+				.padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+		} else {
+			isoDate = `${month.toString().padStart(2, "0")}-${day
+				.toString()
+				.padStart(2, "0")}`;
+		}
+
+		const calendarType = isLeapMonth ? "LUNAR_LEAP" : "LUNAR";
+
+		return {
+			isoDate: `${isoDate}#${calendarType}`,
+			calendar: calendarType,
+		};
+	}
+
+	/**
+	 * 提取中文年份
+	 * @param input 输入字符串
+	 * @returns number | undefined
+	 */
+	private static extractChineseYear(input: string): number | undefined {
+		// 匹配阿拉伯数字年份：2025年
+		const arabicYearMatch = input.match(/(\d{4})年/);
+		if (arabicYearMatch) {
+			return parseInt(arabicYearMatch[1], 10);
+		}
+
+		// 匹配中文数字年份：二〇二五年
+		const chineseYearMatch = input.match(/([一二三四五六七八九〇零]{4})年/);
+		if (chineseYearMatch) {
+			return this.convertChineseNumberToArabic(chineseYearMatch[1]);
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * 提取中文月份
+	 * @param input 输入字符串
+	 * @param lunarMonths 月份映射
+	 * @returns number
+	 */
+	private static extractChineseMonth(
+		input: string,
+		lunarMonths: Record<string, number>
+	): number {
+		for (const [monthName, monthNum] of Object.entries(lunarMonths)) {
+			if (input.includes(monthName)) {
+				return monthNum;
+			}
+		}
+		throw new Error(`Cannot parse lunar month from: ${input}`);
+	}
+
+	/**
+	 * 提取中文日期
+	 * @param input 输入字符串
+	 * @param lunarDays 日期映射
+	 * @returns number
+	 */
+	private static extractChineseDay(
+		input: string,
+		lunarDays: Record<string, number>
+	): number {
+		for (const [dayName, dayNum] of Object.entries(lunarDays)) {
+			if (input.includes(dayName)) {
+				return dayNum;
+			}
+		}
+		throw new Error(`Cannot parse lunar day from: ${input}`);
+	}
+
+	/**
+	 * 将中文数字转换为阿拉伯数字
+	 * @param chineseNumber 中文数字字符串
+	 * @returns number
+	 */
+	private static convertChineseNumberToArabic(chineseNumber: string): number {
+		let result = "";
+		for (const char of chineseNumber) {
+			if (chineseDigits[char]) {
+				result += chineseDigits[char];
+			} else {
+				throw new Error(`Unknown Chinese digit: ${char}`);
+			}
+		}
+
+		return parseInt(result, 10);
+	}
+}
+
+/**
+ * 便捷函数：解析用户输入
+ * @param input 用户输入的日期字符串
+ * @param calendar 可选的日历类型
+ * @returns StandardDate 标准化日期对象
+ */
+export function parseUserDateInput(
+	input: string,
+	calendar?: CalendarType
+): StandardDate {
+	return SmartDateProcessor.parseUserInput(input, calendar);
+}

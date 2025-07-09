@@ -23,7 +23,6 @@ import {
 	updateHolidaysInfo,
 } from "./core/utils/eventCalculator";
 import { t } from "./i18n/i18n";
-import { lunarTest } from "./test/date";
 import { generateUUID } from "./core/utils/uuid";
 import { migrateData } from "./core/utils/dataMerge";
 
@@ -47,9 +46,6 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 添加设置选项卡
 		this.addSettingTab(new YearlyGlanceSettingsTab(this.app, this));
-
-		// 测试
-		lunarTest.test();
 	}
 
 	onunload() {}

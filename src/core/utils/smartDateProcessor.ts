@@ -213,13 +213,8 @@ export class SmartDateProcessor {
 			LunarDateValidator.validDate(year, month, day, isLeapMonth);
 		}
 
-		// 生成ISO日期字符串
-		const monthValue = isLeapMonth ? -month : month;
-		const isoDate: string = this.generateISODateString(
-			year,
-			monthValue,
-			day
-		);
+		// 生成ISO日期字符串 - 始终使用正数月份
+		const isoDate: string = this.generateISODateString(year, month, day);
 
 		const calendarType = isLeapMonth ? "LUNAR_LEAP" : "LUNAR";
 

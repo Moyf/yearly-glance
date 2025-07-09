@@ -6,6 +6,7 @@ import {
 	lunarMonths,
 	StandardDate,
 } from "../interfaces/Date";
+import { GregorianDateValidator, LunarDateValidator } from "./dateValidator";
 
 /**
  * 智能日期处理器
@@ -110,17 +111,10 @@ export class SmartDateProcessor {
 			throw new Error(`Unexpected numbers length: ${numbers.length}`);
 		}
 
+		GregorianDateValidator.validDate(year, month, day);
+
 		// 生成ISO日期字符串
-		let isoDate: string;
-		if (year !== undefined) {
-			isoDate = `${year.toString().padStart(4, "0")}-${month
-				.toString()
-				.padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
-		} else {
-			isoDate = `${month.toString().padStart(2, "0")}-${day
-				.toString()
-				.padStart(2, "0")}`;
-		}
+		const isoDate: string = this.generateISODateString(year, month, day);
 
 		return {
 			isoDate: `${isoDate}#GREGORIAN`,
@@ -215,23 +209,17 @@ export class SmartDateProcessor {
 			month = Math.abs(month);
 		}
 
-		// TODO: 如果有年份，验证农历日期有效性
+		if (year !== undefined) {
+			LunarDateValidator.validDate(year, month, day, isLeapMonth);
+		}
 
 		// 生成ISO日期字符串
 		const monthValue = isLeapMonth ? -month : month;
-		let isoDate: string;
-
-		if (year !== undefined) {
-			isoDate = `${year.toString().padStart(4, "0")}-${Math.abs(
-				monthValue
-			)
-				.toString()
-				.padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
-		} else {
-			isoDate = `${Math.abs(monthValue).toString().padStart(2, "0")}-${day
-				.toString()
-				.padStart(2, "0")}`;
-		}
+		const isoDate: string = this.generateISODateString(
+			year,
+			monthValue,
+			day
+		);
 
 		const calendarType = isLeapMonth ? "LUNAR_LEAP" : "LUNAR";
 
@@ -359,6 +347,31 @@ export class SmartDateProcessor {
 		}
 
 		return parseInt(result, 10);
+	}
+
+	/**
+	 * 生成ISO日期字符串
+	 * @param year 年份（可选）
+	 * @param month 月份
+	 * @param day 日期
+	 * @returns ISO格式的日期字符串
+	 */
+	private static generateISODateString(
+		year?: number,
+		month?: number,
+		day?: number
+	): string {
+		if (year !== undefined && month !== undefined && day !== undefined) {
+			return `${year.toString().padStart(4, "0")}-${month
+				.toString()
+				.padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+		} else if (month !== undefined && day !== undefined) {
+			return `${month.toString().padStart(2, "0")}-${day
+				.toString()
+				.padStart(2, "0")}`;
+		} else {
+			throw new Error("生成ISO日期字符串时参数不足");
+		}
 	}
 }
 

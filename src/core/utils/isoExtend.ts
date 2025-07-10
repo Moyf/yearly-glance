@@ -55,18 +55,8 @@ export class IsoExtend {
    * @param calendarType 日历类型
    * @returns 扩展的ISO日期字符串
    */
-  static create(month: number, day: number, calendarType: CalendarType, year?: number): string {
-    let dateStr: string;
-    
-    if (year !== undefined) {
-      // 格式：YYYY-MM-DD#CalendarType
-      dateStr = `${year.toString().padStart(4, '0')}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-    } else {
-      // 格式：MM-DD#CalendarType
-      dateStr = `${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-    }
-    
-    return `${dateStr}#${calendarType}`;
+  static create(date: string, calendarType: CalendarType): string {
+    return `${date}#${calendarType}`;
   }
 
   /**

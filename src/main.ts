@@ -17,14 +17,10 @@ import {
 } from "@/src/core/interfaces/Events";
 import { EventFormModal } from "./components/EventForm/EventFormModal";
 import { YearlyGlanceBus } from "./core/hook/useYearlyGlanceConfig";
-import {
-	updateBirthdaysInfo,
-	updateCustomEventsInfo,
-	updateHolidaysInfo,
-} from "./core/utils/eventCalculator";
 import { t } from "./i18n/i18n";
 import { generateUUID } from "./core/utils/uuid";
 import { MigrateData } from "./core/utils/migrateData";
+import { EventCalculator } from "./core/utils/eventCalculator";
 
 export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
@@ -194,11 +190,11 @@ export default class YearlyGlancePlugin extends Plugin {
 		const events = this.settings.data;
 
 		// 更新节日和自定义事件的dateArr
-		events.holidays = updateHolidaysInfo(events.holidays, year);
-		events.customEvents = updateCustomEventsInfo(events.customEvents, year);
+		events.holidays = EventCalculator.updateHolidaysInfo(events.holidays, year);
+		events.customEvents = EventCalculator.updateCustomEventsInfo(events.customEvents, year);
 
 		// 更新生日的完整信息（包含dateArr、nextBirthday、age、animal、zodiac等）
-		events.birthdays = updateBirthdaysInfo(events.birthdays, year);
+		events.birthdays = EventCalculator.updateBirthdaysInfo(events.birthdays, year);
 
 		// 不触发保存的通知，因为这是内部计算，不需要通知用户
 		await this.saveData(this.settings);

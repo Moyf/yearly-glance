@@ -41,7 +41,7 @@ export class SmartDateProcessor {
 	 * @param input 清理后的输入字符串
 	 * @returns CalendarType 检测到的日历类型
 	 */
-	private static detectCalendarType(input: string): CalendarType {
+	static detectCalendarType(input: string): CalendarType {
 		// 检查是否包含农历关键词
 		const hasLunarKeywords = lunarKeywords.some((keyword) =>
 			input.includes(keyword)

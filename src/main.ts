@@ -24,7 +24,7 @@ import {
 } from "./core/utils/eventCalculator";
 import { t } from "./i18n/i18n";
 import { generateUUID } from "./core/utils/uuid";
-import { migrateData } from "./core/utils/dataMerge";
+import { MigrateData } from "./core/utils/migrateData";
 
 export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
@@ -34,7 +34,7 @@ export default class YearlyGlancePlugin extends Plugin {
 		await this.loadSettings();
 
 		// 数据迁移
-		this.settings = migrateData(this);
+		this.settings = MigrateData.migrateV2(this);
 		await this.saveSettings();
 
 		// 注册视图

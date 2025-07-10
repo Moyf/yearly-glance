@@ -2,59 +2,59 @@ import { Lunar, Solar } from "lunar-typescript";
 import { Birthday, CustomEvent, Holiday } from "@/src/core/interfaces/Events";
 import { constructLunar, isValidLunarDate, parseDateValue } from "./dateParser";
 import { getBirthdayTranslation } from "../data/birthday";
-import { getSolarTermDate } from "../data/builtinHolidays";
+import { IsoExtend } from "./isoExtend";
+import { LunarLibrary } from "./lunarLibrary";
 
-// 计算当前选择年份下时间的的公历日期
-export function calculateDateObj(
-	date: string,
-	dateType: "SOLAR" | "LUNAR",
-	yearSelected: number,
-	isRepeat?: boolean
-): string[] {
-	if (!date) {
-		return [];
-	}
+export class EventCalculator {
+	static calculateDateArr(isoDate: string, yearSelected: number, isRepeat?: boolean) {
+		if (!isoDate) return [];
 
-	const { Sd, Ld, hasYear, month, day } = parseDateValue(date, dateType);
+		const { date, year, month, day, dateType } = IsoExtend.parse(isoDate);
 
-	// 自定义事件一般ymd齐全，在事件不重复，且有年份的情况下，只需要计算出公历日期
-	if (isRepeat !== undefined && isRepeat === false && hasYear) {
-		if (dateType === "SOLAR") {
-			return [Sd!.toString()];
-		} else if (dateType === "LUNAR") {
-			return [Ld!.getSolar().toString()];
+		// 自定义事件一般ymd齐全，在事件不重复，且有年份的情况下，只需要计算出公历日期
+		if (isRepeat !== true && year !== undefined) {
+			if (dateType === "GREGORIAN") {
+				return [Solar.fromYmd(year, month, day).toString()];
+			} else if (dateType === "LUNAR" || dateType === "LUNAR_LEAP") {
+				const monthL = dateType === "LUNAR_LEAP" ? -month : month;
+				return [Lunar.fromYmd(year, monthL, day).getSolar().toString()];
+			} else {
+				return [];
+			}
+		}
+		
+		// 对于节日和生日，均忽略date本身的year，而使用yearSelected
+		if (dateType === "GREGORIAN") {
+			return [Solar.fromYmd(yearSelected, month, day).toString()];
+		} else if (dateType === "LUNAR" || dateType === "LUNAR_LEAP") {
+			const monthL = dateType === "LUNAR_LEAP" ? -month : month;
+			const dateArr: string[] = [];
+
+			const lunarCurrent = LunarLibrary.constructLunar(yearSelected, monthL, day);
+			const lunarLast = LunarLibrary.constructLunar(yearSelected - 1, monthL, day);
+
+			if (lunarCurrent.getSolar().getYear() === yearSelected) {
+				dateArr.push(lunarCurrent.getSolar().toString());
+			}
+
+			if (lunarLast.getSolar().getYear() === yearSelected) {
+				dateArr.push(lunarLast.getSolar().toString());
+			}
+
+			return dateArr;
 		} else {
 			return [];
 		}
 	}
 
-	// 对于节日和生日，均忽略date本身的year，而使用yearSelected
-	if (dateType === "SOLAR") {
-		const solar = Solar.fromYmd(yearSelected, month, day);
-		return [solar.toString()];
-	} else if (dateType === "LUNAR") {
-		const dateArr: string[] = [];
-		// 农历的处理会复杂一点
-		// 1. 首先构造出yearSelected和yearSelected - 1的农历日期
-		const lunar = constructLunar(yearSelected, month, day);
-		const lunarLastYear = constructLunar(yearSelected - 1, month, day);
-
-		if (lunar.getSolar().getYear() === yearSelected) {
-			dateArr.push(lunar.getSolar().toString());
-		}
-
-		if (lunarLastYear.getSolar().getYear() === yearSelected) {
-			dateArr.push(lunarLastYear.getSolar().toString());
-		}
-
-		return dateArr;
-	} else {
-		return [];
+	static updateHolidaysInfo(holidays: Holiday[], yearSelected: number) {
+		return holidays.map((holiday) => this.updateHolidayInfo(holiday, yearSelected));
 	}
-}
 
-export function updateHolidaysInfo(holidays: Holiday[], yearSelected: number) {
-	return holidays.map((holiday) => updateHolidayInfo(holiday, yearSelected));
+	private static updateHolidayInfo(holiday: Holiday, yearSelected: number) {
+		const { id } = holiday;
+		const { date, dateType } = IsoExtend.parse(holiday.eventDate.core.isoDate);
+	}
 }
 
 function updateHolidayInfo(holiday: Holiday, yearSelected: number) {

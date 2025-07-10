@@ -33,6 +33,14 @@ export interface EventDate {
 	userInput: UserDateInput;
 }
 
+export interface ParseIsoDate {
+	date: string;
+	year: number | undefined;
+	month: number;
+	day: number;
+	dateType: CalendarType;
+}
+
 // 中文数字映射
 export const chineseDigits: Record<string, string> = {
 	〇: "0",

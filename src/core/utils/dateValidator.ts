@@ -1,4 +1,5 @@
 import { Lunar, SolarUtil } from "lunar-typescript";
+import { LunarLibrary } from "./lunarLibrary";
 
 /**
  * 公历日期验证器
@@ -109,19 +110,11 @@ export class LunarDateValidator {
 			return false;
 		}
 
-		try {
-			if (isLeap) {
-				// 如果是闰月，月份需要为负数
-				Lunar.fromYmd(year, -month, day);
-			} else {
-				Lunar.fromYmd(year, month, day);
-			}
-			return true;
-		} catch (error) {
-			// 农历库会在以下情况抛出异常：
-			// 1. 指定年份不存在该闰月
-			// 2. 指定月份的天数超出范围（如某月只有29天但传入30天）
-			return false;
+		if (isLeap) {
+			// 如果是闰月，月份需要为负数
+			return LunarLibrary.isValidLunarDate(year, -month, day);
+		} else {
+			return LunarLibrary.isValidLunarDate(year, month, day);
 		}
 	}
 }

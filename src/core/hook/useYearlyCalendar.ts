@@ -5,7 +5,7 @@ import {
 	CalendarEvent,
 } from "@/src/core/interfaces/CalendarEvent";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
-import { getDayOfLunarMonth } from "../utils/dateParser";
+import { LunarLibrary } from "../utils/lunarLibrary";
 import { t } from "@/src/i18n/i18n";
 
 export const MonthMap: Array<{ name: string; color: string }> = [
@@ -204,7 +204,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 				days.push({
 					date,
 					dayOfMonth: i,
-					dayOfLunarMonth: getDayOfLunarMonth(date),
+					dayOfLunarMonth: LunarLibrary.getDayOfLunarMonth(date),
 					isCurrentMonth: true,
 					isToday: highlightToday && isSameDay(date, today),
 					isWeekend,

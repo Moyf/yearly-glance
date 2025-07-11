@@ -7,8 +7,8 @@ import {
 	Holiday,
 } from "@/src/core/interfaces/Events";
 import { Tooltip } from "../Base/Tooltip";
-import { parseDateValue } from "@/src/core/utils/dateParser";
 import { t } from "@/src/i18n/i18n";
+import { IsoExtend } from "@/src/core/utils/isoExtend";
 
 interface EventItemProps {
 	event: Holiday | Birthday | CustomEvent;
@@ -169,11 +169,9 @@ export const EventItem: React.FC<EventItemProps> = ({
 		}
 	};
 
-	const displayDate = (date: string, dateType: "SOLAR" | "LUNAR") => {
-		const { hasYear, yearName, monthName, dayName } = parseDateValue(
-			date,
-			dateType
-		);
+	const displayDate = (isoDate: string) => {
+		const { date, year, month, day, dateType } = IsoExtend.parse(isoDate);
+
 		let dateStr;
 		if (hasYear) {
 			if (dateType === "SOLAR") {

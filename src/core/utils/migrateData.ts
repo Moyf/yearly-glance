@@ -46,7 +46,7 @@ export class MigrateData {
 
 		// 迁移dateType到新的calendar类型
 		let calendar: CalendarType;
-		let dateInput = oldDate;
+		const dateInput = oldDate;
 
 		// 1. SOLAR -> GREGORIAN
 		if (oldDateType === "SOLAR") {
@@ -67,13 +67,13 @@ export class MigrateData {
 
 		// 3. 创建新的EventDate结构
 		const standardDate = parseUserDateInput(dateInput, calendar);
-			
+
 		event.eventDate = {
 			core: standardDate,
 			userInput: {
 				input: dateInput,
-				calendar: calendar
-			}
+				calendar: calendar,
+			},
 		};
 	}
 }

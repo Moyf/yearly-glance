@@ -1,14 +1,13 @@
 import * as React from "react";
 import { Solar } from "lunar-typescript";
 import { Holiday } from "@/src/core/interfaces/Events";
-import { parseDateValue } from "@/src/core/utils/dateParser";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Toggle } from "../Base/Toggle";
 import { Tooltip } from "../Base/Tooltip";
-import { DatePicker } from "@/src/components/DatePicker/DatePicker";
 import { ColorSelector } from "../Base/ColorSelector";
 import { t } from "@/src/i18n/i18n";
 import { EVENT_TYPE_DEFAULT } from "@/src/core/interfaces/Events";
+import { SmartDateProcessor } from "@/src/core/utils/smartDateProcessor";
 
 interface HolidayFormProps {
 	event: Partial<Holiday>;
@@ -77,8 +76,16 @@ export const HolidayForm: React.FC<HolidayFormProps> = ({
 		// 构建完整事件对象
 		const completeEvent: Holiday = {
 			id: updatedFormData.id,
-			date: updatedFormData.date || todayString,
-			dateType: updatedFormData.dateType || "SOLAR",
+			eventDate: {
+				core: SmartDateProcessor.parseUserInput(
+					updatedFormData.date,
+					updatedFormData.dateType
+				),
+				userInput: {
+					input: updatedFormData.date || todayString,
+					calendar: updatedFormData.dateType,
+				},
+			},
 			text: updatedFormData.text || "",
 			emoji: updatedFormData.emoji,
 			color: updatedFormData.color,
@@ -104,28 +111,6 @@ export const HolidayForm: React.FC<HolidayFormProps> = ({
 			return <span className="empty-value">-</span>;
 		}
 		return <span className="field-value">{value}</span>;
-	};
-
-	const displayDate = (date: string, dateType: "SOLAR" | "LUNAR") => {
-		const { hasYear, yearName, monthName, dayName } = parseDateValue(
-			date,
-			dateType
-		);
-		let dateStr;
-		if (hasYear) {
-			if (dateType === "SOLAR") {
-				dateStr = `${yearName}-${monthName}-${dayName}`;
-			} else {
-				dateStr = `${yearName}年${monthName}月${dayName}`;
-			}
-		} else {
-			if (dateType === "SOLAR") {
-				dateStr = `${monthName}-${dayName}`;
-			} else {
-				dateStr = `${monthName}月${dayName}`;
-			}
-		}
-		return dateStr;
 	};
 
 	const isBuiltIn = formData.type === "BUILTIN";
@@ -162,23 +147,6 @@ export const HolidayForm: React.FC<HolidayFormProps> = ({
 					{t("view.eventManager.form.eventDate")}
 					<Tooltip text={t("view.eventManager.form.eventDateHelp")} />
 				</label>
-				{isBuiltIn ? (
-					renderReadOnlyValue(
-						displayDate(formData.date, formData.dateType)
-					)
-				) : (
-					<DatePicker
-						value={formData.date || todayString}
-						type={formData.dateType}
-						onChange={(value, dateType) => {
-							setFormData((prev) => ({
-								...prev,
-								date: value,
-								dateType: dateType,
-							}));
-						}}
-					/>
-				)}
 			</div>
 
 			{/* 事件日期类型(只读，由事件日期自动推断) */}

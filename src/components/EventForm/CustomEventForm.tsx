@@ -4,10 +4,11 @@ import { CustomEvent } from "@/src/core/interfaces/Events";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Toggle } from "../Base/Toggle";
 import { Tooltip } from "../Base/Tooltip";
-import { DatePicker } from "@/src/components/DatePicker/DatePicker";
 import { ColorSelector } from "../Base/ColorSelector";
 import { t } from "@/src/i18n/i18n";
 import { EVENT_TYPE_DEFAULT } from "@/src/core/interfaces/Events";
+import { SmartDateProcessor } from "@/src/core/utils/smartDateProcessor";
+import { Select } from "../Base/Select";
 
 interface CustomEventFormProps {
 	event: Partial<CustomEvent>;
@@ -75,8 +76,16 @@ export const CustomEventForm: React.FC<CustomEventFormProps> = ({
 		// 构建完整事件对象
 		const completeEvent: CustomEvent = {
 			id: updatedFormData.id,
-			date: updatedFormData.date || todayString,
-			dateType: updatedFormData.dateType || "SOLAR",
+			eventDate: {
+				core: SmartDateProcessor.parseUserInput(
+					updatedFormData.date,
+					updatedFormData.dateType
+				),
+				userInput: {
+					input: updatedFormData.date || todayString,
+					calendar: updatedFormData.dateType,
+				},
+			},
 			text: updatedFormData.text || "",
 			emoji: updatedFormData.emoji,
 			color: updatedFormData.color,
@@ -97,6 +106,13 @@ export const CustomEventForm: React.FC<CustomEventFormProps> = ({
 	const toggleOptional = () => {
 		setOptionalCollapsed(!optionalCollapsed);
 	};
+
+	const calendars = [
+		{ label: "AUTO", value: undefined },
+		{ label: "GREGORIAN", value: "GREGORIAN" },
+		{ label: "LUNAR", value: "LUNAR" },
+		{ label: "LUNAR_LEAP", value: "LUNAR_LEAP" },
+	];
 
 	return (
 		<form className="yg-event-form" onSubmit={handleSubmit}>
@@ -126,27 +142,23 @@ export const CustomEventForm: React.FC<CustomEventFormProps> = ({
 					{t("view.eventManager.form.eventDate")}
 					<Tooltip text={t("view.eventManager.form.eventDateHelp")} />
 				</label>
-				<DatePicker
+				<input
+					type="text"
+					name="date"
 					value={formData.date || todayString}
-					type={formData.dateType}
-					onChange={(value, dateType) => {
-						setFormData((prev) => ({
-							...prev,
-							date: value,
-							dateType: dateType,
-						}));
-					}}
+					onChange={handleChange}
 				/>
 			</div>
 
 			{/* 事件日期类型(只读，由事件日期自动推断) */}
-			<div className="form-group read-only">
+			<div className="form-group">
 				<label>{t("view.eventManager.form.eventDateType")}</label>
-				<span className="field-value">
-					{formData.dateType === "LUNAR"
-						? t("view.eventManager.lunar")
-						: t("view.eventManager.solar")}
-				</span>
+				<Select
+					name="dateType"
+					value={formData.dateType}
+					onValueChange={handleChange}
+					options={calendars}
+				/>
 			</div>
 
 			{/* 可选字段 */}

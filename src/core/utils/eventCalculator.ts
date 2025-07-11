@@ -65,7 +65,7 @@ export class EventCalculator {
 		);
 	}
 
-	private static updateHolidayInfo(holiday: Holiday, yearSelected: number) {
+	static updateHolidayInfo(holiday: Holiday, yearSelected: number) {
 		const { id } = holiday;
 		let isoDate: string = holiday.eventDate.core.isoDate;
 
@@ -104,7 +104,7 @@ export class EventCalculator {
 		);
 	}
 
-	private static updateCustomEventInfo(
+	static updateCustomEventInfo(
 		customEvent: CustomEvent,
 		yearSelected: number
 	) {
@@ -123,10 +123,7 @@ export class EventCalculator {
 		);
 	}
 
-	private static updateBirthdayInfo(
-		birthday: Birthday,
-		yearSelected: number
-	) {
+	static updateBirthdayInfo(birthday: Birthday, yearSelected: number) {
 		const isoDate = birthday.eventDate.core.isoDate;
 		const dateArr = this.calculateDateArr(isoDate, yearSelected);
 

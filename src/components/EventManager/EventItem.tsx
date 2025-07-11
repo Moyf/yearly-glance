@@ -170,23 +170,7 @@ export const EventItem: React.FC<EventItemProps> = ({
 	};
 
 	const displayDate = (isoDate: string) => {
-		const { date, year, month, day, dateType } = IsoExtend.parse(isoDate);
-
-		let dateStr;
-		if (hasYear) {
-			if (dateType === "SOLAR") {
-				dateStr = `${yearName}-${monthName}-${dayName}`;
-			} else {
-				dateStr = `${yearName}年${monthName}月${dayName}`;
-			}
-		} else {
-			if (dateType === "SOLAR") {
-				dateStr = `${monthName}-${dayName}`;
-			} else {
-				dateStr = `${monthName}月${dayName}`;
-			}
-		}
-		return dateStr;
+		return IsoExtend.formatDate(isoDate);
 	};
 
 	return (
@@ -218,7 +202,7 @@ export const EventItem: React.FC<EventItemProps> = ({
 					<span className="date-icon">
 						{event.dateType === "LUNAR" ? "🌙" : "📅"}
 					</span>
-					<span>{displayDate(event.date, event.dateType)}</span>
+					<span>{displayDate(event.eventDate.core.isoDate)}</span>
 				</div>
 
 				{event.remark && (

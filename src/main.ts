@@ -33,6 +33,12 @@ export default class YearlyGlancePlugin extends Plugin {
 		this.settings = MigrateData.migrateV2(this);
 		await this.saveSettings();
 
+		// 确保所有事件都有id
+		await this.ensureEventsHaveIds();
+
+		// 更新所有事件的dateArr字段
+		await this.updateAllEventsDateObj();
+
 		// 注册视图
 		this.registerLeafViews();
 
@@ -52,12 +58,6 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 验证并合并数据
 		this.settings = this.validateAndMergeSettings(savedData);
-
-		// 确保所有事件都有id
-		await this.ensureEventsHaveIds();
-
-		// 更新所有事件的dateArr字段
-		await this.updateAllEventsDateObj();
 	}
 
 	// 确保数据结构符合预期格式，移除未定义的配置
@@ -190,11 +190,20 @@ export default class YearlyGlancePlugin extends Plugin {
 		const events = this.settings.data;
 
 		// 更新节日和自定义事件的dateArr
-		events.holidays = EventCalculator.updateHolidaysInfo(events.holidays, year);
-		events.customEvents = EventCalculator.updateCustomEventsInfo(events.customEvents, year);
+		events.holidays = EventCalculator.updateHolidaysInfo(
+			events.holidays,
+			year
+		);
+		events.customEvents = EventCalculator.updateCustomEventsInfo(
+			events.customEvents,
+			year
+		);
 
 		// 更新生日的完整信息（包含dateArr、nextBirthday、age、animal、zodiac等）
-		events.birthdays = EventCalculator.updateBirthdaysInfo(events.birthdays, year);
+		events.birthdays = EventCalculator.updateBirthdaysInfo(
+			events.birthdays,
+			year
+		);
 
 		// 不触发保存的通知，因为这是内部计算，不需要通知用户
 		await this.saveData(this.settings);

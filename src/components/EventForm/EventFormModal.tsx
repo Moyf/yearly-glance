@@ -10,10 +10,6 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
-import {
-	calculateDateObj,
-	updateBirthdayInfo,
-} from "@/src/core/utils/eventCalculator";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
 import { NavTabs } from "../Base/NavTabs";
 import { CustomEventForm } from "./CustomEventForm";
@@ -22,6 +18,7 @@ import { HolidayForm } from "./HolidayForm";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
 import "./style/EventFormModal.css";
+import { EventCalculator } from "@/src/core/utils/eventCalculator";
 
 interface EventFormProps {
 	event: Partial<CustomEvent | Birthday | Holiday>;
@@ -211,14 +208,16 @@ export class EventFormModal extends Modal {
 		// 根据事件类型进行不同的处理
 		if (eventType === "holiday" || eventType === "customEvent") {
 			// 计算并设置dateArr
-			event.dateArr = calculateDateObj(
-				event.date,
-				event.dateType,
+			event.dateArr = EventCalculator.calculateDateArr(
+				event.eventDate.core.isoDate,
 				currentYear
 			);
 		} else if (eventType === "birthday") {
 			// 计算并更新生日的完整信息
-			event = updateBirthdayInfo(event as Birthday, currentYear);
+			event = EventCalculator.updateBirthdayInfo(
+				event as Birthday,
+				currentYear
+			);
 		}
 
 		// 根据事件类型和是否编辑来更新事件

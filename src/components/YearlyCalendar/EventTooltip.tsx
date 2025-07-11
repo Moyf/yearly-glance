@@ -9,7 +9,6 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
-import { displayDate } from "@/src/core/utils/dateParser";
 import { VIEW_TYPE_EVENT_MANAGER } from "@/src/views/EventManagerView";
 import {
 	EVENT_SEARCH_REQUESTED,
@@ -18,6 +17,7 @@ import {
 import { t } from "@/src/i18n/i18n";
 import "./style/EventTooltip.css";
 import { CalendarEvent } from "@/src/core/interfaces/CalendarEvent";
+import { IsoExtend } from "@/src/core/utils/isoExtend";
 
 interface EventTooltipContentProps {
 	plugin: YearlyGlancePlugin;
@@ -104,7 +104,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 						{t("view.eventManager.date")}:
 					</span>
 					<span className="tooltip-value">
-						{displayDate(event.date, event.dateType)}
+						{IsoExtend.formatDate(event.eventDate.core.isoDate)}
 					</span>
 				</div>
 

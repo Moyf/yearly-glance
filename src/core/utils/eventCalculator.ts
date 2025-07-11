@@ -67,7 +67,7 @@ export class EventCalculator {
 
 	static updateHolidayInfo(holiday: Holiday, yearSelected: number) {
 		const { id } = holiday;
-		let isoDate: string = holiday.eventDate.core.isoDate;
+		let isoDate: string = holiday.eventDate.isoDate;
 
 		// TODO: 完善节气节日的处理
 		if (id === "holi-wblqm") {
@@ -87,10 +87,7 @@ export class EventCalculator {
 			dateArr,
 			eventDate: {
 				...holiday.eventDate,
-				core: {
-					...holiday.eventDate.core,
-					isoDate,
-				},
+				isoDate,
 			},
 		};
 	}
@@ -108,7 +105,7 @@ export class EventCalculator {
 		customEvent: CustomEvent,
 		yearSelected: number
 	) {
-		const isoDate = customEvent.eventDate.core.isoDate;
+		const isoDate = customEvent.eventDate.isoDate;
 		const dateArr = this.calculateDateArr(isoDate, yearSelected);
 
 		return {
@@ -124,7 +121,7 @@ export class EventCalculator {
 	}
 
 	static updateBirthdayInfo(birthday: Birthday, yearSelected: number) {
-		const isoDate = birthday.eventDate.core.isoDate;
+		const isoDate = birthday.eventDate.isoDate;
 		const dateArr = this.calculateDateArr(isoDate, yearSelected);
 
 		const { year, month, day, dateType } = IsoExtend.parse(isoDate);

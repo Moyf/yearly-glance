@@ -104,7 +104,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 						{t("view.eventManager.date")}:
 					</span>
 					<span className="tooltip-value">
-						{IsoExtend.formatDate(event.eventDate.core.isoDate)}
+						{IsoExtend.formatDate(event.eventDate.isoDate)}
 					</span>
 				</div>
 

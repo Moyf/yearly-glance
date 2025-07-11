@@ -76,7 +76,7 @@ export const BirthdayForm: React.FC<BirthdayFormProps> = ({
 		const completeEvent: Birthday = {
 			id: updatedFormData.id,
 			eventDate: {
-				core: SmartDateProcessor.parseUserInput(
+				isoDate: SmartDateProcessor.parseUserInput(
 					updatedFormData.date,
 					updatedFormData.dateType
 				),

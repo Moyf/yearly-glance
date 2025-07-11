@@ -77,7 +77,7 @@ export const CustomEventForm: React.FC<CustomEventFormProps> = ({
 		const completeEvent: CustomEvent = {
 			id: updatedFormData.id,
 			eventDate: {
-				core: SmartDateProcessor.parseUserInput(
+				isoDate: SmartDateProcessor.parseUserInput(
 					updatedFormData.date,
 					updatedFormData.dateType
 				),

@@ -209,7 +209,7 @@ export class EventFormModal extends Modal {
 		if (eventType === "holiday" || eventType === "customEvent") {
 			// 计算并设置dateArr
 			event.dateArr = EventCalculator.calculateDateArr(
-				event.eventDate.core.isoDate,
+				event.eventDate.isoDate,
 				currentYear
 			);
 		} else if (eventType === "birthday") {

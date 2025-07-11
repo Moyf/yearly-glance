@@ -4,7 +4,6 @@ import {
 	lunarDays,
 	lunarKeywords,
 	lunarMonths,
-	StandardDate,
 } from "../interfaces/Date";
 import { GregorianDateValidator, LunarDateValidator } from "./dateValidator";
 
@@ -17,12 +16,9 @@ export class SmartDateProcessor {
 	 * 解析用户输入的日期字符串
 	 * @param input 用户输入的日期字符串
 	 * @param calendar 用户指定的日历类型（可选）
-	 * @returns StandardDate 标准化日期对象
+	 * @returns string 标准化日期对象
 	 */
-	static parseUserInput(
-		input: string,
-		calendar?: CalendarType
-	): StandardDate {
+	static parseUserInput(input: string, calendar?: CalendarType): string {
 		// 清理输入字符串
 		const cleanInput = input.trim();
 
@@ -63,12 +59,12 @@ export class SmartDateProcessor {
 	 * 根据指定的日历类型解析日期
 	 * @param input 清理后的输入字符串
 	 * @param calendar 日历类型
-	 * @returns StandardDate 标准化日期对象
+	 * @returns string 标准化日期对象
 	 */
 	private static parseWithCalendarType(
 		input: string,
 		calendar: CalendarType
-	): StandardDate {
+	): string {
 		switch (calendar) {
 			case "GREGORIAN":
 				return this.parseGregorianDate(input);
@@ -84,9 +80,9 @@ export class SmartDateProcessor {
 	/**
 	 * 解析公历日期
 	 * @param input 输入字符串
-	 * @returns StandardDate 标准化日期对象
+	 * @returns string 标准化日期对象
 	 */
-	private static parseGregorianDate(input: string): StandardDate {
+	private static parseGregorianDate(input: string): string {
 		// 支持的公历格式：
 		// 约束使用的日期顺序是YMD
 		// 标准格式：2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01
@@ -116,10 +112,7 @@ export class SmartDateProcessor {
 		// 生成ISO日期字符串
 		const isoDate: string = this.generateISODateString(year, month, day);
 
-		return {
-			isoDate: `${isoDate}#GREGORIAN`,
-			calendar: "GREGORIAN",
-		};
+		return `${isoDate}#GREGORIAN`;
 	}
 
 	/**
@@ -145,12 +138,9 @@ export class SmartDateProcessor {
 	 * 解析农历日期
 	 * @param input 输入字符串
 	 * @param isLeap 是否为闰月
-	 * @returns StandardDate 标准化日期对象
+	 * @returns string 标准化日期对象
 	 */
-	private static parseLunarDate(
-		input: string,
-		isLeap: boolean
-	): StandardDate {
+	private static parseLunarDate(input: string, isLeap: boolean): string {
 		// 支持的农历格式：
 		// 中文格式：2025年正月初一, 正月初一, 闰二月初一, 二〇二五年闰六月初一
 		// 数字格式：2025,6,1  2025,-6,1  6,1  -6,1
@@ -180,9 +170,9 @@ export class SmartDateProcessor {
 	/**
 	 * 解析数字格式的农历日期
 	 * @param input 输入字符串
-	 * @returns StandardDate 标准化日期对象
+	 * @returns string 标准化日期对象
 	 */
-	private static parseNumericLunarDate(input: string): StandardDate {
+	private static parseNumericLunarDate(input: string): string {
 		const parts = input
 			.trim()
 			.split(",")
@@ -218,22 +208,19 @@ export class SmartDateProcessor {
 
 		const calendarType = isLeapMonth ? "LUNAR_LEAP" : "LUNAR";
 
-		return {
-			isoDate: `${isoDate}#${calendarType}`,
-			calendar: calendarType,
-		};
+		return `${isoDate}#${calendarType}`;
 	}
 
 	/**
 	 * 解析中文格式的农历日期
 	 * @param input 输入字符串
 	 * @param isLeap 是否为闰月
-	 * @returns StandardDate 标准化日期对象
+	 * @returns string 标准化日期对象
 	 */
 	private static parseChineseLunarDate(
 		input: string,
 		isLeap: boolean
-	): StandardDate {
+	): string {
 		let isLeapMonth = isLeap;
 
 		// 检测闰月
@@ -263,10 +250,7 @@ export class SmartDateProcessor {
 
 		const calendarType = isLeapMonth ? "LUNAR_LEAP" : "LUNAR";
 
-		return {
-			isoDate: `${isoDate}#${calendarType}`,
-			calendar: calendarType,
-		};
+		return `${isoDate}#${calendarType}`;
 	}
 
 	/**
@@ -374,11 +358,11 @@ export class SmartDateProcessor {
  * 便捷函数：解析用户输入
  * @param input 用户输入的日期字符串
  * @param calendar 可选的日历类型
- * @returns StandardDate 标准化日期对象
+ * @returns string 标准化日期对象
  */
 export function parseUserDateInput(
 	input: string,
 	calendar?: CalendarType
-): StandardDate {
+): string {
 	return SmartDateProcessor.parseUserInput(input, calendar);
 }

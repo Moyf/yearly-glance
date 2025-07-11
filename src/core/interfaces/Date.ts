@@ -1,14 +1,4 @@
 /**
- * 标准化日期存储接口
- */
-export interface StandardDate {
-	/** ISO 8601扩展格式，支持农历标识 */
-	isoDate: string;
-	/** 日历类型 */
-	calendar: CalendarType;
-}
-
-/**
  * 日历类型枚举
  */
 export type CalendarType = "GREGORIAN" | "LUNAR" | "LUNAR_LEAP";
@@ -27,8 +17,8 @@ export interface UserDateInput {
  * 完整的事件日期信息
  */
 export interface EventDate {
-	/** 核心存储日期 */
-	core: StandardDate;
+	/** ISO 8601扩展格式，支持农历标识 */
+	isoDate: string;
 	/** 用户原始输入（用于编辑和显示） */
 	userInput: UserDateInput;
 }

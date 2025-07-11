@@ -77,7 +77,7 @@ export const HolidayForm: React.FC<HolidayFormProps> = ({
 		const completeEvent: Holiday = {
 			id: updatedFormData.id,
 			eventDate: {
-				core: SmartDateProcessor.parseUserInput(
+				isoDate: SmartDateProcessor.parseUserInput(
 					updatedFormData.date,
 					updatedFormData.dateType
 				),

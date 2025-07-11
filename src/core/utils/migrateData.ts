@@ -1,6 +1,6 @@
 import YearlyGlancePlugin from "@/src/main";
 import { YearlyGlanceConfig } from "../interfaces/types";
-import { BaseEvent, EVENT_TYPE_LIST } from "../interfaces/Events";
+import { BaseEvent } from "../interfaces/Events";
 import { CalendarType } from "../interfaces/Date";
 import { parseUserDateInput } from "./smartDateProcessor";
 
@@ -66,10 +66,10 @@ export class MigrateData {
 		}
 
 		// 3. 创建新的EventDate结构
-		const standardDate = parseUserDateInput(dateInput, calendar);
+		const isoDate = parseUserDateInput(dateInput, calendar);
 
 		event.eventDate = {
-			core: standardDate,
+			isoDate,
 			userInput: {
 				input: dateInput,
 				calendar: calendar,

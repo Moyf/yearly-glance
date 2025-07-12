@@ -7,7 +7,7 @@ import { Tooltip } from "../Base/Tooltip";
 import { ColorSelector } from "../Base/ColorSelector";
 import { t } from "@/src/i18n/i18n";
 import { EVENT_TYPE_DEFAULT } from "@/src/core/interfaces/Events";
-import { SmartDateProcessor } from "@/src/core/utils/smartDateProcessor";
+import { parseUserDateInput } from "@/src/core/utils/smartDateProcessor";
 
 interface HolidayFormProps {
 	event: Partial<Holiday>;
@@ -77,7 +77,7 @@ export const HolidayForm: React.FC<HolidayFormProps> = ({
 		const completeEvent: Holiday = {
 			id: updatedFormData.id,
 			eventDate: {
-				isoDate: SmartDateProcessor.parseUserInput(
+				...parseUserDateInput(
 					updatedFormData.date,
 					updatedFormData.dateType
 				),

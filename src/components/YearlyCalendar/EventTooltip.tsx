@@ -17,7 +17,7 @@ import {
 import { t } from "@/src/i18n/i18n";
 import "./style/EventTooltip.css";
 import { CalendarEvent } from "@/src/core/interfaces/CalendarEvent";
-import { IsoExtend } from "@/src/core/utils/isoExtend";
+import { IsoUtils } from "@/src/core/utils/isoUtils";
 
 interface EventTooltipContentProps {
 	plugin: YearlyGlancePlugin;
@@ -104,7 +104,10 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 						{t("view.eventManager.date")}:
 					</span>
 					<span className="tooltip-value">
-						{IsoExtend.formatDate(event.eventDate.isoDate)}
+						{IsoUtils.formatDate(
+							event.eventDate.isoDate,
+							event.calendar
+						)}
 					</span>
 				</div>
 

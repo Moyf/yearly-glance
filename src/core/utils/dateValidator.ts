@@ -1,4 +1,4 @@
-import { Lunar, SolarUtil } from "lunar-typescript";
+import { SolarUtil } from "lunar-typescript";
 import { LunarLibrary } from "./lunarLibrary";
 
 /**

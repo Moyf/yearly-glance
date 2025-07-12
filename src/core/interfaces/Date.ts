@@ -4,6 +4,16 @@
 export type CalendarType = "GREGORIAN" | "LUNAR" | "LUNAR_LEAP";
 
 /**
+ * 标准化日期存储接口
+ */
+export interface StandardDate {
+	/** ISO 格式*/
+	isoDate: string;
+	/** 日历类型 */
+	calendar: CalendarType;
+}
+
+/**
  * 用户输入的原始日期信息
  */
 export interface UserDateInput {
@@ -16,19 +26,17 @@ export interface UserDateInput {
 /**
  * 完整的事件日期信息
  */
-export interface EventDate {
-	/** ISO 8601扩展格式，支持农历标识 */
-	isoDate: string;
+export interface EventDate extends StandardDate {
 	/** 用户原始输入（用于编辑和显示） */
 	userInput: UserDateInput;
 }
 
 export interface ParseIsoDate {
-	date: string;
+	isoDate: string;
 	year: number | undefined;
 	month: number;
 	day: number;
-	dateType: CalendarType;
+	calendar: CalendarType;
 }
 
 // 中文数字映射

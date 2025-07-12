@@ -1,26 +1,36 @@
 import { Lunar, Solar } from "lunar-typescript";
 import { Birthday, CustomEvent, Holiday } from "@/src/core/interfaces/Events";
 import { getBirthdayTranslation } from "../../i18n/birthday";
-import { IsoExtend } from "./isoExtend";
+import { IsoUtils } from "./isoUtils";
 import { LunarLibrary } from "./lunarLibrary";
 import { SpecialHoliday } from "./specialHoliday";
+import { CalendarType } from "../interfaces/Date";
 
 export class EventCalculator {
+	/**
+	 * 计算当前选择年份下事件日期数组
+	 * @param isoDate ISO日期字符串
+	 * @param calendar 日期类型
+	 * @param yearSelected 当前选择的年份
+	 * @param isRepeat 是否为重复事件，针对customEvent
+	 * @returns 日期数组
+	 */
 	static calculateDateArr(
 		isoDate: string,
+		calendar: CalendarType,
 		yearSelected: number,
 		isRepeat?: boolean
 	) {
 		if (!isoDate) return [];
 
-		const { year, month, day, dateType } = IsoExtend.parse(isoDate);
+		const { year, month, day } = IsoUtils.parse(isoDate, calendar);
 
 		// 自定义事件一般ymd齐全，在事件不重复，且有年份的情况下，只需要计算出公历日期
 		if (isRepeat !== true && year !== undefined) {
-			if (dateType === "GREGORIAN") {
+			if (calendar === "GREGORIAN") {
 				return [Solar.fromYmd(year, month, day).toString()];
-			} else if (dateType === "LUNAR" || dateType === "LUNAR_LEAP") {
-				const monthL = dateType === "LUNAR_LEAP" ? -month : month;
+			} else if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {
+				const monthL = calendar === "LUNAR_LEAP" ? -month : month;
 				return [Lunar.fromYmd(year, monthL, day).getSolar().toString()];
 			} else {
 				return [];
@@ -28,10 +38,10 @@ export class EventCalculator {
 		}
 
 		// 对于节日和生日，均忽略date本身的year，而使用yearSelected
-		if (dateType === "GREGORIAN") {
+		if (calendar === "GREGORIAN") {
 			return [Solar.fromYmd(yearSelected, month, day).toString()];
-		} else if (dateType === "LUNAR" || dateType === "LUNAR_LEAP") {
-			const monthL = dateType === "LUNAR_LEAP" ? -month : month;
+		} else if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {
+			const monthL = calendar === "LUNAR_LEAP" ? -month : month;
 			const dateArr: string[] = [];
 
 			const lunarCurrent = LunarLibrary.constructLunar(
@@ -59,28 +69,41 @@ export class EventCalculator {
 		}
 	}
 
+	/**
+	 * 更新节假日信息
+	 * @param holidays 节假日数组
+	 * @param yearSelected 当前选择的年份
+	 * @returns 更新后的节假日数组
+	 */
 	static updateHolidaysInfo(holidays: Holiday[], yearSelected: number) {
 		return holidays.map((holiday) =>
 			this.updateHolidayInfo(holiday, yearSelected)
 		);
 	}
 
+	/**
+	 * 更新单个节假日信息
+	 * @param holiday 节假日对象
+	 * @param yearSelected 当前选择的年份
+	 * @returns 更新后的节假日对象
+	 */
 	static updateHolidayInfo(holiday: Holiday, yearSelected: number) {
 		const { id } = holiday;
 		let isoDate: string = holiday.eventDate.isoDate;
+		const calendar = holiday.eventDate.calendar;
 
 		// TODO: 完善节气节日的处理
 		if (id === "holi-wblqm") {
 			// 清明节
 			const qingMing = SpecialHoliday.solarTerm(yearSelected, "清明");
-			isoDate = IsoExtend.create(qingMing, "GREGORIAN");
+			isoDate = qingMing;
 		} else if (id === "holi-wbldz") {
 			// 冬至
 			const dongZhi = SpecialHoliday.solarTerm(yearSelected, "冬至");
-			isoDate = IsoExtend.create(dongZhi, "GREGORIAN");
+			isoDate = dongZhi;
 		}
 
-		const dateArr = this.calculateDateArr(isoDate, yearSelected);
+		const dateArr = this.calculateDateArr(isoDate, calendar, yearSelected);
 
 		return {
 			...holiday,
@@ -92,6 +115,12 @@ export class EventCalculator {
 		};
 	}
 
+	/**
+	 * 更新自定义事件信息
+	 * @param customEvents 自定义事件数组
+	 * @param yearSelected 当前选择的年份
+	 * @returns 更新后的自定义事件数组
+	 */
 	static updateCustomEventsInfo(
 		customEvents: CustomEvent[],
 		yearSelected: number
@@ -101,12 +130,19 @@ export class EventCalculator {
 		);
 	}
 
+	/**
+	 * 更新单个自定义事件信息
+	 * @param customEvent 自定义事件对象
+	 * @param yearSelected 当前选择的年份
+	 * @returns 更新后的自定义事件对象
+	 */
 	static updateCustomEventInfo(
 		customEvent: CustomEvent,
 		yearSelected: number
 	) {
 		const isoDate = customEvent.eventDate.isoDate;
-		const dateArr = this.calculateDateArr(isoDate, yearSelected);
+		const calendar = customEvent.eventDate.calendar;
+		const dateArr = this.calculateDateArr(isoDate, calendar, yearSelected);
 
 		return {
 			...customEvent,
@@ -114,23 +150,36 @@ export class EventCalculator {
 		};
 	}
 
+	/**
+	 * 更新所有生日信息
+	 * @param birthdays 生日数组
+	 * @param yearSelected 当前选择的年份
+	 * @returns 更新后的生日数组
+	 */
 	static updateBirthdaysInfo(birthdays: Birthday[], yearSelected: number) {
 		return birthdays.map((birthday) =>
 			this.updateBirthdayInfo(birthday, yearSelected)
 		);
 	}
 
+	/**
+	 * 更新单个生日信息
+	 * @param birthday 生日对象
+	 * @param yearSelected 当前选择的年份
+	 * @returns 更新后的生日对象
+	 */
 	static updateBirthdayInfo(birthday: Birthday, yearSelected: number) {
 		const isoDate = birthday.eventDate.isoDate;
-		const dateArr = this.calculateDateArr(isoDate, yearSelected);
+		const calendar = birthday.eventDate.calendar;
+		const dateArr = this.calculateDateArr(isoDate, calendar, yearSelected);
 
-		const { year, month, day, dateType } = IsoExtend.parse(isoDate);
+		const { year, month, day } = IsoUtils.parse(isoDate, calendar);
 		const todaySolar = Solar.fromDate(new Date());
 
 		// 计算下一次生日
 
 		let nextBirthday, currentYearBirthday, nextYearBirthday;
-		if (dateType === "GREGORIAN") {
+		if (calendar === "GREGORIAN") {
 			currentYearBirthday = Solar.fromYmd(
 				todaySolar.getYear(),
 				month,
@@ -148,7 +197,7 @@ export class EventCalculator {
 				// 今年的生日已过，计算明年的生日
 				nextBirthday = nextYearBirthday.toString();
 			}
-		} else if (dateType === "LUNAR" || dateType === "LUNAR_LEAP") {
+		} else if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {
 			currentYearBirthday = LunarLibrary.constructLunar(
 				yearSelected,
 				month,

@@ -36,6 +36,10 @@ export class MigrateData {
 		return migratedData;
 	}
 
+	/**
+	 * 迁移单个事件到新的结构
+	 * @param event 需要迁移的事件对象
+	 */
 	private static migrateEventV2(event: BaseEvent): void {
 		if (!event) return;
 
@@ -66,10 +70,10 @@ export class MigrateData {
 		}
 
 		// 3. 创建新的EventDate结构
-		const isoDate = parseUserDateInput(dateInput, calendar);
+		const standardDate = parseUserDateInput(dateInput, calendar);
 
 		event.eventDate = {
-			isoDate,
+			...standardDate,
 			userInput: {
 				input: dateInput,
 				calendar: calendar,

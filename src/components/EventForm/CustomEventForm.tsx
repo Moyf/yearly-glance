@@ -7,7 +7,7 @@ import { Tooltip } from "../Base/Tooltip";
 import { ColorSelector } from "../Base/ColorSelector";
 import { t } from "@/src/i18n/i18n";
 import { EVENT_TYPE_DEFAULT } from "@/src/core/interfaces/Events";
-import { SmartDateProcessor } from "@/src/core/utils/smartDateProcessor";
+import { parseUserDateInput } from "@/src/core/utils/smartDateProcessor";
 import { Select } from "../Base/Select";
 
 interface CustomEventFormProps {
@@ -77,7 +77,7 @@ export const CustomEventForm: React.FC<CustomEventFormProps> = ({
 		const completeEvent: CustomEvent = {
 			id: updatedFormData.id,
 			eventDate: {
-				isoDate: SmartDateProcessor.parseUserInput(
+				...parseUserDateInput(
 					updatedFormData.date,
 					updatedFormData.dateType
 				),

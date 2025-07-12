@@ -9,7 +9,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析完整的公历日期 - 连字符", () => {
 				const result = SmartDateProcessor.parseUserInput("2025-01-01");
 				expect(result).toEqual({
-					isoDate: "2025-01-01#GREGORIAN",
+					isoDate: "2025-01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -17,7 +17,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析完整的公历日期 - 斜杠", () => {
 				const result = SmartDateProcessor.parseUserInput("2025/01/01");
 				expect(result).toEqual({
-					isoDate: "2025-01-01#GREGORIAN",
+					isoDate: "2025-01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -25,7 +25,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析完整的公历日期 - 点号", () => {
 				const result = SmartDateProcessor.parseUserInput("2025.01.01");
 				expect(result).toEqual({
-					isoDate: "2025-01-01#GREGORIAN",
+					isoDate: "2025-01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -33,7 +33,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析完整的公历日期 - 逗号", () => {
 				const result = SmartDateProcessor.parseUserInput("2025,01,01");
 				expect(result).toEqual({
-					isoDate: "2025-01-01#GREGORIAN",
+					isoDate: "2025-01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -43,7 +43,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析月日格式 - 连字符", () => {
 				const result = SmartDateProcessor.parseUserInput("01-01");
 				expect(result).toEqual({
-					isoDate: "01-01#GREGORIAN",
+					isoDate: "01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -51,7 +51,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析月日格式 - 斜杠", () => {
 				const result = SmartDateProcessor.parseUserInput("01/01");
 				expect(result).toEqual({
-					isoDate: "01-01#GREGORIAN",
+					isoDate: "01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -59,7 +59,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析月日格式 - 点号", () => {
 				const result = SmartDateProcessor.parseUserInput("01.01");
 				expect(result).toEqual({
-					isoDate: "01-01#GREGORIAN",
+					isoDate: "01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -67,7 +67,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析月日格式 - 逗号", () => {
 				const result = SmartDateProcessor.parseUserInput("01,01");
 				expect(result).toEqual({
-					isoDate: "01-01#GREGORIAN",
+					isoDate: "01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -80,7 +80,7 @@ describe("SmartDateProcessor", () => {
 					"GREGORIAN"
 				);
 				expect(result).toEqual({
-					isoDate: "2025-01-01#GREGORIAN",
+					isoDate: "2025-01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -91,7 +91,7 @@ describe("SmartDateProcessor", () => {
 					"GREGORIAN"
 				);
 				expect(result).toEqual({
-					isoDate: "01-01#GREGORIAN",
+					isoDate: "01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -104,7 +104,7 @@ describe("SmartDateProcessor", () => {
 					"GREGORIAN"
 				);
 				expect(result).toEqual({
-					isoDate: "2025-01-01#GREGORIAN",
+					isoDate: "2025-01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -112,7 +112,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析混合格式 - 连字符无前导零", () => {
 				const result = SmartDateProcessor.parseUserInput("2025-1-1");
 				expect(result).toEqual({
-					isoDate: "2025-01-01#GREGORIAN",
+					isoDate: "2025-01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -122,7 +122,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析最大月份和日期", () => {
 				const result = SmartDateProcessor.parseUserInput("2025-12-31");
 				expect(result).toEqual({
-					isoDate: "2025-12-31#GREGORIAN",
+					isoDate: "2025-12-31",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -130,7 +130,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析最小月份和日期", () => {
 				const result = SmartDateProcessor.parseUserInput("2025-01-01");
 				expect(result).toEqual({
-					isoDate: "2025-01-01#GREGORIAN",
+					isoDate: "2025-01-01",
 					calendar: "GREGORIAN",
 				});
 			});
@@ -145,7 +145,7 @@ describe("SmartDateProcessor", () => {
 					"LUNAR"
 				);
 				expect(result).toEqual({
-					isoDate: "2025-01-01#LUNAR",
+					isoDate: "2025-01-01",
 					calendar: "LUNAR",
 				});
 			});
@@ -156,7 +156,7 @@ describe("SmartDateProcessor", () => {
 					"LUNAR"
 				);
 				expect(result).toEqual({
-					isoDate: "01-01#LUNAR",
+					isoDate: "01-01",
 					calendar: "LUNAR",
 				});
 			});
@@ -167,7 +167,7 @@ describe("SmartDateProcessor", () => {
 					"LUNAR"
 				);
 				expect(result).toEqual({
-					isoDate: "2025-06-01#LUNAR_LEAP",
+					isoDate: "2025-06-01",
 					calendar: "LUNAR_LEAP",
 				});
 			});
@@ -178,7 +178,7 @@ describe("SmartDateProcessor", () => {
 					"LUNAR"
 				);
 				expect(result).toEqual({
-					isoDate: "06-01#LUNAR_LEAP",
+					isoDate: "06-01",
 					calendar: "LUNAR_LEAP",
 				});
 			});
@@ -189,7 +189,7 @@ describe("SmartDateProcessor", () => {
 				const result =
 					SmartDateProcessor.parseUserInput("2025年正月初一");
 				expect(result).toEqual({
-					isoDate: "2025-01-01#LUNAR",
+					isoDate: "2025-01-01",
 					calendar: "LUNAR",
 				});
 			});
@@ -197,7 +197,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析中文农历 - 月日", () => {
 				const result = SmartDateProcessor.parseUserInput("正月初一");
 				expect(result).toEqual({
-					isoDate: "01-01#LUNAR",
+					isoDate: "01-01",
 					calendar: "LUNAR",
 				});
 			});
@@ -205,7 +205,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析中文农历 - 腊月", () => {
 				const result = SmartDateProcessor.parseUserInput("腊月三十");
 				expect(result).toEqual({
-					isoDate: "12-30#LUNAR",
+					isoDate: "12-30",
 					calendar: "LUNAR",
 				});
 			});
@@ -213,7 +213,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析中文农历 - 冬月", () => {
 				const result = SmartDateProcessor.parseUserInput("冬月十五");
 				expect(result).toEqual({
-					isoDate: "11-15#LUNAR",
+					isoDate: "11-15",
 					calendar: "LUNAR",
 				});
 			});
@@ -221,7 +221,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析中文农历 - 廿一到廿九", () => {
 				const result = SmartDateProcessor.parseUserInput("五月廿五");
 				expect(result).toEqual({
-					isoDate: "05-25#LUNAR",
+					isoDate: "05-25",
 					calendar: "LUNAR",
 				});
 			});
@@ -232,7 +232,7 @@ describe("SmartDateProcessor", () => {
 				const result =
 					SmartDateProcessor.parseUserInput("2025年闰六月初一");
 				expect(result).toEqual({
-					isoDate: "2025-06-01#LUNAR_LEAP",
+					isoDate: "2025-06-01",
 					calendar: "LUNAR_LEAP",
 				});
 			});
@@ -240,7 +240,7 @@ describe("SmartDateProcessor", () => {
 			test("应该正确解析闰月 - 月日", () => {
 				const result = SmartDateProcessor.parseUserInput("闰六月初一");
 				expect(result).toEqual({
-					isoDate: "06-01#LUNAR_LEAP",
+					isoDate: "06-01",
 					calendar: "LUNAR_LEAP",
 				});
 			});
@@ -249,7 +249,7 @@ describe("SmartDateProcessor", () => {
 				const result =
 					SmartDateProcessor.parseUserInput("二〇二五年闰六月初一");
 				expect(result).toEqual({
-					isoDate: "2025-06-01#LUNAR_LEAP",
+					isoDate: "2025-06-01",
 					calendar: "LUNAR_LEAP",
 				});
 			});
@@ -278,7 +278,7 @@ describe("SmartDateProcessor", () => {
 						`${name}初一`
 					);
 					expect(result).toEqual({
-						isoDate: `${num.toString().padStart(2, "0")}-01#LUNAR`,
+						isoDate: `${num.toString().padStart(2, "0")}-01`,
 						calendar: "LUNAR",
 					});
 				});
@@ -302,7 +302,7 @@ describe("SmartDateProcessor", () => {
 						`正月${name}`
 					);
 					expect(result).toEqual({
-						isoDate: `01-${num.toString().padStart(2, "0")}#LUNAR`,
+						isoDate: `01-${num.toString().padStart(2, "0")}`,
 						calendar: "LUNAR",
 					});
 				});
@@ -411,21 +411,6 @@ describe("SmartDateProcessor", () => {
 	});
 
 	describe("ISO日期字符串格式", () => {
-		test("公历日期应该包含GREGORIAN标识", () => {
-			const result = SmartDateProcessor.parseUserInput("2025-01-01");
-			expect(result.isoDate).toMatch(/.*#GREGORIAN$/);
-		});
-
-		test("农历日期应该包含LUNAR标识", () => {
-			const result = SmartDateProcessor.parseUserInput("正月初一");
-			expect(result.isoDate).toMatch(/.*#LUNAR$/);
-		});
-
-		test("闰月日期应该包含LUNAR_LEAP标识", () => {
-			const result = SmartDateProcessor.parseUserInput("闰六月初一");
-			expect(result.isoDate).toMatch(/.*#LUNAR_LEAP$/);
-		});
-
 		test("月日格式应该正确填充前导零", () => {
 			const result = SmartDateProcessor.parseUserInput("1-1");
 			expect(result.isoDate).toContain("01-01");
@@ -441,7 +426,7 @@ describe("SmartDateProcessor", () => {
 		test("应该处理带有额外空格的输入", () => {
 			const result = SmartDateProcessor.parseUserInput("  2025-01-01  ");
 			expect(result).toEqual({
-				isoDate: "2025-01-01#GREGORIAN",
+				isoDate: "2025-01-01",
 				calendar: "GREGORIAN",
 			});
 		});

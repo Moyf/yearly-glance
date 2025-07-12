@@ -8,7 +8,8 @@ import {
 } from "@/src/core/interfaces/Events";
 import { Tooltip } from "../Base/Tooltip";
 import { t } from "@/src/i18n/i18n";
-import { IsoExtend } from "@/src/core/utils/isoExtend";
+import { CalendarType } from "@/src/core/interfaces/Date";
+import { IsoUtils } from "@/src/core/utils/isoUtils";
 
 interface EventItemProps {
 	event: Holiday | Birthday | CustomEvent;
@@ -169,8 +170,8 @@ export const EventItem: React.FC<EventItemProps> = ({
 		}
 	};
 
-	const displayDate = (isoDate: string) => {
-		return IsoExtend.formatDate(isoDate);
+	const displayDate = (isoDate: string, calendar: CalendarType) => {
+		return IsoUtils.formatDate(isoDate, calendar);
 	};
 
 	return (
@@ -202,7 +203,9 @@ export const EventItem: React.FC<EventItemProps> = ({
 					<span className="date-icon">
 						{event.dateType === "LUNAR" ? "🌙" : "📅"}
 					</span>
-					<span>{displayDate(event.eventDate.isoDate)}</span>
+					<span>
+						{displayDate(event.eventDate.isoDate, event.calendar)}
+					</span>
 				</div>
 
 				{event.remark && (

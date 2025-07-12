@@ -78,7 +78,11 @@ const translations: BaseMessage = {
 			},
 			showLunarDay: {
 				name: "显示农历日",
-				desc: "在视图中显示农历日",
+				desc: "在日期下方显示农历日期",
+			},
+			showEmojiBeforeTabName: {
+				name: "标签名称前显示emoji",
+				desc: "在标签页名称前显示对应的emoji图标",
 			},
 			showDebugInfo: {
 				name: "显示调试信息",

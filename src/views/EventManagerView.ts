@@ -29,7 +29,9 @@ export class EventManagerView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return t("view.eventManager.name");
+		const name = t("view.eventManager.name");
+		const config = this.plugin.getConfig();
+		return config.showEmojiBeforeTabName ? `🗂️ ${name}` : name;
 	}
 
 	async onOpen() {

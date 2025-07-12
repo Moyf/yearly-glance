@@ -36,7 +36,9 @@ export class YearlyGlanceView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return t("view.yearlyGlance.name");
+		const name = t("view.yearlyGlance.name");
+		const config = this.plugin.getConfig();
+		return config.showEmojiBeforeTabName ? `🔭 ${name}` : name;
 	}
 
 	async onOpen() {

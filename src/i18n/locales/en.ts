@@ -78,7 +78,11 @@ const translations: BaseMessage = {
 			},
 			showLunarDay: {
 				name: "Show lunar day",
-				desc: "Show lunar day in view",
+				desc: "Show lunar date in view",
+			},
+			showEmojiBeforeTabName: {
+				name: "Show emoji before tab name",
+				desc: "Show emoji before tab names in the UI",
 			},
 			showDebugInfo: {
 				name: "Debug information",

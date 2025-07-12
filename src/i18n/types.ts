@@ -48,6 +48,7 @@ export type BaseMessage = {
 			showTooltips: IBaseSettingsItem;
 			colorful: IBaseSettingsItem;
 			showLunarDay: IBaseSettingsItem;
+			showEmojiBeforeTabName: IBaseSettingsItem;
 			showDebugInfo: IBaseSettingsItem;
 			presetColors: SettingsItem<{
 				newColor: string;

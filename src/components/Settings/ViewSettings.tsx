@@ -87,6 +87,18 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						}
 					/>
 				</SettingsItem>
+				{/* 标签名称前显示emoji */}
+				<SettingsItem
+					name={t("setting.general.showEmojiBeforeTabName.name")}
+					desc={t("setting.general.showEmojiBeforeTabName.desc")}
+				>
+					<Toggle
+						checked={config.showEmojiBeforeTabName}
+						onChange={(value) =>
+							handleUpdateConfig({ showEmojiBeforeTabName: value })
+						}
+					/>
+				</SettingsItem>
 				{/* 显示农历日 */}
 				<SettingsItem
 					name={t("setting.general.showLunarDay.name")}

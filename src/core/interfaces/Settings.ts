@@ -49,6 +49,7 @@ export interface YearlyGlanceSettings {
 	showCustomEvents: boolean; // 是否显示自定义事件
 	mondayFirst: boolean; // 是否以周一为一周的第一天
 	title: string; // 年历标题
+	showEmojiBeforeTabName: boolean; // 是否在标签名称前显示emoji
 	showTooltips: boolean; // 是否显示提示
 	colorful: boolean; // 是否多彩
 	showLunarDay: boolean; // 是否显示农历日
@@ -76,6 +77,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	showCustomEvents: true,
 	mondayFirst: true,
 	title: "",
+	showEmojiBeforeTabName: true,
 	showTooltips: true,
 	colorful: false,
 	showLunarDay: false,

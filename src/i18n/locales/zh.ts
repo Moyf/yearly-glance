@@ -140,7 +140,13 @@ const translations: BaseMessage = {
 				hideEmptyDates: "是否隐藏空日期",
 				emojiOnTop: "将 emoji 显示在上方",
 				wrapText: "切换文本换行",
-				showTooltips: "鼠标悬浮时显示完整事件名"
+				showTooltips: "鼠标悬浮时显示完整事件名",
+				hidePreviousMonths: "隐藏之前月份",
+				showPreviousMonths: "显示之前月份",
+				previousMonths: "之前月份",
+				hideFutureMonths: "隐藏之后月份",
+				showFutureMonths: "显示之后月份",
+				futureMonths: "之后月份"
 			},
 		},
 		eventManager: {

@@ -22,6 +22,7 @@ import { EventTooltip } from "./EventTooltip";
 import { Select } from "../Base/Select";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
+import { Eye, EyeOff } from "lucide-react";
 import "./style/YearlyCalendarView.css";
 
 interface YearlyCalendarViewProps {
@@ -49,6 +50,8 @@ const presetConfigs = {
 
 const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 	const { config, updateConfig } = useYearlyGlanceConfig(plugin);
+	const [hidePreviousMonths, setHidePreviousMonths] = React.useState(false);
+	const [hideFutureMonths, setHideFutureMonths] = React.useState(false);
 
 	const {
 		year,
@@ -244,7 +247,29 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 	};
 
 	// 渲染单个月份
-	const renderMonth = (monthIndex: number) => {
+	const shouldRenderMonth = (monthIndex: number) => {
+	const currentDate = new Date();
+	const currentMonth = currentDate.getMonth();
+	const currentYear = currentDate.getFullYear();
+	const targetYear = year + Math.floor(monthIndex / 12);
+	const targetMonth = monthIndex % 12;
+
+	if (hidePreviousMonths && (targetYear < currentYear || (targetYear === currentYear && targetMonth < currentMonth))) {
+		return false;
+	}
+
+	if (hideFutureMonths && (targetYear > currentYear || (targetYear === currentYear && targetMonth > currentMonth))) {
+		return false;
+	}
+
+	return true;
+};
+
+const renderMonth = (monthIndex: number) => {
+	if (!shouldRenderMonth(monthIndex)) {
+		return null;
+	}
+
 		const monthData = monthsData[monthIndex];
 		const monthColorStyle = colorful
 			? {
@@ -459,6 +484,25 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 				<div className="yg-buttons">
 
 				<div className="yg-buttons-left">
+				{/* 月份可见性切换按钮 */}
+				<div className="month-visibility-controls">
+					<button
+						className={`month-visibility-toggle ${hidePreviousMonths ? 'active' : ''}`}
+						onClick={() => setHidePreviousMonths(!hidePreviousMonths)}
+						title={hidePreviousMonths ? t('view.yearlyGlance.actions.showPreviousMonths') : t('view.yearlyGlance.actions.hidePreviousMonths')}
+					>
+						{hidePreviousMonths ? <EyeOff size={16} /> : <Eye size={16} />}
+						<span>{t('view.yearlyGlance.actions.previousMonths')}</span>
+					</button>
+					<button
+						className={`month-visibility-toggle ${hideFutureMonths ? 'active' : ''}`}
+						onClick={() => setHideFutureMonths(!hideFutureMonths)}
+						title={hideFutureMonths ? t('view.yearlyGlance.actions.showFutureMonths') : t('view.yearlyGlance.actions.hideFutureMonths')}
+					>
+						{hideFutureMonths ? <EyeOff size={16} /> : <Eye size={16} />}
+						<span>{t('view.yearlyGlance.actions.futureMonths')}</span>
+					</button>
+				</div>
 
 				{/* 图例 */}
 				{showLegend && (

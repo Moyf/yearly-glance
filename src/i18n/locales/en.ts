@@ -141,6 +141,12 @@ const translations: BaseMessage = {
 				emojiOnTop: "Display emoji on top",
 				wrapText: "Toggle text wrapping",
 				showTooltips: "Mouse hover to show full event name",
+				hidePreviousMonths: "Hide previous months",
+				showPreviousMonths: "Show previous months",
+				previousMonths: "Previous months",
+				hideFutureMonths: "Hide future months",
+				showFutureMonths: "Show future months",
+				futureMonths: "Future months",
 			},
 		},
 		eventManager: {

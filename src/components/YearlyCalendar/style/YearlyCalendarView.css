@@ -298,6 +298,40 @@
 		background-color: rgba(255, 255, 255, 0.05);
 	}
 
+	/* ! 月份可见性切换按钮 */
+	.month-visibility-controls {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin-left: 12px;
+	}
+
+	.month-visibility-toggle {
+		padding: 6px 12px;
+		border-radius: 6px;
+		border: 1px solid var(--yg-border-color);
+		background-color: var(--yg-button-bg-color);
+		border-color: var(--yg-button-hover-border-color);
+		color: var(--yg-button-text-color);
+		cursor: pointer;
+		transition: all 0.3s ease;
+	}
+
+	.month-visibility-toggle:hover {
+		background-color: var(--yg-button-hover-bg-color);
+		border-color: var(--yg-button-hover-border-color);
+		transform: translateY(-2px);
+		box-shadow: 0 3px 8px var(--yg-shadow-color);
+	}
+
+	/* Active 说明是“隐藏状态” */
+	.month-visibility-toggle.active {
+		background-color: var(--yg-button-active-bg-color);
+		border-color: var(--yg-day-bg-color);
+		color: var(--text-faint);
+		box-shadow: 0 2px 4px var(--yg-shadow-color);
+	}
+
 	/* ------- 日历网格样式 ------- */
 
 	/* VAR——之后留着放到 StyleSettings 里 */
@@ -1136,7 +1170,8 @@
 		}
 
 		/* 最小的情况下 隐藏事件过滤器的文本 */
-		.event-legend .legend-text {
+		.event-legend .legend-text,
+		.month-visibility-toggle .legend-text {
 			display: none;
 		}
 	}

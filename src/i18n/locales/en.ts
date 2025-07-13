@@ -143,10 +143,10 @@ const translations: BaseMessage = {
 				showTooltips: "Mouse hover to show full event name",
 				hidePreviousMonths: "Hide previous months",
 				showPreviousMonths: "Show previous months",
-				previousMonths: "Previous months",
+				previousMonths: "Past",
 				hideFutureMonths: "Hide future months",
 				showFutureMonths: "Show future months",
-				futureMonths: "Future months",
+				futureMonths: "Future",
 			},
 		},
 		eventManager: {

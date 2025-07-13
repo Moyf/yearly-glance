@@ -22,7 +22,6 @@ import { EventTooltip } from "./EventTooltip";
 import { Select } from "../Base/Select";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
-import { Eye, EyeOff } from "lucide-react";
 import "./style/YearlyCalendarView.css";
 
 interface YearlyCalendarViewProps {
@@ -484,25 +483,6 @@ const renderMonth = (monthIndex: number) => {
 				<div className="yg-buttons">
 
 				<div className="yg-buttons-left">
-				{/* 月份可见性切换按钮 */}
-				<div className="month-visibility-controls">
-					<button
-						className={`month-visibility-toggle ${hidePreviousMonths ? 'active' : ''}`}
-						onClick={() => setHidePreviousMonths(!hidePreviousMonths)}
-						title={hidePreviousMonths ? t('view.yearlyGlance.actions.showPreviousMonths') : t('view.yearlyGlance.actions.hidePreviousMonths')}
-					>
-						{hidePreviousMonths ? <EyeOff size={16} /> : <Eye size={16} />}
-						<span>{t('view.yearlyGlance.actions.previousMonths')}</span>
-					</button>
-					<button
-						className={`month-visibility-toggle ${hideFutureMonths ? 'active' : ''}`}
-						onClick={() => setHideFutureMonths(!hideFutureMonths)}
-						title={hideFutureMonths ? t('view.yearlyGlance.actions.showFutureMonths') : t('view.yearlyGlance.actions.hideFutureMonths')}
-					>
-						{hideFutureMonths ? <EyeOff size={16} /> : <Eye size={16} />}
-						<span>{t('view.yearlyGlance.actions.futureMonths')}</span>
-					</button>
-				</div>
 
 				{/* 图例 */}
 				{showLegend && (
@@ -568,6 +548,27 @@ const renderMonth = (monthIndex: number) => {
 						})}
 					</div>
 				)}
+				
+				{/* 月份可见性切换按钮 */}
+				<div className="month-visibility-controls">
+					<button
+						className={`month-visibility-toggle ${hidePreviousMonths ? 'active' : ''}`}
+						onClick={() => setHidePreviousMonths(!hidePreviousMonths)}
+						title={hidePreviousMonths ? t('view.yearlyGlance.actions.showPreviousMonths') : t('view.yearlyGlance.actions.hidePreviousMonths')}
+					>
+						<span className="legend-icon">⏪</span>
+						<span className="legend-text">{t('view.yearlyGlance.actions.previousMonths')}</span>
+					</button>
+					<button
+						className={`month-visibility-toggle ${hideFutureMonths ? 'active' : ''}`}
+						onClick={() => setHideFutureMonths(!hideFutureMonths)}
+						title={hideFutureMonths ? t('view.yearlyGlance.actions.showFutureMonths') : t('view.yearlyGlance.actions.hideFutureMonths')}
+					>
+						<span className="legend-icon">⏩</span>
+						<span className="legend-text">{t('view.yearlyGlance.actions.futureMonths')}</span>
+					</button>
+				</div>
+
 				</div>
 				
 				<div className="yg-buttons-right">

@@ -1,9 +1,9 @@
 import * as React from "react";
 import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
 import {
-	BaseEvent,
 	Birthday,
 	CustomEvent,
+	EVENT_TYPE_DEFAULT,
 	EVENT_TYPE_LIST,
 	EventType,
 	Holiday,
@@ -11,8 +11,12 @@ import {
 import { NavTabs } from "../Base/NavTabs";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
-import { parseUserDateInput } from "@/src/core/utils/smartDateProcessor";
+import { CalendarType } from "@/src/core/interfaces/Date";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { Select } from "../Base/Select";
+import { ColorSelector } from "../Base/ColorSelector";
+import { Toggle } from "../Base/Toggle";
+import { DateInput } from "../Base/DateInput";
 
 // 事件类型tab
 export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
@@ -32,7 +36,17 @@ const CALENDAR_OPTIONS = [
  * 事件表单数据接口
  * 继承 BaseEvent 的所有基础属性，并包含三种事件类型的特有属性
  */
-interface EventFormData extends BaseEvent {
+interface EventFormData {
+	// 基础属性
+	id: string;
+	text: string;
+	userInputDate: string;
+	userInputCalendar?: string;
+	emoji?: string;
+	color?: string;
+	remark?: string;
+	isHidden?: boolean;
+
 	// Holiday 特有属性
 	foundDate?: string;
 
@@ -81,13 +95,8 @@ export const EventForm: React.FC<EventFormProps> = ({
 		const initialData: EventFormData = {
 			id: event.id || "",
 			text: event.text || "",
-			eventDate: {
-				...(event.eventDate || parseUserDateInput(todayString)),
-				userInput: {
-					input: event.eventDate?.userInput?.input || "",
-					calendar: event.eventDate?.userInput?.calendar,
-				},
-			},
+			userInputDate: event.eventDate?.userInput?.input || todayString,
+			userInputCalendar: event.eventDate?.userInput?.calendar,
 			emoji: event.emoji,
 			color: event.color,
 			remark: event.remark,
@@ -109,6 +118,17 @@ export const EventForm: React.FC<EventFormProps> = ({
 		return initialData;
 	});
 
+	// 处理表单字段变化
+	const handleFieldChange = (
+		name: string,
+		value: string | boolean | number | undefined
+	) => {
+		setFormData((prev) => ({
+			...prev,
+			[name]: value === "" ? undefined : value,
+		}));
+	};
+
 	const [optionalCollapsed, setOptionalCollapsed] = React.useState(false);
 
 	// 处理事件类型切换
@@ -128,7 +148,9 @@ export const EventForm: React.FC<EventFormProps> = ({
 	};
 
 	// 处理表单提交
-	const handleSubmit = () => {};
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+	};
 
 	return (
 		<div className="yearly-glance-event-modal">
@@ -137,7 +159,9 @@ export const EventForm: React.FC<EventFormProps> = ({
 					<NavTabs
 						tabs={EVENT_TYPE_OPTIONS}
 						activeTab={currentEventType}
-						onClick={(tab) => setCurrentEventType(tab as EventType)}
+						onClick={(tab) =>
+							handleEventTypeChange(tab as EventType)
+						}
 					/>
 				</div>
 			)}
@@ -154,18 +178,42 @@ export const EventForm: React.FC<EventFormProps> = ({
 				</h3>
 
 				{/* 基础字段 */}
-				<div className="form-section">
-					<div className="form-group">
-						<label>{t("view.eventManager.form.eventName")}</label>
-					</div>
-					<div className="form-group">
-						<label>{t("view.eventManager.form.eventDate")}</label>
-					</div>
-					<div className="form-group">
-						<label>
-							{t("view.eventManager.form.eventDateType")}
-						</label>
-					</div>
+				<div className="form-group">
+					<label>{t("view.eventManager.form.eventName")}</label>
+					<input
+						type="text"
+						name="text"
+						value={formData.text || ""}
+						onChange={(e) =>
+							handleFieldChange("text", e.target.value)
+						}
+						required
+					/>
+				</div>
+				<div className="form-group">
+					<label>{t("view.eventManager.form.eventDate")}</label>
+					<DateInput
+						value={formData.userInputDate || ""}
+						calendar={
+							formData.userInputCalendar as
+								| CalendarType
+								| undefined
+						}
+						onChange={(value) =>
+							handleFieldChange("userInputDate", value)
+						}
+						required
+					/>
+				</div>
+				<div className="form-group">
+					<label>{t("view.eventManager.form.eventDateType")}</label>
+					<Select
+						value={formData.userInputCalendar || undefined}
+						onValueChange={(value) =>
+							handleFieldChange("userInputCalendar", value)
+						}
+						options={CALENDAR_OPTIONS}
+					/>
 				</div>
 
 				{/* 可选字段 */}
@@ -179,48 +227,90 @@ export const EventForm: React.FC<EventFormProps> = ({
 					>
 						{t("view.eventManager.form.optional")}
 						{optionalCollapsed ? <ChevronRight /> : <ChevronDown />}
-
-						<div className="form-section">
-							<div className="form-group">
-								<label>
-									{t("view.eventManager.form.eventEmoji")}
-								</label>
-							</div>
-							<div className="form-group">
-								<label>
-									{t("view.eventManager.form.eventColor")}
-								</label>
-							</div>
-							<div className="form-group">
-								<label>
-									{t("view.eventManager.form.eventHidden")}
-								</label>
-							</div>
-							{currentEventType === "customEvent" && (
-								<div className="form-group checkbox">
-									<label>
-										{t(
-											"view.eventManager.form.eventRepeat"
-										)}
-									</label>
-								</div>
-							)}
-							{currentEventType === "holiday" && (
-								<div className="form-group">
-									<label>
-										{t(
-											"view.eventManager.holiday.foundDate"
-										)}
-									</label>
-								</div>
-							)}
-							<div className="form-group">
-								<label>
-									{t("view.eventManager.form.eventRemark")}
-								</label>
-							</div>
-						</div>
 					</h5>
+
+					<div className="form-group">
+						<label>{t("view.eventManager.form.eventEmoji")}</label>
+						<input
+							type="text"
+							value={formData.emoji || ""}
+							onChange={(e) =>
+								handleFieldChange("emoji", e.target.value)
+							}
+							placeholder={
+								EVENT_TYPE_DEFAULT[currentEventType].emoji
+							}
+						/>
+					</div>
+					<div className="form-group">
+						<label>{t("view.eventManager.form.eventColor")}</label>
+						<ColorSelector
+							value={formData.color || ""}
+							defaultColor={
+								EVENT_TYPE_DEFAULT[currentEventType].color
+							}
+							presetColors={settings.config.presetColors}
+							onChange={(color) =>
+								handleFieldChange("color", color)
+							}
+							resetTitle={t("view.eventManager.form.reset")}
+							submitDefaultAsValue={false}
+						/>
+					</div>
+					<div className="form-group">
+						<label>{t("view.eventManager.form.eventHidden")}</label>
+						<Toggle
+							checked={formData.isHidden || false}
+							onChange={(checked) =>
+								handleFieldChange("isHidden", checked)
+							}
+							aria-label={t("view.eventManager.form.eventHidden")}
+						/>
+					</div>
+					{currentEventType === "customEvent" && (
+						<div className="form-group checkbox">
+							<label>
+								{t("view.eventManager.form.eventRepeat")}
+							</label>
+							<Toggle
+								checked={formData.isRepeat ?? false}
+								onChange={(checked) =>
+									handleFieldChange("isRepeat", checked)
+								}
+								aria-label={t(
+									"view.eventManager.form.eventRepeat"
+								)}
+							/>
+						</div>
+					)}
+					{currentEventType === "holiday" && (
+						<div className="form-group">
+							<label>
+								{t("view.eventManager.holiday.foundDate")}
+							</label>
+							<input
+								type="text"
+								value={formData.foundDate || ""}
+								onChange={(e) =>
+									handleFieldChange(
+										"foundDate",
+										e.target.value
+									)
+								}
+								placeholder="ISO 8601 date (YYYY-MM-DD)"
+							/>
+						</div>
+					)}
+					<div className="form-group">
+						<label>{t("view.eventManager.form.eventRemark")}</label>
+						<textarea
+							value={formData.remark || ""}
+							onChange={(e) =>
+								handleFieldChange("remark", e.target.value)
+							}
+							rows={3}
+						/>
+					</div>
 				</div>
 
 				{/* 操作按钮 */}

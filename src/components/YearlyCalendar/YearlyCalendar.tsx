@@ -184,9 +184,9 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 	};
 
 	const handleAddEventInDay = (day: CalendarDay) => {
-		const solar = Solar.fromDate(day.date);
+		const selectDate = new Date(day.date).toISOString().split("T")[0];
 		plugin.openEventForm("customEvent", {}, false, true, {
-			date: `${solar.getYear()},${solar.getMonth()},${solar.getDay()}`,
+			date: selectDate,
 		});
 	};
 

@@ -49,7 +49,7 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 	const [isModified, setIsModified] = React.useState<boolean>(false);
 	// 跟踪颜色的真实值(包括当submitDefaultAsValue=true时的默认颜色)
 	const [actualColor, setActualColor] = React.useState<string>(
-		value || defaultColor
+		value || defaultColor!
 	);
 
 	// 实际显示的颜色值
@@ -75,7 +75,7 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 	React.useEffect(() => {
 		// 如果value存在，则认为已修改
 		setIsModified(!!value);
-		setActualColor(value || defaultColor);
+		setActualColor(value || defaultColor!);
 	}, [value, defaultColor]);
 
 	// 处理颜色变更
@@ -97,7 +97,7 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 
 	// 重置颜色
 	const handleReset = () => {
-		setActualColor(defaultColor);
+		setActualColor(defaultColor!);
 		onChange(undefined);
 		setIsModified(false);
 	};

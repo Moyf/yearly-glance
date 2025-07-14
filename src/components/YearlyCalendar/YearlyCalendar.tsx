@@ -85,7 +85,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 	// 调整年份
 	const adjustYear = (delta: number, e: React.MouseEvent) => {
 		e.stopPropagation();
-		updateConfig({ year: year + delta });
+		updateConfig({ ...config, year: year + delta });
 	};
 
 	React.useEffect(() => {
@@ -162,6 +162,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 			const presetConfig =
 				presetConfigs[preset as keyof typeof presetConfigs];
 			updateConfig({
+				...config,
 				layout: presetConfig.layout,
 				viewType: presetConfig.viewType,
 			});
@@ -211,18 +212,23 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 	// 渲染单个事件
 	const renderEvent = (event: CalendarEvent, dayView = true) => {
 		const eventClasses = [
-			'event',
+			"event",
 			`font-${eventFontSize}`,
-			emojiOnTop ? 'emoji-top' : '',
-			config.wrapEventText ? 'wrap-text' : '',
-		].filter(Boolean).join(' ');
+			emojiOnTop ? "emoji-top" : "",
+			config.wrapEventText ? "wrap-text" : "",
+		]
+			.filter(Boolean)
+			.join(" ");
 
 		const eventProps: React.HTMLAttributes<HTMLDivElement> = {
-			key: `${event.text}-${event.date}`,
 			className: eventClasses,
 			style: {
-				backgroundColor: `${event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color}20`,
-				borderLeft: `3px solid ${event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color}`,
+				backgroundColor: `${
+					event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color
+				}20`,
+				borderLeft: `3px solid ${
+					event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color
+				}`,
 			},
 			onClick: (e) => handleEventTooltip(event),
 		};
@@ -230,13 +236,18 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		// 添加 tooltip 属性
 		if (config.showEventTooltips) {
 			eventProps.title = event.text;
-			eventProps.className += ' has-tooltip';
+			eventProps.className += " has-tooltip";
 		}
 
 		return (
-			<div {...eventProps}>
+			<div
+				key={`${event.text}-${event.eventDate.isoDate}`}
+				{...eventProps}
+			>
 				<span className="event-emoji">
-					{!event.emoji ? EVENT_TYPE_DEFAULT[event.eventType].emoji : event.emoji}
+					{!event.emoji
+						? EVENT_TYPE_DEFAULT[event.eventType].emoji
+						: event.emoji}
 				</span>
 				<span className="event-text">{event.text}</span>
 			</div>
@@ -455,207 +466,243 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 			</div>
 			{/* actionsBar */}
 			<div className="yearly-calendar-actions-bar">
-
 				<div className="yg-buttons">
+					<div className="yg-buttons-left">
+						{/* 图例 */}
+						{showLegend && (
+							<div className="event-legend">
+								{EVENT_TYPE_LIST.filter(
+									(eventType) =>
+										(eventType === "holiday" &&
+											showHolidays) ||
+										(eventType === "birthday" &&
+											showBirthdays) ||
+										(eventType === "customEvent" &&
+											showCustomEvents) ||
+										// 包含禁用的事件类型，以便可以重新启用它们
+										eventType === "holiday" ||
+										eventType === "birthday" ||
+										eventType === "customEvent"
+								).map((eventType) => {
+									// 确定当前事件类型是否启用
+									const isEnabled =
+										(eventType === "holiday" &&
+											showHolidays) ||
+										(eventType === "birthday" &&
+											showBirthdays) ||
+										(eventType === "customEvent" &&
+											showCustomEvents);
 
-				<div className="yg-buttons-left">
-
-				{/* 图例 */}
-				{showLegend && (
-					<div className="event-legend">
-						{EVENT_TYPE_LIST.filter(
-							(eventType) =>
-								(eventType === "holiday" && showHolidays) ||
-								(eventType === "birthday" && showBirthdays) ||
-								(eventType === "customEvent" &&
-									showCustomEvents) ||
-								// 包含禁用的事件类型，以便可以重新启用它们
-								eventType === "holiday" ||
-								eventType === "birthday" ||
-								eventType === "customEvent"
-						).map((eventType) => {
-							// 确定当前事件类型是否启用
-							const isEnabled =
-								(eventType === "holiday" && showHolidays) ||
-								(eventType === "birthday" && showBirthdays) ||
-								(eventType === "customEvent" &&
-									showCustomEvents);
-
-							return (
-								<div
-									className={`legend-item ${
-										isEnabled ? "enabled" : "disabled"
-									}`}
-									key={eventType}
-									onClick={() =>
-										toggleEventTypeVisibility(eventType)
-									}
-									title={
-										isEnabled
-											? `${t(
-													"view.yearlyGlance.actions.clickToHide"
-											  )}${t(
+									return (
+										<div
+											className={`legend-item ${
+												isEnabled
+													? "enabled"
+													: "disabled"
+											}`}
+											key={eventType}
+											onClick={() =>
+												toggleEventTypeVisibility(
+													eventType
+												)
+											}
+											title={
+												isEnabled
+													? `${t(
+															"view.yearlyGlance.actions.clickToHide"
+													  )}${t(
+															`view.yearlyGlance.legend.${eventType}` as TranslationKeys
+													  )}`
+													: `${t(
+															"view.yearlyGlance.actions.clickToShow"
+													  )}${t(
+															`view.yearlyGlance.legend.${eventType}` as TranslationKeys
+													  )}`
+											}
+										>
+											<span
+												className="legend-icon"
+												style={{
+													color: EVENT_TYPE_DEFAULT[
+														eventType
+													].color,
+													backgroundColor: `${EVENT_TYPE_DEFAULT[eventType].color}20`,
+												}}
+											>
+												{
+													EVENT_TYPE_DEFAULT[
+														eventType
+													].emoji
+												}
+											</span>
+											<span className="legend-text">
+												{t(
 													`view.yearlyGlance.legend.${eventType}` as TranslationKeys
-											  )}`
-											: `${t(
-													"view.yearlyGlance.actions.clickToShow"
-											  )}${t(
-													`view.yearlyGlance.legend.${eventType}` as TranslationKeys
-											  )}`
-									}
-								>
-									<span
-										className="legend-icon"
-										style={{
-											color: EVENT_TYPE_DEFAULT[eventType]
-												.color,
-											backgroundColor: `${EVENT_TYPE_DEFAULT[eventType].color}20`,
-										}}
-									>
-										{EVENT_TYPE_DEFAULT[eventType].emoji}
-									</span>
-									<span className="legend-text">
-										{t(
-											`view.yearlyGlance.legend.${eventType}` as TranslationKeys
+												)}
+											</span>
+										</div>
+									);
+								})}
+							</div>
+						)}
+					</div>
+
+					<div className="yg-buttons-right">
+						<div className="yg-select-group">
+							{/* 视图预设选择 */}
+							<Select
+								options={viewPresetOptions}
+								value={currentPreset}
+								onValueChange={handlePresetChange}
+							/>
+
+							{/* 自定义模式下显示布局和视图类型选择器 */}
+							{currentPreset === "custom" && (
+								<>
+									{/* 布局选择 */}
+									<Select
+										options={getLayoutOptions(viewType)}
+										value={layout}
+										onValueChange={(value) =>
+											updateConfig({
+												...config,
+												layout: value,
+											})
+										}
+									/>
+									{/* 视图选择 */}
+									<Select
+										options={viewTypeOptions}
+										value={viewType}
+										onValueChange={(value) =>
+											updateConfig({
+												...config,
+												viewType: value,
+											})
+										}
+									/>
+								</>
+							)}
+						</div>
+
+						<div className="yg-action-buttons">
+							{/* 日历视图专用按钮 */}
+							{viewType === "calendar" && (
+								<>
+									<button
+										className="actions-button emoji-position-button"
+										onClick={() =>
+											updateConfig({
+												...config,
+												emojiOnTop: !config.emojiOnTop,
+											})
+										}
+										title={t(
+											"view.yearlyGlance.actions.emojiOnTop"
 										)}
-									</span>
-								</div>
-							);
-						})}
+									>
+										<span className="button-icon">
+											{config.emojiOnTop ? "⬆️" : "⬅️"}
+										</span>
+									</button>
+
+									<button
+										className="actions-button wrap-text-button"
+										onClick={() =>
+											updateConfig({
+												...config,
+												wrapEventText:
+													!config.wrapEventText,
+											})
+										}
+										title={t(
+											"view.yearlyGlance.actions.wrapText"
+										)}
+									>
+										<span className="button-icon">
+											{config.wrapEventText ? "🔤" : "✂️"}
+										</span>
+									</button>
+
+									<button
+										className={`actions-button show-tooltips-button ${
+											config.showEventTooltips
+												? "active"
+												: ""
+										}`}
+										onClick={() =>
+											updateConfig({
+												...config,
+												showEventTooltips:
+													!config.showEventTooltips,
+											})
+										}
+										title={t(
+											"view.yearlyGlance.actions.showTooltips"
+										)}
+									>
+										<span className="button-icon">💬</span>
+									</button>
+								</>
+							)}
+
+							{viewType === "list" && (
+								<>
+									<button
+										className="actions-button limit-list-height-button"
+										onClick={() =>
+											updateConfig({
+												...config,
+												limitListHeight:
+													!limitListHeight,
+											})
+										}
+										title={t(
+											"view.yearlyGlance.actions.limitListHeight"
+										)}
+									>
+										<span className="button-icon">
+											{limitListHeight ? "🚧" : "♾️"}
+										</span>
+									</button>
+									<button
+										className="actions-button hide-empty-dates-button"
+										onClick={() =>
+											updateConfig({
+												...config,
+												hideEmptyDates: !hideEmptyDates,
+											})
+										}
+										title={t(
+											"view.yearlyGlance.actions.hideEmptyDates"
+										)}
+									>
+										<span className="button-icon">
+											{hideEmptyDates ? "🙈" : "👀"}
+										</span>
+									</button>
+								</>
+							)}
+
+							{/* 事件管理 */}
+							<button
+								className="actions-button event-manager-button"
+								onClick={handleEventManager}
+								title={t("view.yearlyGlance.actions.manager")}
+							>
+								<span className="button-icon">🗂️</span>
+							</button>
+
+							{/* 事件添加 */}
+							<button
+								className="actions-button event-form-button"
+								onClick={handleEventForm}
+								title={t("view.yearlyGlance.actions.form")}
+							>
+								<span className="button-icon">➕</span>
+							</button>
+						</div>
 					</div>
-				)}
-				</div>
-				
-				<div className="yg-buttons-right">
-				<div className="yg-select-group">
-					{/* 视图预设选择 */}
-					<Select
-						options={viewPresetOptions}
-						value={currentPreset}
-						onValueChange={handlePresetChange}
-					/>
-
-					{/* 自定义模式下显示布局和视图类型选择器 */}
-					{currentPreset === "custom" && (
-						<>
-							{/* 布局选择 */}
-							<Select
-								options={getLayoutOptions(viewType)}
-								value={layout}
-								onValueChange={(value) =>
-									updateConfig({ layout: value })
-								}
-							/>
-							{/* 视图选择 */}
-							<Select
-								options={viewTypeOptions}
-								value={viewType}
-								onValueChange={(value) =>
-									updateConfig({ viewType: value })
-								}
-							/>
-						</>
-					)}
-				</div>
-				
-				<div className="yg-action-buttons">
-					{/* 日历视图专用按钮 */}
-					{viewType === 'calendar' && (
-						<>
-							<button
-								className="actions-button emoji-position-button"
-								onClick={() =>
-									updateConfig({
-										emojiOnTop: !config.emojiOnTop,
-									})
-								}
-								title={t("view.yearlyGlance.actions.emojiOnTop")}
-							>
-								<span className="button-icon">
-									{config.emojiOnTop ? '⬆️' : '⬅️'}
-								</span>
-							</button>
-
-							<button
-								className="actions-button wrap-text-button"
-								onClick={() =>
-									updateConfig({
-										wrapEventText: !config.wrapEventText,
-									})
-								}
-								title={t("view.yearlyGlance.actions.wrapText")}
-							>
-								<span className="button-icon">
-									{config.wrapEventText ? '🔤' : '✂️'}
-								</span>
-							</button>
-
-							<button
-								className={`actions-button show-tooltips-button ${config.showEventTooltips ? 'active' : ''}`}
-								onClick={() =>
-									updateConfig({
-										showEventTooltips: !config.showEventTooltips,
-									})
-								}
-								title={t("view.yearlyGlance.actions.showTooltips")}
-							>
-								<span className="button-icon">💬</span>
-							</button>
-						</>
-					)}
-
-					{viewType === "list" && (
-						<>
-						<button
-								className="actions-button limit-list-height-button"
-								onClick={() =>
-									updateConfig({
-										limitListHeight: !limitListHeight,
-									})
-								}
-								title={t("view.yearlyGlance.actions.limitListHeight")}
-							>
-								<span className="button-icon">
-									{limitListHeight ? "🚧" : "♾️"}
-								</span>
-							</button>
-							<button
-								className="actions-button hide-empty-dates-button"
-								onClick={() =>
-									updateConfig({
-										hideEmptyDates: !hideEmptyDates,
-									})
-								}
-								title={t("view.yearlyGlance.actions.hideEmptyDates")}
-							>
-								<span className="button-icon">
-									{hideEmptyDates ? "🙈" : "👀"}
-								</span>
-							</button>
-						</>
-					)}
-
-					{/* 事件管理 */}
-					<button
-						className="actions-button event-manager-button"
-						onClick={handleEventManager}
-						title={t("view.yearlyGlance.actions.manager")}
-					>
-						<span className="button-icon">🗂️</span>
-					</button>
-					
-					{/* 事件添加 */}
-					<button
-						className="actions-button event-form-button"
-						onClick={handleEventForm}
-						title={t("view.yearlyGlance.actions.form")}
-					>
-						<span className="button-icon">➕</span>
-					</button>
-
-					</div>
-					</div>
-
 				</div>
 			</div>
 
@@ -664,9 +711,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 				{Array.from({ length: 12 }).map((_, monthIndex) => (
 					<>
 						{monthIndex < 12 && (
-							<React.Fragment
-								key={monthIndex}
-							>
+							<React.Fragment key={monthIndex}>
 								{renderMonth(monthIndex)}
 							</React.Fragment>
 						)}

@@ -2,273 +2,147 @@ import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import { Modal } from "obsidian";
 import YearlyGlancePlugin from "@/src/main";
+import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
 import {
 	Birthday,
 	CustomEvent,
-	EVENT_TYPE_LIST,
 	Events,
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
-import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
-import { NavTabs } from "../Base/NavTabs";
-import { CustomEventForm } from "./CustomEventForm";
-import { BirthdayForm } from "./BirthdayForm";
-import { HolidayForm } from "./HolidayForm";
-import { t } from "@/src/i18n/i18n";
-import { TranslationKeys } from "@/src/i18n/types";
-import "./style/EventFormModal.css";
+import { EventForm } from "./EventForm";
 import { EventCalculator } from "@/src/core/utils/eventCalculator";
-
-interface EventFormProps {
-	event: Partial<CustomEvent | Birthday | Holiday>;
-	eventType: EventType;
-	onSave: (event: CustomEvent | Birthday | Holiday) => void;
-	onCancel: () => void;
-	isEditing: boolean;
-	props?: any;
-}
-
-export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
-	value: type,
-	label: t(`view.eventManager.${type}.name` as TranslationKeys),
-}));
-
-const EventForm: React.FC<EventFormProps> = ({
-	event,
-	eventType,
-	onSave,
-	onCancel,
-	isEditing,
-	props,
-}) => {
-	const handleSave = (event: CustomEvent | Birthday | Holiday) => {
-		onSave(event, eventType);
-	};
-
-	const { config } = useYearlyGlanceConfig(props.plugin);
-
-	// 根据事件类型渲染不同的表单组件
-	const renderEventForm = () => {
-		switch (eventType) {
-			case "customEvent":
-				return (
-					<CustomEventForm
-						event={event as Partial<CustomEvent>}
-						onSave={handleSave}
-						onCancel={onCancel}
-						isEditing={isEditing}
-						props={{ ...props, config }}
-					/>
-				);
-			case "birthday":
-				return (
-					<BirthdayForm
-						event={event as Partial<Birthday>}
-						onSave={handleSave}
-						onCancel={onCancel}
-						isEditing={isEditing}
-						props={{ ...props, config }}
-					/>
-				);
-			case "holiday":
-				return (
-					<HolidayForm
-						event={event as Partial<Holiday>}
-						onSave={handleSave}
-						onCancel={onCancel}
-						isEditing={isEditing}
-						props={{ ...props, config }}
-					/>
-				);
-			default:
-				return null;
-		}
-	};
-
-	return renderEventForm();
-};
-
-// 创建一个包装组件来管理状态
-interface EventFormWrapperProps {
-	plugin: YearlyGlancePlugin;
-	initialEventType: EventType;
-	event: Partial<CustomEvent | Birthday | Holiday>;
-	isEditing: boolean;
-	allowTypeChange: boolean;
-	onSave: (
-		event: CustomEvent | Birthday | Holiday,
-		eventType: EventType
-	) => Promise<void>;
-	onCancel: () => void;
-}
-
-const EventFormWrapper: React.FC<EventFormWrapperProps> = ({
-	plugin,
-	initialEventType,
-	event,
-	isEditing,
-	allowTypeChange,
-	onSave,
-	onCancel,
-	props,
-}) => {
-	// 使用 React 状态来管理事件类型
-	const [eventType, setEventType] =
-		React.useState<EventType>(initialEventType);
-
-	// 处理保存事件
-	const handleSave = (event: CustomEvent | Birthday | Holiday) => {
-		onSave(event, eventType);
-	};
-
-	return (
-		<div className="yearly-glance-event-modal">
-			{allowTypeChange && (
-				<div className="event-type-selector">
-					<NavTabs
-						tabs={EVENT_TYPE_OPTIONS}
-						activeTab={eventType}
-						onClick={(tab) => setEventType(tab as EventType)}
-					/>
-				</div>
-			)}
-			<EventForm
-				event={event}
-				eventType={eventType}
-				onSave={handleSave}
-				onCancel={onCancel}
-				isEditing={isEditing}
-				props={props}
-			/>
-		</div>
-	);
-};
+import "./style/EventFormModal.css";
 
 export class EventFormModal extends Modal {
-	private plugin: YearlyGlancePlugin;
-	private root: Root | null = null;
-	private event: Partial<CustomEvent | Birthday | Holiday>;
-	private eventType: EventType;
-	private isEditing: boolean;
-	private allowTypeChange: boolean;
-	private props: any;
+	root: Root | null = null;
+	plugin: YearlyGlancePlugin;
+	event: Partial<CustomEvent | Birthday | Holiday>;
+	eventType: EventType;
+	isEditing: boolean;
+	allowTypeChange: boolean;
+	settings: YearlyGlanceConfig;
+	props: {
+		date?: string; // 可选的日期属性
+	};
 
 	constructor(
 		plugin: YearlyGlancePlugin,
-		eventType: EventType = "customEvent",
-		event: Partial<CustomEvent | Birthday | Holiday> = {},
-		isEditing: boolean = false,
-		allowTypeChange: boolean = false,
-		props: any = {}
+		event: Partial<CustomEvent | Birthday | Holiday>,
+		eventType: EventType,
+		isEditing: boolean,
+		allowTypeChange: boolean,
+		props: { date?: string } = {}
 	) {
 		super(plugin.app);
 		this.plugin = plugin;
-		this.eventType = eventType;
 		this.event = event;
+		this.eventType = eventType;
 		this.isEditing = isEditing;
 		this.allowTypeChange = allowTypeChange;
+		this.settings = plugin.getSettings();
 		this.props = props;
 	}
 
-	onOpen() {
+	onOpen(): void {
 		const { contentEl } = this;
 		contentEl.empty();
 
 		// 创建 React 根元素
 		this.root = createRoot(contentEl);
 
-		// 渲染包装组件
+		// 渲染 EventForm 组件
 		this.root.render(
 			<React.StrictMode>
-				<EventFormWrapper
-					plugin={this.plugin}
-					initialEventType={this.eventType}
+				<EventForm
 					event={this.event}
+					eventType={this.eventType}
 					isEditing={this.isEditing}
 					allowTypeChange={this.allowTypeChange}
-					onSave={this.handleSave.bind(this)}
-					onCancel={this.close.bind(this)}
+					settings={this.settings}
+					onSave={this.onSave.bind(this)}
+					onCancel={() => this.close()}
 					props={this.props}
 				/>
 			</React.StrictMode>
 		);
 	}
 
-	// 处理保存事件
-	async handleSave(
+	onClose(): void {
+		super.onClose();
+		setTimeout(() => {
+			this.root?.unmount();
+			this.contentEl.empty();
+		});
+	}
+
+	async onSave(
 		event: CustomEvent | Birthday | Holiday,
 		eventType: EventType
 	) {
-		const config = this.plugin.getSettings();
-		const events: Events = config.data;
+		const events: Events = this.plugin.getData();
 		const newEvents = { ...events };
-		const currentYear = config.config.year;
+		const currentYear = this.plugin.getConfig().year;
+
+		// 确保数组存在
+		if (!newEvents.customEvents) newEvents.customEvents = [];
+		if (!newEvents.birthdays) newEvents.birthdays = [];
+		if (!newEvents.holidays) newEvents.holidays = [];
 
 		// 根据事件类型进行不同的处理
-		if (eventType === "holiday" || eventType === "customEvent") {
-			// 计算并设置dateArr
-			event.dateArr = EventCalculator.calculateDateArr(
-				event.eventDate.isoDate,
-				event.eventDate.calendar,
-				currentYear
-			);
-		} else if (eventType === "birthday") {
-			// 计算并更新生日的完整信息
-			event = EventCalculator.updateBirthdayInfo(
-				event as Birthday,
-				currentYear
-			);
-		}
-
-		// 根据事件类型和是否编辑来更新事件
-		if (eventType === "holiday") {
-			if (this.isEditing) {
-				newEvents.holidays = events.holidays.map((h) => {
-					if (h.id === event.id) {
-						return event as Holiday;
-					}
-					return h;
-				});
-			} else {
-				newEvents.holidays = [...events.holidays, event as Holiday];
-			}
-		} else if (eventType === "birthday") {
-			if (this.isEditing) {
-				newEvents.birthdays = events.birthdays.map((b) => {
-					if (b.id === event.id) {
-						return event as Birthday;
-					}
-					return b;
-				});
-			} else {
-				newEvents.birthdays = [...events.birthdays, event as Birthday];
-			}
-		} else {
-			if (this.isEditing) {
-				newEvents.customEvents = events.customEvents.map((c) => {
-					if (c.id === event.id) {
-						return event as CustomEvent;
-					}
-					return c;
-				});
-			} else {
-				newEvents.customEvents = [
-					...events.customEvents,
+		switch (eventType) {
+			case "customEvent": {
+				// 计算并更新自定义事件的完整信息
+				event = EventCalculator.updateCustomEventInfo(
 					event as CustomEvent,
-				];
+					currentYear
+				);
+				// 编辑模式,更新现有事件; 新增模式,添加新事件
+				if (this.isEditing) {
+					newEvents.customEvents = newEvents.customEvents.map((c) =>
+						c.id === event.id ? (event as CustomEvent) : c
+					);
+				} else {
+					newEvents.customEvents.push(event as CustomEvent);
+				}
+				break;
+			}
+			case "birthday": {
+				// 计算并更新生日的完整信息
+				event = EventCalculator.updateBirthdayInfo(
+					event as Birthday,
+					currentYear
+				);
+				if (this.isEditing) {
+					newEvents.birthdays = newEvents.birthdays.map((b) =>
+						b.id === event.id ? (event as Birthday) : b
+					);
+				} else {
+					newEvents.birthdays.push(event as Birthday);
+				}
+				break;
+			}
+			case "holiday": {
+				// 计算并更新节日的完整信息
+				event = EventCalculator.updateHolidayInfo(
+					event as Holiday,
+					currentYear
+				);
+				if (this.isEditing) {
+					newEvents.holidays = newEvents.holidays.map((h) =>
+						h.id === event.id ? (event as Holiday) : h
+					);
+				} else {
+					newEvents.holidays.push(event as Holiday);
+				}
+				break;
+			}
+			default: {
+				throw new Error(`Unsupported event type: ${eventType}`);
 			}
 		}
 
 		await this.plugin.updateData(newEvents);
-
 		this.close();
-	}
-
-	onClose() {
-		if (this.root) {
-			this.root.unmount();
-			this.root = null;
-		}
 	}
 }

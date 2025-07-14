@@ -8,7 +8,7 @@ import {
 	Holiday,
 } from "@/src/core/interfaces/Events";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
-import { EVENT_TYPE_OPTIONS } from "../EventForm/EventFormModal";
+import { EVENT_TYPE_OPTIONS } from "../EventForm/EventForm";
 import { SortControls, SortDirection, SortField } from "./SortControls";
 import { EventList } from "./EventList";
 import { Input } from "../Base/Input";
@@ -177,21 +177,21 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 						event.text.toLowerCase().includes(term) ||
 						(event.remark &&
 							event.remark.toLowerCase().includes(term)) ||
-						event.date.includes(term)
+						event.eventDate.isoDate.includes(term)
 				),
 				...events.birthdays.filter(
 					(event) =>
 						event.text.toLowerCase().includes(term) ||
 						(event.remark &&
 							event.remark.toLowerCase().includes(term)) ||
-						event.date.includes(term)
+						event.eventDate.isoDate.includes(term)
 				),
 				...events.customEvents.filter(
 					(event) =>
 						event.text.toLowerCase().includes(term) ||
 						(event.remark &&
 							event.remark.toLowerCase().includes(term)) ||
-						event.date.includes(term)
+						event.eventDate.isoDate.includes(term)
 				),
 			];
 			return results;
@@ -314,8 +314,8 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 					</div>
 
 					<SortControls
-						sortField={sortField}
-						sortDirection={sortDirection}
+						sortFieldValue={sortField}
+						sortDirectionValue={sortDirection}
 						onSortChange={handleSortChange}
 					/>
 					<button
@@ -342,7 +342,18 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 					onEdit={handleEditEvent}
 					onDelete={handleDeleteEvent}
 					eventType={activeTab}
-					updateEvents={updateEvents}
+					updateEvents={(updatedEvents) => {
+						const newEvents = { ...events };
+						if (activeTab === "holiday") {
+							newEvents.holidays = updatedEvents as Holiday[];
+						} else if (activeTab === "birthday") {
+							newEvents.birthdays = updatedEvents as Birthday[];
+						} else {
+							newEvents.customEvents =
+								updatedEvents as CustomEvent[];
+						}
+						updateEvents(newEvents);
+					}}
 					sortField={sortField}
 					sortDirection={sortDirection}
 				/>

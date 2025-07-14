@@ -22,14 +22,15 @@ interface ViewSettingsProps {
 
 export const getLayoutOptions = (viewType: string) => {
 	// 2025-07-13 还是都加回去吧，横向滚动
-	const filteredLayouts = (viewType === 'list' || viewType === 'calendar')
-		? LAYOUT_OPTIONS
-		: LAYOUT_OPTIONS.filter(layout => layout !== '1x12');
+	const filteredLayouts =
+		viewType === "list" || viewType === "calendar"
+			? LAYOUT_OPTIONS
+			: LAYOUT_OPTIONS.filter((layout) => layout !== "1x12");
 
 	return filteredLayouts.map((layout) => ({
-    value: layout,
-    label: layout,
-  }));
+		value: layout,
+		label: layout,
+	}));
 };
 export const viewTypeOptions = VIEW_TYPE_OPTIONS.map((viewType) => ({
 	value: viewType,
@@ -50,7 +51,7 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 	const handleUpdateConfig = async (
 		updates: Partial<YearlyGlanceConfig["config"]>
 	) => {
-		await updateConfig(updates);
+		await updateConfig({ ...config, ...updates });
 	};
 
 	return (

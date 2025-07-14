@@ -201,10 +201,13 @@ export const EventItem: React.FC<EventItemProps> = ({
 
 				<div className="event-date">
 					<span className="date-icon">
-						{event.dateType === "LUNAR" ? "🌙" : "📅"}
+						{event.eventDate.calendar === "GREGORIAN" ? "📅" : "🌙"}
 					</span>
 					<span>
-						{displayDate(event.eventDate.isoDate, event.calendar)}
+						{displayDate(
+							event.eventDate.isoDate,
+							event.eventDate.calendar
+						)}
 					</span>
 				</div>
 

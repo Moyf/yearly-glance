@@ -106,35 +106,37 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 					<span className="tooltip-value">
 						{IsoUtils.formatDate(
 							event.eventDate.isoDate,
-							event.calendar
+							event.eventDate.calendar
 						)}
 					</span>
 				</div>
 
 				{/* 节日特有信息 */}
-				{eventType === "holiday" && event.foundDate && (
+				{eventType === "holiday" && (event as Holiday).foundDate && (
 					<div className="tooltip-row">
 						<span className="tooltip-label">
 							{t("view.eventManager.holiday.foundDate")}:
 						</span>
-						<span className="tooltip-value">{event.foundDate}</span>
+						<span className="tooltip-value">
+							{(event as Holiday).foundDate}
+						</span>
 					</div>
 				)}
 
 				{/* 生日特有信息 */}
 				{eventType === "birthday" && (
 					<>
-						{event.age !== undefined && (
+						{(event as Birthday).age !== undefined && (
 							<div className="tooltip-row">
 								<span className="tooltip-label">
 									{t("view.eventManager.birthday.age")}:
 								</span>
 								<span className="tooltip-value">
-									{event.age ?? "-"}
+									{(event as Birthday).age ?? "-"}
 								</span>
 							</div>
 						)}
-						{event.nextBirthday !== undefined && (
+						{(event as Birthday).nextBirthday !== undefined && (
 							<div className="tooltip-row">
 								<span className="tooltip-label">
 									{t(
@@ -143,27 +145,27 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 									:
 								</span>
 								<span className="tooltip-value">
-									{event.nextBirthday}
+									{(event as Birthday).nextBirthday}
 								</span>
 							</div>
 						)}
-						{event.animal !== undefined && (
+						{(event as Birthday).animal !== undefined && (
 							<div className="tooltip-row">
 								<span className="tooltip-label">
 									{t("view.eventManager.birthday.animal")}:
 								</span>
 								<span className="tooltip-value">
-									{event.animal ?? "-"}
+									{(event as Birthday).animal ?? "-"}
 								</span>
 							</div>
 						)}
-						{event.zodiac !== undefined && (
+						{(event as Birthday).zodiac !== undefined && (
 							<div className="tooltip-row">
 								<span className="tooltip-label">
 									{t("view.eventManager.birthday.zodiac")}:
 								</span>
 								<span className="tooltip-value">
-									{event.zodiac}
+									{(event as Birthday).zodiac}
 								</span>
 							</div>
 						)}
@@ -183,7 +185,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 
 export class EventTooltip extends Modal {
 	private root: Root | null = null;
-	private event: Partial<Holiday | Birthday | CustomEvent>;
+	private event: CalendarEvent;
 	private plugin: YearlyGlancePlugin;
 
 	constructor(plugin: YearlyGlancePlugin, event: CalendarEvent) {

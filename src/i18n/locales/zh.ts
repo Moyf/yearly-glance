@@ -140,7 +140,7 @@ const translations: BaseMessage = {
 				hideEmptyDates: "是否隐藏空日期",
 				emojiOnTop: "将 emoji 显示在上方",
 				wrapText: "切换文本换行",
-				showTooltips: "鼠标悬浮时显示完整事件名"
+				showTooltips: "鼠标悬浮时显示完整事件名",
 			},
 		},
 		eventManager: {
@@ -148,6 +148,12 @@ const translations: BaseMessage = {
 			solar: "公历",
 			lunar: "农历",
 			date: "日期",
+			calendar: {
+				auto: "自动推断",
+				gregorian: "公历",
+				lunar: "农历",
+				lunar_leap: "农历闰月",
+			},
 			actions: {
 				add: "添加新事件",
 				search: "搜索事件...",
@@ -177,7 +183,6 @@ const translations: BaseMessage = {
 				eventDate: "事件日期",
 				eventDateType: "事件日期类型",
 				optional: "可选",
-				eventRepeat: "重复",
 				eventHidden: "隐藏",
 				eventEmoji: "事件图标",
 				eventColor: "事件颜色",

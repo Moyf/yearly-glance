@@ -153,7 +153,7 @@ export class SmartDateProcessor {
 	): StandardDate {
 		// 支持的农历格式：
 		// 中文格式：2025年正月初一, 正月初一, 闰二月初一, 二〇二五年闰六月初一
-		// 数字格式：2025,6,1  2025,-6,1  6,1  -6,1
+		// 旧格式：2025,6,1  2025,-6,1  6,1  -6,1
 		const isLeapMonth = isLeap;
 
 		// 首先尝试解析数字格式

@@ -148,6 +148,12 @@ const translations: BaseMessage = {
 			solar: "Solar",
 			lunar: "Lunar",
 			date: "Date",
+			calendar: {
+				auto: "Auto detect",
+				gregorian: "Gregorian",
+				lunar: "Lunar",
+				lunar_leap: "Lunar leap month",
+			},
 			actions: {
 				add: "Add a new event",
 				search: "Search events...",
@@ -177,7 +183,6 @@ const translations: BaseMessage = {
 				eventDate: "Event date",
 				eventDateType: "Event date type",
 				optional: "Optional",
-				eventRepeat: "Repeat",
 				eventHidden: "Hidden",
 				eventEmoji: "Event emoji",
 				eventColor: "Event color",

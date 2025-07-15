@@ -1,87 +1,127 @@
 .date-input-container {
+	position: relative;
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	width: 100%;
 }
 
 .date-input {
-	width: 100%;
+	flex: 1;
 	padding: 8px 12px;
 	border: 1px solid var(--background-modifier-border);
 	border-radius: 4px;
-	background: var(--background-primary);
+	background-color: var(--background-primary);
 	color: var(--text-normal);
-	font-size: 14px;
-	transition: border-color 0.2s ease;
+	font-size: inherit;
+	font-family: inherit;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.date-input::placeholder {
+	color: var(--text-muted);
+	opacity: 0.6;
+}
+
+.date-input:hover {
+	border-color: var(--interactive-accent);
 }
 
 .date-input:focus {
-	outline: none;
 	border-color: var(--interactive-accent);
-	box-shadow: 0 0 0 2px var(--interactive-accent-hover);
+	box-shadow: 0 0 0 2px rgba(var(--interactive-accent-rgb), 0.2);
+	outline: none;
 }
 
 .date-input:invalid {
 	border-color: var(--text-error);
 }
 
+/* 预览区域 */
 .date-preview {
-	min-height: 20px;
-	font-size: 12px;
-	display: flex;
-	align-items: center;
-	gap: 4px;
-	padding: 4px 8px;
-	border-radius: 3px;
-	transition: all 0.2s ease;
+	margin-top: 6px;
+	min-height: 24px;
+	padding: 0 4px;
+	font-size: 0.85em;
+	line-height: 1.4;
 }
 
 .preview-success {
 	display: flex;
 	align-items: center;
-	gap: 4px;
+	gap: 6px;
 	color: var(--text-success);
+	background-color: rgba(var(--color-green-rgb), 0.1);
+	padding: 4px 8px;
+	border-radius: 3px;
+	border-left: 3px solid var(--text-success);
 }
 
 .preview-error {
 	display: flex;
 	align-items: center;
-	gap: 4px;
+	gap: 6px;
 	color: var(--text-error);
-}
-
-.preview-parsing {
-	display: flex;
-	align-items: center;
-	gap: 4px;
-	color: var(--text-muted);
-}
-
-.preview-empty {
-	display: flex;
-	align-items: center;
-	gap: 4px;
-	color: var(--text-faint);
-	background: transparent;
+	background-color: rgba(var(--color-red-rgb), 0.1);
+	padding: 4px 8px;
+	border-radius: 3px;
+	border-left: 3px solid var(--text-error);
 }
 
 .preview-icon {
-	font-size: 10px;
+	font-size: 0.9em;
 	font-weight: bold;
-	min-width: 12px;
-	text-align: center;
+	flex-shrink: 0;
 }
 
 .preview-text {
 	flex: 1;
-	line-height: 1.3;
+	font-weight: 500;
 }
 
 .preview-calendar {
-	font-size: 10px;
 	color: var(--text-muted);
-	background: var(--background-modifier-border);
-	padding: 2px 6px;
-	border-radius: 2px;
-	white-space: nowrap;
+	font-size: 0.9em;
+	font-style: italic;
+	flex-shrink: 0;
+}
+
+/* 错误状态样式 */
+.date-input-container.has-error {
+	.date-input {
+		border-color: var(--text-error);
+		background-color: rgba(var(--color-red-rgb), 0.05);
+	}
+
+	.date-input:focus {
+		border-color: var(--text-error);
+		box-shadow: 0 0 0 2px rgba(var(--color-red-rgb), 0.2);
+	}
+}
+
+/* 成功状态样式 */
+.date-input-container.has-success {
+	.date-input {
+		border-color: var(--text-success);
+	}
+
+	.date-input:focus {
+		border-color: var(--text-success);
+		box-shadow: 0 0 0 2px rgba(var(--color-green-rgb), 0.2);
+	}
+}
+
+/* 禁用状态样式 */
+.date-input-container.disabled {
+	.date-input {
+		background-color: var(--background-secondary);
+		color: var(--text-muted);
+		cursor: not-allowed;
+		opacity: 0.6;
+	}
+
+	.date-input:hover,
+	.date-input:focus {
+		border-color: var(--background-modifier-border);
+		box-shadow: none;
+	}
 }

@@ -93,6 +93,12 @@ export type BaseMessage = {
 			solar: string;
 			lunar: string;
 			date: string;
+			calendar: {
+				auto: string;
+				gregorian: string;
+				lunar: string;
+				lunar_leap: string;
+			};
 			actions: {
 				add: string;
 				edit: string;
@@ -122,7 +128,6 @@ export type BaseMessage = {
 				eventDate: string;
 				eventDateType: string;
 				optional: string;
-				eventRepeat: string;
 				eventHidden: string;
 				eventEmoji: string;
 				eventColor: string;

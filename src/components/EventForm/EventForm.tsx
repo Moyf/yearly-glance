@@ -26,10 +26,10 @@ export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
 
 // 日历类型选项
 const CALENDAR_OPTIONS = [
-	{ label: "AUTO", value: undefined },
-	{ label: "GREGORIAN", value: "GREGORIAN" },
-	{ label: "LUNAR", value: "LUNAR" },
-	{ label: "LUNAR_LEAP", value: "LUNAR_LEAP" },
+	{ label: t("view.eventManager.calendar.auto"), value: undefined },
+	{ label: t("view.eventManager.calendar.gregorian"), value: "GREGORIAN" },
+	{ label: t("view.eventManager.calendar.lunar"), value: "LUNAR" },
+	{ label: t("view.eventManager.calendar.lunar_leap"), value: "LUNAR_LEAP" },
 ];
 
 /**
@@ -264,22 +264,18 @@ export const EventForm: React.FC<EventFormProps> = ({
 							onChange={(checked) =>
 								handleFieldChange("isHidden", checked)
 							}
-							aria-label={t("view.eventManager.form.eventHidden")}
 						/>
 					</div>
 					{currentEventType === "customEvent" && (
 						<div className="form-group checkbox">
 							<label>
-								{t("view.eventManager.form.eventRepeat")}
+								{t("view.eventManager.customEvent.repeat")}
 							</label>
 							<Toggle
 								checked={formData.isRepeat ?? false}
 								onChange={(checked) =>
 									handleFieldChange("isRepeat", checked)
 								}
-								aria-label={t(
-									"view.eventManager.form.eventRepeat"
-								)}
 							/>
 						</div>
 					)}

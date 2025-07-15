@@ -148,6 +148,12 @@ const translations: BaseMessage = {
 			solar: "公曆",
 			lunar: "農曆",
 			date: "日期",
+			calendar: {
+				auto: "自動推斷",
+				gregorian: "公曆",
+				lunar: "農曆",
+				lunar_leap: "農曆閏月",
+			},
 			actions: {
 				add: "添加新事件",
 				search: "搜索事件...",
@@ -177,7 +183,6 @@ const translations: BaseMessage = {
 				eventDate: "事件日期",
 				eventDateType: "事件日期類型",
 				optional: "可選",
-				eventRepeat: "重複",
 				eventHidden: "隱藏",
 				eventEmoji: "事件圖標",
 				eventColor: "事件顏色",

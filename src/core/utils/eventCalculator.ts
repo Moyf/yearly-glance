@@ -26,7 +26,11 @@ export class EventCalculator {
 		const { year, month, day } = IsoUtils.parse(isoDate, calendar);
 
 		// 自定义事件一般ymd齐全，在事件不重复，且有年份的情况下，只需要计算出公历日期
-		if (isRepeat !== true && year !== undefined) {
+		if (
+			isRepeat !== undefined &&
+			isRepeat === false &&
+			year !== undefined
+		) {
 			if (calendar === "GREGORIAN") {
 				return [Solar.fromYmd(year, month, day).toString()];
 			} else if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {

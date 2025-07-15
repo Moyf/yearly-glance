@@ -7,6 +7,7 @@ import {
 	StandardDate,
 } from "../interfaces/Date";
 import { GregorianDateValidator, LunarDateValidator } from "./dateValidator";
+import { LunarLibrary } from "./lunarLibrary";
 
 /**
  * 智能日期处理器
@@ -101,9 +102,36 @@ export class SmartDateProcessor {
 		// 提取数字部分
 		const numbers = this.extractNumbers(input);
 
+		// 验证输入的完整性
+		if (numbers.length < 2) {
+			throw new Error(
+				`Insufficient numbers in input: ${input}. Expected at least MM-DD format`
+			);
+		}
+		if (numbers.some((num) => num === 0)) {
+			throw new Error(`Invalid date: ${input}.`);
+		}
+
 		if (numbers.length === 2) {
-			// MM-DD 格式
-			[month, day] = numbers;
+			// 需要验证是 MM-DD 格式，而不是 YYYY-MM 或 YYYY-DD 等错误格式
+			const [first, second] = numbers;
+
+			// 如果第一个数字大于12且大于31，很可能是年份，这是错误格式
+			// 也有可能年份是公元1年等，但是可能性非常小，先不做考虑
+			if (first > 31) {
+				throw new Error(
+					`Invalid date format: ${input}. Expected MM-DD format, but got possible YYYY-MM or YYYY-DD format`
+				);
+			}
+
+			// 如果第一个数字在合理的月份范围内(1-12)，第二个数字在合理的日期范围内(1-31)
+			if (first >= 1 && first <= 12 && second >= 1 && second <= 31) {
+				[month, day] = numbers;
+			} else {
+				throw new Error(
+					`Invalid date format: ${input}. Numbers out of valid range for MM-DD format`
+				);
+			}
 		} else if (numbers.length === 3) {
 			// YYYY-MM-DD 格式
 			[year, month, day] = numbers;
@@ -152,13 +180,16 @@ export class SmartDateProcessor {
 		isLeap: boolean
 	): StandardDate {
 		// 支持的农历格式：
+		// 标准格式：2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01
 		// 中文格式：2025年正月初一, 正月初一, 闰二月初一, 二〇二五年闰六月初一
 		// 旧格式：2025,6,1  2025,-6,1  6,1  -6,1
 		const isLeapMonth = isLeap;
 
-		// 首先尝试解析数字格式
-		if (this.isNumericLunarFormat(input)) {
-			return this.parseNumericLunarDate(input);
+		// 首先尝试提取数字（包括负数，用于农历闰月）
+		const numbers = this.extractNumbers(input);
+
+		if (numbers.length >= 2) {
+			return this.parseNumericLunarDate(input, isLeapMonth);
 		}
 
 		// 解析中文格式
@@ -166,57 +197,94 @@ export class SmartDateProcessor {
 	}
 
 	/**
-	 * 检查是否为数字格式的农历日期
-	 * @param input 输入字符串
-	 * @returns boolean
-	 */
-	private static isNumericLunarFormat(input: string): boolean {
-		// 匹配格式：2025,6,1  2025,-6,1  6,1  -6,1
-		return /^\d{1,4},-?\d{1,2},\d{1,2}$|^-?\d{1,2},\d{1,2}$/.test(
-			input.trim()
-		);
-	}
-
-	/**
 	 * 解析数字格式的农历日期
-	 * @param input 输入字符串
+	 * @param numbers 提取的数字数组
+	 * @param isLeapMonth 是否为闰月
 	 * @returns StandardDate 标准化日期对象
 	 */
-	private static parseNumericLunarDate(input: string): StandardDate {
-		const parts = input
-			.trim()
-			.split(",")
-			.map((part) => parseInt(part.trim(), 10));
-
+	private static parseNumericLunarDate(
+		input: string,
+		isLeapMonth: boolean
+	): StandardDate {
 		let year: number | undefined;
 		let month: number;
 		let day: number;
-		let isLeapMonth = false;
 
-		if (parts.length === 3) {
-			// 格式：2025,6,1 或 2025,-6,1
-			[year, month, day] = parts;
-		} else if (parts.length === 2) {
-			// 格式：6,1 或 -6,1
-			[month, day] = parts;
+		const numbers = this.extractNumbers(input);
+
+		// 验证输入的完整性
+		if (numbers.length < 2) {
+			throw new Error(
+				`Insufficient numbers in input: ${input}. Expected at least MM-DD format`
+			);
+		}
+
+		// 检查是否包含0（农历月份不应该为0）
+		if (numbers.some((num) => num === 0)) {
+			throw new Error(`Invalid lunar date: ${input}.`);
+		}
+
+		if (numbers.length === 2) {
+			// 需要验证是 MM-DD 格式，而不是 YYYY-MM 或 YYYY-DD 等错误格式
+			const [first, second] = numbers;
+
+			// 如果第一个数字大于12且大于30，很可能是年份，这是错误格式
+			// 也有可能年份是公元1年等，但是可能性非常小，先不做考虑
+			if (first > 30) {
+				throw new Error(
+					`Invalid date format: ${input}. Expected MM-DD format, but got possible YYYY-MM or YYYY-DD format`
+				);
+			}
+
+			// 如果第一个数字在合理的月份范围内(1-12)，第二个数字在合理的日期范围内(1-30)
+			if (first >= 1 && first <= 12 && second >= 1 && second <= 30) {
+				[month, day] = numbers;
+			} else {
+				throw new Error(
+					`Invalid date format: ${input}. Numbers out of valid range for MM-DD format`
+				);
+			}
+		} else if (numbers.length === 3) {
+			// YYYY-MM-DD
+			[year, month, day] = numbers;
+
+			// 验证农历月份和日期的范围
+			if (month < 1 || month > 12) {
+				throw new Error(
+					`Invalid lunar month: ${month}. Must be between 1 and 12`
+				);
+			}
+			if (day < 1 || day > 30) {
+				throw new Error(
+					`Invalid lunar day: ${day}. Must be between 1 and 30`
+				);
+			}
 		} else {
-			throw new Error(`Invalid numeric lunar date format: ${input}`);
+			throw new Error(`Unexpected numbers length: ${numbers.length}`);
 		}
 
-		// 检查是否为闰月（负数表示闰月）
-		if (month < 0) {
-			isLeapMonth = true;
-			month = Math.abs(month);
+		// 使用农历验证器验证日期
+		LunarDateValidator.validDate(year, month, day, isLeapMonth);
+
+		// 检查实际的闰月状态：如果指定了闰月但验证失败，可能需要降级为普通月
+		let actualIsLeapMonth = isLeapMonth;
+		if (isLeapMonth) {
+			if (year !== undefined) {
+				// 有年份时验证指定年份是否真的有该闰月
+				if (!LunarLibrary.isValidLunarDate(year, -month, day)) {
+					// 闰月无效，降级为普通月
+					actualIsLeapMonth = false;
+				}
+			} else {
+				// 没有年份时，无法验证闰月有效性，默认降级为普通月
+				actualIsLeapMonth = false;
+			}
 		}
 
-		if (year !== undefined) {
-			LunarDateValidator.validDate(year, month, day, isLeapMonth);
-		}
-
-		// 生成ISO日期字符串 - 始终使用正数月份
+		// 生成ISO日期字符串
 		const isoDate: string = this.generateISODateString(year, month, day);
 
-		const calendarType = isLeapMonth ? "LUNAR_LEAP" : "LUNAR";
+		const calendarType = actualIsLeapMonth ? "LUNAR_LEAP" : "LUNAR";
 
 		return {
 			isoDate,
@@ -248,6 +316,21 @@ export class SmartDateProcessor {
 
 		LunarDateValidator.validDate(year, month, day, isLeapMonth);
 
+		// 检查实际的闰月状态：如果指定了闰月但验证失败，可能需要降级为普通月
+		let actualIsLeapMonth = isLeapMonth;
+		if (isLeapMonth) {
+			if (year !== undefined) {
+				// 有年份时验证指定年份是否真的有该闰月
+				if (!LunarLibrary.isValidLunarDate(year, -month, day)) {
+					// 闰月无效，降级为普通月
+					actualIsLeapMonth = false;
+				}
+			} else {
+				// 没有年份时，无法验证闰月有效性，默认降级为普通月
+				actualIsLeapMonth = false;
+			}
+		}
+
 		// 生成ISO日期字符串
 		let isoDate: string;
 
@@ -261,7 +344,7 @@ export class SmartDateProcessor {
 				.padStart(2, "0")}`;
 		}
 
-		const calendarType = isLeapMonth ? "LUNAR_LEAP" : "LUNAR";
+		const calendarType = actualIsLeapMonth ? "LUNAR_LEAP" : "LUNAR";
 
 		return {
 			isoDate,

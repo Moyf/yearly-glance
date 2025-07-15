@@ -49,8 +49,6 @@ export default class YearlyGlancePlugin extends Plugin {
 		this.settings = this.validateAndMergeSettings(savedData);
 		// 数据迁移
 		this.settings = MigrateData.migrateV2(this);
-		// 确保所有事件都有id
-		await this.ensureEventsHaveIds();
 		// 更新所有事件的dateArr字段
 		await this.updateAllEventsDateObj();
 		// 保存设置，并通知其他组件

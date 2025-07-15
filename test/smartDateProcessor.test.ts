@@ -488,4 +488,61 @@ describe("SmartDateProcessor", () => {
 			}
 		});
 	});
+
+	describe("闰月处理和降级", () => {
+		test("当指定的闰月无效时，应该降级为普通月并更新日历类型", () => {
+			// 2025年没有闰六月，但用户指定了闰月类型
+			const result = SmartDateProcessor.parseUserInput(
+				"2025-06-15",
+				"LUNAR_LEAP"
+			);
+			expect(result).toEqual({
+				isoDate: "2025-06-15",
+				calendar: "LUNAR", // 应该降级为普通农历月
+			});
+		});
+
+		test("当输入文本没有闰字但指定了闰月类型时，如果闰月无效应降级", () => {
+			// 2025年没有闰正月，但指定了闰月类型
+			const result = SmartDateProcessor.parseUserInput(
+				"2025年正月初一",
+				"LUNAR_LEAP"
+			);
+			expect(result).toEqual({
+				isoDate: "2025-01-01",
+				calendar: "LUNAR", // 应该降级为普通农历月
+			});
+		});
+
+		test("当输入文本有闰字但该年没有对应闰月时，应该降级为普通月", () => {
+			// 2025年没有闰二月
+			const result =
+				SmartDateProcessor.parseUserInput("2025年闰二月初一");
+			expect(result).toEqual({
+				isoDate: "2025-02-01",
+				calendar: "LUNAR", // 应该降级为普通农历月
+			});
+		});
+
+		test("当闰月存在且有效时，应保持闰月类型", () => {
+			// 假设某年有闰六月（需要根据实际农历数据调整）
+			// 这里使用一个已知有闰月的年份，比如2020年有闰四月
+			const result =
+				SmartDateProcessor.parseUserInput("2020年闰四月初一");
+			expect(result.calendar).toBe("LUNAR_LEAP");
+			expect(result.isoDate).toBe("2020-04-01");
+		});
+
+		test("数字格式的闰月降级测试", () => {
+			// 2025年没有闰六月
+			const result = SmartDateProcessor.parseUserInput(
+				"2025-06-01",
+				"LUNAR_LEAP"
+			);
+			expect(result).toEqual({
+				isoDate: "2025-06-01",
+				calendar: "LUNAR", // 应该降级为普通农历月
+			});
+		});
+	});
 });

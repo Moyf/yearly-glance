@@ -85,8 +85,10 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 			eventType = "holiday";
 		} else if ((event as Birthday).id.contains("birth")) {
 			eventType = "birthday";
-		} else {
+		} else if ((event as CustomEvent).id.contains("event")) {
 			eventType = "customEvent";
+		} else {
+			throw new Error("Unknown event type");
 		}
 
 		plugin.openEventForm(eventType, event, true, false);
@@ -102,8 +104,10 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 			eventType = "holiday";
 		} else if ((event as Birthday).id.contains("birth")) {
 			eventType = "birthday";
-		} else {
+		} else if ((event as CustomEvent).id.contains("event")) {
 			eventType = "customEvent";
+		} else {
+			throw new Error("Unknown event type");
 		}
 
 		new ConfirmDialog(plugin, {

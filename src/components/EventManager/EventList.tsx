@@ -70,18 +70,14 @@ export const EventList: React.FC<EventListProps> = ({
 	// 搜索模式下，按事件类型分组显示结果
 	if (isSearchMode) {
 		// 将事件按类型分组
-		const holidayEvents = sortEvents(events);
+		const holidayEvents = sortEvents(events).filter((event) =>
+			event.id.contains("holi")
+		);
 		const birthdayEvents = sortEvents(
-			events.filter(
-				(event) =>
-					(event as any).age !== undefined && !(event as any).type
-			)
+			events.filter((event) => event.id.contains("birth"))
 		);
 		const customEvents = sortEvents(
-			events.filter(
-				(event) =>
-					!(event as any).type && (event as any).age === undefined
-			)
+			events.filter((event) => event.id.contains("event"))
 		);
 
 		return (

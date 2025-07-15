@@ -290,7 +290,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 							submitDefaultAsValue={false}
 						/>
 					</div>
-					<div className="form-group">
+					<div className="form-group checkbox">
 						<label>{t("view.eventManager.form.eventHidden")}</label>
 						<Toggle
 							checked={formData.isHidden || false}

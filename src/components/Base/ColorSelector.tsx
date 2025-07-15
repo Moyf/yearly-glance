@@ -144,7 +144,6 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 					onValueChange={handlePresetColorSelect}
 					options={presetColorOptions}
 					placeholder={t("view.eventManager.form.selectPresetColor")}
-					className="yg-color-presets-selector"
 				/>
 			)}
 		</div>

@@ -11,7 +11,7 @@
 .yg-event-form {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 15px;
+	gap: 4px;
 	padding: 0px;
 	background-color: var(--background-primary);
 	border-radius: 8px;
@@ -23,8 +23,12 @@
 		max-height: 500px;
 		margin-bottom: 15px;
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		gap: 10px;
+	}
+
+	.yg-select {
+		padding: 4px 6px;
 	}
 
 	label {

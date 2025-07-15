@@ -81,12 +81,9 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 		let eventType = activeTab;
 
 		// 根据事件特性判断其实际类型
-		if (
-			(event as Holiday).type === "BUILTIN" ||
-			(event as Holiday).type === "CUSTOM"
-		) {
+		if ((event as Holiday).id.contains("holi")) {
 			eventType = "holiday";
-		} else if ((event as Birthday).nextBirthday !== undefined) {
+		} else if ((event as Birthday).id.contains("birth")) {
 			eventType = "birthday";
 		} else {
 			eventType = "customEvent";
@@ -101,20 +98,12 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 	) => {
 		// 判断事件实际类型
 		let eventType = activeTab;
-		if (
-			(event as Holiday).type === "BUILTIN" ||
-			(event as Holiday).type === "CUSTOM"
-		) {
+		if ((event as Holiday).id.contains("holi")) {
 			eventType = "holiday";
-		} else if ((event as Birthday).nextBirthday !== undefined) {
+		} else if ((event as Birthday).id.contains("birth")) {
 			eventType = "birthday";
 		} else {
 			eventType = "customEvent";
-		}
-
-		// 内置节日不能删除
-		if (eventType === "holiday" && (event as Holiday).type === "BUILTIN") {
-			return;
 		}
 
 		new ConfirmDialog(plugin, {
@@ -342,20 +331,9 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 					onEdit={handleEditEvent}
 					onDelete={handleDeleteEvent}
 					eventType={activeTab}
-					updateEvents={(updatedEvents) => {
-						const newEvents = { ...events };
-						if (activeTab === "holiday") {
-							newEvents.holidays = updatedEvents as Holiday[];
-						} else if (activeTab === "birthday") {
-							newEvents.birthdays = updatedEvents as Birthday[];
-						} else {
-							newEvents.customEvents =
-								updatedEvents as CustomEvent[];
-						}
-						updateEvents(newEvents);
-					}}
 					sortField={sortField}
 					sortDirection={sortDirection}
+					isSearchMode={isSearching}
 				/>
 			</div>
 		</div>

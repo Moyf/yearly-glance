@@ -17,6 +17,7 @@ import { Select } from "../Base/Select";
 import { ColorSelector } from "../Base/ColorSelector";
 import { Toggle } from "../Base/Toggle";
 import { DateInput } from "../Base/DateInput";
+import { parseUserDateInput } from "@/src/core/utils/smartDateProcessor";
 
 // 事件类型tab
 export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
@@ -150,6 +151,38 @@ export const EventForm: React.FC<EventFormProps> = ({
 	// 处理表单提交
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
+
+		const completeEvent: CustomEvent | Birthday | Holiday = {
+			id: formData.id,
+			text: formData.text,
+			eventDate: {
+				...parseUserDateInput(
+					formData.userInputDate,
+					formData.userInputCalendar as CalendarType | undefined
+				),
+				userInput: {
+					input: formData.userInputDate,
+					calendar: formData.userInputCalendar as
+						| CalendarType
+						| undefined,
+				},
+			},
+			emoji: formData.emoji,
+			color: formData.color,
+			remark: formData.remark,
+			isHidden: formData.isHidden,
+
+			// 根据当前事件类型添加特有字段
+			...(currentEventType === "customEvent"
+				? { isRepeat: formData.isRepeat }
+				: {}),
+
+			...(currentEventType === "holiday"
+				? { foundDate: formData.foundDate }
+				: {}),
+		};
+
+		onSave(completeEvent, currentEventType);
 	};
 
 	return (

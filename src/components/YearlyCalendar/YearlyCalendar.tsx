@@ -2,7 +2,6 @@ import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import YearlyGlancePlugin from "@/src/main";
-import { Solar } from "lunar-typescript";
 import { VIEW_TYPE_EVENT_MANAGER } from "@/src/views/EventManagerView";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
 import {

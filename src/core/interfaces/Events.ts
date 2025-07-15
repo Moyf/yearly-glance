@@ -28,7 +28,6 @@ export interface BaseEvent {
  * foundDate?: 节日起源日期, 年月日，年月，年，一般用于计算周年
  */
 export interface Holiday extends BaseEvent {
-	type: "BUILTIN" | "CUSTOM";
 	foundDate?: string;
 }
 

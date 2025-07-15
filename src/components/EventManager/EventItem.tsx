@@ -15,7 +15,6 @@ interface EventItemProps {
 	event: Holiday | Birthday | CustomEvent;
 	onEdit: () => void;
 	onDelete: () => void;
-	canDelete: boolean;
 	eventType: EventType;
 }
 
@@ -24,7 +23,6 @@ export const EventItem: React.FC<EventItemProps> = ({
 	event,
 	onEdit,
 	onDelete,
-	canDelete,
 	eventType,
 }) => {
 	// 获取事件特定信息
@@ -231,15 +229,13 @@ export const EventItem: React.FC<EventItemProps> = ({
 				>
 					✏️
 				</button>
-				{canDelete && (
-					<button
-						className="delete-button"
-						onClick={onDelete}
-						title={t("view.eventManager.actions.delete")}
-					>
-						🗑️
-					</button>
-				)}
+				<button
+					className="delete-button"
+					onClick={onDelete}
+					title={t("view.eventManager.actions.delete")}
+				>
+					🗑️
+				</button>
 			</div>
 		</div>
 	);

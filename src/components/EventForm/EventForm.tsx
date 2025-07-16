@@ -88,6 +88,9 @@ export const EventForm: React.FC<EventFormProps> = ({
 	const today = new Date().toISOString().split("T")[0]; // 获取今天的日期字符串
 	const todayString = props.date || today; // 如果传入了特定日期，则使用它，否则使用今天的日期
 
+	// 第一个输入框的引用，用于自动聚焦
+	const firstInputRef = React.useRef<HTMLInputElement>(null);
+
 	// 当前选择的事件类型
 	const [currentEventType, setCurrentEventType] =
 		React.useState<EventType>(eventType);
@@ -132,6 +135,13 @@ export const EventForm: React.FC<EventFormProps> = ({
 	};
 
 	const [optionalCollapsed, setOptionalCollapsed] = React.useState(false);
+
+	// 组件挂载时自动聚焦到第一个输入框
+	React.useEffect(() => {
+		if (firstInputRef.current) {
+			firstInputRef.current.focus();
+		}
+	}, []);
 
 	// 处理事件类型切换
 	const handleEventTypeChange = (newEventType: EventType) => {
@@ -218,6 +228,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 						<Tooltip text={t("view.eventManager.help.eventName")} />
 					</label>
 					<input
+						ref={firstInputRef}
 						type="text"
 						name="text"
 						value={formData.text || ""}

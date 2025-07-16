@@ -1,3 +1,4 @@
+import { t } from "@/src/i18n/i18n";
 import {
 	CalendarType,
 	chineseDigits,
@@ -105,11 +106,17 @@ export class SmartDateProcessor {
 		// 验证输入的完整性
 		if (numbers.length < 2) {
 			throw new Error(
-				`Insufficient numbers in input: ${input}. Expected at least MM-DD format`
+				t(`view.eventManager.dateError.insufficientDate`, {
+					input: input,
+				})
 			);
 		}
 		if (numbers.some((num) => num === 0)) {
-			throw new Error(`Invalid date: ${input}.`);
+			throw new Error(
+				t(`view.eventManager.dateError.invalidZeroDate`, {
+					input: input,
+				})
+			);
 		}
 
 		if (numbers.length === 2) {
@@ -120,7 +127,9 @@ export class SmartDateProcessor {
 			// 也有可能年份是公元1年等，但是可能性非常小，先不做考虑
 			if (first > 31) {
 				throw new Error(
-					`Invalid date format: ${input}. Expected MM-DD format, but got possible YYYY-MM or YYYY-DD format`
+					t(`view.eventManager.dateError.invalidFormatDate`, {
+						input: input,
+					})
 				);
 			}
 
@@ -129,14 +138,20 @@ export class SmartDateProcessor {
 				[month, day] = numbers;
 			} else {
 				throw new Error(
-					`Invalid date format: ${input}. Numbers out of valid range for MM-DD format`
+					t(`view.eventManager.dateError.invalidRangeDate`, {
+						input: input,
+					})
 				);
 			}
 		} else if (numbers.length === 3) {
 			// YYYY-MM-DD 格式
 			[year, month, day] = numbers;
 		} else {
-			throw new Error(`Unexpected numbers length: ${numbers.length}`);
+			throw new Error(
+				t(`view.eventManager.dateError.unexpectedNumberLength`, {
+					length: numbers.length,
+				})
+			);
 		}
 
 		GregorianDateValidator.validDate(year, month, day);
@@ -215,13 +230,19 @@ export class SmartDateProcessor {
 		// 验证输入的完整性
 		if (numbers.length < 2) {
 			throw new Error(
-				`Insufficient numbers in input: ${input}. Expected at least MM-DD format`
+				t(`view.eventManager.dateError.insufficientDate`, {
+					input: input,
+				})
 			);
 		}
 
 		// 检查是否包含0（农历月份不应该为0）
 		if (numbers.some((num) => num === 0)) {
-			throw new Error(`Invalid lunar date: ${input}.`);
+			throw new Error(
+				t(`view.eventManager.dateError.invalidZeroDate`, {
+					input: input,
+				})
+			);
 		}
 
 		if (numbers.length === 2) {
@@ -232,7 +253,9 @@ export class SmartDateProcessor {
 			// 也有可能年份是公元1年等，但是可能性非常小，先不做考虑
 			if (first > 30) {
 				throw new Error(
-					`Invalid date format: ${input}. Expected MM-DD format, but got possible YYYY-MM or YYYY-DD format`
+					t(`view.eventManager.dateError.invalidFormatDate`, {
+						input: input,
+					})
 				);
 			}
 
@@ -241,26 +264,20 @@ export class SmartDateProcessor {
 				[month, day] = numbers;
 			} else {
 				throw new Error(
-					`Invalid date format: ${input}. Numbers out of valid range for MM-DD format`
+					t(`view.eventManager.dateError.invalidRangeDate`, {
+						input: input,
+					})
 				);
 			}
 		} else if (numbers.length === 3) {
 			// YYYY-MM-DD
 			[year, month, day] = numbers;
-
-			// 验证农历月份和日期的范围
-			if (month < 1 || month > 12) {
-				throw new Error(
-					`Invalid lunar month: ${month}. Must be between 1 and 12`
-				);
-			}
-			if (day < 1 || day > 30) {
-				throw new Error(
-					`Invalid lunar day: ${day}. Must be between 1 and 30`
-				);
-			}
 		} else {
-			throw new Error(`Unexpected numbers length: ${numbers.length}`);
+			throw new Error(
+				t(`view.eventManager.dateError.unexpectedNumberLength`, {
+					length: numbers.length,
+				})
+			);
 		}
 
 		// 使用农历验证器验证日期
@@ -365,7 +382,9 @@ export class SmartDateProcessor {
 		}
 
 		// 匹配中文数字年份：二〇二五年
-		const chineseYearMatch = input.match(/([一二三四五六七八九〇零]{4})年/);
+		const chineseYearMatch = input.match(
+			/([一二三四五六七八九〇零]{1,4})年/
+		);
 		if (chineseYearMatch) {
 			return this.convertChineseNumberToArabic(chineseYearMatch[1]);
 		}
@@ -388,7 +407,11 @@ export class SmartDateProcessor {
 				return monthNum;
 			}
 		}
-		throw new Error(`Cannot parse lunar month from: ${input}`);
+		throw new Error(
+			t(`view.eventManager.dateError.invalidLunarDate`, {
+				input: input,
+			})
+		);
 	}
 
 	/**
@@ -406,7 +429,11 @@ export class SmartDateProcessor {
 				return dayNum;
 			}
 		}
-		throw new Error(`Cannot parse lunar day from: ${input}`);
+		throw new Error(
+			t(`view.eventManager.dateError.invalidLunarDate`, {
+				input: input,
+			})
+		);
 	}
 
 	/**
@@ -420,7 +447,11 @@ export class SmartDateProcessor {
 			if (chineseDigits[char]) {
 				result += chineseDigits[char];
 			} else {
-				throw new Error(`Unknown Chinese digit: ${char}`);
+				throw new Error(
+					t(`view.eventManager.dateError.unknownChineseDigit`, {
+						char: char,
+					})
+				);
 			}
 		}
 

@@ -140,6 +140,13 @@ export type BaseMessage = {
 			};
 			dateError: {
 				emptyDate: string;
+				invalidZeroDate: string;
+				insufficientDate: string;
+				invalidFormatDate: string;
+				invalidRangeDate: string;
+				unexpectedNumberLength: string;
+				invalidLunarDate: string;
+				unknownChineseDigit: string;
 			};
 			help: {
 				eventName: string;

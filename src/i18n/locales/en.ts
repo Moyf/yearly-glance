@@ -195,6 +195,20 @@ const translations: BaseMessage = {
 			},
 			dateError: {
 				emptyDate: "Date cannot be empty, please enter a date",
+				invalidZeroDate:
+					"The year, month, and day values in a date cannot be zero: {{input}}. Please check the date format",
+				insufficientDate:
+					"Insufficient numbers in input: {{input}}. Expected at least 2 numbers",
+				invalidFormatDate:
+					"Invalid date format: {{input}}. Expected MM-DD format, but got possible YYYY-MM or YYYY-DD format",
+				invalidRangeDate:
+					"Invalid date format: {{input}}. Numbers out of valid range for MM-DD format",
+				unexpectedNumberLength:
+					"Unexpected numbers length: {{length}}. Expected 2 or 3 numbers",
+				invalidLunarDate:
+					"Cannot parse lunar date: {{input}}. Please check the lunar date format",
+				unknownChineseDigit:
+					"Cannot recognize Chinese digit: {{char}}. Please check the Chinese digit format",
 			},
 			help: {
 				eventName: "Event display name, cannot be empty",

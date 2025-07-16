@@ -195,6 +195,19 @@ const translations: BaseMessage = {
 			},
 			dateError: {
 				emptyDate: "日期不能為空，請輸入日期",
+				invalidZeroDate:
+					"日期年月日不能為零：{{input}}。請檢查日期格式",
+				insufficientDate: "輸入的數字不足：{{input}}。至少需要2個數字",
+				invalidFormatDate:
+					"日期格式無效：{{input}}。預期為 MM-DD 格式，但可能是 YYYY-MM 或 YYYY-DD 格式",
+				invalidRangeDate:
+					"日期範圍無效：{{input}}。預期為 MM-DD 格式，但數字超出有效範圍",
+				unexpectedNumberLength:
+					"意外的數字長度：{{length}}。預期為2或3個數字",
+				invalidLunarDate:
+					"無法解析的農曆日期: {{input}}. 請檢查農曆日期格式",
+				unknownChineseDigit:
+					"無法識別的中文數字: {{char}}. 請檢查中文數字格式",
 			},
 			help: {
 				eventName: "事件的顯示名稱，不能為空",

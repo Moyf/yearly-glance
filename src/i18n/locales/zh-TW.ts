@@ -3,13 +3,13 @@ import { BaseMessage } from "../types";
 const translations: BaseMessage = {
 	setting: {
 		title: "年度一覽",
-		desc: "查看<a href='https://docs.ravenhogwarts.top/obsidian-yearly-glance/' target='_blank'>wiki文檔</a>了解更多功能",
+		desc: "查看<a href='https://docs.ravenhogwarts.top/obsidian-yearly-glance/' target='_blank'>wiki文件</a>了解更多功能",
 		general: {
-			name: "設置",
+			name: "常規",
 			desc: "視圖配置",
 			title: {
 				name: "標題",
-				desc: "自定義時使用{{year}}占位符才會顯示當前年份，留空則使用預設標題",
+				desc: "自訂時使用{{year}}占位符才會顯示當前年份，留空則使用預設標題",
 			},
 			layout: {
 				name: "布局",
@@ -20,7 +20,7 @@ const translations: BaseMessage = {
 				desc: "選擇年曆的顯示方式",
 				options: {
 					calendar: "日曆視圖",
-					list: "列表視圖",
+					list: "清單視圖",
 				},
 			},
 			showWeekdays: {
@@ -40,8 +40,8 @@ const translations: BaseMessage = {
 				desc: "顯示事件類型圖例",
 			},
 			limitListHeight: {
-				name: "限制列表高度",
-				desc: "在列表視圖中限制每個月的列表高度",
+				name: "限制清單高度",
+				desc: "在清單視圖中限制每個月的清單高度",
 			},
 			eventFontSize: {
 				name: "事件文本大小",
@@ -61,8 +61,8 @@ const translations: BaseMessage = {
 				desc: "在視圖中顯示生日",
 			},
 			showCustomEvents: {
-				name: "顯示自定義事件",
-				desc: "在視圖中顯示自定義事件",
+				name: "顯示自訂事件",
+				desc: "在視圖中顯示自訂事件",
 			},
 			mondayFirst: {
 				name: "週一作為一週的第一天",
@@ -70,7 +70,7 @@ const translations: BaseMessage = {
 			},
 			showTooltips: {
 				name: "顯示事件懸浮提示",
-				desc: "懸浮事件時顯示完整內容",
+				desc: "滑鼠懸浮事件時顯示完整內容",
 			},
 			colorful: {
 				name: "彩色主題",
@@ -81,8 +81,8 @@ const translations: BaseMessage = {
 				desc: "在視圖中顯示農曆日",
 			},
 			showDebugInfo: {
-				name: "顯示除錯資訊",
-				desc: "在控制台中顯示除錯資訊",
+				name: "顯示偵錯資訊",
+				desc: "在控制台中顯示偵錯資訊",
 			},
 			presetColors: {
 				name: "預設顏色",
@@ -124,22 +124,22 @@ const translations: BaseMessage = {
 			legend: {
 				holiday: "節日",
 				birthday: "生日",
-				customEvent: "自定義事件",
+				customEvent: "自訂事件",
 			},
 			viewPreset: {
 				yearOverview: "全年一覽",
 				classicCalendar: "經典年曆",
-				custom: "自定義佈局",
+				custom: "自訂佈局",
 			},
 			actions: {
 				clickToShow: "點擊顯示",
 				clickToHide: "點擊隱藏",
 				form: "添加事件",
-				manager: "打開事件管理器",
-				limitListHeight: "是否限制列表高度",
+				manager: "開啟事件管理器",
+				limitListHeight: "是否限制清單高度",
 				hideEmptyDates: "是否隱藏空日期",
 				emojiOnTop: "將 emoji 顯示在上方",
-				wrapText: "切換文本換行",
+				wrapText: "切換文字換行",
 				showTooltips: "滑鼠懸浮時顯示完整事件名",
 			},
 		},
@@ -156,14 +156,14 @@ const translations: BaseMessage = {
 			},
 			actions: {
 				add: "添加新事件",
-				search: "搜索事件...",
-				clearSearch: "清除搜索",
+				search: "搜尋事件...",
+				clearSearch: "清除搜尋",
 				delete: "刪除事件",
 				edit: "編輯",
-				yearlyCalendar: "打開年度概覽",
+				yearlyCalendar: "開啟年度概覽",
 				deleteConfirm: "確認刪除事件",
-				location: "在事件管理中打開",
-				toggleBuiltinEventHidden: "切換內置節日顯示狀態",
+				location: "在事件管理中開啟",
+				toggleBuiltinEventHidden: "切換內建節日顯示狀態",
 				sort: {
 					name: "事件名稱",
 					date: "事件日期",
@@ -172,8 +172,8 @@ const translations: BaseMessage = {
 				},
 			},
 			empty: {
-				text: "無事件",
-				subtext: "點擊上方「添加新事件」按鈕創建",
+				text: "暫無事件",
+				subtext: "點擊上方「添加新事件」按鈕建立",
 			},
 			form: {
 				edit: "編輯",
@@ -187,32 +187,33 @@ const translations: BaseMessage = {
 				eventEmoji: "事件圖標",
 				eventColor: "事件顏色",
 				eventRemark: "事件備註",
-				save: "保存",
+				save: "儲存",
 				cancel: "取消",
-				reset: "重置",
+				reset: "重設",
 				submit: "提交",
 				selectPresetColor: "選擇預設",
 			},
 			dateError: {
 				emptyDate: "日期不能為空，請輸入日期",
 				invalidZeroDate:
-					"日期年月日不能為零：{{input}}。請檢查日期格式",
-				insufficientDate: "輸入的數字不足：{{input}}。至少需要2個數字",
+					"日期的年月日不能為零：{{input}}，請檢查日期格式",
+				insufficientDate:
+					"輸入的日期資訊不完整：{{input}}，至少需要輸入月和日",
 				invalidFormatDate:
-					"日期格式無效：{{input}}。預期為 MM-DD 格式，但可能是 YYYY-MM 或 YYYY-DD 格式",
+					"日期格式不正確：{{input}}，期望格式為<b>月日</b>，但輸入可能是<b>年月</b>或<b>年日</b>格式",
 				invalidRangeDate:
-					"日期範圍無效：{{input}}。預期為 MM-DD 格式，但數字超出有效範圍",
+					"日期超出有效範圍：{{input}}，期望格式為<b>月日</b>，但月或日的數值超出正常範圍",
 				unexpectedNumberLength:
-					"意外的數字長度：{{length}}。預期為2或3個數字",
+					"日期數值長度不符合要求：{{length}} 位數字，期望為<b>月日</b>（2位）或<b>年月日</b>（3位）格式",
 				invalidLunarDate:
-					"無法解析的農曆日期: {{input}}. 請檢查農曆日期格式",
+					"無法識別的農曆日期：{{input}}，請檢查農曆日期格式是否正確",
 				unknownChineseDigit:
-					"無法識別的中文數字: {{char}}. 請檢查中文數字格式",
+					"無法識別的中文數字：{{char}}，請檢查中文數字書寫是否正確",
 			},
 			help: {
-				eventName: "事件的顯示名稱，不能為空",
+				eventName: "事件的名稱（不可為空）",
 				eventDate:
-					"事件日期，約束使用的日期順序是YMD<br>" +
+					"事件日期，以年月日的順序書寫<br>" +
 					"<b>公曆</b>：<br>" +
 					"標準格式：2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01<br>" +
 					"舊格式：2025,01,01, 01,01<br>" +
@@ -229,12 +230,14 @@ const translations: BaseMessage = {
 					"<b>農曆閏月</b>：農曆閏月日期，若閏月不存在會自動轉換為農曆日期",
 				eventEmoji: "事件圖標，目前支援使用emoji",
 				eventColor:
-					"事件顏色，可以選擇預設顏色或自定義顏色<br>" +
+					"事件顏色，可以選擇預設顏色或自訂顏色<br>" +
 					"預設顏色在外掛設定中新增",
-				eventHidden: "事件隱藏，不在年曆中顯示",
-				eventRemark: "事件備註",
-				customEventRepeat:
-					"自定義事件重複，每年都有的事件可以設定為重複",
+				eventHidden:
+					"是否隱藏該事件（在概覽中不再顯示）<br>" +
+					"注：在事件管理中保持可見",
+				eventRemark:
+					"對事件的額外說明，點擊事件時（或在管理事件中）可查看備註內容",
+				customEventRepeat: "選中時，將會在每年的該日期都重複顯示事件",
 				holidayFoundDate: "節日起源日期，後續計劃會用於計算節慶週年",
 			},
 			holiday: {
@@ -250,16 +253,16 @@ const translations: BaseMessage = {
 				noYear: "需補全年份數據",
 			},
 			customEvent: {
-				name: "自定義事件",
+				name: "自訂事件",
 				repeat: "事件重複",
 			},
 		},
 	},
 	command: {
-		openYearlyGlance: "打開年度概覽",
-		openEventManager: "打開事件管理",
+		openYearlyGlance: "開啟年度概覽",
+		openEventManager: "開啟事件管理",
 		addEvent: "添加事件",
-		reloadPlugin: "重載外掛",
+		reloadPlugin: "重新載入外掛",
 	},
 	common: {
 		confirm: "確認",
@@ -311,7 +314,7 @@ const translations: BaseMessage = {
 			leo: "獅子座",
 			virgo: "處女座",
 			libra: "天秤座",
-			scorpio: "天蝎座",
+			scorpio: "天蠍座",
 			sagittarius: "射手座",
 			capricorn: "摩羯座",
 			aquarius: "水瓶座",

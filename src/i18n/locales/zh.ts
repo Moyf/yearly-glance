@@ -196,23 +196,24 @@ const translations: BaseMessage = {
 			dateError: {
 				emptyDate: "日期不能为空，请输入日期",
 				invalidZeroDate:
-					"日期年月日不能为零：{{input}}. 请检查日期格式",
-				insufficientDate: "输入的数字不足: {{input}}. 至少需要2个数字",
+					"日期的年月日不能为零：{{input}}，请检查日期格式",
+				insufficientDate:
+					"输入的日期信息不完整：{{input}}，至少需要输入月和日",
 				invalidFormatDate:
-					"日期格式不正确: {{input}}. 预期为 MM-DD 格式，但可能是 YYYY-MM 或 YYYY-DD 格式",
+					"日期格式不正确：{{input}}，期望格式为<b>月日</b>，但输入可能是<b>年月</b>或<b>年日</b>格式",
 				invalidRangeDate:
-					"日期范围不正确: {{input}}. 预期为 MM-DD 格式，但数字超出有效范围",
+					"日期超出有效范围：{{input}}，期望格式为<b>月日</b>，但月或日的数值超出正常范围",
 				unexpectedNumberLength:
-					"输入的数字长度不符合预期: {{length}}. 预期为2或3个数字",
+					"日期数值长度不符合要求：{{length}} 位数字，期望为<b>月日</b>（2位）或<b>年月日</b>（3位）格式",
 				invalidLunarDate:
-					"无法解析的农历日期: {{input}}. 请检查农历日期格式",
+					"无法识别的农历日期：{{input}}，请检查农历日期格式是否正确",
 				unknownChineseDigit:
-					"无法识别的中文数字: {{char}}. 请检查中文数字格式",
+					"无法识别的中文数字：{{char}}，请检查中文数字书写是否正确",
 			},
 			help: {
-				eventName: "事件的显示名称，不能为空",
+				eventName: "事件的名称（不可为空）",
 				eventDate:
-					"事件日期，约束使用的日期顺序是YMD<br>" +
+					"事件日期，以年月日的顺序书写<br>" +
 					"<b>公历</b>：<br>" +
 					"标准格式：2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01<br>" +
 					"旧格式：2025,01,01, 01,01<br>" +
@@ -231,10 +232,12 @@ const translations: BaseMessage = {
 				eventColor:
 					"事件颜色，可以选择预设颜色或自定义颜色<br>" +
 					"预设颜色在插件设置中添加",
-				eventHidden: "事件隐藏，不在年历中显示",
-				eventRemark: "事件备注",
-				customEventRepeat:
-					"自定义事件重复，每年都有的事件可以设置为重复",
+				eventHidden:
+					"是否隐藏该事件（在概览中不再显示）<br>" +
+					"注：在事件管理中保持可见",
+				eventRemark:
+					"对事件的额外说明，点击事件时（或在管理事件中）可查看备注内容",
+				customEventRepeat: "选中时，将会在每年的该日期都重复显示事件",
 				holidayFoundDate: "节日起源日期，后续计划会用于计算节庆周年",
 			},
 			holiday: {

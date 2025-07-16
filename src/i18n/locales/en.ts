@@ -196,24 +196,24 @@ const translations: BaseMessage = {
 			dateError: {
 				emptyDate: "Date cannot be empty, please enter a date",
 				invalidZeroDate:
-					"The year, month, and day values in a date cannot be zero: {{input}}. Please check the date format",
+					"Year, month, and day cannot be zero: {{input}}, please check the date format",
 				insufficientDate:
-					"Insufficient numbers in input: {{input}}. Expected at least 2 numbers",
+					"Incomplete date information: {{input}}, at least month and day are required",
 				invalidFormatDate:
-					"Invalid date format: {{input}}. Expected MM-DD format, but got possible YYYY-MM or YYYY-DD format",
+					"Incorrect date format: {{input}}, expected format is <b>month-day</b>, but input may be <b>year-month</b> or <b>year-day</b> format",
 				invalidRangeDate:
-					"Invalid date format: {{input}}. Numbers out of valid range for MM-DD format",
+					"Date out of valid range: {{input}}, expected format is <b>month-day</b>, but month or day values exceed normal range",
 				unexpectedNumberLength:
-					"Unexpected numbers length: {{length}}. Expected 2 or 3 numbers",
+					"Date value length does not meet requirements: {{length}} digits, expected <b>month-day</b> (2 digits) or <b>year-month-day</b> (3 digits) format",
 				invalidLunarDate:
-					"Cannot parse lunar date: {{input}}. Please check the lunar date format",
+					"Unrecognized lunar date: {{input}}, please check if the lunar date format is correct",
 				unknownChineseDigit:
-					"Cannot recognize Chinese digit: {{char}}. Please check the Chinese digit format",
+					"Unrecognized Chinese digit: {{char}}, please check if the Chinese digit is written correctly",
 			},
 			help: {
-				eventName: "Event display name, cannot be empty",
+				eventName: "Event name (cannot be empty)",
 				eventDate:
-					"Event date, must follow YMD order<br>" +
+					"Event date, must follow the order of year, month, and day.<br>" +
 					"<b>Gregorian Calendar</b>:<br>" +
 					"Standard format: 2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01<br>" +
 					"Legacy format: 2025,01,01, 01,01<br>" +
@@ -233,10 +233,12 @@ const translations: BaseMessage = {
 					"Event color, you can select preset colors or custom colors<br>" +
 					"Preset colors are added in plugin settings",
 				eventHidden:
-					"Event hidden, will not be displayed in the yearly calendar",
-				eventRemark: "Event notes",
+					"Whether to hide the event (not displayed in the overview)<br>" +
+					"Note: The event will still be visible in the event manager",
+				eventRemark:
+					"Additional information about the event, can be viewed when clicking on the event (or in the event manager)",
 				customEventRepeat:
-					"Custom event repeat, events that occur every year can be set to repeat",
+					"When selected, the event will repeat every year on the same date",
 				holidayFoundDate:
 					"Holiday founding date, will be used to calculate holiday anniversaries in future plans",
 			},

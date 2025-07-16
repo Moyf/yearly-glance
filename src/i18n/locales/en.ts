@@ -271,6 +271,10 @@ const translations: BaseMessage = {
 		cancel: "Cancel",
 	},
 	data: {
+		sampleEvent: {
+			text: "Install YG plugin",
+			remark: "Welcome to use Yearly Glance plugin! This is a sample event. You can hide or delete it as needed.",
+		},
 		month: {
 			jan: "January",
 			feb: "February",

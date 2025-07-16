@@ -188,6 +188,10 @@ export type BaseMessage = {
 		cancel: string;
 	};
 	data: {
+		sampleEvent: {
+			text: string;
+			remark: string;
+		};
 		month: {
 			jan: string;
 			feb: string;

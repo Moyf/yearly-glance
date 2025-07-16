@@ -49,6 +49,10 @@ export default class YearlyGlancePlugin extends Plugin {
 		this.settings = this.validateAndMergeSettings(savedData);
 		// 数据迁移
 		this.settings = MigrateData.migrateV2(this);
+
+		// 检查是否为第一次安装，如果是则添加示例事件
+		await this.addSampleEventOnFirstInstall(savedData);
+
 		// 更新所有事件的dateArr字段
 		await this.updateAllEventsDateObj();
 		// 保存设置，并通知其他组件
@@ -56,26 +60,28 @@ export default class YearlyGlancePlugin extends Plugin {
 	}
 
 	// 确保数据结构符合预期格式，移除未定义的配置
-	private validateAndMergeSettings(savedData: any): YearlyGlanceConfig {
+	private validateAndMergeSettings(savedData: unknown): YearlyGlanceConfig {
 		// 创建默认配置的深拷贝
 		const validatedSettings = structuredClone(DEFAULT_CONFIG);
 
 		try {
 			// 如果savedData存在且是对象
 			if (savedData && typeof savedData === "object") {
+				const data = savedData as Record<string, unknown>;
+
 				// 验证并合并config部分
-				if (savedData.config && typeof savedData.config === "object") {
+				if (data.config && typeof data.config === "object") {
 					validatedSettings.config = {
 						...validatedSettings.config,
-						...savedData.config,
+						...(data.config as Record<string, unknown>),
 					};
 				}
 
 				// 验证并合并data部分
-				if (savedData.data && typeof savedData.data === "object") {
+				if (data.data && typeof data.data === "object") {
 					validatedSettings.data = {
 						...validatedSettings.data,
-						...savedData.data,
+						...(data.data as Record<string, unknown>),
 					};
 				}
 			}
@@ -292,5 +298,52 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 不触发保存的通知，因为这是内部计算，不需要通知用户
 		await this.saveData(this.settings);
+	}
+
+	/**
+	 * 检查是否为第一次安装，如果是则添加示例事件
+	 */
+	private async addSampleEventOnFirstInstall(
+		savedData: unknown
+	): Promise<void> {
+		// 类型保护函数
+		const hasCustomEvents = (data: unknown): boolean => {
+			if (!data || typeof data !== "object") return false;
+			const obj = data as Record<string, unknown>;
+			if (!obj.data || typeof obj.data !== "object") return false;
+			const dataObj = obj.data as Record<string, unknown>;
+			if (!Array.isArray(dataObj.customEvents)) return false;
+			return dataObj.customEvents.length > 0;
+		};
+
+		// 如果没有保存的数据，或者自定义事件为空，认为是第一次安装
+		const isFirstInstall = !hasCustomEvents(savedData);
+
+		if (isFirstInstall) {
+			// 获取今天的日期
+			const today = new Date();
+			const todayIsoDate = today.toISOString().split("T")[0]; // 格式: YYYY-MM-DD
+
+			// 创建示例事件
+			const sampleEvent: CustomEvent = {
+				id: this.generateEventId("customEvent"),
+				text: t("data.sampleEvent.text"),
+				eventDate: {
+					isoDate: todayIsoDate,
+					calendar: "GREGORIAN",
+					userInput: {
+						input: todayIsoDate,
+						calendar: "GREGORIAN",
+					},
+				},
+				emoji: "🎉",
+				color: "#73d13d",
+				isRepeat: false,
+				remark: t("data.sampleEvent.remark"),
+			};
+
+			// 添加到自定义事件列表
+			this.settings.data.customEvents.push(sampleEvent);
+		}
 	}
 }

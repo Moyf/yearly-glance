@@ -269,6 +269,10 @@ const translations: BaseMessage = {
 		cancel: "取消",
 	},
 	data: {
+		sampleEvent: {
+			text: "安裝 YG 外掛",
+			remark: "歡迎使用 Yearly Glance 外掛！這是一個示例事件。請根據需要隱藏或刪除。",
+		},
 		month: {
 			jan: "一月",
 			feb: "二月",

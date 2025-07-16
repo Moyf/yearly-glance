@@ -18,6 +18,7 @@ import { ColorSelector } from "../Base/ColorSelector";
 import { Toggle } from "../Base/Toggle";
 import { DateInput } from "../Base/DateInput";
 import { parseUserDateInput } from "@/src/core/utils/smartDateProcessor";
+import { Tooltip } from "../Base/Tooltip";
 
 // 事件类型tab
 export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
@@ -212,7 +213,10 @@ export const EventForm: React.FC<EventFormProps> = ({
 
 				{/* 基础字段 */}
 				<div className="form-group">
-					<label>{t("view.eventManager.form.eventName")}</label>
+					<label>
+						{t("view.eventManager.form.eventName")}
+						<Tooltip text={t("view.eventManager.help.eventName")} />
+					</label>
 					<input
 						type="text"
 						name="text"
@@ -224,7 +228,10 @@ export const EventForm: React.FC<EventFormProps> = ({
 					/>
 				</div>
 				<div className="form-group">
-					<label>{t("view.eventManager.form.eventDate")}</label>
+					<label>
+						{t("view.eventManager.form.eventDate")}
+						<Tooltip text={t("view.eventManager.help.eventDate")} />
+					</label>
 					<DateInput
 						value={formData.userInputDate || ""}
 						calendar={
@@ -239,7 +246,12 @@ export const EventForm: React.FC<EventFormProps> = ({
 					/>
 				</div>
 				<div className="form-group">
-					<label>{t("view.eventManager.form.eventDateType")}</label>
+					<label>
+						{t("view.eventManager.form.eventDateType")}
+						<Tooltip
+							text={t("view.eventManager.help.eventDateType")}
+						/>
+					</label>
 					<Select
 						value={formData.userInputCalendar || undefined}
 						onValueChange={(value) =>
@@ -263,7 +275,12 @@ export const EventForm: React.FC<EventFormProps> = ({
 					</h5>
 
 					<div className="form-group">
-						<label>{t("view.eventManager.form.eventEmoji")}</label>
+						<label>
+							{t("view.eventManager.form.eventEmoji")}
+							<Tooltip
+								text={t("view.eventManager.help.eventEmoji")}
+							/>
+						</label>
 						<input
 							type="text"
 							value={formData.emoji || ""}
@@ -276,7 +293,12 @@ export const EventForm: React.FC<EventFormProps> = ({
 						/>
 					</div>
 					<div className="form-group">
-						<label>{t("view.eventManager.form.eventColor")}</label>
+						<label>
+							{t("view.eventManager.form.eventColor")}
+							<Tooltip
+								text={t("view.eventManager.help.eventColor")}
+							/>
+						</label>
 						<ColorSelector
 							value={formData.color || ""}
 							defaultColor={
@@ -291,7 +313,12 @@ export const EventForm: React.FC<EventFormProps> = ({
 						/>
 					</div>
 					<div className="form-group checkbox">
-						<label>{t("view.eventManager.form.eventHidden")}</label>
+						<label>
+							{t("view.eventManager.form.eventHidden")}
+							<Tooltip
+								text={t("view.eventManager.help.eventHidden")}
+							/>
+						</label>
 						<Toggle
 							checked={formData.isHidden || false}
 							onChange={(checked) =>
@@ -303,6 +330,11 @@ export const EventForm: React.FC<EventFormProps> = ({
 						<div className="form-group checkbox">
 							<label>
 								{t("view.eventManager.customEvent.repeat")}
+								<Tooltip
+									text={t(
+										"view.eventManager.help.customEventRepeat"
+									)}
+								/>
 							</label>
 							<Toggle
 								checked={formData.isRepeat ?? false}
@@ -316,6 +348,11 @@ export const EventForm: React.FC<EventFormProps> = ({
 						<div className="form-group">
 							<label>
 								{t("view.eventManager.holiday.foundDate")}
+								<Tooltip
+									text={t(
+										"view.eventManager.help.holidayFoundDate"
+									)}
+								/>
 							</label>
 							<input
 								type="text"
@@ -331,7 +368,12 @@ export const EventForm: React.FC<EventFormProps> = ({
 						</div>
 					)}
 					<div className="form-group">
-						<label>{t("view.eventManager.form.eventRemark")}</label>
+						<label>
+							{t("view.eventManager.form.eventRemark")}
+							<Tooltip
+								text={t("view.eventManager.help.eventRemark")}
+							/>
+						</label>
 						<textarea
 							value={formData.remark || ""}
 							onChange={(e) =>

@@ -32,7 +32,10 @@ export const DateInput: React.FC<DateInputProps> = ({
 	// 计算预览
 	React.useEffect(() => {
 		if (!value || value.trim() === "") {
-			setPreview({ success: false });
+			setPreview({
+				success: false,
+				error: t("view.eventManager.dateError.emptyDate"),
+			});
 			return;
 		}
 
@@ -65,7 +68,7 @@ export const DateInput: React.FC<DateInputProps> = ({
 		"date-input-container",
 		className,
 		preview.success && value.trim() && "has-success",
-		preview.error && value.trim() && "has-error",
+		preview.error && "has-error",
 	]
 		.filter(Boolean)
 		.join(" ");

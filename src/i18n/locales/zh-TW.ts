@@ -140,7 +140,7 @@ const translations: BaseMessage = {
 				hideEmptyDates: "是否隱藏空日期",
 				emojiOnTop: "將 emoji 顯示在上方",
 				wrapText: "切換文本換行",
-				showTooltips: "鼠标悬浮时显示完整事件名",
+				showTooltips: "滑鼠懸浮時顯示完整事件名",
 			},
 		},
 		eventManager: {
@@ -183,7 +183,7 @@ const translations: BaseMessage = {
 				eventDate: "事件日期",
 				eventDateType: "事件日期類型",
 				optional: "可選",
-				eventHidden: "隱藏",
+				eventHidden: "事件隱藏",
 				eventEmoji: "事件圖標",
 				eventColor: "事件顏色",
 				eventRemark: "事件備註",
@@ -191,28 +191,42 @@ const translations: BaseMessage = {
 				cancel: "取消",
 				reset: "重置",
 				submit: "提交",
-				eventDateHelp:
-					"<b>格式：</b><br>" +
-					"YYYY-M-D 或 M-D<br>" +
-					"<b>公曆：</b><br>" +
-					"• 2025-01-01 = 2025年1月1日<br>" +
-					"<b>農曆：</b><br>" +
-					"• 2025-01-01 = 二〇二五年正月初一<br>" +
-					"• 2025-06-01! = 二〇二五年閏六月初一<br>",
-				selectDateType: "選擇",
-				previousDate: "上一",
-				nextDate: "下一",
-				year: "年",
-				month: "月",
-				day: "日",
 				selectPresetColor: "選擇預設",
+			},
+			dateError: {
+				emptyDate: "日期不能為空，請輸入日期",
+			},
+			help: {
+				eventName: "事件的顯示名稱，不能為空",
+				eventDate:
+					"事件日期，約束使用的日期順序是YMD<br>" +
+					"<b>公曆</b>：<br>" +
+					"標準格式：2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01<br>" +
+					"舊格式：2025,01,01, 01,01<br>" +
+					"中文格式：2025年01月01日, 01月01日<br>" +
+					"<b>農曆</b>：<br>" +
+					"標準格式：2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01<br>" +
+					"舊格式：2025,6,1  2025,-6,1  6,1  -6,1<br>" +
+					"中文格式：2025年正月初一, 正月初一, 閏二月初一, 二〇二五年閏六月初一",
+				eventDateType:
+					"事件日期類型，自動推斷或手動選擇<br>" +
+					"<b>自動推斷</b>：根據輸入日期自動判斷是公曆，農曆或者農曆閏月<br>" +
+					"<b>公曆</b>：公曆日期<br>" +
+					"<b>農曆</b>：農曆日期<br>" +
+					"<b>農曆閏月</b>：農曆閏月日期，若閏月不存在會自動轉換為農曆日期",
+				eventEmoji: "事件圖標，目前支援使用emoji",
+				eventColor:
+					"事件顏色，可以選擇預設顏色或自定義顏色<br>" +
+					"預設顏色在外掛設定中新增",
+				eventHidden: "事件隱藏，不在年曆中顯示",
+				eventRemark: "事件備註",
+				customEventRepeat:
+					"自定義事件重複，每年都有的事件可以設定為重複",
+				holidayFoundDate: "節日起源日期，後續計劃會用於計算節慶週年",
 			},
 			holiday: {
 				name: "節日",
-				type: "類型",
 				foundDate: "節日起源時間",
-				builtin: "內置節日",
-				custom: "自定義節日",
 			},
 			birthday: {
 				name: "生日",
@@ -224,7 +238,7 @@ const translations: BaseMessage = {
 			},
 			customEvent: {
 				name: "自定義事件",
-				repeat: "重複",
+				repeat: "事件重複",
 			},
 		},
 	},
@@ -232,7 +246,7 @@ const translations: BaseMessage = {
 		openYearlyGlance: "打開年度概覽",
 		openEventManager: "打開事件管理",
 		addEvent: "添加事件",
-		reloadPlugin: "重載插件",
+		reloadPlugin: "重載外掛",
 	},
 	common: {
 		confirm: "確認",

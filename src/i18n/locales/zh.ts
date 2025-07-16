@@ -183,7 +183,7 @@ const translations: BaseMessage = {
 				eventDate: "事件日期",
 				eventDateType: "事件日期类型",
 				optional: "可选",
-				eventHidden: "隐藏",
+				eventHidden: "事件隐藏",
 				eventEmoji: "事件图标",
 				eventColor: "事件颜色",
 				eventRemark: "事件备注",
@@ -191,28 +191,42 @@ const translations: BaseMessage = {
 				cancel: "取消",
 				reset: "重置",
 				submit: "提交",
-				eventDateHelp:
-					"<b>格式：</b><br>" +
-					"YYYY-M-D 或 M-D<br>" +
-					"<b>公历：</b><br>" +
-					"• 2025-01-01 = 2025年1月1日<br>" +
-					"<b>农历：</b><br>" +
-					"• 2025-01-01 = 二〇二五年正月初一<br>" +
-					"• 2025-06-01! = 二〇二五年闰六月初一",
-				selectDateType: "选择",
-				previousDate: "上一",
-				nextDate: "下一",
-				year: "年",
-				month: "月",
-				day: "日",
 				selectPresetColor: "选择预设",
+			},
+			dateError: {
+				emptyDate: "日期不能为空，请输入日期",
+			},
+			help: {
+				eventName: "事件的显示名称，不能为空",
+				eventDate:
+					"事件日期，约束使用的日期顺序是YMD<br>" +
+					"<b>公历</b>：<br>" +
+					"标准格式：2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01<br>" +
+					"旧格式：2025,01,01, 01,01<br>" +
+					"中文格式：2025年01月01日, 01月01日<br>" +
+					"<b>农历</b>：<br>" +
+					"标准格式：2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01<br>" +
+					"旧格式：2025,6,1  2025,-6,1  6,1  -6,1<br>" +
+					"中文格式：2025年正月初一, 正月初一, 闰二月初一, 二〇二五年闰六月初一",
+				eventDateType:
+					"事件日期类型，自动推断或手动选择<br>" +
+					"<b>自动推断</b>：根据输入日期自动判断是公历，农历或者农历闰月<br>" +
+					"<b>公历</b>：公历日期<br>" +
+					"<b>农历</b>：农历日期<br>" +
+					"<b>农历闰月</b>：农历闰月日期，若闰月不存在会自动转换为农历日期",
+				eventEmoji: "事件图标，目前支持使用emoji",
+				eventColor:
+					"事件颜色，可以选择预设颜色或自定义颜色<br>" +
+					"预设颜色在插件设置中添加",
+				eventHidden: "事件隐藏，不在年历中显示",
+				eventRemark: "事件备注",
+				customEventRepeat:
+					"自定义事件重复，每年都有的事件可以设置为重复",
+				holidayFoundDate: "节日起源日期，后续计划会用于计算节庆周年",
 			},
 			holiday: {
 				name: "节日",
-				type: "类型",
 				foundDate: "节日起源时间",
-				builtin: "内置节日",
-				custom: "自定义节日",
 			},
 			birthday: {
 				name: "生日",
@@ -224,7 +238,7 @@ const translations: BaseMessage = {
 			},
 			customEvent: {
 				name: "自定义事件",
-				repeat: "重复",
+				repeat: "事件重复",
 			},
 		},
 	},

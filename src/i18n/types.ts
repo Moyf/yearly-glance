@@ -136,21 +136,25 @@ export type BaseMessage = {
 				cancel: string;
 				submit: string;
 				reset: string;
-				eventDateHelp: string;
-				selectDateType: string;
-				previousDate: string;
-				nextDate: string;
-				year: string;
-				month: string;
-				day: string;
 				selectPresetColor: string;
+			};
+			dateError: {
+				emptyDate: string;
+			};
+			help: {
+				eventName: string;
+				eventDate: string;
+				eventDateType: string;
+				eventEmoji: string;
+				eventColor: string;
+				eventHidden: string;
+				eventRemark: string;
+				customEventRepeat: string;
+				holidayFoundDate: string;
 			};
 			holiday: {
 				name: string;
-				type: string;
 				foundDate: string;
-				builtin: string;
-				custom: string;
 			};
 			birthday: {
 				name: string;

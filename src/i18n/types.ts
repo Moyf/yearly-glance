@@ -180,6 +180,7 @@ export type BaseMessage = {
 	command: {
 		openYearlyGlance: string;
 		openEventManager: string;
+		openSettingsView: string;
 		addEvent: string;
 		reloadPlugin: string;
 	};

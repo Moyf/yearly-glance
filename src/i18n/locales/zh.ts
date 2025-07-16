@@ -261,6 +261,7 @@ const translations: BaseMessage = {
 	command: {
 		openYearlyGlance: "打开年度概览",
 		openEventManager: "打开事件管理",
+		openSettingsView: "打开设置视图",
 		addEvent: "添加事件",
 		reloadPlugin: "重载插件",
 	},

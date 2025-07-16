@@ -263,6 +263,7 @@ const translations: BaseMessage = {
 	command: {
 		openYearlyGlance: "Open yearly glance",
 		openEventManager: "Open events manager",
+		openSettingsView: "Open settings view",
 		addEvent: "Add event",
 		reloadPlugin: "Reload plugin",
 	},

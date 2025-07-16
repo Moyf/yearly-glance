@@ -5,6 +5,28 @@
 	vertical-align: middle;
 }
 
+/* 禁用状态的样式 */
+.yg-tooltip-container.disabled {
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+.yg-tooltip-container.disabled .yg-tooltip-icon {
+	cursor: not-allowed;
+}
+
+/* 当tooltip包裹其他元素时的样式 */
+.yg-tooltip-container:not(:has(.yg-tooltip-icon)) {
+	margin-left: 0; /* 移除默认的左边距 */
+	cursor: help; /* 添加帮助光标 */
+}
+
+/* 如果浏览器不支持:has选择器，提供回退 */
+.yg-tooltip-container.has-children {
+	margin-left: 0;
+	cursor: help;
+}
+
 .yg-tooltip-icon {
 	color: var(--text-muted);
 	cursor: help;
@@ -31,4 +53,144 @@
 	transform: translateX(-25%);
 	margin-top: 8px;
 	line-height: 1.2;
+}
+
+/* Portal版本的tooltip样式 */
+.yg-tooltip-portal {
+	position: fixed;
+	z-index: 999999; /* 使用极高的z-index确保在所有内容之上 */
+	transform: translateX(-50%); /* 水平居中 */
+	margin-top: 0;
+	max-width: min(400px, 90vw); /* 响应式最大宽度，不超过屏幕90% */
+	min-width: 200px; /* 最小宽度 */
+	pointer-events: auto; /* 允许鼠标交互 */
+
+	/* 处理内容溢出 */
+	word-wrap: break-word;
+	word-break: break-word;
+	overflow-wrap: break-word;
+
+	/* 横向滚动支持 */
+	overflow-x: auto;
+	overflow-y: visible;
+
+	/* 添加一些视觉改进 */
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+	animation: tooltipFadeIn 0.2s ease-out;
+}
+
+/* 横向滚动条样式 */
+.yg-tooltip-portal::-webkit-scrollbar {
+	height: 6px;
+}
+
+.yg-tooltip-portal::-webkit-scrollbar-track {
+	background-color: var(--background-secondary);
+	border-radius: 3px;
+}
+
+.yg-tooltip-portal::-webkit-scrollbar-thumb {
+	background-color: var(--text-muted);
+	border-radius: 3px;
+	transition: background-color 0.2s ease;
+}
+
+.yg-tooltip-portal::-webkit-scrollbar-thumb:hover {
+	background-color: var(--text-normal);
+}
+
+/* Firefox滚动条样式 */
+.yg-tooltip-portal {
+	scrollbar-width: thin;
+	scrollbar-color: var(--text-muted) var(--background-secondary);
+}
+
+/* 移动设备和小屏幕优化 */
+@media (max-width: 768px) {
+	.yg-tooltip-portal {
+		max-width: min(350px, 95vw); /* 移动端使用更大的屏幕比例 */
+		min-width: 180px;
+		font-size: 0.75rem; /* 稍微减小字体大小 */
+		padding: 10px 14px; /* 减少内边距 */
+	}
+}
+
+@media (max-width: 480px) {
+	.yg-tooltip-portal {
+		max-width: 98vw; /* 超小屏幕几乎使用全屏宽度 */
+		min-width: 150px;
+		font-size: 0.7rem;
+		padding: 8px 12px;
+	}
+
+	/* 移动端滚动条样式调整 */
+	.yg-tooltip-portal::-webkit-scrollbar {
+		height: 4px;
+	}
+}
+
+/* 高分辨率屏幕优化 */
+@media (min-width: 1920px) {
+	.yg-tooltip-portal {
+		max-width: min(500px, 80vw); /* 大屏幕允许更宽的tooltip */
+		font-size: 0.85rem;
+		padding: 14px 18px;
+	}
+}
+
+/* 处理包含长文本或代码的tooltip */
+.yg-tooltip-portal.long-content {
+	white-space: pre-wrap; /* 保持换行和空格 */
+	max-height: 300px; /* 限制最大高度 */
+	overflow-y: auto; /* 如果内容太长，允许垂直滚动 */
+}
+
+/* 处理包含表格或代码的tooltip */
+.yg-tooltip-portal pre,
+.yg-tooltip-portal code {
+	white-space: pre;
+	overflow-x: auto;
+	font-family: var(--font-monospace, "Courier New", monospace);
+	font-size: 0.9em;
+	background-color: var(--background-secondary);
+	padding: 4px 6px;
+	border-radius: 3px;
+	margin: 2px 0;
+	display: inline-block;
+	max-width: 100%;
+}
+
+.yg-tooltip-portal table {
+	border-collapse: collapse;
+	width: 100%;
+	font-size: 0.85em;
+}
+
+.yg-tooltip-portal table td,
+.yg-tooltip-portal table th {
+	border: 1px solid var(--background-modifier-border);
+	padding: 4px 8px;
+	text-align: left;
+}
+
+.yg-tooltip-portal table th {
+	background-color: var(--background-secondary);
+	font-weight: 600;
+}
+
+/* 当tooltip显示在上方时 */
+.yg-tooltip-above {
+	transform: translateX(-50%) translateY(-100%);
+}
+
+/* Tooltip淡入动画 */
+@keyframes tooltipFadeIn {
+	from {
+		opacity: 0;
+		transform: translateX(-50%) translateY(-4px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(-50%) translateY(0);
+	}
 }

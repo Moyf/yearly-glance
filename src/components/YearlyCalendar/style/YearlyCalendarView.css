@@ -302,7 +302,7 @@
 
 	/* VAR——之后留着放到 StyleSettings 里 */
 	/* 日历需要2400才能显示下6列！ */
-	--max-screen-width: 2400px; 
+	--max-screen-width: 2400px;
 
 	--min-calendar-width: 375px;
 	--min-list-width: 220px;
@@ -319,10 +319,7 @@
 		display: grid;
 		grid-template-columns: repeat(
 			auto-fit,
-			minmax(
-				max(var(--min-view-width), var(--max-view-width)),
-				1fr
-			)
+			minmax(max(var(--min-view-width), var(--max-view-width)), 1fr)
 		) !important;
 		overflow-x: hidden;
 		gap: var(--gap-calendar);
@@ -838,11 +835,6 @@
 			text-wrap: wrap;
 		}
 	}
-
-	/* Tooltip styles */
-	.events .event.has-tooltip {
-		cursor: pointer;
-	}
 }
 
 /* ------- 响应式布局 ------- */
@@ -901,7 +893,6 @@
 			min-height: 28px;
 			padding: 2px;
 		}
-
 	}
 }
 
@@ -1014,8 +1005,8 @@
 }
 
 .yearly-glance-container {
-    container-type: inline-size;
-    container-name: yg-container ;
+	container-type: inline-size;
+	container-name: yg-container;
 }
 
 /* 超大屏幕 (>2200px) */
@@ -1063,7 +1054,6 @@
 /* 中大屏幕 (1501px-1800px) */
 @container yg-container (max-width: 1800px) {
 	.yearly-calendar {
-
 		.layout-2x6 .month-container {
 			flex: 0 0 calc(16.67% - 16px);
 			min-width: 170px;
@@ -1201,7 +1191,6 @@
 			min-height: 28px;
 			padding: 2px;
 		}
-
 	}
 }
 

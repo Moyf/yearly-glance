@@ -22,6 +22,7 @@ import { Select } from "../Base/Select";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
 import "./style/YearlyCalendarView.css";
+import { Tooltip } from "../Base/Tooltip";
 
 interface YearlyCalendarViewProps {
 	plugin: YearlyGlancePlugin;
@@ -232,24 +233,20 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 			onClick: (e) => handleEventTooltip(event),
 		};
 
-		// 添加 tooltip 属性
-		if (config.showEventTooltips) {
-			eventProps.title = event.text;
-			eventProps.className += " has-tooltip";
-		}
-
 		return (
-			<div
-				key={`${event.text}-${event.eventDate.isoDate}`}
-				{...eventProps}
-			>
-				<span className="event-emoji">
-					{!event.emoji
-						? EVENT_TYPE_DEFAULT[event.eventType].emoji
-						: event.emoji}
-				</span>
-				<span className="event-text">{event.text}</span>
-			</div>
+			<Tooltip text={event.text}>
+				<div
+					key={`${event.text}-${event.eventDate.isoDate}`}
+					{...eventProps}
+				>
+					<span className="event-emoji">
+						{!event.emoji
+							? EVENT_TYPE_DEFAULT[event.eventType].emoji
+							: event.emoji}
+					</span>
+					<span className="event-text">{event.text}</span>
+				</div>
+			</Tooltip>
 		);
 	};
 
@@ -493,19 +490,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 											showCustomEvents);
 
 									return (
-										<div
-											className={`legend-item ${
-												isEnabled
-													? "enabled"
-													: "disabled"
-											}`}
-											key={eventType}
-											onClick={() =>
-												toggleEventTypeVisibility(
-													eventType
-												)
-											}
-											title={
+										<Tooltip
+											text={
 												isEnabled
 													? `${t(
 															"view.yearlyGlance.actions.clickToHide"
@@ -519,27 +505,41 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 													  )}`
 											}
 										>
-											<span
-												className="legend-icon"
-												style={{
-													color: EVENT_TYPE_DEFAULT[
+											<div
+												className={`legend-item ${
+													isEnabled
+														? "enabled"
+														: "disabled"
+												}`}
+												key={eventType}
+												onClick={() =>
+													toggleEventTypeVisibility(
 														eventType
-													].color,
-													backgroundColor: `${EVENT_TYPE_DEFAULT[eventType].color}20`,
-												}}
-											>
-												{
-													EVENT_TYPE_DEFAULT[
-														eventType
-													].emoji
+													)
 												}
-											</span>
-											<span className="legend-text">
-												{t(
-													`view.yearlyGlance.legend.${eventType}` as TranslationKeys
-												)}
-											</span>
-										</div>
+											>
+												<span
+													className="legend-icon"
+													style={{
+														color: EVENT_TYPE_DEFAULT[
+															eventType
+														].color,
+														backgroundColor: `${EVENT_TYPE_DEFAULT[eventType].color}20`,
+													}}
+												>
+													{
+														EVENT_TYPE_DEFAULT[
+															eventType
+														].emoji
+													}
+												</span>
+												<span className="legend-text">
+													{t(
+														`view.yearlyGlance.legend.${eventType}` as TranslationKeys
+													)}
+												</span>
+											</div>
+										</Tooltip>
 									);
 								})}
 							</div>
@@ -588,118 +588,120 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 							{/* 日历视图专用按钮 */}
 							{viewType === "calendar" && (
 								<>
-									<button
-										className="actions-button emoji-position-button"
-										onClick={() =>
-											updateConfig({
-												...config,
-												emojiOnTop: !config.emojiOnTop,
-											})
-										}
-										title={t(
+									<Tooltip
+										text={t(
 											"view.yearlyGlance.actions.emojiOnTop"
 										)}
 									>
-										<span className="button-icon">
-											{config.emojiOnTop ? "⬆️" : "⬅️"}
-										</span>
-									</button>
-
-									<button
-										className="actions-button wrap-text-button"
-										onClick={() =>
-											updateConfig({
-												...config,
-												wrapEventText:
-													!config.wrapEventText,
-											})
-										}
-										title={t(
+										<button
+											className="actions-button emoji-position-button"
+											onClick={() =>
+												updateConfig({
+													...config,
+													emojiOnTop:
+														!config.emojiOnTop,
+												})
+											}
+										>
+											<span className="button-icon">
+												{config.emojiOnTop
+													? "⬆️"
+													: "⬅️"}
+											</span>
+										</button>
+									</Tooltip>
+									<Tooltip
+										text={t(
 											"view.yearlyGlance.actions.wrapText"
 										)}
 									>
-										<span className="button-icon">
-											{config.wrapEventText ? "🔤" : "✂️"}
-										</span>
-									</button>
-
-									<button
-										className={`actions-button show-tooltips-button ${
-											config.showEventTooltips
-												? "active"
-												: ""
-										}`}
-										onClick={() =>
-											updateConfig({
-												...config,
-												showEventTooltips:
-													!config.showEventTooltips,
-											})
-										}
-										title={t(
-											"view.yearlyGlance.actions.showTooltips"
-										)}
-									>
-										<span className="button-icon">💬</span>
-									</button>
+										<button
+											className="actions-button wrap-text-button"
+											onClick={() =>
+												updateConfig({
+													...config,
+													wrapEventText:
+														!config.wrapEventText,
+												})
+											}
+										>
+											<span className="button-icon">
+												{config.wrapEventText
+													? "🔤"
+													: "✂️"}
+											</span>
+										</button>
+									</Tooltip>
 								</>
 							)}
 
 							{viewType === "list" && (
 								<>
-									<button
-										className="actions-button limit-list-height-button"
-										onClick={() =>
-											updateConfig({
-												...config,
-												limitListHeight:
-													!limitListHeight,
-											})
-										}
-										title={t(
+									<Tooltip
+										text={t(
 											"view.yearlyGlance.actions.limitListHeight"
 										)}
 									>
-										<span className="button-icon">
-											{limitListHeight ? "🚧" : "♾️"}
-										</span>
-									</button>
-									<button
-										className="actions-button hide-empty-dates-button"
-										onClick={() =>
-											updateConfig({
-												...config,
-												hideEmptyDates: !hideEmptyDates,
-											})
-										}
-										title={t(
+										<button
+											className="actions-button limit-list-height-button"
+											onClick={() =>
+												updateConfig({
+													...config,
+													limitListHeight:
+														!limitListHeight,
+												})
+											}
+										>
+											<span className="button-icon">
+												{limitListHeight ? "🚧" : "♾️"}
+											</span>
+										</button>
+									</Tooltip>
+
+									<Tooltip
+										text={t(
 											"view.yearlyGlance.actions.hideEmptyDates"
 										)}
 									>
-										<span className="button-icon">
-											{hideEmptyDates ? "🙈" : "👀"}
-										</span>
-									</button>
+										<button
+											className="actions-button hide-empty-dates-button"
+											onClick={() =>
+												updateConfig({
+													...config,
+													hideEmptyDates:
+														!hideEmptyDates,
+												})
+											}
+										>
+											<span className="button-icon">
+												{hideEmptyDates ? "🙈" : "👀"}
+											</span>
+										</button>
+									</Tooltip>
 								</>
 							)}
 
 							{/* 事件管理 */}
-							<button
-								className="actions-button event-manager-button"
-								onClick={handleEventManager}
-								title={t("view.yearlyGlance.actions.manager")}
+							<Tooltip
+								text={t("view.yearlyGlance.actions.manager")}
 							>
-								<span className="button-icon">🗂️</span>
-							</button>
+								<button
+									className="actions-button event-manager-button"
+									onClick={handleEventManager}
+								>
+									<span className="button-icon">🗂️</span>
+								</button>
+							</Tooltip>
 
 							{/* 事件添加 */}
-							<button
-								className="actions-button event-form-button"
-								onClick={handleEventForm}
-								title={t("view.yearlyGlance.actions.form")}
-							>
-								<span className="button-icon">➕</span>
-							</button>
+							<Tooltip text={t("view.yearlyGlance.actions.form")}>
+								<button
+									className="actions-button event-form-button"
+									onClick={handleEventForm}
+								>
+									<span className="button-icon">➕</span>
+								</button>
+							</Tooltip>
 						</div>
 					</div>
 				</div>

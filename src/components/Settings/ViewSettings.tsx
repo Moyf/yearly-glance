@@ -4,6 +4,7 @@ import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
 import {
 	EVENT_FONT_SIZE_OPTIONS,
+	GREGORIAN_DISPLAY_FORMAT_OPTIONS,
 	LAYOUT_OPTIONS,
 	VIEW_TYPE_OPTIONS,
 } from "@/src/core/interfaces/Settings";
@@ -97,6 +98,21 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						checked={config.showLunarDay}
 						onChange={(value) =>
 							handleUpdateConfig({ showLunarDay: value })
+						}
+					/>
+				</SettingsItem>
+				{/* 公历日期显示格式 */}
+				<SettingsItem
+					name={t("setting.general.gregorianDisplayFormat.name")}
+					desc={t("setting.general.gregorianDisplayFormat.desc")}
+				>
+					<Select
+						options={GREGORIAN_DISPLAY_FORMAT_OPTIONS}
+						value={config.gregorianDisplayFormat}
+						onValueChange={(value) =>
+							handleUpdateConfig({
+								gregorianDisplayFormat: value,
+							})
 						}
 					/>
 				</SettingsItem>

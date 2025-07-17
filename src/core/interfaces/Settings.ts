@@ -1,7 +1,61 @@
+import { SelectOption } from "@/src/components/Base/Select";
+import { t } from "@/src/i18n/i18n";
+
 export const LAYOUT_OPTIONS = ["12x1", "1x12", "6x2", "2x6", "3x4", "4x3"];
-// export const LAYOUT_OPTIONS = ["12x1", "6x2", "2x6", "3x4", "4x3"];
 export const VIEW_TYPE_OPTIONS = ["calendar", "list"];
 export const EVENT_FONT_SIZE_OPTIONS = ["small", "medium", "large"];
+
+// 公历日期显示格式选项
+export const GREGORIAN_DISPLAY_FORMAT_OPTIONS: SelectOption[] = [
+	{
+		label: t("setting.general.gregorianDisplayFormat.options.iso"),
+		value: "YYYY-MM-DD",
+	},
+	{
+		label: t("setting.general.gregorianDisplayFormat.options.usSlash"),
+		value: "MM/DD/YYYY",
+	},
+	{
+		label: t("setting.general.gregorianDisplayFormat.options.euSlash"),
+		value: "DD/MM/YYYY",
+	},
+	{
+		label: t("setting.general.gregorianDisplayFormat.options.jpSlash"),
+		value: "YYYY/MM/DD",
+	},
+	{
+		label: t("setting.general.gregorianDisplayFormat.options.deDot"),
+		value: "DD.MM.YYYY",
+	},
+	{
+		label: t("setting.general.gregorianDisplayFormat.options.usDash"),
+		value: "MM-DD-YYYY",
+	},
+	{
+		label: t("setting.general.gregorianDisplayFormat.options.euDash"),
+		value: "DD-MM-YYYY",
+	},
+	{
+		label: t("setting.general.gregorianDisplayFormat.options.chinese"),
+		value: "YYYY年MM月DD日",
+	},
+	{
+		label: t("setting.general.gregorianDisplayFormat.options.enShortMdy"),
+		value: "MMM DD, YYYY",
+	},
+	{
+		label: t("setting.general.gregorianDisplayFormat.options.enShortDmy"),
+		value: "DD MMM YYYY",
+	},
+	{
+		label: t("setting.general.gregorianDisplayFormat.options.enFullMdy"),
+		value: "MMMM DD, YYYY",
+	},
+	{
+		label: t("setting.general.gregorianDisplayFormat.options.enFullDmy"),
+		value: "DD MMMM YYYY",
+	},
+];
 
 interface LayoutConfig {
 	rows: number;
@@ -58,6 +112,7 @@ export interface YearlyGlanceSettings {
 	emojiOnTop: boolean; // 是否在事件上方显示emoji（仅日历视图）
 	wrapEventText: boolean; // 是否换行显示事件文本
 	showEventTooltips: boolean; // 是否显示事件悬浮提示
+	gregorianDisplayFormat: (typeof GREGORIAN_DISPLAY_FORMAT_OPTIONS)[number]["value"]; // 公历显示格式
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -84,4 +139,5 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	emojiOnTop: false, // 默认在左侧显示emoji
 	wrapEventText: false,
 	showEventTooltips: false,
+	gregorianDisplayFormat: "YYYY-MM-DD", // 默认使用ISO格式
 };

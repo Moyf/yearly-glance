@@ -1,6 +1,38 @@
 import { CalendarType, ParseIsoDate } from "../interfaces/Date";
 import { LunarLibrary } from "./lunarLibrary";
 
+// 月份名称映射
+const MONTH_NAMES = {
+	short: [
+		"Jan",
+		"Feb",
+		"Mar",
+		"Apr",
+		"May",
+		"Jun",
+		"Jul",
+		"Aug",
+		"Sep",
+		"Oct",
+		"Nov",
+		"Dec",
+	],
+	full: [
+		"January",
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December",
+	],
+};
+
 export class IsoUtils {
 	/**
 	 * 解析ISO日期字符串
@@ -49,32 +81,109 @@ export class IsoUtils {
 	 * 格式化日期为字符串
 	 * @param isoDate ISO日期字符串
 	 * @param calendar 日期类型
+	 * @param format 显示格式 (仅对GREGORIAN类型有效)
 	 * @returns 格式化后的日期字符串
 	 */
-	static formatDate(isoDate: string, calendar: CalendarType): string {
+	static formatDate(
+		isoDate: string,
+		calendar: CalendarType,
+		format?: string
+	): string {
 		const { year, month, day } = this.parse(isoDate, calendar);
 
-		// TODO：根据设置的显示格式返回不同的日期字符串
-		// 目前仅返回标准的ISO格式或中文名称
-
-		if (year !== undefined) {
-			if (calendar === "GREGORIAN") {
-				return `${year}-${month}-${day}`;
-			} else if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {
-				const monthL = calendar === "LUNAR_LEAP" ? -month : month;
-				return LunarLibrary.getChineseName(year, monthL, day);
-			} else {
-				throw new Error(`Unsupported calendar type: ${calendar}`);
-			}
+		if (calendar === "GREGORIAN") {
+			return this.formatGregorianDate(
+				year,
+				month,
+				day,
+				format || "YYYY-MM-DD"
+			);
+		} else if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {
+			const monthL = calendar === "LUNAR_LEAP" ? -month : month;
+			return LunarLibrary.getChineseName(year, monthL, day);
 		} else {
-			if (calendar === "GREGORIAN") {
-				return `${month}-${day}`;
-			} else if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {
-				const monthL = calendar === "LUNAR_LEAP" ? -month : month;
-				return LunarLibrary.getChineseName(undefined, monthL, day);
-			} else {
-				throw new Error(`Unsupported calendar type: ${calendar}`);
+			throw new Error(`Unsupported calendar type: ${calendar}`);
+		}
+	}
+
+	/**
+	 * 格式化公历日期
+	 * @param year 年份 (可选)
+	 * @param month 月份
+	 * @param day 日期
+	 * @param format 格式字符串
+	 * @returns 格式化后的日期字符串
+	 */
+	private static formatGregorianDate(
+		year: number | undefined,
+		month: number,
+		day: number,
+		format: string
+	): string {
+		// 补零函数
+		const pad = (num: number, length: number = 2) =>
+			num.toString().padStart(length, "0");
+
+		// 如果没有年份，处理仅月日的格式
+		if (year === undefined) {
+			switch (format) {
+				case "YYYY-MM-DD":
+					return `${pad(month)}-${pad(day)}`;
+				case "YYYY/MM/DD":
+					return `${pad(month)}/${pad(day)}`;
+				case "YYYY年MM月DD日":
+					return `${pad(month)}月${pad(day)}日`;
+				case "MM/DD/YYYY":
+					return `${pad(month)}/${pad(day)}`;
+				case "DD/MM/YYYY":
+					return `${pad(day)}/${pad(month)}`;
+				case "DD.MM.YYYY":
+					return `${pad(day)}.${pad(month)}`;
+				case "MM-DD-YYYY":
+					return `${pad(month)}-${pad(day)}`;
+				case "DD-MM-YYYY":
+					return `${pad(day)}-${pad(month)}`;
+				case "MMM DD, YYYY":
+					return `${MONTH_NAMES.short[month - 1]} ${pad(day)}`;
+				case "DD MMM YYYY":
+					return `${pad(day)} ${MONTH_NAMES.short[month - 1]}`;
+				case "MMMM DD, YYYY":
+					return `${MONTH_NAMES.full[month - 1]} ${pad(day)}`;
+				case "DD MMMM YYYY":
+					return `${pad(day)} ${MONTH_NAMES.full[month - 1]}`;
+				default:
+					return `${pad(month)}-${pad(day)}`;
 			}
+		}
+
+		// 完整日期格式化
+		switch (format) {
+			case "YYYY-MM-DD":
+				return `${year}-${pad(month)}-${pad(day)}`;
+			case "MM/DD/YYYY":
+				return `${pad(month)}/${pad(day)}/${year}`;
+			case "DD/MM/YYYY":
+				return `${pad(day)}/${pad(month)}/${year}`;
+			case "YYYY/MM/DD":
+				return `${year}/${pad(month)}/${pad(day)}`;
+			case "DD.MM.YYYY":
+				return `${pad(day)}.${pad(month)}.${year}`;
+			case "MM-DD-YYYY":
+				return `${pad(month)}-${pad(day)}-${year}`;
+			case "DD-MM-YYYY":
+				return `${pad(day)}-${pad(month)}-${year}`;
+			case "YYYY年MM月DD日":
+				return `${year}年${pad(month)}月${pad(day)}日`;
+			case "MMM DD, YYYY":
+				return `${MONTH_NAMES.short[month - 1]} ${pad(day)}, ${year}`;
+			case "DD MMM YYYY":
+				return `${pad(day)} ${MONTH_NAMES.short[month - 1]} ${year}`;
+			case "MMMM DD, YYYY":
+				return `${MONTH_NAMES.full[month - 1]} ${pad(day)}, ${year}`;
+			case "DD MMMM YYYY":
+				return `${pad(day)} ${MONTH_NAMES.full[month - 1]} ${year}`;
+			default:
+				return `${year}-${pad(month)}-${pad(day)}`;
 		}
 	}
 }

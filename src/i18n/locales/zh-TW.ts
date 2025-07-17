@@ -12,8 +12,8 @@ const translations: BaseMessage = {
 				desc: "自訂時使用{{year}}占位符才會顯示當前年份，留空則使用預設標題",
 			},
 			layout: {
-				name: "布局",
-				desc: "布局方式，行x列",
+				name: "佈局",
+				desc: "佈局方式，行x列",
 			},
 			viewType: {
 				name: "視圖類型",
@@ -24,16 +24,16 @@ const translations: BaseMessage = {
 				},
 			},
 			showWeekdays: {
-				name: "顯示週幾",
-				desc: "在視圖中顯示週幾",
+				name: "顯示星期",
+				desc: "在視圖中顯示星期",
 			},
 			highlightToday: {
-				name: "高亮今天",
-				desc: "在視圖中高亮今天",
+				name: "強調今天",
+				desc: "在視圖中強調今天",
 			},
 			highlightWeekends: {
-				name: "高亮週末",
-				desc: "在視圖中高亮週末",
+				name: "強調週末",
+				desc: "在視圖中強調週末",
 			},
 			showLegend: {
 				name: "顯示圖例",
@@ -44,8 +44,8 @@ const translations: BaseMessage = {
 				desc: "在清單視圖中限制每個月的清單高度",
 			},
 			eventFontSize: {
-				name: "事件文本大小",
-				desc: "設置事件文本的字體大小",
+				name: "事件文字大小",
+				desc: "設定事件文字的字型大小",
 				options: {
 					small: "小",
 					medium: "中",
@@ -66,7 +66,7 @@ const translations: BaseMessage = {
 			},
 			mondayFirst: {
 				name: "週一作為一週的第一天",
-				desc: "設置週一（而不是週日）作為一週的第一天",
+				desc: "設定週一（而不是週日）作為一週的第一天",
 			},
 			showTooltips: {
 				name: "顯示事件懸浮提示",
@@ -82,12 +82,30 @@ const translations: BaseMessage = {
 			},
 			showDebugInfo: {
 				name: "顯示偵錯資訊",
-				desc: "在控制台中顯示偵錯資訊",
+				desc: "在主控台中顯示偵錯資訊",
 			},
 			presetColors: {
 				name: "預設顏色",
 				desc: "各事件的配色預設選項",
 				newColor: "新顏色",
+			},
+			gregorianDisplayFormat: {
+				name: "公曆顯示格式",
+				desc: "公曆日期的全域顯示格式",
+				options: {
+					iso: "ISO標準格式(1949-10-01)",
+					usSlash: "美式格式(01/10/1949)",
+					euSlash: "歐式格式(10/01/1949)",
+					jpSlash: "日式格式(1949/10/01)",
+					deDot: "德式格式(01.10.1949)",
+					usDash: "美式連字符(01-10-1949)",
+					euDash: "歐式連字符(10-01-1949)",
+					chinese: "中文格式(1949年10月01日)",
+					enShortMdy: "英文月日年格式(Oct 01, 1949)",
+					enShortDmy: "英文日月年格式(01 Oct 1949)",
+					enFullMdy: "完整英文月日年格式(October 1, 1949)",
+					enFullDmy: "完整英文日月年格式(1 October 1949)",
+				},
 			},
 		},
 		events: {
@@ -134,7 +152,7 @@ const translations: BaseMessage = {
 			actions: {
 				clickToShow: "點擊顯示",
 				clickToHide: "點擊隱藏",
-				form: "添加事件",
+				form: "新增事件",
 				manager: "開啟事件管理器",
 				limitListHeight: "是否限制清單高度",
 				hideEmptyDates: "是否隱藏空日期",
@@ -155,7 +173,7 @@ const translations: BaseMessage = {
 				lunar_leap: "農曆閏月",
 			},
 			actions: {
-				add: "添加新事件",
+				add: "新增事件",
 				search: "搜尋事件...",
 				clearSearch: "清除搜尋",
 				delete: "刪除事件",
@@ -173,18 +191,18 @@ const translations: BaseMessage = {
 			},
 			empty: {
 				text: "暫無事件",
-				subtext: "點擊上方「添加新事件」按鈕建立",
+				subtext: "點擊上方「新增事件」按鈕建立",
 			},
 			form: {
 				edit: "編輯",
-				add: "添加",
+				add: "新增",
 				eventType: "事件類型",
 				eventName: "事件名稱",
 				eventDate: "事件日期",
 				eventDateType: "日期類型",
 				optional: "可選",
 				eventHidden: "隱藏",
-				eventEmoji: "圖標",
+				eventEmoji: "圖示",
 				eventColor: "顏色",
 				eventRemark: "備註",
 				save: "儲存",
@@ -250,7 +268,7 @@ const translations: BaseMessage = {
 				nextBirthday: "下一次生日",
 				animal: "生肖",
 				zodiac: "星座",
-				noYear: "需補全年份數據",
+				noYear: "需補全年份資料",
 			},
 			customEvent: {
 				name: "自訂事件",
@@ -261,9 +279,9 @@ const translations: BaseMessage = {
 	command: {
 		openYearlyGlance: "開啟年度概覽",
 		openEventManager: "開啟事件管理",
-		openSettingsView: "開啟設定視圖",
-		addEvent: "添加事件",
-		reloadPlugin: "重新載入外掛",
+		openSettingsView: "開啟設定檢視",
+		addEvent: "新增事件",
+		reloadPlugin: "重新載入外掛程式",
 	},
 	common: {
 		confirm: "確認",
@@ -271,8 +289,8 @@ const translations: BaseMessage = {
 	},
 	data: {
 		sampleEvent: {
-			text: "安裝 YG 外掛",
-			remark: "歡迎使用 Yearly Glance 外掛！這是一個示例事件。請根據需要隱藏或刪除。",
+			text: "安裝 YG 外掛程式",
+			remark: "歡迎使用 Yearly Glance 外掛程式！這是一個範例事件。請根據需要隱藏或刪除。",
 		},
 		month: {
 			jan: "一月",
@@ -312,7 +330,7 @@ const translations: BaseMessage = {
 			pig: "豬",
 		},
 		zodiac: {
-			aries: "白羊座",
+			aries: "牡羊座",
 			taurus: "金牛座",
 			gemini: "雙子座",
 			cancer: "巨蟹座",

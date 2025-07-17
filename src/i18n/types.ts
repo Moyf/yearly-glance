@@ -52,6 +52,22 @@ export type BaseMessage = {
 			presetColors: SettingsItem<{
 				newColor: string;
 			}>;
+			gregorianDisplayFormat: SettingsItem<{
+				options: {
+					iso: string;
+					usSlash: string;
+					euSlash: string;
+					jpSlash: string;
+					deDot: string;
+					usDash: string;
+					euDash: string;
+					chinese: string;
+					enShortMdy: string;
+					enShortDmy: string;
+					enFullMdy: string;
+					enFullDmy: string;
+				};
+			}>;
 		}>;
 		events: IBaseSettingsItem;
 		group: {

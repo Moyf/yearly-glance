@@ -1,34 +1,65 @@
 .yg-nav-tabs {
 	display: flex;
-	gap: 2px;
-	background-color: var(--background-modifier-border);
-	padding: 3px;
-	border-radius: 8px;
-	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+	gap: 4px;
+	background: linear-gradient(
+		145deg,
+		var(--background-secondary) 0%,
+		var(--background-modifier-border) 100%
+	);
+	padding: 6px;
+	border-radius: 12px;
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08),
+		0 2px 8px rgba(0, 0, 0, 0.04);
 	width: fit-content;
+	border: 1px solid var(--background-modifier-border);
+	position: relative;
+	overflow: hidden;
 
 	.yg-nav-tab {
 		display: flex;
 		align-items: center;
 		gap: 8px;
-		padding: 6px 12px;
-		border-radius: 6px;
+		padding: 10px 16px;
+		border-radius: 8px;
 		cursor: pointer;
 		font-size: 14px;
 		font-weight: 500;
 		color: var(--text-muted);
-		transition: all 0.2s ease;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		user-select: none;
+		position: relative;
+		background: transparent;
+
+		&::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: var(--color-accent);
+			opacity: 0;
+			border-radius: inherit;
+			transition: opacity 0.3s ease;
+		}
 
 		&:hover {
-			background-color: var(--background-modifier-hover);
+			background: var(--background-modifier-hover);
 			color: var(--text-normal);
+			transform: translateY(-1px);
 		}
 
 		&.active {
-			background-color: var(--background-primary);
+			background: var(--background-primary);
 			color: var(--text-normal);
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
+				0 2px 6px rgba(0, 0, 0, 0.1);
+			transform: translateY(-1px);
+			z-index: 1;
+
+			&::before {
+				opacity: 0.1;
+			}
 
 			.yg-nav-tab-count {
 				background-color: var(--interactive-accent);

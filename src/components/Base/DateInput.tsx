@@ -13,6 +13,7 @@ interface DateInputProps {
 	required?: boolean;
 	placeholder?: string;
 	className?: string;
+	gregorianDisplayFormat: string; // 公历显示格式
 }
 
 export const DateInput: React.FC<DateInputProps> = ({
@@ -22,6 +23,7 @@ export const DateInput: React.FC<DateInputProps> = ({
 	required = false,
 	placeholder,
 	className = "",
+	gregorianDisplayFormat,
 }) => {
 	const [preview, setPreview] = React.useState<{
 		success: boolean;
@@ -60,7 +62,7 @@ export const DateInput: React.FC<DateInputProps> = ({
 		isoDate: string,
 		calendar: CalendarType
 	): string => {
-		return IsoUtils.formatDate(isoDate, calendar);
+		return IsoUtils.formatDate(isoDate, calendar, gregorianDisplayFormat);
 	};
 
 	// 生成容器的CSS类名

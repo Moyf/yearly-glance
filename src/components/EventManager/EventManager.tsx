@@ -39,6 +39,8 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 	const [sortDirection, setSortDirection] =
 		React.useState<SortDirection>("asc");
 
+	const gregorianDisplayFormat = plugin.getConfig().gregorianDisplayFormat;
+
 	// 订阅事件总线，处理搜索请求
 	React.useEffect(() => {
 		// 订阅搜索请求事件
@@ -338,6 +340,7 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 					sortField={sortField}
 					sortDirection={sortDirection}
 					isSearchMode={isSearching}
+					gregorianDisplayFormat={gregorianDisplayFormat}
 				/>
 			</div>
 		</div>

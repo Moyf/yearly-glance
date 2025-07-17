@@ -15,7 +15,10 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
-import { EventFormModal } from "./components/EventForm/EventFormModal";
+import {
+	EventFormModal,
+	EventFormModalProps,
+} from "./components/EventForm/EventFormModal";
 import { YearlyGlanceBus } from "./core/hook/useYearlyGlanceConfig";
 import { t } from "./i18n/i18n";
 import { generateUUID } from "./core/utils/uuid";
@@ -219,9 +222,7 @@ export default class YearlyGlancePlugin extends Plugin {
 		event: Partial<CustomEvent | Birthday | Holiday> = {},
 		isEditing: boolean = false,
 		allowTypeChange: boolean = false,
-		props?: {
-			date?: string;
-		}
+		props?: EventFormModalProps
 	) {
 		new EventFormModal(
 			this,

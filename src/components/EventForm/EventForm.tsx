@@ -253,6 +253,9 @@ export const EventForm: React.FC<EventFormProps> = ({
 						onChange={(value) =>
 							handleFieldChange("userInputDate", value)
 						}
+						gregorianDisplayFormat={
+							settings.config.gregorianDisplayFormat
+						}
 						required
 					/>
 				</div>

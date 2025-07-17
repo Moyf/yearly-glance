@@ -16,6 +16,7 @@ interface EventItemProps {
 	onEdit: () => void;
 	onDelete: () => void;
 	eventType: EventType;
+	gregorianDisplayFormat: string; // 公历显示格式
 }
 
 // 事件列表项组件
@@ -24,6 +25,7 @@ export const EventItem: React.FC<EventItemProps> = ({
 	onEdit,
 	onDelete,
 	eventType,
+	gregorianDisplayFormat,
 }) => {
 	// 获取事件特定信息
 	const getEventSpecificInfo = () => {
@@ -169,7 +171,7 @@ export const EventItem: React.FC<EventItemProps> = ({
 	};
 
 	const displayDate = (isoDate: string, calendar: CalendarType) => {
-		return IsoUtils.formatDate(isoDate, calendar);
+		return IsoUtils.formatDate(isoDate, calendar, gregorianDisplayFormat);
 	};
 
 	return (

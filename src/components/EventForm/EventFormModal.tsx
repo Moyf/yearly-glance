@@ -14,6 +14,10 @@ import { EventForm } from "./EventForm";
 import { EventCalculator } from "@/src/core/utils/eventCalculator";
 import "./style/EventFormModal.css";
 
+export interface EventFormModalProps {
+	date?: string; // 可选的日期属性
+}
+
 export class EventFormModal extends Modal {
 	root: Root | null = null;
 	plugin: YearlyGlancePlugin;
@@ -22,9 +26,7 @@ export class EventFormModal extends Modal {
 	isEditing: boolean;
 	allowTypeChange: boolean;
 	settings: YearlyGlanceConfig;
-	props: {
-		date?: string; // 可选的日期属性
-	};
+	props: EventFormModalProps;
 
 	constructor(
 		plugin: YearlyGlancePlugin,
@@ -32,7 +34,7 @@ export class EventFormModal extends Modal {
 		eventType: EventType,
 		isEditing: boolean,
 		allowTypeChange: boolean,
-		props: { date?: string } = {}
+		props: EventFormModalProps = {}
 	) {
 		super(plugin.app);
 		this.plugin = plugin;

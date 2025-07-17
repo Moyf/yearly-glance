@@ -17,6 +17,7 @@ interface EventListProps {
 	sortField: SortField;
 	sortDirection: SortDirection;
 	isSearchMode?: boolean; // 是否为搜索模式
+	gregorianDisplayFormat: string; // 公历显示格式
 }
 
 // 事件列表组件
@@ -28,6 +29,7 @@ export const EventList: React.FC<EventListProps> = ({
 	sortField,
 	sortDirection,
 	isSearchMode = false, // 默认为非搜索模式
+	gregorianDisplayFormat,
 }) => {
 	if (events.length === 0) {
 		return (
@@ -100,6 +102,9 @@ export const EventList: React.FC<EventListProps> = ({
 									onEdit={() => onEdit(event)}
 									onDelete={() => onDelete(event)}
 									eventType="holiday"
+									gregorianDisplayFormat={
+										gregorianDisplayFormat
+									}
 								/>
 							))}
 						</div>
@@ -124,6 +129,9 @@ export const EventList: React.FC<EventListProps> = ({
 									onEdit={() => onEdit(event)}
 									onDelete={() => onDelete(event)}
 									eventType="birthday"
+									gregorianDisplayFormat={
+										gregorianDisplayFormat
+									}
 								/>
 							))}
 						</div>
@@ -150,6 +158,9 @@ export const EventList: React.FC<EventListProps> = ({
 									onEdit={() => onEdit(event)}
 									onDelete={() => onDelete(event)}
 									eventType="customEvent"
+									gregorianDisplayFormat={
+										gregorianDisplayFormat
+									}
 								/>
 							))}
 						</div>
@@ -169,6 +180,7 @@ export const EventList: React.FC<EventListProps> = ({
 						onEdit={() => onEdit(event)}
 						onDelete={() => onDelete(event)}
 						eventType={eventType}
+						gregorianDisplayFormat={gregorianDisplayFormat}
 					/>
 				))}
 			</div>

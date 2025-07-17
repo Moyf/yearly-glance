@@ -31,6 +31,8 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 }) => {
 	const eventType = event.eventType;
 
+	const gregorianDisplayFormat = plugin.getConfig().gregorianDisplayFormat;
+
 	// 编辑事件
 	const handleEditEvent = () => {
 		// 将类型从 CalendarEvent.type 转换为 EventType
@@ -105,7 +107,8 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 					<span className="tooltip-value">
 						{IsoUtils.formatDate(
 							event.eventDate.isoDate,
-							event.eventDate.calendar
+							event.eventDate.calendar,
+							gregorianDisplayFormat
 						)}
 					</span>
 				</div>

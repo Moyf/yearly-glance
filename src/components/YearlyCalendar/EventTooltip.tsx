@@ -4,7 +4,6 @@ import { Modal } from "obsidian";
 import YearlyGlancePlugin from "@/src/main";
 import {
 	Birthday,
-	CustomEvent,
 	EVENT_TYPE_DEFAULT,
 	EventType,
 	Holiday,

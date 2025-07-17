@@ -3,13 +3,6 @@ import YearlyGlancePlugin from "@/src/main";
 import { t } from "@/src/i18n/i18n";
 import { YearlyCalendar } from "@/src/components/YearlyCalendar/YearlyCalendar";
 
-// 扩展 ItemView 类型声明，添加 containerEl 属性
-// declare module "obsidian" {
-// 	interface ItemView {
-// 		containerEl: HTMLElement;
-// 	}
-// }
-
 // 定义视图类型
 export const VIEW_TYPE_YEARLY_GLANCE = "yearly-glance-view";
 

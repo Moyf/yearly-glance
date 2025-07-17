@@ -9,10 +9,14 @@ export const VIEW_TYPE_SETTINGS = "yearly-glance-settings";
 export class SettingsView extends ItemView {
 	plugin: YearlyGlancePlugin;
 	root: Root | null = null;
+	pluginSettingsContainer: HTMLElement;
 
 	constructor(leaf: WorkspaceLeaf, plugin: YearlyGlancePlugin) {
 		super(leaf);
 		this.plugin = plugin;
+		this.pluginSettingsContainer = this.contentEl.createDiv({
+			cls: "yg-settings-view",
+		});
 	}
 
 	getViewType(): string {
@@ -30,12 +34,13 @@ export class SettingsView extends ItemView {
 	async onOpen() {
 		await super.onOpen();
 
-		const { containerEl } = this;
-		containerEl.empty();
-		containerEl.addClass("yg-settings-view");
+		this.pluginSettingsContainer.empty();
+		const settingsView = this.pluginSettingsContainer.createDiv({
+			cls: "yg-settings-view-container",
+		});
 
 		if (!this.root) {
-			this.root = createRoot(containerEl);
+			this.root = createRoot(settingsView);
 		}
 
 		this.root.render(

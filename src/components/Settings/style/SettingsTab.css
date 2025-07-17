@@ -31,12 +31,24 @@
 
 /* 设置块 */
 .yg-settings-block {
-	margin: 0.5rem 0 1rem;
-	border: none;
-	background: var(--background-secondary);
-	border-radius: 12px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-	transition: all 0.2s ease;
+	margin: 0.75rem 0 1.5rem;
+	border: 1px solid var(--background-modifier-border);
+	background: var(--background-primary);
+	border-radius: 16px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.08);
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	overflow: hidden;
+	position: relative;
+}
+
+.yg-settings-block:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.12);
+	border-color: var(--color-accent);
+}
+
+.yg-settings-block:hover::before {
+	opacity: 0.8;
 }
 .yg-settings-block.is-collapsible {
 	flex-direction: column;
@@ -197,7 +209,19 @@
 }
 
 .yg-settings-view {
-	padding: 1rem;
+	width: 100%;
 	height: 100%;
 	overflow-y: auto;
+	padding: 0;
+	background: var(--background-primary);
+	position: relative;
+}
+
+.yg-settings-view-container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 2rem 1.5rem;
+	min-height: 100%;
+	background: var(--background-primary);
+	position: relative;
 }

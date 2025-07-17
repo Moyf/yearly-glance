@@ -37,12 +37,9 @@
 	border-radius: 16px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.08);
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	overflow: hidden;
-	position: relative;
 }
 
 .yg-settings-block:hover {
-	transform: translateY(-2px);
 	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.12);
 	border-color: var(--color-accent);
 }

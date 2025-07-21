@@ -8,7 +8,7 @@
 /* 禁用状态的样式 */
 .yg-tooltip-container.disabled {
 	cursor: not-allowed;
-	opacity: 0.6;
+	/* opacity: 0.6; */
 }
 
 .yg-tooltip-container.disabled .yg-tooltip-icon {
@@ -61,8 +61,9 @@
 	z-index: 999999; /* 使用极高的z-index确保在所有内容之上 */
 	transform: translateX(-50%); /* 水平居中 */
 	margin-top: 0;
+	padding: 8px;
+	width: max-content;
 	max-width: min(400px, 90vw); /* 响应式最大宽度，不超过屏幕90% */
-	min-width: 200px; /* 最小宽度 */
 	pointer-events: auto; /* 允许鼠标交互 */
 
 	/* 处理内容溢出 */
@@ -76,7 +77,6 @@
 
 	/* 添加一些视觉改进 */
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-	animation: tooltipFadeIn 0.2s ease-out;
 }
 
 /* 横向滚动条样式 */
@@ -109,18 +109,14 @@
 @media (max-width: 768px) {
 	.yg-tooltip-portal {
 		max-width: min(350px, 95vw); /* 移动端使用更大的屏幕比例 */
-		min-width: 180px;
 		font-size: 0.75rem; /* 稍微减小字体大小 */
-		padding: 10px 14px; /* 减少内边距 */
 	}
 }
 
 @media (max-width: 480px) {
 	.yg-tooltip-portal {
 		max-width: 98vw; /* 超小屏幕几乎使用全屏宽度 */
-		min-width: 150px;
 		font-size: 0.7rem;
-		padding: 8px 12px;
 	}
 
 	/* 移动端滚动条样式调整 */
@@ -134,7 +130,6 @@
 	.yg-tooltip-portal {
 		max-width: min(500px, 80vw); /* 大屏幕允许更宽的tooltip */
 		font-size: 0.85rem;
-		padding: 14px 18px;
 	}
 }
 
@@ -181,16 +176,4 @@
 /* 当tooltip显示在上方时 */
 .yg-tooltip-above {
 	transform: translateX(-50%) translateY(-100%);
-}
-
-/* Tooltip淡入动画 */
-@keyframes tooltipFadeIn {
-	from {
-		opacity: 0;
-		transform: translateX(-50%) translateY(-4px);
-	}
-	to {
-		opacity: 1;
-		transform: translateX(-50%) translateY(0);
-	}
 }

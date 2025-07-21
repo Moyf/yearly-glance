@@ -176,11 +176,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		plugin.openEventForm("customEvent", {}, false, true);
 	};
 	const handleEventTooltip = (event: CalendarEvent) => {
-		if (showTooltips) {
-			new EventTooltip(plugin, event).open();
-		} else {
-			return;
-		}
+		new EventTooltip(plugin, event).open();
 	};
 
 	const handleAddEventInDay = (day: CalendarDay) => {
@@ -234,7 +230,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		};
 
 		return (
-			<Tooltip text={event.text}>
+			<Tooltip text={event.text} disabled={!showTooltips}>
 				<div
 					key={`${event.text}-${event.eventDate.isoDate}`}
 					{...eventProps}
@@ -680,6 +676,27 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 									</Tooltip>
 								</>
 							)}
+
+							{/* 显示工具提示 */}
+							<Tooltip
+								text={t(
+									"view.yearlyGlance.actions.showTooltips"
+								)}
+							>
+								<button
+									className={`actions-button show-tooltips-button ${
+										config.showTooltips ? "active" : ""
+									}`}
+									onClick={() =>
+										updateConfig({
+											...config,
+											showTooltips: !config.showTooltips,
+										})
+									}
+								>
+									<span className="button-icon">💬</span>
+								</button>
+							</Tooltip>
 
 							{/* 事件管理 */}
 							<Tooltip

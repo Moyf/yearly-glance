@@ -111,7 +111,6 @@ export interface YearlyGlanceSettings {
 	// 日历视图设置
 	emojiOnTop: boolean; // 是否在事件上方显示emoji（仅日历视图）
 	wrapEventText: boolean; // 是否换行显示事件文本
-	showEventTooltips: boolean; // 是否显示事件悬浮提示
 	gregorianDisplayFormat: (typeof GREGORIAN_DISPLAY_FORMAT_OPTIONS)[number]["value"]; // 公历显示格式
 }
 
@@ -138,6 +137,5 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	presetColors: DEFAULT_PRESET_COLORS,
 	emojiOnTop: false, // 默认在左侧显示emoji
 	wrapEventText: false,
-	showEventTooltips: false,
 	gregorianDisplayFormat: "YYYY-MM-DD", // 默认使用ISO格式
 };

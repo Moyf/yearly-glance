@@ -202,11 +202,15 @@ export type BaseMessage = {
 		settingsTab: {
 			name: string;
 		};
+		dataPortView: {
+			name: string;
+		};
 	};
 	command: {
 		openYearlyGlance: string;
 		openEventManager: string;
 		openSettingsView: string;
+		openDataPortManager: string;
 		addEvent: string;
 		reloadPlugin: string;
 	};

@@ -275,6 +275,9 @@ const translations: BaseMessage = {
 				repeat: "重複",
 			},
 		},
+		settingsTab: {
+			name: "設定面板",
+		},
 	},
 	command: {
 		openYearlyGlance: "開啟年度概覽",

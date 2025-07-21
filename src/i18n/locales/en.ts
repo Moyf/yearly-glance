@@ -277,6 +277,9 @@ const translations: BaseMessage = {
 				repeat: "Repeat",
 			},
 		},
+		settingsTab: {
+			name: "Settings panel",
+		},
 	},
 	command: {
 		openYearlyGlance: "Open yearly glance",

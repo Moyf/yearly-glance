@@ -3,8 +3,9 @@ import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import YearlyGlancePlugin from "../main";
 import { ViewSettings } from "../components/Settings/ViewSettings";
+import { t } from "../i18n/i18n";
 
-export const VIEW_TYPE_SETTINGS = "yearly-glance-settings";
+export const VIEW_TYPE_SETTINGS = "yearly-glance-settings-view";
 
 export class SettingsView extends ItemView {
 	plugin: YearlyGlancePlugin;
@@ -28,7 +29,7 @@ export class SettingsView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return "YG SettingTab";
+		return t("view.settingsTab.name");
 	}
 
 	async onOpen() {

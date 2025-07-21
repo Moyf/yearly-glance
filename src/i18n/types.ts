@@ -192,6 +192,9 @@ export type BaseMessage = {
 				repeat: string;
 			};
 		};
+		settingsTab: {
+			name: string;
+		};
 	};
 	command: {
 		openYearlyGlance: string;

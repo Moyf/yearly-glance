@@ -290,11 +290,15 @@ const translations: BaseMessage = {
 		settingsTab: {
 			name: "Settings panel",
 		},
+		dataPortView: {
+			name: "Data management center",
+		},
 	},
 	command: {
 		openYearlyGlance: "Open yearly glance",
 		openEventManager: "Open events manager",
 		openSettingsView: "Open settings view",
+		openDataPortManager: "Open data management center",
 		addEvent: "Add event",
 		reloadPlugin: "Reload plugin",
 	},

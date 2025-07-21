@@ -288,11 +288,15 @@ const translations: BaseMessage = {
 		settingsTab: {
 			name: "設定面板",
 		},
+		dataPortView: {
+			name: "數據管理中心",
+		},
 	},
 	command: {
 		openYearlyGlance: "開啟年度概覽",
 		openEventManager: "開啟事件管理",
 		openSettingsView: "開啟設定檢視",
+		openDataPortManager: "開啟數據管理中心",
 		addEvent: "新增事件",
 		reloadPlugin: "重新載入外掛程式",
 	},

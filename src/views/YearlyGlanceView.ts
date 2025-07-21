@@ -16,7 +16,7 @@ export class YearlyGlanceView extends ItemView {
 		super(leaf);
 		this.plugin = plugin;
 		this.calendarContainer = this.contentEl.createEl("div", {
-			cls: "yearly-glance-container",
+			cls: "yg-view",
 		});
 	}
 

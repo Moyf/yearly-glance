@@ -48,6 +48,12 @@
 	--yg-event-text-color: #eee;
 }
 
+/* 年视图 */
+.yg-view {
+	container-type: inline-size;
+	container-name: yg-container;
+}
+
 /* ------- 核心容器样式 ------- */
 
 .yearly-calendar {
@@ -1002,11 +1008,6 @@
 			display: none;
 		}
 	}
-}
-
-.yearly-glance-container {
-	container-type: inline-size;
-	container-name: yg-container;
 }
 
 /* 超大屏幕 (>2200px) */

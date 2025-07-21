@@ -16,7 +16,7 @@ export class EventManagerView extends ItemView {
 		super(leaf);
 		this.plugin = plugin;
 		this.eventManagerContainer = this.contentEl.createEl("div", {
-			cls: "yearly-glance-event-container",
+			cls: "yg-event-view",
 		});
 	}
 

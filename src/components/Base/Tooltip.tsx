@@ -10,11 +10,11 @@ interface TooltipProps {
 	disabled?: boolean; // 是否禁用tooltip
 }
 
-export const Tooltip: React.FC<TooltipProps> = ({ 
-	text, 
-	children, 
-	trigger = "hover", 
-	disabled = false 
+export const Tooltip: React.FC<TooltipProps> = ({
+	text,
+	children,
+	trigger = "hover",
+	disabled = false,
 }) => {
 	const [isVisible, setIsVisible] = React.useState(false);
 	const [position, setPosition] = React.useState({
@@ -78,7 +78,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
 	const showTooltip = () => {
 		if (disabled) return;
-		
+
 		if (timeoutRef.current) {
 			clearTimeout(timeoutRef.current);
 		}
@@ -88,15 +88,15 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
 	const hideTooltip = () => {
 		if (disabled) return;
-		
-		timeoutRef.current = setTimeout(() => {
-			setIsVisible(false);
-		}, 100); // 短暂延迟，允许鼠标移动到tooltip上
+
+		// timeoutRef.current = setTimeout(() => {
+		setIsVisible(false);
+		// }, 100); // 短暂延迟，允许鼠标移动到tooltip上
 	};
 
 	const toggleTooltip = () => {
 		if (disabled) return;
-		
+
 		if (isVisible) {
 			hideTooltip();
 		} else {
@@ -171,9 +171,11 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
 	return (
 		<>
-			<div 
-				ref={triggerRef} 
-				className={`yg-tooltip-container ${disabled ? 'disabled' : ''} ${children ? 'has-children' : ''}`}
+			<div
+				ref={triggerRef}
+				className={`yg-tooltip-container ${
+					disabled ? "disabled" : ""
+				} ${children ? "has-children" : ""}`}
 				{...getEventHandlers()}
 			>
 				{children || (
@@ -184,7 +186,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
 					/>
 				)}
 			</div>
-			{isVisible && !disabled &&
+			{isVisible &&
+				!disabled &&
 				createPortal(
 					<div
 						className={`yg-tooltip-content yg-tooltip-portal ${
@@ -195,8 +198,12 @@ export const Tooltip: React.FC<TooltipProps> = ({
 							top: position.y,
 						}}
 						dangerouslySetInnerHTML={{ __html: text }}
-						onMouseEnter={trigger === "hover" ? keepTooltip : undefined}
-						onMouseLeave={trigger === "hover" ? hideTooltip : undefined}
+						onMouseEnter={
+							trigger === "hover" ? keepTooltip : undefined
+						}
+						onMouseLeave={
+							trigger === "hover" ? hideTooltip : undefined
+						}
 					/>,
 					document.body
 				)}

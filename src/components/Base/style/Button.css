@@ -1,0 +1,134 @@
+.yg-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	font-family: inherit;
+	font-weight: 500;
+	text-decoration: none;
+	border: 1px solid;
+	border-radius: var(--radius-s);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	white-space: nowrap;
+	user-select: none;
+}
+
+.yg-button:focus {
+	outline: 2px solid var(--color-accent);
+	outline-offset: 2px;
+}
+
+/* 大小变体 */
+.yg-button--small {
+	padding: 0.25rem 0.75rem;
+	font-size: 0.85rem;
+	min-height: 2rem;
+}
+
+.yg-button--medium {
+	padding: 0.5rem 1rem;
+	font-size: 0.9rem;
+	min-height: 2.25rem;
+}
+
+.yg-button--large {
+	padding: 0.75rem 1.5rem;
+	font-size: 1rem;
+	min-height: 2.75rem;
+}
+
+/* 颜色变体 */
+.yg-button--primary {
+	background: var(--interactive-accent);
+	border-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.yg-button--primary:hover:not(:disabled) {
+	background: var(--interactive-accent-hover);
+	border-color: var(--interactive-accent-hover);
+}
+
+.yg-button--secondary {
+	background: var(--background-secondary);
+	border-color: var(--background-modifier-border);
+	color: var(--text-normal);
+}
+
+.yg-button--secondary:hover:not(:disabled) {
+	background: var(--background-modifier-hover);
+	border-color: var(--background-modifier-border-hover);
+}
+
+.yg-button--outline {
+	background: transparent;
+	border-color: var(--background-modifier-border);
+	color: var(--text-normal);
+}
+
+.yg-button--outline:hover:not(:disabled) {
+	background: var(--background-modifier-hover);
+	border-color: var(--background-modifier-border-hover);
+}
+
+.yg-button--danger {
+	background: var(--color-red);
+	border-color: var(--color-red);
+	color: var(--text-normal);
+}
+
+.yg-button--danger:hover:not(:disabled) {
+	background: var(--color-red-hover);
+	border-color: var(--color-red-hover);
+}
+
+/* 禁用状态 */
+.yg-button--disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+	pointer-events: none;
+}
+
+/* 图标样式 */
+.yg-button__icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.yg-button__text {
+	display: flex;
+	align-items: center;
+}
+
+/* 只有图标的按钮 */
+.yg-button .yg-button__text:empty {
+	display: none;
+}
+
+.yg-button .yg-button__text:empty + .yg-button__icon,
+.yg-button .yg-button__icon:only-child {
+	margin: 0;
+}
+
+/* 响应式 */
+@media (max-width: 600px) {
+	.yg-button {
+		min-width: 44px;
+		min-height: 44px;
+	}
+}
+
+/* 深色模式适配 */
+.theme-dark .yg-button--secondary {
+	background: var(--background-secondary-alt);
+}
+
+.theme-dark .yg-button--outline {
+	border-color: var(--background-modifier-border);
+}
+
+.theme-dark .yg-button--outline:hover:not(:disabled) {
+	background: var(--background-modifier-hover);
+}

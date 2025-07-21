@@ -291,10 +291,14 @@ const translations: BaseMessage = {
 				repeat: "Repeat",
 			},
 		},
+		dataPortView: {
+			name: "Data management center",
+		},
 	},
 	command: {
 		openYearlyGlance: "Open yearly glance",
 		openGlanceManager: "Open glance manager",
+		openDataPortManager: "Open data management center",
 		addEvent: "Add event",
 		reloadPlugin: "Reload plugin",
 	},

@@ -289,10 +289,14 @@ const translations: BaseMessage = {
 				repeat: "重複",
 			},
 		},
+		dataPortView: {
+			name: "數據管理中心",
+		},
 	},
 	command: {
 		openYearlyGlance: "開啟年度概覽",
 		openGlanceManager: "開啟概覽管理",
+		openDataPortManager: "開啟數據管理中心",
 		addEvent: "新增事件",
 		reloadPlugin: "重新載入外掛程式",
 	},

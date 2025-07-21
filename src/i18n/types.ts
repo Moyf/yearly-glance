@@ -203,10 +203,14 @@ export type BaseMessage = {
 				repeat: string;
 			};
 		};
+		dataPortView: {
+			name: string;
+		};
 	};
 	command: {
 		openYearlyGlance: string;
 		openGlanceManager: string;
+		openDataPortManager: string;
 		addEvent: string;
 		reloadPlugin: string;
 	};

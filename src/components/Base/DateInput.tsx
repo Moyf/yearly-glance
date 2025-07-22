@@ -106,7 +106,11 @@ export const DateInput: React.FC<DateInputProps> = ({
 						<div className="preview-error">
 							<span className="preview-icon">⚠</span>
 							<span className="preview-text">
-								{preview.error}
+								<div
+									dangerouslySetInnerHTML={{
+										__html: preview.error,
+									}}
+								/>
 							</span>
 						</div>
 					)

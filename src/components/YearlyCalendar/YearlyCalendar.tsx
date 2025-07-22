@@ -480,6 +480,7 @@ const renderMonth = (monthIndex: number) => {
 					</span>
 				)}
 			</div>
+
 			{/* actionsBar */}
 			<div className="yearly-calendar-actions-bar">
 				<div className="yg-buttons">
@@ -569,24 +570,46 @@ const renderMonth = (monthIndex: number) => {
 						
 						{/* 月份可见性切换按钮 */}
 						<div className="month-visibility-controls">
-							<button
-								className={`month-visibility-toggle ${hidePreviousMonths ? 'active' : ''}`}
-								onClick={() => setHidePreviousMonths(!hidePreviousMonths)}
-								title={hidePreviousMonths ? t('view.yearlyGlance.actions.showPreviousMonths') : t('view.yearlyGlance.actions.hidePreviousMonths')}
+							<Tooltip
+								text={
+									hidePreviousMonths 
+										? t('view.yearlyGlance.actions.showPreviousMonths') 
+										: t('view.yearlyGlance.actions.hidePreviousMonths')
+								}
 							>
-								<span className="legend-icon">⏪</span>
-								<span className="legend-text">{t('view.yearlyGlance.actions.previousMonths')}</span>
-							</button>
-							<button
-								className={`month-visibility-toggle ${hideFutureMonths ? 'active' : ''}`}
-								onClick={() => setHideFutureMonths(!hideFutureMonths)}
-								title={hideFutureMonths ? t('view.yearlyGlance.actions.showFutureMonths') : t('view.yearlyGlance.actions.hideFutureMonths')}
-							>
-								<span className="legend-icon">⏩</span>
-								<span className="legend-text">{t('view.yearlyGlance.actions.futureMonths')}</span>
-							</button>
-						</div>
+								<button
+									className={
+										`month-visibility-toggle ${hidePreviousMonths ? 'active' : ''}`
+									}
+									onClick={() => setHidePreviousMonths(prev => !prev)}
+									aria-label={t('view.yearlyGlance.actions.previousMonths')}
+								>
+									<span className="legend-icon">⏪</span>
+									<span className="legend-text">
+										{t('view.yearlyGlance.actions.previousMonths')}
+									</span>
+								</button>
+							</Tooltip>
 
+							<Tooltip
+								text={
+									hideFutureMonths 
+										? t('view.yearlyGlance.actions.showFutureMonths')
+										: t('view.yearlyGlance.actions.hideFutureMonths')
+								}
+							>
+								<button
+									className={`month-visibility-toggle ${hideFutureMonths ? 'active' : ''}`}
+									onClick={() => setHideFutureMonths(!hideFutureMonths)}
+									aria-label={t('view.yearlyGlance.actions.futureMonths')}
+								>
+									<span className="legend-icon">⏩</span>
+									<span className="legend-text">\
+										{t('view.yearlyGlance.actions.futureMonths')}
+									</span>
+								</button>
+							</Tooltip>
+						</div>
 					</div>
 
 					<div className="yg-buttons-right">

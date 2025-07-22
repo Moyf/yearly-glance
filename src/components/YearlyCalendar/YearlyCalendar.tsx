@@ -183,8 +183,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 	};
 
 	const handleAddEventInDay = (day: CalendarDay) => {
-		const selectDate = IsoUtils.toLocalDateString(day.date);
-		console.log(selectDate);
+		const selectDate = IsoUtils.toLocalDateString(new Date(day.date));
 		plugin.openEventForm("customEvent", {}, false, true, {
 			date: selectDate,
 		});
@@ -632,24 +631,14 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 									)}
 								>
 									<span className="legend-icon">⏩</span>
-<<<<<<< ours
 									<span className="legend-text">
 										\
 										{t(
 											"view.yearlyGlance.actions.futureMonths"
 										)}
-||||||| ancestor
-									<span className="legend-text">\
-										{t('view.yearlyGlance.actions.futureMonths')}
-=======
-									<span className="legend-text">
-										{t('view.yearlyGlance.actions.futureMonths')}
->>>>>>> theirs
 									</span>
 								</button>
-
 							</Tooltip>
-							
 						</div>
 					</div>
 

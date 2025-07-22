@@ -23,6 +23,7 @@ import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
 import "./style/YearlyCalendarView.css";
 import { Tooltip } from "../Base/Tooltip";
+import { IsoUtils } from "@/src/core/utils/isoUtils";
 
 interface YearlyCalendarViewProps {
 	plugin: YearlyGlancePlugin;
@@ -182,7 +183,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 	};
 
 	const handleAddEventInDay = (day: CalendarDay) => {
-		const selectDate = new Date(day.date).toISOString().split("T")[0];
+		const selectDate = IsoUtils.toLocalDateString(day.date);
+		console.log(selectDate);
 		plugin.openEventForm("customEvent", {}, false, true, {
 			date: selectDate,
 		});
@@ -250,27 +252,35 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 
 	// 渲染单个月份
 	const shouldRenderMonth = (monthIndex: number) => {
-	const currentDate = new Date();
-	const currentMonth = currentDate.getMonth();
-	const currentYear = currentDate.getFullYear();
-	const targetYear = year + Math.floor(monthIndex / 12);
-	const targetMonth = monthIndex % 12;
+		const currentDate = new Date();
+		const currentMonth = currentDate.getMonth();
+		const currentYear = currentDate.getFullYear();
+		const targetYear = year + Math.floor(monthIndex / 12);
+		const targetMonth = monthIndex % 12;
 
-	if (hidePreviousMonths && (targetYear < currentYear || (targetYear === currentYear && targetMonth < currentMonth))) {
-		return false;
-	}
+		if (
+			hidePreviousMonths &&
+			(targetYear < currentYear ||
+				(targetYear === currentYear && targetMonth < currentMonth))
+		) {
+			return false;
+		}
 
-	if (hideFutureMonths && (targetYear > currentYear || (targetYear === currentYear && targetMonth > currentMonth))) {
-		return false;
-	}
+		if (
+			hideFutureMonths &&
+			(targetYear > currentYear ||
+				(targetYear === currentYear && targetMonth > currentMonth))
+		) {
+			return false;
+		}
 
-	return true;
-};
+		return true;
+	};
 
-const renderMonth = (monthIndex: number) => {
-	if (!shouldRenderMonth(monthIndex)) {
-		return null;
-	}
+	const renderMonth = (monthIndex: number) => {
+		if (!shouldRenderMonth(monthIndex)) {
+			return null;
+		}
 
 		const monthData = monthsData[monthIndex];
 		const monthColorStyle = colorful
@@ -563,49 +573,78 @@ const renderMonth = (monthIndex: number) => {
 										</Tooltip>
 									);
 								})}
-								
 							</div>
-							
 						)}
-						
+
 						{/* 月份可见性切换按钮 */}
 						<div className="month-visibility-controls">
 							<Tooltip
 								text={
-									hidePreviousMonths 
-										? t('view.yearlyGlance.actions.showPreviousMonths') 
-										: t('view.yearlyGlance.actions.hidePreviousMonths')
+									hidePreviousMonths
+										? t(
+												"view.yearlyGlance.actions.showPreviousMonths"
+										  )
+										: t(
+												"view.yearlyGlance.actions.hidePreviousMonths"
+										  )
 								}
 							>
 								<button
-									className={
-										`month-visibility-toggle ${hidePreviousMonths ? 'active' : ''}`
+									className={`month-visibility-toggle ${
+										hidePreviousMonths ? "active" : ""
+									}`}
+									onClick={() =>
+										setHidePreviousMonths((prev) => !prev)
 									}
-									onClick={() => setHidePreviousMonths(prev => !prev)}
-									aria-label={t('view.yearlyGlance.actions.previousMonths')}
+									aria-label={t(
+										"view.yearlyGlance.actions.previousMonths"
+									)}
 								>
 									<span className="legend-icon">⏪</span>
 									<span className="legend-text">
-										{t('view.yearlyGlance.actions.previousMonths')}
+										{t(
+											"view.yearlyGlance.actions.previousMonths"
+										)}
 									</span>
 								</button>
 							</Tooltip>
 
 							<Tooltip
 								text={
-									hideFutureMonths 
-										? t('view.yearlyGlance.actions.showFutureMonths')
-										: t('view.yearlyGlance.actions.hideFutureMonths')
+									hideFutureMonths
+										? t(
+												"view.yearlyGlance.actions.showFutureMonths"
+										  )
+										: t(
+												"view.yearlyGlance.actions.hideFutureMonths"
+										  )
 								}
 							>
 								<button
-									className={`month-visibility-toggle ${hideFutureMonths ? 'active' : ''}`}
-									onClick={() => setHideFutureMonths(!hideFutureMonths)}
-									aria-label={t('view.yearlyGlance.actions.futureMonths')}
+									className={`month-visibility-toggle ${
+										hideFutureMonths ? "active" : ""
+									}`}
+									onClick={() =>
+										setHideFutureMonths(!hideFutureMonths)
+									}
+									aria-label={t(
+										"view.yearlyGlance.actions.futureMonths"
+									)}
 								>
 									<span className="legend-icon">⏩</span>
+<<<<<<< ours
+									<span className="legend-text">
+										\
+										{t(
+											"view.yearlyGlance.actions.futureMonths"
+										)}
+||||||| ancestor
+									<span className="legend-text">\
+										{t('view.yearlyGlance.actions.futureMonths')}
+=======
 									<span className="legend-text">
 										{t('view.yearlyGlance.actions.futureMonths')}
+>>>>>>> theirs
 									</span>
 								</button>
 
@@ -793,7 +832,6 @@ const renderMonth = (monthIndex: number) => {
 							</Tooltip>
 						</div>
 					</div>
-
 				</div>
 			</div>
 

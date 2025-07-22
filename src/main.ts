@@ -25,6 +25,7 @@ import { generateUUID } from "./core/utils/uuid";
 import { MigrateData } from "./core/utils/migrateData";
 import { EventCalculator } from "./core/utils/eventCalculator";
 import { SettingsView, VIEW_TYPE_SETTINGS } from "./views/SettingsView";
+import { IsoUtils } from "./core/utils/isoUtils";
 
 export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
@@ -334,7 +335,7 @@ export default class YearlyGlancePlugin extends Plugin {
 		if (isFirstInstall) {
 			// 获取今天的日期
 			const today = new Date();
-			const todayIsoDate = today.toISOString().split("T")[0]; // 格式: YYYY-MM-DD
+			const todayIsoDate = IsoUtils.toLocalDateString(today); // 格式: YYYY-MM-DD
 
 			// 创建示例事件
 			const sampleEvent: CustomEvent = {

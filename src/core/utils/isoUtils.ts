@@ -186,4 +186,16 @@ export class IsoUtils {
 				return `${year}-${pad(month)}-${pad(day)}`;
 		}
 	}
+
+	/**
+	 * 将Date对象格式化为本地的YYYY-MM-DD字符串，避免时区问题
+	 * @param date Date对象
+	 * @returns 本地日期字符串，格式为YYYY-MM-DD
+	 */
+	static toLocalDateString(date: Date): string {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, "0");
+		const day = String(date.getDate()).padStart(2, "0");
+		return `${year}-${month}-${day}`;
+	}
 }

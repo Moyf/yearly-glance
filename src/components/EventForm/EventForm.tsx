@@ -19,6 +19,7 @@ import { Toggle } from "../Base/Toggle";
 import { DateInput } from "../Base/DateInput";
 import { parseUserDateInput } from "@/src/core/utils/smartDateProcessor";
 import { Tooltip } from "../Base/Tooltip";
+import { IsoUtils } from "@/src/core/utils/isoUtils";
 
 // 事件类型tab
 export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
@@ -85,7 +86,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 	onCancel,
 	props = {},
 }) => {
-	const today = new Date().toISOString().split("T")[0]; // 获取今天的日期字符串
+	const today = IsoUtils.toLocalDateString(new Date()); // 获取今天的日期字符串
 	const todayString = props.date || today; // 如果传入了特定日期，则使用它，否则使用今天的日期
 
 	// 第一个输入框的引用，用于自动聚焦

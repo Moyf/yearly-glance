@@ -66,6 +66,11 @@
 	max-width: min(400px, 90vw); /* 响应式最大宽度，不超过屏幕90% */
 	pointer-events: auto; /* 允许鼠标交互 */
 
+	/* 初始透明度为0 */
+	opacity: 0;
+	/* 延迟100ms后开始150ms的淡入动画 */
+	animation: tooltipFadeIn 150ms ease-out 100ms forwards;
+
 	/* 处理内容溢出 */
 	word-wrap: break-word;
 	word-break: break-word;
@@ -77,6 +82,16 @@
 
 	/* 添加一些视觉改进 */
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Tooltip淡入动画 */
+@keyframes tooltipFadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
 
 /* 横向滚动条样式 */

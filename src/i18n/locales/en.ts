@@ -293,6 +293,28 @@ const translations: BaseMessage = {
 		},
 		dataPortView: {
 			name: "Data management center",
+			export: {
+				name: "Export",
+				actions: {
+					download: "Export",
+					selectAll: "Select all",
+					reverseAll: "Reverse all",
+					selectCancel: "Cancel selection",
+					selectSummary: "Selected {{count}} events",
+				},
+				config: {
+					fileName: "Export file name",
+					year: "Export year",
+				},
+				empty: {
+					text: "No data to export",
+					subtext: "Please add events first",
+					noDate: "No date",
+				},
+			},
+			import: {
+				name: "Import",
+			},
 		},
 	},
 	command: {

@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import "./style/DataExport.css";
 import { YearlyGlanceSettings } from "@/src/core/interfaces/Settings";
+import { t } from "@/src/i18n/i18n";
 
 interface DataExportProps {
 	config: YearlyGlanceSettings;
@@ -288,7 +289,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 	const formatEventDate = (event: EventWithType) => {
 		const dateArr = event.dateArr;
 		if (!dateArr || dateArr.length === 0) {
-			return <div>无日期</div>;
+			return <div>{t("view.dataPortView.export.empty.noDate")}</div>;
 		}
 		return (
 			<>
@@ -307,9 +308,11 @@ export const DataExport: React.FC<DataExportProps> = ({
 			<div className="yg-data-export">
 				<div className="export-empty-state">
 					<div className="empty-icon">📁</div>
-					<div className="empty-text">暂无事件数据</div>
+					<div className="empty-text">
+						{t("view.dataPortView.export.empty.text")}
+					</div>
 					<div className="empty-subtext">
-						请先添加一些事件再进行导出操作
+						{t("view.dataPortView.export.empty.subtext")}
 					</div>
 				</div>
 			</div>
@@ -320,11 +323,12 @@ export const DataExport: React.FC<DataExportProps> = ({
 		return (
 			<>
 				<div className="config-group">
-					<label className="config-label">文件名</label>
+					<label className="config-label">
+						{t("view.dataPortView.export.config.fileName")}
+					</label>
 					<Input
 						value={exportFileName}
 						onChange={setExportFileName}
-						placeholder="请输入文件名"
 					/>
 				</div>
 			</>
@@ -335,15 +339,18 @@ export const DataExport: React.FC<DataExportProps> = ({
 		return (
 			<>
 				<div className="config-group">
-					<label className="config-label">文件名</label>
+					<label className="config-label">
+						{t("view.dataPortView.export.config.fileName")}
+					</label>
 					<Input
 						value={exportFileName}
 						onChange={setExportFileName}
-						placeholder="请输入文件名"
 					/>
 				</div>
 				<div className="config-group">
-					<label className="config-label">导出年份</label>
+					<label className="config-label">
+						{t("view.dataPortView.export.config.year")}
+					</label>
 					<div className="year-selector">
 						<Button
 							className="year-control"
@@ -384,7 +391,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 						disabled={isExporting || selectedEvents.size === 0}
 						variant="primary"
 					>
-						导出
+						{t("view.dataPortView.export.actions.download")}
 					</Button>
 				</div>
 
@@ -399,8 +406,10 @@ export const DataExport: React.FC<DataExportProps> = ({
 			<div className="export-selection-controls">
 				<div className="selection-info">
 					<span>
-						已选择 {selectedEvents.size} / {allEventIds.length}{" "}
-						个事件
+						{t("view.dataPortView.export.actions.selectSummary", {
+							count:
+								selectedEvents.size + "/" + allEventIds.length,
+						})}
 					</span>
 				</div>
 				<div className="selection-actions">
@@ -416,7 +425,9 @@ export const DataExport: React.FC<DataExportProps> = ({
 						}
 						onClick={handleSelectAll}
 					>
-						{isAllSelected ? "反选全部" : "全选"}
+						{isAllSelected
+							? t("view.dataPortView.export.actions.reverseAll")
+							: t("view.dataPortView.export.actions.selectAll")}
 					</Button>
 
 					{/* 分类选择控制 */}
@@ -447,7 +458,13 @@ export const DataExport: React.FC<DataExportProps> = ({
 								}
 								onClick={() => handleGroupSelection(type)}
 							>
-								{hasSelectedInGroup ? "取消" : "全选"}
+								{hasSelectedInGroup
+									? t(
+											"view.dataPortView.export.actions.selectCancel"
+									  )
+									: t(
+											"view.dataPortView.export.actions.selectAll"
+									  )}
 								{groupInfo.title}
 							</Button>
 						);

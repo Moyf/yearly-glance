@@ -291,6 +291,28 @@ const translations: BaseMessage = {
 		},
 		dataPortView: {
 			name: "數據管理中心",
+			export: {
+				name: "資料匯出",
+				actions: {
+					download: "匯出",
+					selectAll: "全選",
+					reverseAll: "反選全部",
+					selectCancel: "取消選擇",
+					selectSummary: "已選擇 {{count}} 個事件",
+				},
+				config: {
+					fileName: "檔案名稱",
+					year: "匯出年份",
+				},
+				empty: {
+					text: "暫無事件資料",
+					subtext: "請先新增一些事件再進行匯出操作",
+					noDate: "無日期",
+				},
+			},
+			import: {
+				name: "資料匯入",
+			},
 		},
 	},
 	command: {

@@ -5,6 +5,7 @@ import { NavTabs } from "../Base/NavTabs";
 import { DataExport } from "./DataExport";
 import { DataImport } from "./DataImport";
 import { YearlyGlanceSettings } from "@/src/core/interfaces/Settings";
+import { t } from "@/src/i18n/i18n";
 
 interface DataPortManagerProps {
 	config: YearlyGlanceSettings;
@@ -29,8 +30,14 @@ export const DataPortManager: React.FC<DataPortManagerProps> = ({
 				<div className="data-port-type-selector">
 					<NavTabs
 						tabs={[
-							{ label: "Export", value: "export" },
-							{ label: "Import", value: "import" },
+							{
+								label: t("view.dataPortView.export.name"),
+								value: "export",
+							},
+							{
+								label: t("view.dataPortView.import.name"),
+								value: "import",
+							},
 						]}
 						activeTab={activeTab}
 						onClick={(tab) => setActiveTab(tab as DataPortType)}

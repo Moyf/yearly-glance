@@ -205,6 +205,28 @@ export type BaseMessage = {
 		};
 		dataPortView: {
 			name: string;
+			export: {
+				name: string;
+				actions: {
+					download: string;
+					selectAll: string;
+					reverseAll: string;
+					selectCancel: string;
+					selectSummary: string;
+				};
+				config: {
+					fileName: string;
+					year: string;
+				};
+				empty: {
+					text: string;
+					subtext: string;
+					noDate: string;
+				};
+			};
+			import: {
+				name: string;
+			};
 		};
 	};
 	command: {

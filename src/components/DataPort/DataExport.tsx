@@ -40,8 +40,18 @@ export const DataExport: React.FC<DataExportProps> = ({
 	onConfigUpdate,
 }) => {
 	const [isExporting, setIsExporting] = React.useState(false);
+
+	// 获取所有事件的ID用于默认全选
+	const allEventIds = React.useMemo(() => {
+		const allIds: string[] = [];
+		allIds.push(...currentData.holidays.map((event) => event.id));
+		allIds.push(...currentData.birthdays.map((event) => event.id));
+		allIds.push(...currentData.customEvents.map((event) => event.id));
+		return allIds;
+	}, [currentData]);
+
 	const [selectedEvents, setSelectedEvents] = React.useState<Set<string>>(
-		new Set()
+		new Set(allEventIds)
 	);
 
 	// 导出配置状态
@@ -119,12 +129,10 @@ export const DataExport: React.FC<DataExportProps> = ({
 		return groups;
 	}, [currentData, config]);
 
-	// 获取所有事件的ID
-	const allEventIds = React.useMemo(() => {
-		return Object.values(eventGroups)
-			.flat()
-			.map((event) => event.id);
-	}, [eventGroups]);
+	// 当数据变化时更新选中状态，保持全选
+	React.useEffect(() => {
+		setSelectedEvents(new Set(allEventIds));
+	}, [allEventIds]);
 
 	// 检查是否全选
 	const isAllSelected =

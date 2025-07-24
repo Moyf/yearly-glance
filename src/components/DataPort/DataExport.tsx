@@ -308,6 +308,56 @@ export const DataExport: React.FC<DataExportProps> = ({
 		);
 	}
 
+	const jsonExportConfig = () => {
+		return (
+			<>
+				<div className="config-group">
+					<label className="config-label">文件名</label>
+					<Input
+						value={exportFileName}
+						onChange={setExportFileName}
+						placeholder="请输入文件名"
+					/>
+				</div>
+			</>
+		);
+	};
+
+	const icsExportConfig = () => {
+		return (
+			<>
+				<div className="config-group">
+					<label className="config-label">文件名</label>
+					<Input
+						value={exportFileName}
+						onChange={setExportFileName}
+						placeholder="请输入文件名"
+					/>
+				</div>
+				<div className="config-group">
+					<label className="config-label">导出年份</label>
+					<div className="year-selector">
+						<Button
+							className="year-control"
+							onClick={() => adjustYear(-1)}
+							variant="secondary"
+						>
+							<ChevronLeft size={16} />
+						</Button>
+						<span className="year-display">{exportYear}</span>
+						<Button
+							className="year-control"
+							onClick={() => adjustYear(1)}
+							variant="secondary"
+						>
+							<ChevronRight size={16} />
+						</Button>
+					</div>
+				</div>
+			</>
+		);
+	};
+
 	return (
 		<div className="yg-data-export">
 			{/* 导出操作区域 */}
@@ -326,45 +376,14 @@ export const DataExport: React.FC<DataExportProps> = ({
 						disabled={isExporting || selectedEvents.size === 0}
 						variant="primary"
 					>
-						导出 {activeExportFormat.toUpperCase()}
+						导出
 					</Button>
 				</div>
 
 				{/* 导出配置区域 */}
 				<div className="export-config">
-					<div className="config-group">
-						<label className="config-label">文件名</label>
-						<Input
-							value={exportFileName}
-							onChange={setExportFileName}
-							placeholder="请输入文件名"
-						/>
-					</div>
-
-					{activeExportFormat === "ics" && (
-						<div className="config-group">
-							<label className="config-label">导出年份</label>
-							<div className="year-selector">
-								<button
-									className="year-control"
-									onClick={() => adjustYear(-1)}
-									type="button"
-								>
-									<ChevronLeft size={16} />
-								</button>
-								<span className="year-display">
-									{exportYear}
-								</span>
-								<button
-									className="year-control"
-									onClick={() => adjustYear(1)}
-									type="button"
-								>
-									<ChevronRight size={16} />
-								</button>
-							</div>
-						</div>
-					)}
+					{activeExportFormat === "json" && jsonExportConfig()}
+					{activeExportFormat === "ics" && icsExportConfig()}
 				</div>
 			</div>
 

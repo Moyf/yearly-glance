@@ -1,0 +1,57 @@
+import * as React from "react";
+import { Events } from "../../core/interfaces/Events";
+import "./style/DataPortManager.css";
+import { NavTabs } from "../Base/NavTabs";
+import { DataExport } from "./DataExport";
+import { DataImport } from "./DataImport";
+import { YearlyGlanceSettings } from "@/src/core/interfaces/Settings";
+
+interface DataPortManagerProps {
+	config: YearlyGlanceSettings;
+	data: Events;
+	onConfigUpdate: (config: Partial<YearlyGlanceSettings>) => Promise<void>;
+	onDataImport: (data: Partial<Events>) => Promise<void>;
+}
+
+type DataPortType = "export" | "import";
+
+export const DataPortManager: React.FC<DataPortManagerProps> = ({
+	config,
+	data,
+	onConfigUpdate,
+	onDataImport,
+}) => {
+	const [activeTab, setActiveTab] = React.useState<DataPortType>("export");
+
+	return (
+		<>
+			<div className="yg-data-port-header">
+				<div className="data-port-type-selector">
+					<NavTabs
+						tabs={[
+							{ label: "Export", value: "export" },
+							{ label: "Import", value: "import" },
+						]}
+						activeTab={activeTab}
+						onClick={(tab) => setActiveTab(tab as DataPortType)}
+					/>
+				</div>
+			</div>
+
+			<div className="yg-data-port-content">
+				{activeTab === "export" ? (
+					<DataExport
+						config={config}
+						currentData={data}
+						onConfigUpdate={onConfigUpdate}
+					/>
+				) : (
+					<DataImport
+						currentData={data}
+						onDataImport={onDataImport}
+					/>
+				)}
+			</div>
+		</>
+	);
+};

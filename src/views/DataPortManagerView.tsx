@@ -3,8 +3,27 @@ import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import YearlyGlancePlugin from "../main";
 import { t } from "../i18n/i18n";
+import { DataPortManager } from "../components/DataPort/DataPortManager";
+import { useYearlyGlanceConfig } from "../core/hook/useYearlyGlanceConfig";
 
 export const VIEW_TYPE_DATA_PORT_MANAGER = "yearly-glance-data-port-view";
+
+// 创建一个包装组件来使用 Hook
+const DataPortManagerWrapper: React.FC<{
+	plugin: YearlyGlancePlugin;
+}> = ({ plugin }) => {
+	const { config, updateConfig, events, updateEvents } =
+		useYearlyGlanceConfig(plugin);
+
+	return (
+		<DataPortManager
+			config={config}
+			data={events}
+			onConfigUpdate={updateConfig}
+			onDataImport={updateEvents}
+		/>
+	);
+};
 
 export class DataPortManagerView extends ItemView {
 	plugin: YearlyGlancePlugin;
@@ -43,7 +62,11 @@ export class DataPortManagerView extends ItemView {
 			this.root = createRoot(dataPortView);
 		}
 
-		this.root.render(<React.StrictMode></React.StrictMode>);
+		this.root.render(
+			<React.StrictMode>
+				<DataPortManagerWrapper plugin={this.plugin} />
+			</React.StrictMode>
+		);
 	}
 
 	async onClose() {

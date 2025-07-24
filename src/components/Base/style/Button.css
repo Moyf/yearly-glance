@@ -12,12 +12,13 @@
 	transition: all 0.2s ease;
 	white-space: nowrap;
 	user-select: none;
+	box-shadow: none !important;
 }
 
-.yg-button:focus {
+/* .yg-button:focus {
 	outline: 2px solid var(--color-accent);
 	outline-offset: 2px;
-}
+} */
 
 /* 大小变体 */
 .yg-button--small {
@@ -110,14 +111,6 @@
 .yg-button .yg-button__text:empty + .yg-button__icon,
 .yg-button .yg-button__icon:only-child {
 	margin: 0;
-}
-
-/* 响应式 */
-@media (max-width: 600px) {
-	.yg-button {
-		min-width: 44px;
-		min-height: 44px;
-	}
 }
 
 /* 深色模式适配 */

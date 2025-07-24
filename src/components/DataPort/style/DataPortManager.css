@@ -1,0 +1,26 @@
+.yg-data-port-view-container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	background-color: var(--background-primary);
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.yg-data-port-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 20px;
+	background-color: var(--background-secondary);
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.yg-data-port-content {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	padding: 20px;
+	overflow-y: auto;
+}

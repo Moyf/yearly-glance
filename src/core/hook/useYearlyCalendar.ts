@@ -6,6 +6,7 @@ import {
 } from "@/src/core/interfaces/CalendarEvent";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
 import { LunarLibrary } from "../utils/lunarLibrary";
+import { IsoUtils } from "../utils/isoUtils";
 import { t } from "@/src/i18n/i18n";
 
 export const MonthMap: Array<{ name: string; color: string }> = [
@@ -189,15 +190,14 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 					highlightWeekends &&
 					(date.getDay() === 0 || date.getDay() === 6);
 
+				// 使用 IsoUtils.toLocalDateString 生成当前日期的 ISO 字符串用于比较，避免时区问题
+				const currentDateISO = IsoUtils.toLocalDateString(date);
+
 				// 查找当天的事件
 				const dayEvents = allEvents.filter((event) =>
 					event.dateArr?.some((dateStr: string) => {
-						const eventDate = new Date(dateStr);
-						return (
-							eventDate.getFullYear() === year &&
-							eventDate.getMonth() === monthIndex &&
-							eventDate.getDate() === i
-						);
+						// 直接比较 ISO 日期字符串，避免时区转换问题
+						return dateStr === currentDateISO;
 					})
 				);
 

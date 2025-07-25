@@ -9,6 +9,11 @@ import {
 	EventManagerView,
 	VIEW_TYPE_EVENT_MANAGER,
 } from "./views/EventManagerView";
+import { SettingsView, VIEW_TYPE_SETTINGS } from "./views/SettingsView";
+import {
+	DataPortManagerView,
+	VIEW_TYPE_DATA_PORT_MANAGER,
+} from "./views/DataPortManagerView";
 import {
 	Birthday,
 	CustomEvent,
@@ -24,7 +29,6 @@ import { t } from "./i18n/i18n";
 import { generateUUID } from "./core/utils/uuid";
 import { MigrateData } from "./core/utils/migrateData";
 import { EventCalculator } from "./core/utils/eventCalculator";
-import { SettingsView, VIEW_TYPE_SETTINGS } from "./views/SettingsView";
 import { IsoUtils } from "./core/utils/isoUtils";
 
 export default class YearlyGlancePlugin extends Plugin {
@@ -114,6 +118,10 @@ export default class YearlyGlancePlugin extends Plugin {
 		this.registerView(VIEW_TYPE_SETTINGS, (leaf) => {
 			return new SettingsView(leaf, this);
 		});
+
+		this.registerView(VIEW_TYPE_DATA_PORT_MANAGER, (leaf) => {
+			return new DataPortManagerView(leaf, this);
+		});
 	}
 
 	private registerCommands() {
@@ -133,6 +141,12 @@ export default class YearlyGlancePlugin extends Plugin {
 			id: "open-settings-view",
 			name: t("command.openSettingsView"),
 			callback: () => this.openPluginView(VIEW_TYPE_SETTINGS),
+		});
+
+		this.addCommand({
+			id: "open-data-port-manager",
+			name: t("command.openDataPortManager"),
+			callback: () => this.openPluginView(VIEW_TYPE_DATA_PORT_MANAGER),
 		});
 
 		this.addCommand({

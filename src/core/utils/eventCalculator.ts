@@ -27,8 +27,7 @@ export class EventCalculator {
 
 		// 自定义事件一般ymd齐全，在事件不重复，且有年份的情况下，只需要计算出公历日期
 		if (
-			isRepeat !== undefined &&
-			isRepeat === false &&
+			(isRepeat === undefined || isRepeat === false) &&
 			year !== undefined
 		) {
 			if (calendar === "GREGORIAN") {
@@ -146,7 +145,12 @@ export class EventCalculator {
 	) {
 		const isoDate = customEvent.eventDate.isoDate;
 		const calendar = customEvent.eventDate.calendar;
-		const dateArr = this.calculateDateArr(isoDate, calendar, yearSelected);
+		const dateArr = this.calculateDateArr(
+			isoDate,
+			calendar,
+			yearSelected,
+			customEvent.isRepeat
+		);
 
 		return {
 			...customEvent,

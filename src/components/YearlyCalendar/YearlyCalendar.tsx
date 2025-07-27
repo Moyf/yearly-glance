@@ -632,7 +632,6 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 								>
 									<span className="legend-icon">⏩</span>
 									<span className="legend-text">
-										\
 										{t(
 											"view.yearlyGlance.actions.futureMonths"
 										)}

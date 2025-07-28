@@ -184,9 +184,10 @@ export class EventCalculator {
 		const { year, month, day } = IsoUtils.parse(isoDate, calendar);
 		const todaySolar = Solar.fromDate(new Date());
 
-		// 计算下一次生日
-
+		// 计算下一次生日，
 		let nextBirthday, currentYearBirthday, nextYearBirthday;
+		// 计算星座，生肖，
+		let zodiac, animal;
 		if (calendar === "GREGORIAN") {
 			currentYearBirthday = Solar.fromYmd(
 				todaySolar.getYear(),
@@ -204,6 +205,30 @@ export class EventCalculator {
 			} else {
 				// 今年的生日已过，计算明年的生日
 				nextBirthday = nextYearBirthday.toString();
+			}
+
+			if (year !== undefined) {
+				const xingzuo = Solar.fromYmd(year, month, day).getXingZuo();
+				zodiac = getBirthdayTranslation(xingzuo, "zodiac");
+
+				const ganzhi = Solar.fromYmd(year, month, day)
+					.getLunar()
+					.getYearInGanZhi();
+				const shengxiao = Solar.fromYmd(year, month, day)
+					.getLunar()
+					.getYearShengXiao();
+				// 获取生肖
+				animal =
+					getBirthdayTranslation(ganzhi, "ganzhi") +
+					getBirthdayTranslation(shengxiao, "animal");
+			} else {
+				const xingzuo = Solar.fromYmd(
+					yearSelected,
+					month,
+					day
+				).getXingZuo();
+				zodiac = getBirthdayTranslation(xingzuo, "zodiac");
+				animal = null;
 			}
 		} else if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {
 			currentYearBirthday = LunarLibrary.constructLunar(
@@ -225,43 +250,43 @@ export class EventCalculator {
 				// 如果今年的农历生日已过，使用明年的
 				nextBirthday = nextYearBirthday.toString();
 			}
+
+			if (year !== undefined) {
+				const xingzuo = Lunar.fromYmd(year, month, day)
+					.getSolar()
+					.getXingZuo();
+				zodiac = getBirthdayTranslation(xingzuo, "zodiac");
+
+				const ganzhi = Lunar.fromYmd(
+					year,
+					month,
+					day
+				).getYearInGanZhi();
+				const shengxiao = Lunar.fromYmd(
+					year,
+					month,
+					day
+				).getYearShengXiao();
+				// 获取生肖
+				animal =
+					getBirthdayTranslation(ganzhi, "ganzhi") +
+					getBirthdayTranslation(shengxiao, "animal");
+			} else {
+				// 对于农历生日，如果没有年份，无法计算星座，生肖和干支
+				zodiac = null;
+				animal = null;
+			}
 		}
 
-		// 计算年龄，生肖，星座
+		// 计算年龄
 		let age;
-		let animal;
-		let zodiac;
-
 		if (year !== undefined) {
 			// 当今天还未过生日时，年龄为当前年份减去出生年份再减1
 			age = todaySolar.isBefore(currentYearBirthday)
 				? todaySolar.getYear() - year - 1
 				: todaySolar.getYear() - year;
-
-			// 获取干支纪年（新年以正月初一起算）
-			const ganzhi = Lunar.fromYmd(year, month, day).getYearInGanZhi();
-			const shengxiao = Lunar.fromYmd(
-				year,
-				month,
-				day
-			).getYearShengXiao();
-			const xingzuo = Solar.fromYmd(year, month, day).getXingZuo();
-
-			// 获取生肖
-			animal =
-				getBirthdayTranslation(ganzhi, "ganzhi") +
-				getBirthdayTranslation(shengxiao, "animal");
-			zodiac = getBirthdayTranslation(xingzuo, "zodiac");
 		} else {
-			const xingzuo = Solar.fromYmd(
-				yearSelected,
-				month,
-				day
-			).getXingZuo();
-
 			age = null;
-			animal = null;
-			zodiac = getBirthdayTranslation(xingzuo, "zodiac");
 		}
 
 		return {

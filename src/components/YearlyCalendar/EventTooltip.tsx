@@ -167,7 +167,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 									{t("view.eventManager.birthday.zodiac")}:
 								</span>
 								<span className="tooltip-value">
-									{(event as Birthday).zodiac}
+									{(event as Birthday).zodiac ?? "-"}
 								</span>
 							</div>
 						)}

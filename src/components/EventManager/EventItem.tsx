@@ -120,6 +120,15 @@ export const EventItem: React.FC<EventItemProps> = ({
 							</span>
 							<span className="info-value">
 								{birthday.zodiac}
+								{birthday.zodiac !== null ? (
+									<></>
+								) : (
+									<Tooltip
+										text={t(
+											"view.eventManager.birthday.noYear"
+										)}
+									/>
+								)}
 							</span>
 						</div>
 					)}

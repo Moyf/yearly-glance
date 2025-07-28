@@ -1,4 +1,10 @@
 /* ------- 事件提示框样式 ------- */
+/* 确保modal内容充满整个modal */
+.yg-event-tooltip-modal {
+	padding: 0;
+	border: none;
+}
+
 .yg-event-tooltip-content {
 	border-radius: 10px;
 	overflow: hidden;
@@ -77,6 +83,8 @@
 		flex-direction: column;
 		gap: 10px;
 		background-color: var(--background-primary);
+		flex: 1;
+		overflow-y: auto;
 	}
 
 	.tooltip-row {

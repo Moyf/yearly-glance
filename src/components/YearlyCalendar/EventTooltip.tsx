@@ -197,11 +197,13 @@ export class EventTooltip extends Modal {
 	}
 
 	onOpen() {
-		const { contentEl } = this;
-		contentEl.empty();
+		// 使用 modalEl来渲染，不加载原有的关闭按钮和标题栏
+		const { modalEl } = this;
+		modalEl.empty();
+		modalEl.addClass("yg-event-tooltip-modal");
 
 		// 创建 React 根元素
-		this.root = createRoot(contentEl);
+		this.root = createRoot(modalEl);
 
 		// 渲染包装组件
 		this.root.render(

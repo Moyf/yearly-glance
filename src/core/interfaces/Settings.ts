@@ -1,5 +1,6 @@
 import { SelectOption } from "@/src/components/Base/Select";
 import { t } from "@/src/i18n/i18n";
+import { IsoUtils } from "../utils/isoUtils";
 
 export const LAYOUT_OPTIONS = ["12x1", "1x12", "6x2", "2x6", "3x4", "4x3"];
 export const VIEW_TYPE_OPTIONS = ["calendar", "list"];
@@ -116,7 +117,7 @@ export interface YearlyGlanceSettings {
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
-	year: new Date().getFullYear(),
+	year: IsoUtils.getCurrentYear(), // 使用时区安全的方法获取当前年份
 	layout: "2x6",
 	viewType: "list",
 	showWeekdays: true,

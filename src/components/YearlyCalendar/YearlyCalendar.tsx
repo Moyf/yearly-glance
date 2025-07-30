@@ -183,7 +183,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 	};
 
 	const handleAddEventInDay = (day: CalendarDay) => {
-		const selectDate = IsoUtils.toLocalDateString(new Date(day.date));
+		// 避免时区转换问题，直接使用已经存在的date对象
+		const selectDate = IsoUtils.toLocalDateString(day.date);
 		plugin.openEventForm("customEvent", {}, false, true, {
 			date: selectDate,
 		});
@@ -868,7 +869,8 @@ export class YearlyCalendar {
 
 	destroy() {
 		// Reset the year configuration to current year when view is closed
-		const currentYear = new Date().getFullYear();
+		// 使用时区安全的方法获取当前年份
+		const currentYear = IsoUtils.getCurrentYear();
 		this.plugin.updateConfig({ year: currentYear });
 
 		if (this.root) {

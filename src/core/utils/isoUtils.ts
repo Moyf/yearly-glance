@@ -198,4 +198,55 @@ export class IsoUtils {
 		const day = String(date.getDate()).padStart(2, "0");
 		return `${year}-${month}-${day}`;
 	}
+
+	/**
+	 * 创建一个本地日期对象，避免时区偏移
+	 * @param year 年份
+	 * @param month 月份 (1-12)
+	 * @param day 日期
+	 * @returns Date对象，表示本地日期的午夜时间
+	 */
+	static createLocalDate(year: number, month: number, day: number): Date {
+		return new Date(year, month - 1, day);
+	}
+
+	/**
+	 * 获取今天的本地日期字符串，避免时区问题
+	 * @returns 本地今天的日期字符串，格式为YYYY-MM-DD
+	 */
+	static getTodayLocalDateString(): string {
+		return this.toLocalDateString(new Date());
+	}
+
+	/**
+	 * 比较两个Date对象是否为同一天（本地时区）
+	 * @param date1 第一个日期
+	 * @param date2 第二个日期
+	 * @returns 是否为同一天
+	 */
+	static isSameLocalDay(date1: Date, date2: Date): boolean {
+		return (
+			date1.getFullYear() === date2.getFullYear() &&
+			date1.getMonth() === date2.getMonth() &&
+			date1.getDate() === date2.getDate()
+		);
+	}
+
+	/**
+	 * 从YYYY-MM-DD格式的字符串创建本地Date对象
+	 * @param dateString YYYY-MM-DD格式的日期字符串
+	 * @returns Date对象，表示本地日期的午夜时间
+	 */
+	static fromLocalDateString(dateString: string): Date {
+		const [year, month, day] = dateString.split("-").map(Number);
+		return this.createLocalDate(year, month, day);
+	}
+
+	/**
+	 * 获取当前年份
+	 * @returns 当前年份
+	 */
+	static getCurrentYear(): number {
+		return new Date().getFullYear();
+	}
 }

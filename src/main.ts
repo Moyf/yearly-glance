@@ -333,9 +333,8 @@ export default class YearlyGlancePlugin extends Plugin {
 		const isFirstInstall = !hasCustomEvents(savedData);
 
 		if (isFirstInstall) {
-			// 获取今天的日期
-			const today = new Date();
-			const todayIsoDate = IsoUtils.toLocalDateString(today); // 格式: YYYY-MM-DD
+			// 获取今天的日期 - 使用时区安全的方法
+			const todayIsoDate = IsoUtils.getTodayLocalDateString(); // 格式: YYYY-MM-DD
 
 			// 创建示例事件
 			const sampleEvent: CustomEvent = {

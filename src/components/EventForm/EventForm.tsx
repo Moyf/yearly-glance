@@ -86,7 +86,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 	onCancel,
 	props = {},
 }) => {
-	const today = IsoUtils.toLocalDateString(new Date()); // 获取今天的日期字符串
+	const today = IsoUtils.getTodayLocalDateString(); // 获取今天的日期字符串（时区安全）
 	const todayString = props.date || today; // 如果传入了特定日期，则使用它，否则使用今天的日期
 
 	// 第一个输入框的引用，用于自动聚焦

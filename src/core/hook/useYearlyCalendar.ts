@@ -93,15 +93,6 @@ function hexToRgb(hex: string): string {
 	return `${r}, ${g}, ${b}`;
 }
 
-// 判断两个日期是否同一天
-function isSameDay(date1: Date, date2: Date): boolean {
-	return (
-		date1.getDate() === date2.getDate() &&
-		date1.getMonth() === date2.getMonth() &&
-		date1.getFullYear() === date2.getFullYear()
-	);
-}
-
 // 主要 Hook
 export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 	const { config, events } = useYearlyGlanceConfig(plugin);
@@ -118,7 +109,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 
 	const { holidays, birthdays, customEvents } = events;
 
-	// 当前日期
+	// 当前日期 - 使用时区安全的方法
 	const today = React.useMemo(() => new Date(), []);
 
 	// 处理所有事件
@@ -167,9 +158,13 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 	// 月份数据
 	const monthsData = React.useMemo(() => {
 		return MonthMap.map((month, monthIndex) => {
-			// 当月第一天
-			const firstDayOfMonth = new Date(year, monthIndex, 1);
-			// 当月天数
+			// 当月第一天 - 使用时区安全的方法
+			const firstDayOfMonth = IsoUtils.createLocalDate(
+				year,
+				monthIndex + 1,
+				1
+			);
+			// 当月天数 - 使用时区安全的方法
 			const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
 			// 当月第一天是星期几 (0-6, 0是星期日)
 			let firstDayWeekday = firstDayOfMonth.getDay();
@@ -185,7 +180,8 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 
 			// 填充当月日期
 			for (let i = 1; i <= daysInMonth; i++) {
-				const date = new Date(year, monthIndex, i);
+				// 使用时区安全的日期构造方法
+				const date = IsoUtils.createLocalDate(year, monthIndex + 1, i);
 				const isWeekend =
 					highlightWeekends &&
 					(date.getDay() === 0 || date.getDay() === 6);
@@ -206,7 +202,8 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 					dayOfMonth: i,
 					dayOfLunarMonth: LunarLibrary.getDayOfLunarMonth(date),
 					isCurrentMonth: true,
-					isToday: highlightToday && isSameDay(date, today),
+					isToday:
+						highlightToday && IsoUtils.isSameLocalDay(date, today),
 					isWeekend,
 					events: dayEvents,
 				});

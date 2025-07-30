@@ -6,6 +6,7 @@ import {
 	EventType,
 } from "@/src/core/interfaces/Events";
 import { DataConverter } from "@/src/core/utils/dataConverter";
+import { IsoUtils } from "@/src/core/utils/isoUtils";
 import * as React from "react";
 import { Button } from "../Base/Button";
 import { NavTabs } from "../Base/NavTabs";
@@ -73,7 +74,8 @@ export const DataExport: React.FC<DataExportProps> = ({
 
 	// 初始化默认文件名
 	React.useEffect(() => {
-		const today = new Date().toISOString().split("T")[0];
+		// 使用时区安全的今天日期字符串
+		const today = IsoUtils.getTodayLocalDateString();
 		if (activeExportFormat === "json") {
 			setExportFileName(`yearly-glance-events-${today}`);
 		} else if (activeExportFormat === "ics") {

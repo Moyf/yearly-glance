@@ -288,11 +288,37 @@ const translations: BaseMessage = {
 		settingsTab: {
 			name: "設定面板",
 		},
+		dataPortView: {
+			name: "數據管理中心",
+			export: {
+				name: "資料匯出",
+				actions: {
+					download: "匯出",
+					selectAll: "全選",
+					reverseAll: "反選全部",
+					selectCancel: "取消選擇",
+					selectSummary: "已選擇 {{count}} 個事件",
+				},
+				config: {
+					fileName: "檔案名稱",
+					year: "匯出年份",
+				},
+				empty: {
+					text: "暫無事件資料",
+					subtext: "請先新增一些事件再進行匯出操作",
+					noDate: "無日期",
+				},
+			},
+			import: {
+				name: "資料匯入",
+			},
+		},
 	},
 	command: {
 		openYearlyGlance: "開啟年度概覽",
 		openEventManager: "開啟事件管理",
 		openSettingsView: "開啟設定檢視",
+		openDataPortManager: "開啟數據管理中心",
 		addEvent: "新增事件",
 		reloadPlugin: "重新載入外掛程式",
 	},

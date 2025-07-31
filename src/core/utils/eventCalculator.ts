@@ -1,5 +1,10 @@
 import { Lunar, Solar } from "lunar-typescript";
-import { Birthday, CustomEvent, Holiday } from "@/src/core/interfaces/Events";
+import {
+	Birthday,
+	CustomEvent,
+	EventType,
+	Holiday,
+} from "@/src/core/interfaces/Events";
 import { getBirthdayTranslation } from "../../i18n/birthday";
 import { IsoUtils } from "./isoUtils";
 import { LunarLibrary } from "./lunarLibrary";
@@ -9,13 +14,20 @@ import { CalendarType } from "../interfaces/Date";
 export class EventCalculator {
 	/**
 	 * 计算当前选择年份下事件日期数组
+	 * @param eventType 事件类型
 	 * @param isoDate ISO日期字符串
 	 * @param calendar 日期类型
 	 * @param yearSelected 当前选择的年份
 	 * @param isRepeat 是否为重复事件，针对customEvent
 	 * @returns 日期数组
+	 *
+	 * 优化逻辑：
+	 * 1. 对于不重复的自定义事件且有年份：不随yearSelected变动，直接计算出公历日期
+	 * 2. 对于生日：当yearSelected小于出生日期公历的年份时不计算
+	 * 3. 其他情况：正常使用yearSelected来计算
 	 */
 	static calculateDateArr(
+		eventType: EventType,
 		isoDate: string,
 		calendar: CalendarType,
 		yearSelected: number,
@@ -25,8 +37,9 @@ export class EventCalculator {
 
 		const { year, month, day } = IsoUtils.parse(isoDate, calendar);
 
-		// 自定义事件一般ymd齐全，在事件不重复，且有年份的情况下，只需要计算出公历日期
+		// 对于不重复的自定义事件且有年份，只需要计算出公历日期，不随yearSelected变动
 		if (
+			eventType === "customEvent" &&
 			(isRepeat === undefined || isRepeat === false) &&
 			year !== undefined
 		) {
@@ -40,7 +53,24 @@ export class EventCalculator {
 			}
 		}
 
-		// 对于节日和生日，均忽略date本身的year，而使用yearSelected
+		// 对于生日，当yearSelected小于出生日期公历的年份时不计算
+		if (eventType === "birthday" && year !== undefined) {
+			let birthYearInGregorian = year;
+
+			// 如果是农历生日，需要先转换为公历年份进行比较
+			if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {
+				const monthL = calendar === "LUNAR_LEAP" ? -month : month;
+				const lunarBirth = Lunar.fromYmd(year, monthL, day);
+				birthYearInGregorian = lunarBirth.getSolar().getYear();
+			}
+
+			// 如果选择的年份小于出生年份，返回空数组
+			if (yearSelected < birthYearInGregorian) {
+				return [];
+			}
+		}
+
+		// 对于节日、生日以及重复的自定义事件，均忽略date本身的year，而使用yearSelected
 		if (calendar === "GREGORIAN") {
 			return [Solar.fromYmd(yearSelected, month, day).toString()];
 		} else if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {
@@ -106,7 +136,12 @@ export class EventCalculator {
 			isoDate = dongZhi;
 		}
 
-		const dateArr = this.calculateDateArr(isoDate, calendar, yearSelected);
+		const dateArr = this.calculateDateArr(
+			"holiday",
+			isoDate,
+			calendar,
+			yearSelected
+		);
 
 		return {
 			...holiday,
@@ -146,6 +181,7 @@ export class EventCalculator {
 		const isoDate = customEvent.eventDate.isoDate;
 		const calendar = customEvent.eventDate.calendar;
 		const dateArr = this.calculateDateArr(
+			"customEvent",
 			isoDate,
 			calendar,
 			yearSelected,
@@ -179,7 +215,12 @@ export class EventCalculator {
 	static updateBirthdayInfo(birthday: Birthday, yearSelected: number) {
 		const isoDate = birthday.eventDate.isoDate;
 		const calendar = birthday.eventDate.calendar;
-		const dateArr = this.calculateDateArr(isoDate, calendar, yearSelected);
+		const dateArr = this.calculateDateArr(
+			"birthday",
+			isoDate,
+			calendar,
+			yearSelected
+		);
 
 		const { year, month, day } = IsoUtils.parse(isoDate, calendar);
 		const todaySolar = Solar.fromDate(new Date());

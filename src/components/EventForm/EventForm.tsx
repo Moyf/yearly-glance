@@ -92,6 +92,10 @@ export const EventForm: React.FC<EventFormProps> = ({
 	// 第一个输入框的引用，用于自动聚焦
 	const firstInputRef = React.useRef<HTMLInputElement>(null);
 
+	// 表单容器和表单元素的引用，用于键盘快捷键
+	const modalRef = React.useRef<HTMLDivElement>(null);
+	const formRef = React.useRef<HTMLFormElement>(null);
+
 	// 当前选择的事件类型
 	const [currentEventType, setCurrentEventType] =
 		React.useState<EventType>(eventType);
@@ -143,6 +147,29 @@ export const EventForm: React.FC<EventFormProps> = ({
 			firstInputRef.current.focus();
 		}
 	}, []);
+
+	// 处理键盘快捷键提交表单
+	React.useEffect(() => {
+		if (!modalRef.current || !formRef.current) {
+			return;
+		}
+
+		const handleKeyDown = (e: KeyboardEvent) => {
+			// 检查是否按下了 Ctrl+Enter 或 Cmd+Enter
+			if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+				e.preventDefault();
+				formRef.current?.requestSubmit();
+				return;
+			}
+		};
+
+		const modalElement = modalRef.current;
+		modalElement.addEventListener("keydown", handleKeyDown);
+
+		return () => {
+			modalElement.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [formData]); // 依赖 formData，确保 handleSubmit 中使用的是最新的表单数据
 
 	// 处理事件类型切换
 	const handleEventTypeChange = (newEventType: EventType) => {
@@ -198,7 +225,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 	};
 
 	return (
-		<div className="yearly-glance-event-modal">
+		<div className="yearly-glance-event-modal" ref={modalRef}>
 			{allowTypeChange && (
 				<div className="event-type-selector">
 					<NavTabs
@@ -211,7 +238,11 @@ export const EventForm: React.FC<EventFormProps> = ({
 				</div>
 			)}
 
-			<form className="yg-event-form" onSubmit={handleSubmit}>
+			<form
+				className="yg-event-form"
+				ref={formRef}
+				onSubmit={handleSubmit}
+			>
 				{/* 表单标题 */}
 				<h3 className="yg-event-form-title">
 					{isEditing

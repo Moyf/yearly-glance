@@ -46,7 +46,6 @@
 		&:hover {
 			background: var(--background-modifier-hover);
 			color: var(--text-normal);
-			transform: translateY(-1px);
 		}
 
 		&.active {
@@ -54,7 +53,6 @@
 			color: var(--text-normal);
 			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
 				0 2px 6px rgba(0, 0, 0, 0.1);
-			transform: translateY(-1px);
 			z-index: 1;
 
 			&::before {

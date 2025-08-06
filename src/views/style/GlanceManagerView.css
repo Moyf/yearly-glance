@@ -1,0 +1,25 @@
+.yg-manager-view {
+	display: flex;
+	flex-direction: column;
+}
+
+.yg-glance-manager-tabs {
+	margin: auto auto 1rem;
+
+	.yg-glance-manager-nav {
+		padding: unset;
+	}
+
+	.yg-nav-tab {
+		border-radius: unset;
+	}
+}
+
+.yg-glance-manager-content {
+	flex: 1;
+	border-radius: 16px;
+
+	.yg-settings-block {
+		margin-top: 0;
+	}
+}

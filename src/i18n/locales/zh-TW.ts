@@ -144,6 +144,7 @@ const translations: BaseMessage = {
 			name: "概覽管理",
 			events: "事件管理",
 			settings: "外掛設定",
+			dataPort: "數據流轉",
 		},
 		yearlyGlance: {
 			name: "年度概覽",
@@ -290,7 +291,6 @@ const translations: BaseMessage = {
 			},
 		},
 		dataPortView: {
-			name: "數據管理中心",
 			export: {
 				name: "資料匯出",
 				actions: {
@@ -318,7 +318,6 @@ const translations: BaseMessage = {
 	command: {
 		openYearlyGlance: "開啟年度概覽",
 		openGlanceManager: "開啟概覽管理",
-		openDataPortManager: "開啟數據管理中心",
 		addEvent: "新增事件",
 		reloadPlugin: "重新載入外掛程式",
 	},

@@ -6,6 +6,8 @@ import { DataExport } from "./DataExport";
 import { DataImport } from "./DataImport";
 import { YearlyGlanceSettings } from "@/src/core/interfaces/Settings";
 import { t } from "@/src/i18n/i18n";
+import YearlyGlancePlugin from "@/src/main";
+import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
 
 interface DataPortManagerProps {
 	config: YearlyGlanceSettings;
@@ -16,7 +18,23 @@ interface DataPortManagerProps {
 
 type DataPortType = "export" | "import";
 
-export const DataPortManager: React.FC<DataPortManagerProps> = ({
+export const DataPortManagerView: React.FC<{
+	plugin: YearlyGlancePlugin;
+}> = ({ plugin }) => {
+	const { config, updateConfig, events, updateEvents } =
+		useYearlyGlanceConfig(plugin);
+
+	return (
+		<DataPortManager
+			config={config}
+			data={events}
+			onConfigUpdate={updateConfig}
+			onDataImport={updateEvents}
+		/>
+	);
+};
+
+const DataPortManager: React.FC<DataPortManagerProps> = ({
 	config,
 	data,
 	onConfigUpdate,

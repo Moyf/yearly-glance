@@ -144,6 +144,7 @@ const translations: BaseMessage = {
 			name: "Glance manager",
 			events: "Events manager",
 			settings: "Settings",
+			dataPort: "Data port",
 		},
 		yearlyGlance: {
 			name: "Yearly glance",
@@ -292,7 +293,6 @@ const translations: BaseMessage = {
 			},
 		},
 		dataPortView: {
-			name: "Data management center",
 			export: {
 				name: "Export",
 				actions: {
@@ -320,7 +320,6 @@ const translations: BaseMessage = {
 	command: {
 		openYearlyGlance: "Open yearly glance",
 		openGlanceManager: "Open glance manager",
-		openDataPortManager: "Open data management center",
 		addEvent: "Add event",
 		reloadPlugin: "Reload plugin",
 	},

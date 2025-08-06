@@ -144,6 +144,7 @@ const translations: BaseMessage = {
 			name: "概览管理",
 			events: "事件管理",
 			settings: "插件设置",
+			dataPort: "数据流转",
 		},
 		yearlyGlance: {
 			name: "年度概览",
@@ -290,7 +291,6 @@ const translations: BaseMessage = {
 			},
 		},
 		dataPortView: {
-			name: "数据管理中心",
 			export: {
 				name: "数据导出",
 				actions: {
@@ -318,7 +318,6 @@ const translations: BaseMessage = {
 	command: {
 		openYearlyGlance: "打开年度概览",
 		openGlanceManager: "打开概览管理",
-		openDataPortManager: "打开数据管理中心",
 		addEvent: "添加事件",
 		reloadPlugin: "重载插件",
 	},

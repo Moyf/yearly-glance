@@ -84,6 +84,7 @@ export type BaseMessage = {
 			name: string;
 			events: string;
 			settings: string;
+			dataPort: string;
 		};
 		yearlyGlance: {
 			name: string;
@@ -204,7 +205,6 @@ export type BaseMessage = {
 			};
 		};
 		dataPortView: {
-			name: string;
 			export: {
 				name: string;
 				actions: {
@@ -232,7 +232,6 @@ export type BaseMessage = {
 	command: {
 		openYearlyGlance: string;
 		openGlanceManager: string;
-		openDataPortManager: string;
 		addEvent: string;
 		reloadPlugin: string;
 	};

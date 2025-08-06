@@ -157,7 +157,7 @@ const translations: BaseMessage = {
 				clickToShow: "點擊顯示",
 				clickToHide: "點擊隱藏",
 				form: "新增事件",
-				manager: "開啟事件管理器",
+				manager: "開啟概覽管理",
 				limitListHeight: "是否限制清單高度",
 				hideEmptyDates: "是否隱藏空日期",
 				emojiOnTop: "將 emoji 顯示在上方",
@@ -291,8 +291,7 @@ const translations: BaseMessage = {
 	},
 	command: {
 		openYearlyGlance: "開啟年度概覽",
-		openEventManager: "開啟事件管理",
-		openSettingsView: "開啟設定檢視",
+		openGlanceManager: "開啟概覽管理",
 		addEvent: "新增事件",
 		reloadPlugin: "重新載入外掛程式",
 	},

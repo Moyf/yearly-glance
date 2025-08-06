@@ -157,7 +157,7 @@ const translations: BaseMessage = {
 				clickToShow: "Click to show ",
 				clickToHide: "Click to hide ",
 				form: "Add event",
-				manager: "Open event manager",
+				manager: "Open glance manager",
 				limitListHeight: "Limit list height",
 				hideEmptyDates: "Hide empty dates",
 				emojiOnTop: "Display emoji on top",
@@ -293,8 +293,7 @@ const translations: BaseMessage = {
 	},
 	command: {
 		openYearlyGlance: "Open yearly glance",
-		openEventManager: "Open events manager",
-		openSettingsView: "Open settings view",
+		openGlanceManager: "Open glance manager",
 		addEvent: "Add event",
 		reloadPlugin: "Reload plugin",
 	},

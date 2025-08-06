@@ -205,8 +205,7 @@ export type BaseMessage = {
 	};
 	command: {
 		openYearlyGlance: string;
-		openEventManager: string;
-		openSettingsView: string;
+		openGlanceManager: string;
 		addEvent: string;
 		reloadPlugin: string;
 	};

@@ -2,7 +2,7 @@ import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import YearlyGlancePlugin from "@/src/main";
-import { VIEW_TYPE_EVENT_MANAGER } from "@/src/views/EventManagerView";
+import { VIEW_TYPE_GLANCE_MANAGER } from "@/src/views/GlanceManagerView";
 import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
 import {
 	EVENT_TYPE_DEFAULT,
@@ -172,8 +172,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		}
 	};
 
-	const handleEventManager = () => {
-		plugin.openPluginView(VIEW_TYPE_EVENT_MANAGER);
+	const handleGlanceManager = () => {
+		plugin.openPluginView(VIEW_TYPE_GLANCE_MANAGER);
 	};
 	const handleEventForm = () => {
 		plugin.openEventForm("customEvent", {}, false, true);
@@ -803,8 +803,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 								text={t("view.yearlyGlance.actions.manager")}
 							>
 								<button
-									className="actions-button event-manager-button"
-									onClick={handleEventManager}
+									className="actions-button glance-manager-button"
+									onClick={handleGlanceManager}
 								>
 									<span className="button-icon">🗂️</span>
 								</button>

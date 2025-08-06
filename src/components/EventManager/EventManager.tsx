@@ -1,5 +1,4 @@
 import * as React from "react";
-import { createRoot, Root } from "react-dom/client";
 import YearlyGlancePlugin from "@/src/main";
 import {
 	Birthday,
@@ -26,7 +25,9 @@ interface EventManagerViewProps {
 	plugin: YearlyGlancePlugin;
 }
 
-const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
+export const EventManagerView: React.FC<EventManagerViewProps> = ({
+	plugin,
+}) => {
 	const { events, updateEvents } = useYearlyGlanceConfig(plugin);
 	// 激活的标签页
 	const [activeTab, setActiveTab] = React.useState<EventType>("customEvent");
@@ -346,38 +347,3 @@ const EventManagerView: React.FC<EventManagerViewProps> = ({ plugin }) => {
 		</div>
 	);
 };
-
-export class EventManager {
-	private container: HTMLElement;
-	private root: Root | null = null;
-	private plugin: YearlyGlancePlugin;
-
-	constructor(container: HTMLElement, plugin: YearlyGlancePlugin) {
-		this.container = container;
-		this.plugin = plugin;
-	}
-
-	async initialize(plugin: YearlyGlancePlugin) {
-		this.plugin = plugin;
-		this.container.empty();
-		this.root = createRoot(this.container);
-		this.render();
-	}
-
-	render() {
-		if (this.root) {
-			this.root.render(
-				<React.StrictMode>
-					<EventManagerView plugin={this.plugin} />
-				</React.StrictMode>
-			);
-		}
-	}
-
-	destroy() {
-		if (this.root) {
-			this.root.unmount();
-			this.root = null;
-		}
-	}
-}

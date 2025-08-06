@@ -8,7 +8,6 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/core/interfaces/Events";
-import { VIEW_TYPE_EVENT_MANAGER } from "@/src/views/EventManagerView";
 import {
 	EVENT_SEARCH_REQUESTED,
 	EventManagerBus,
@@ -55,7 +54,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 		// 使用延迟确保tooltip已完全关闭
 		setTimeout(() => {
 			// 打开事件管理器视图
-			plugin.openPluginView(VIEW_TYPE_EVENT_MANAGER);
+			plugin.openGlanceManagerWithTab("events");
 
 			// 使用延迟确保事件管理器视图已完全加载
 			setTimeout(() => {

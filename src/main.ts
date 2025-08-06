@@ -124,15 +124,15 @@ export default class YearlyGlancePlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "open-event-manager",
-			name: t("command.openEventManager"),
-			callback: () => this.openPluginView(VIEW_TYPE_EVENT_MANAGER),
+			id: "open-glance-manager",
+			name: t("command.openGlanceManager"),
+			callback: () => this.openPluginView(VIEW_TYPE_GLANCE_MANAGER),
 		});
 
 		this.addCommand({
-			id: "open-settings-view",
-			name: t("command.openSettingsView"),
-			callback: () => this.openPluginView(VIEW_TYPE_SETTINGS),
+			id: "open-data-port-manager",
+			name: t("command.openDataPortManager"),
+			callback: () => this.openPluginView(VIEW_TYPE_DATA_PORT_MANAGER),
 		});
 
 		this.addCommand({
@@ -212,6 +212,47 @@ export default class YearlyGlancePlugin extends Plugin {
 				type: viewType,
 				active: true,
 			});
+
+			this.app.workspace.revealLeaf(leaf);
+		}
+	}
+
+	// 打开管理器视图并指定标签
+	public async openGlanceManagerWithTab(tab: GlanceManagerTab) {
+		// 检查是否已经有打开的管理器视图
+		const existingLeaves = this.app.workspace.getLeavesOfType(
+			VIEW_TYPE_GLANCE_MANAGER
+		);
+
+		if (existingLeaves.length > 0) {
+			// 如果存在，则激活第一个视图并更新标签
+			const leaf = existingLeaves[0];
+			this.app.workspace.revealLeaf(leaf);
+
+			// 确保视图已经加载完成后再更新标签
+			const view = leaf.view as GlanceManagerView;
+			if (view && view.updateActiveTab) {
+				// 使用 setTimeout 确保视图已完全渲染
+				setTimeout(() => {
+					view.updateActiveTab(tab);
+				}, 50);
+			}
+		} else {
+			// 如果不存在，则创建新的视图
+			const leaf = this.app.workspace.getLeaf("tab");
+			await leaf.setViewState({
+				type: VIEW_TYPE_GLANCE_MANAGER,
+				active: true,
+			});
+
+			// 获取视图实例并设置初始标签
+			const view = leaf.view as GlanceManagerView;
+			if (view && view.updateActiveTab) {
+				// 使用 setTimeout 确保视图已完全渲染
+				setTimeout(() => {
+					view.updateActiveTab(tab);
+				}, 100);
+			}
 
 			this.app.workspace.revealLeaf(leaf);
 		}

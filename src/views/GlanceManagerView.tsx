@@ -37,12 +37,12 @@ const GlanceManager = React.forwardRef<
 
 	const tabs = [
 		{
-			label: t("view.eventManager.name"),
+			label: t("view.glanceManager.events"),
 			value: "events" as GlanceManagerTab,
 			icon: <SquareChartGantt size={16} />,
 		},
 		{
-			label: t("view.settingsTab.name"),
+			label: t("view.glanceManager.settings"),
 			value: "settings" as GlanceManagerTab,
 			icon: <Bolt size={16} />,
 		},
@@ -107,7 +107,7 @@ export class GlanceManagerView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		const name = "Glance Manager";
+		const name = t("view.glanceManager.name");
 		const config = this.plugin.getConfig();
 		return config.showEmojiBeforeTabName ? `🗂️ ${name}` : name;
 	}

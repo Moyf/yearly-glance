@@ -140,6 +140,11 @@ const translations: BaseMessage = {
 		},
 	},
 	view: {
+		glanceManager: {
+			name: "Glance manager",
+			events: "Events manager",
+			settings: "Settings",
+		},
 		yearlyGlance: {
 			name: "Yearly glance",
 			yearlyCalendar: "Year calendar",
@@ -172,7 +177,6 @@ const translations: BaseMessage = {
 			},
 		},
 		eventManager: {
-			name: "Event manager",
 			solar: "Solar",
 			lunar: "Lunar",
 			date: "Date",
@@ -286,9 +290,6 @@ const translations: BaseMessage = {
 				name: "Custom event",
 				repeat: "Repeat",
 			},
-		},
-		settingsTab: {
-			name: "Settings panel",
 		},
 	},
 	command: {

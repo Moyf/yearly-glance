@@ -6,9 +6,10 @@ import {
 	YearlyGlanceView,
 } from "./views/YearlyGlanceView";
 import {
-	EventManagerView,
-	VIEW_TYPE_EVENT_MANAGER,
-} from "./views/EventManagerView";
+	GlanceManagerTab,
+	GlanceManagerView,
+	VIEW_TYPE_GLANCE_MANAGER,
+} from "./views/GlanceManagerView";
 import {
 	Birthday,
 	CustomEvent,
@@ -24,7 +25,6 @@ import { t } from "./i18n/i18n";
 import { generateUUID } from "./core/utils/uuid";
 import { MigrateData } from "./core/utils/migrateData";
 import { EventCalculator } from "./core/utils/eventCalculator";
-import { SettingsView, VIEW_TYPE_SETTINGS } from "./views/SettingsView";
 import { IsoUtils } from "./core/utils/isoUtils";
 
 export default class YearlyGlancePlugin extends Plugin {
@@ -107,12 +107,8 @@ export default class YearlyGlancePlugin extends Plugin {
 			return new YearlyGlanceView(leaf, this);
 		});
 
-		this.registerView(VIEW_TYPE_EVENT_MANAGER, (leaf) => {
-			return new EventManagerView(leaf, this);
-		});
-
-		this.registerView(VIEW_TYPE_SETTINGS, (leaf) => {
-			return new SettingsView(leaf, this);
+		this.registerView(VIEW_TYPE_GLANCE_MANAGER, (leaf) => {
+			return new GlanceManagerView(leaf, this);
 		});
 	}
 
@@ -127,12 +123,6 @@ export default class YearlyGlancePlugin extends Plugin {
 			id: "open-glance-manager",
 			name: t("command.openGlanceManager"),
 			callback: () => this.openPluginView(VIEW_TYPE_GLANCE_MANAGER),
-		});
-
-		this.addCommand({
-			id: "open-data-port-manager",
-			name: t("command.openDataPortManager"),
-			callback: () => this.openPluginView(VIEW_TYPE_DATA_PORT_MANAGER),
 		});
 
 		this.addCommand({

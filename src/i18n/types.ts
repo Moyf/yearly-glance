@@ -80,6 +80,11 @@ export type BaseMessage = {
 		};
 	};
 	view: {
+		glanceManager: {
+			name: string;
+			events: string;
+			settings: string;
+		};
 		yearlyGlance: {
 			name: string;
 			yearlyCalendar: string;
@@ -112,7 +117,6 @@ export type BaseMessage = {
 			};
 		};
 		eventManager: {
-			name: string;
 			solar: string;
 			lunar: string;
 			date: string;
@@ -198,9 +202,6 @@ export type BaseMessage = {
 				name: string;
 				repeat: string;
 			};
-		};
-		settingsTab: {
-			name: string;
 		};
 	};
 	command: {

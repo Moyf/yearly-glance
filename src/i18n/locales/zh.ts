@@ -140,6 +140,11 @@ const translations: BaseMessage = {
 		},
 	},
 	view: {
+		glanceManager: {
+			name: "概览管理",
+			events: "事件管理",
+			settings: "插件设置",
+		},
 		yearlyGlance: {
 			name: "年度概览",
 			yearlyCalendar: "年 概览",
@@ -172,7 +177,6 @@ const translations: BaseMessage = {
 			},
 		},
 		eventManager: {
-			name: "事件管理",
 			solar: "公历",
 			lunar: "农历",
 			date: "日期",
@@ -284,9 +288,6 @@ const translations: BaseMessage = {
 				name: "自定义事件",
 				repeat: "重复",
 			},
-		},
-		settingsTab: {
-			name: "设置面板",
 		},
 	},
 	command: {

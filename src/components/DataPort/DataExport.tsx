@@ -262,7 +262,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 			document.body.removeChild(link);
 			URL.revokeObjectURL(url);
 		} catch (error) {
-			alert(`导出失败: ${error.message}`);
+			throw new Error(`导出失败: ${error.message}`);
 		} finally {
 			setIsExporting(false);
 		}
@@ -272,15 +272,15 @@ export const DataExport: React.FC<DataExportProps> = ({
 	const getGroupInfo = (type: EventType) => {
 		const config = {
 			holiday: {
-				title: "节日",
+				title: t("view.yearlyGlance.legend.holiday"),
 				icon: <Sparkles className="group-icon" />,
 			},
 			birthday: {
-				title: "生日",
+				title: t("view.yearlyGlance.legend.birthday"),
 				icon: <Users className="group-icon" />,
 			},
 			customEvent: {
-				title: "自定义事件",
+				title: t("view.yearlyGlance.legend.customEvent"),
 				icon: <Calendar className="group-icon" />,
 			},
 		};
@@ -393,7 +393,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 						disabled={isExporting || selectedEvents.size === 0}
 						variant="primary"
 					>
-						{t("view.dataPortView.export.actions.download")}
+						{t("view.dataPortView.export.actions.handle")}
 					</Button>
 				</div>
 
@@ -409,8 +409,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 				<div className="selection-info">
 					<span>
 						{t("view.dataPortView.export.actions.selectSummary", {
-							count:
-								selectedEvents.size + "/" + allEventIds.length,
+							count: `${selectedEvents.size} / ${allEventIds.length}`,
 						})}
 					</span>
 				</div>

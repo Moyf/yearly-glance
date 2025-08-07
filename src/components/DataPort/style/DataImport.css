@@ -1,0 +1,500 @@
+/* 数据导入组件样式 */
+.yg-data-import {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+
+	.import-area {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 20px;
+	}
+
+	/* 上传区域样式 */
+	.import-upload {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		min-height: 400px;
+		text-align: center;
+		max-width: 500px;
+		padding: 32px;
+		border: 2px dashed var(--background-modifier-border);
+		border-radius: 12px;
+		background: var(--background-secondary);
+		transition: all 0.2s ease;
+	}
+
+	.import-upload:hover:not(.disabled) {
+		border-color: var(--interactive-accent);
+		background: var(--background-modifier-hover);
+	}
+
+	.import-upload.disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.import-upload-header {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.import-upload-icon {
+		color: var(--text-muted);
+	}
+
+	.import-upload-title {
+		margin: 0;
+		color: var(--text-normal);
+		font-size: 18px;
+		font-weight: 600;
+	}
+
+	.import-upload-description {
+		code {
+			background: var(--background-modifier-border);
+		}
+
+		ul {
+			all: unset;
+		}
+	}
+
+	input {
+		display: none;
+	}
+
+	/* 导入预览区域 */
+	.import-preview {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	/* 导入操作区域 */
+	.import-actions {
+		background-color: var(--background-primary);
+		border-radius: 8px;
+		border: 1px solid var(--background-modifier-border);
+
+		.import-actions-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 16px;
+			padding: 16px;
+			background-color: var(--background-secondary);
+			border-bottom: 1px solid var(--background-modifier-border);
+		}
+
+		.import-summary {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			color: var(--text-muted);
+			font-size: 14px;
+		}
+
+		.import-action-buttons {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+	}
+
+	/* 选择控制区域 */
+	.import-selection-controls {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 16px;
+		background-color: var(--background-secondary);
+		border-radius: 8px;
+		border: 1px solid var(--background-modifier-border);
+
+		.selection-info {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			color: var(--text-muted);
+			font-size: 14px;
+		}
+
+		.selection-actions {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+	}
+
+	/* 事件分组列表 */
+	.import-event-groups {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+
+		.import-event-group {
+			border: 1px solid var(--background-modifier-border);
+			border-radius: 8px;
+			background-color: var(--background-primary);
+			overflow: hidden;
+		}
+
+		/* 分组头部 */
+		.import-group-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 12px 16px;
+			background-color: var(--background-secondary);
+			border-bottom: 1px solid var(--background-modifier-border);
+		}
+
+		.group-title {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-weight: 600;
+			font-size: 16px;
+		}
+
+		.group-icon {
+			font-size: 18px;
+		}
+
+		.group-count {
+			font-size: 12px;
+			color: var(--text-muted);
+			background-color: var(--background-modifier-hover);
+			padding: 2px 8px;
+			border-radius: 10px;
+		}
+
+		/* 事件列表 */
+		.import-event-list {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+			gap: 12px;
+			padding: 16px;
+		}
+
+		.import-event-item {
+			display: flex;
+			align-items: flex-start;
+			gap: 12px;
+			padding: 12px;
+			border: 1px solid var(--background-modifier-border);
+			border-radius: 6px;
+			background-color: var(--background-primary);
+			transition: all 0.2s ease;
+			cursor: pointer;
+		}
+
+		.import-event-item:hover {
+			background-color: var(--background-modifier-hover);
+			transform: translateY(-1px);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		.import-event-item.selected {
+			background-color: var(--background-modifier-border-focus);
+			border-color: var(--interactive-accent);
+			box-shadow: 0 0 0 2px rgba(var(--interactive-accent-rgb), 0.2);
+		}
+
+		.event-checkbox {
+			width: 16px;
+			height: 16px;
+			border: 2px solid var(--background-modifier-border);
+			border-radius: 3px;
+			background-color: var(--background-primary);
+			cursor: pointer;
+			position: relative;
+			transition: all 0.2s ease;
+			margin-top: 2px;
+			flex-shrink: 0;
+		}
+
+		.event-checkbox.checked {
+			background-color: var(--interactive-accent);
+			border-color: var(--interactive-accent);
+		}
+
+		.event-checkbox.checked::after {
+			content: "✓";
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			color: white;
+			font-size: 10px;
+			font-weight: bold;
+		}
+
+		.event-info {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.event-title {
+			font-weight: 500;
+			font-size: 14px;
+			color: var(--text-normal);
+			line-height: 1.4;
+		}
+
+		.event-details {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+			color: var(--text-muted);
+		}
+
+		.event-date {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			font-size: 12px;
+		}
+
+		.event-remark {
+			font-size: 12px;
+			font-style: italic;
+		}
+	}
+
+	/* 无效事件区域 */
+	.import-invalid-events {
+		border: 1px solid var(--background-modifier-border);
+		border-radius: 8px;
+		background-color: var(--background-primary);
+		overflow: hidden;
+
+		.invalid-events-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 12px 16px;
+			background-color: var(--background-modifier-error);
+			border-bottom: 1px solid var(--background-modifier-border);
+			cursor: pointer;
+			user-select: none;
+		}
+
+		.invalid-events-header:hover {
+			background-color: var(--background-modifier-error-hover);
+		}
+
+		.invalid-events-title {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-weight: 600;
+			font-size: 16px;
+		}
+
+		.warning-icon {
+			color: var(--text-warning);
+		}
+
+		.toggle-icon {
+			transition: transform 0.2s ease;
+		}
+
+		.invalid-event-list {
+			padding: 16px;
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+		}
+
+		.invalid-event-item {
+			padding: 12px;
+			border: 1px solid var(--background-modifier-border-hover);
+			border-radius: 6px;
+			background-color: var(--background-secondary);
+		}
+
+		.event-warnings {
+			margin-top: 8px;
+			color: var(--text-error);
+			font-size: 12px;
+		}
+
+		.warning-text {
+			margin: 2px 0;
+		}
+	}
+
+	/* 空状态 */
+	.import-empty-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 60px 20px;
+		text-align: center;
+		color: var(--text-muted);
+		background-color: var(--background-secondary);
+		border-radius: 8px;
+		border: 1px solid var(--background-modifier-border);
+	}
+
+	.empty-icon {
+		font-size: 48px;
+		margin-bottom: 16px;
+	}
+
+	.empty-text {
+		font-size: 18px;
+		font-weight: 500;
+		margin-bottom: 8px;
+		color: var(--text-normal);
+	}
+
+	.empty-subtext {
+		font-size: 14px;
+		max-width: 400px;
+	}
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+	.yg-data-import {
+		padding: 12px;
+		gap: 16px;
+
+		.import-upload {
+			min-height: 300px;
+			padding: 24px;
+			max-width: none;
+		}
+
+		/* 导入操作区域 */
+		.import-actions {
+			.import-actions-header {
+				flex-direction: column;
+				gap: 12px;
+				align-items: stretch;
+
+				.import-summary {
+					justify-content: center;
+					text-align: center;
+				}
+
+				.import-action-buttons {
+					justify-content: center;
+				}
+			}
+		}
+
+		/* 选择控制区域 */
+		.import-selection-controls {
+			flex-direction: column;
+			gap: 12px;
+			align-items: stretch;
+
+			.selection-info {
+				justify-content: center;
+			}
+
+			.selection-actions {
+				justify-content: center;
+				flex-wrap: wrap;
+			}
+		}
+
+		/* 事件分组列表 */
+		.import-event-groups {
+			.import-group-header {
+				flex-direction: column;
+				gap: 8px;
+				align-items: stretch;
+
+				.group-title {
+					justify-content: center;
+				}
+			}
+
+			.import-event-list {
+				grid-template-columns: 1fr;
+				gap: 8px;
+				padding: 12px;
+			}
+
+			.import-event-item {
+				gap: 8px;
+			}
+		}
+
+		/* 无效事件区域 */
+		.import-invalid-events {
+			.invalid-event-list {
+				padding: 12px;
+				gap: 8px;
+			}
+
+			.invalid-event-item {
+				padding: 10px;
+			}
+		}
+	}
+}
+
+/* 小屏幕设备额外调整 */
+@media (max-width: 480px) {
+	.yg-data-import {
+		padding: 8px;
+		gap: 12px;
+
+		.import-upload {
+			min-height: 250px;
+			padding: 20px;
+		}
+
+		.import-actions {
+			.import-actions-header {
+				padding: 12px;
+			}
+		}
+
+		.import-selection-controls {
+			padding: 12px;
+
+			.selection-actions {
+				gap: 6px;
+			}
+		}
+
+		.import-event-groups {
+			gap: 12px;
+
+			.import-group-header {
+				padding: 10px 12px;
+			}
+
+			.import-event-item {
+				padding: 10px;
+			}
+
+			.import-event-list {
+				padding: 8px;
+			}
+		}
+
+		.import-invalid-events {
+			.invalid-events-header {
+				padding: 10px 12px;
+			}
+
+			.invalid-event-list {
+				padding: 8px;
+			}
+		}
+	}
+}

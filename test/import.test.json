@@ -1,0 +1,48 @@
+{
+	"holidays": [
+		{
+			"text": "情人节",
+			"userInput": {
+				"input": "02-14",
+				"calendar": "LUNAR"
+			}
+		},
+		{
+			"text": "缺失日期事件",
+			"userInput": {
+				"calendar": "LUNAR"
+			}
+		}
+	],
+	"birthdays": [
+		{
+			"text": "公历生日",
+			"userInput": {
+				"input": "03-15",
+				"calendar": "GREGORIAN"
+			}
+		},
+		{
+			"text": "农历生日",
+			"userInput": {
+				"input": "07-20",
+				"calendar": "LUNAR"
+			}
+		},
+		{
+			"userInput": {
+				"input": "12-25"
+			}
+		}
+	],
+	"customEvents": [
+		{
+			"text": "自定义重复事件",
+			"userInput": {
+				"input": "10-31",
+				"calendar": "GREGORIAN"
+			},
+			"isRepeat": true
+		}
+	]
+}

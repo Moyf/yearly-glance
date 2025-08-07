@@ -294,7 +294,7 @@ const translations: BaseMessage = {
 			export: {
 				name: "資料匯出",
 				actions: {
-					download: "匯出",
+					handle: "匯出選中事件",
 					selectAll: "全選",
 					reverseAll: "反選全部",
 					selectCancel: "取消選擇",
@@ -312,6 +312,36 @@ const translations: BaseMessage = {
 			},
 			import: {
 				name: "資料匯入",
+				actions: {
+					reset: "重新選擇文件",
+					handle: "導入選中事件",
+					selectAll: "全選",
+					reverseAll: "反選全部",
+					selectCancel: "取消選擇",
+					selectSummary: "已選擇 {{count}} 個事件",
+					parseSummary:
+						"發現 {{validCount}} 個有效事件，{{invalidCount}} 個無效事件",
+				},
+				type: {
+					json: {
+						title: "JSON 檔案匯入",
+						message:
+							"<ul>" +
+							"<li>文件必须为 JSON 格式</li>" +
+							"<li>事件必须包含 <code>text</code> 和 <code>userInput</code> 字段</li>" +
+							"<li>支持 <code>holidays</code>、<code>birthdays</code>、<code>customEvents</code> 三种事件类型</li>" +
+							"<ul>",
+					},
+				},
+				empty: {
+					text: "未找到可匯入的事件",
+					subtext: "請檢查檔案內容或檔案格式",
+				},
+				warn: {
+					invalidEvents: "無效事件",
+					nullText: "缺少事件名稱",
+					nullDate: "缺少使用者輸入的日期",
+				},
 			},
 		},
 	},

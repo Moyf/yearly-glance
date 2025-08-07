@@ -208,7 +208,7 @@ export type BaseMessage = {
 			export: {
 				name: string;
 				actions: {
-					download: string;
+					handle: string;
 					selectAll: string;
 					reverseAll: string;
 					selectCancel: string;
@@ -226,6 +226,30 @@ export type BaseMessage = {
 			};
 			import: {
 				name: string;
+				type: {
+					json: {
+						title: string;
+						message: string;
+					};
+				};
+				actions: {
+					reset: string;
+					handle: string;
+					selectAll: string;
+					reverseAll: string;
+					selectCancel: string;
+					selectSummary: string;
+					parseSummary: string;
+				};
+				empty: {
+					text: string;
+					subtext: string;
+				};
+				warn: {
+					invalidEvents: string;
+					nullText: string;
+					nullDate: string;
+				};
 			};
 		};
 	};

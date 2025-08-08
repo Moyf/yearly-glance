@@ -84,6 +84,7 @@ export type BaseMessage = {
 			name: string;
 			events: string;
 			settings: string;
+			dataPort: string;
 		};
 		yearlyGlance: {
 			name: string;
@@ -201,6 +202,54 @@ export type BaseMessage = {
 			customEvent: {
 				name: string;
 				repeat: string;
+			};
+		};
+		dataPortView: {
+			export: {
+				name: string;
+				actions: {
+					handle: string;
+					selectAll: string;
+					reverseAll: string;
+					selectCancel: string;
+					selectSummary: string;
+				};
+				config: {
+					fileName: string;
+					year: string;
+				};
+				empty: {
+					text: string;
+					subtext: string;
+					noDate: string;
+				};
+			};
+			import: {
+				name: string;
+				type: {
+					json: {
+						title: string;
+						message: string;
+					};
+				};
+				actions: {
+					reset: string;
+					handle: string;
+					selectAll: string;
+					reverseAll: string;
+					selectCancel: string;
+					selectSummary: string;
+					parseSummary: string;
+				};
+				empty: {
+					text: string;
+					subtext: string;
+				};
+				warn: {
+					invalidEvents: string;
+					nullText: string;
+					nullDate: string;
+				};
 			};
 		};
 	};

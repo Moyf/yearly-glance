@@ -144,6 +144,7 @@ const translations: BaseMessage = {
 			name: "Glance manager",
 			events: "Events manager",
 			settings: "Settings",
+			dataPort: "Data port",
 		},
 		yearlyGlance: {
 			name: "Yearly glance",
@@ -289,6 +290,60 @@ const translations: BaseMessage = {
 			customEvent: {
 				name: "Custom event",
 				repeat: "Repeat",
+			},
+		},
+		dataPortView: {
+			export: {
+				name: "Export",
+				actions: {
+					handle: "Export selected events",
+					selectAll: "Select all",
+					reverseAll: "Reverse all",
+					selectCancel: "Cancel selection",
+					selectSummary: "Selected {{count}} events",
+				},
+				config: {
+					fileName: "Export file name",
+					year: "Export year",
+				},
+				empty: {
+					text: "No data to export",
+					subtext: "Please add events first",
+					noDate: "No date",
+				},
+			},
+			import: {
+				name: "Import",
+				actions: {
+					reset: "Re-select file",
+					handle: "Import selected events",
+					selectAll: "Select all",
+					reverseAll: "Reverse all",
+					selectCancel: "Cancel selection",
+					selectSummary: "Selected {{count}} events",
+					parseSummary:
+						"Found {{validCount}} valid events, {{invalidCount}} invalid events",
+				},
+				type: {
+					json: {
+						title: "JSON File Import",
+						message:
+							"<ul>" +
+							"<li>File must be in JSON format</li>" +
+							"<li>Events must contain <code>text</code> and <code>userInput</code> fields</li>" +
+							"<li>Supports three event types: <code>holidays</code>, <code>birthdays</code>, <code>customEvents</code></li>" +
+							"<ul>",
+					},
+				},
+				empty: {
+					text: "No importable events found",
+					subtext: "Please check file content or file format",
+				},
+				warn: {
+					invalidEvents: "Invalid events",
+					nullText: "Missing event text",
+					nullDate: "Missing user input date",
+				},
 			},
 		},
 	},

@@ -144,6 +144,7 @@ const translations: BaseMessage = {
 			name: "概览管理",
 			events: "事件管理",
 			settings: "插件设置",
+			dataPort: "数据流转",
 		},
 		yearlyGlance: {
 			name: "年度概览",
@@ -287,6 +288,60 @@ const translations: BaseMessage = {
 			customEvent: {
 				name: "自定义事件",
 				repeat: "重复",
+			},
+		},
+		dataPortView: {
+			export: {
+				name: "数据导出",
+				actions: {
+					handle: "导出选中事件",
+					selectAll: "全选",
+					reverseAll: "反选全部",
+					selectCancel: "取消选择",
+					selectSummary: "已选择 {{count}} 个事件",
+				},
+				config: {
+					fileName: "文件名",
+					year: "导出年份",
+				},
+				empty: {
+					text: "暂无事件数据",
+					subtext: "请先添加一些事件再进行导出操作",
+					noDate: "无日期",
+				},
+			},
+			import: {
+				name: "数据导入",
+				actions: {
+					reset: "重新选择文件",
+					handle: "导入选中事件",
+					selectAll: "全选",
+					reverseAll: "反选全部",
+					selectCancel: "取消选择",
+					selectSummary: "已选择 {{count}} 个事件",
+					parseSummary:
+						"发现 {{validCount}} 个有效事件, {{invalidCount}} 个无效事件",
+				},
+				type: {
+					json: {
+						title: "JSON 文件导入",
+						message:
+							"<ul>" +
+							"<li>文件必须为 JSON 格式</li>" +
+							"<li>事件必须包含 <code>text</code> 和 <code>userInput</code> 字段</li>" +
+							"<li>支持 <code>holidays</code>、<code>birthdays</code>、<code>customEvents</code> 三种事件类型</li>" +
+							"<ul>",
+					},
+				},
+				empty: {
+					text: "未找到可导入的事件",
+					subtext: "请检查文件内容或文件格式",
+				},
+				warn: {
+					invalidEvents: "无效事件",
+					nullText: "缺少事件名称",
+					nullDate: "缺少用户输入的日期",
+				},
 			},
 		},
 	},

@@ -96,7 +96,7 @@ export class EventCalculator {
 				dateArr.push(lunarLast.getSolar().toString());
 			}
 
-			return dateArr;
+			return dateArr.sort((a, b) => a.localeCompare(b));
 		} else {
 			return [];
 		}

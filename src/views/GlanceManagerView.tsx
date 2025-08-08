@@ -5,13 +5,14 @@ import YearlyGlancePlugin from "../main";
 import { t } from "../i18n/i18n";
 import { NavTabs } from "../components/Base/NavTabs";
 import "./style/GlanceManagerView.css";
-import { Bolt, SquareChartGantt } from "lucide-react";
+import { Bolt, Database, SquareChartGantt } from "lucide-react";
 import { EventManagerView } from "../components/EventManager/EventManager";
 import { ViewSettings } from "../components/Settings/ViewSettings";
+import { DataPortManagerView } from "../components/DataPort/DataPortManager";
 
 export const VIEW_TYPE_GLANCE_MANAGER = "yearly-glance-manager-view";
 
-export type GlanceManagerTab = "events" | "settings";
+export type GlanceManagerTab = "events" | "settings" | "dataPort";
 
 interface GlanceManagerProps {
 	plugin: YearlyGlancePlugin;
@@ -42,6 +43,11 @@ const GlanceManager = React.forwardRef<
 			icon: <SquareChartGantt size={16} />,
 		},
 		{
+			label: t("view.glanceManager.dataPort"),
+			value: "dataPort" as GlanceManagerTab,
+			icon: <Database size={16} />,
+		},
+		{
 			label: t("view.glanceManager.settings"),
 			value: "settings" as GlanceManagerTab,
 			icon: <Bolt size={16} />,
@@ -58,6 +64,8 @@ const GlanceManager = React.forwardRef<
 						<ViewSettings plugin={plugin} />
 					</div>
 				);
+			case "dataPort":
+				return <DataPortManagerView plugin={plugin} />;
 			default:
 				return <></>;
 		}

@@ -572,6 +572,54 @@ export const DataImport: React.FC<DataImportProps> = ({
 							{parse(
 								t("view.dataPortView.import.type.json.message")
 							)}
+							<pre>
+								{`{
+  "holidays": [
+    {
+      "id": "holiday-id", // optional
+      "text": "holiday name",
+      "userInput": {
+        "input": "1949-10-01",
+        "calendar": "Gregorian"
+      },
+      "emoji": "🎉", // optional
+      "color": "#ff0000", // optional
+      "remark": "holiday remark", // optional
+      "isHidden": false, // optional
+      "foundDate": "1949-10-01" // optional
+    }
+  ],
+  "birthdays": [
+    {
+      "id": "birthday-id", // optional
+      "text": "person name", 
+      "userInput": {
+        "input": "1990-01-01",
+        "calendar": "Gregorian"
+      },
+      "emoji": "🎂", // optional
+      "color": "#00ff00", // optional
+      "remark": "birthday remark", // optional
+      "isHidden": false // optional
+    }
+  ],
+  "customEvents": [
+    {
+      "id": "custom-event-id", // optional
+      "text": "event name",
+      "userInput": {
+        "input": "2023-12-25", 
+        "calendar": "Gregorian"
+      },
+      "emoji": "📌", // optional
+      "color": "#0000ff", // optional
+      "remark": "event remark", // optional
+      "isHidden": false, // optional
+      "isRepeat": false // optional
+    }
+  ]
+}`}
+							</pre>
 						</CalloutBlock>
 					</ImportUpload>
 				</div>

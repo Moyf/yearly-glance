@@ -8,22 +8,24 @@
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 		gap: 20px;
+		width: 100%;
 	}
 
 	/* 上传区域样式 */
 	.import-upload {
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
 		align-items: center;
 		min-height: 400px;
-		text-align: center;
-		max-width: 500px;
+		text-align: left;
+		max-width: 600px;
+		width: 100%;
 		padding: 32px;
 		border: 2px dashed var(--background-modifier-border);
 		border-radius: 12px;
 		background: var(--background-secondary);
 		transition: all 0.2s ease;
+		gap: 16px;
 	}
 
 	.import-upload:hover:not(.disabled) {
@@ -39,28 +41,126 @@
 	.import-upload-header {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		justify-content: center;
+		gap: 12px;
+		width: 100%;
 	}
 
 	.import-upload-icon {
-		color: var(--text-muted);
+		color: var(--interactive-accent);
+		opacity: 0.8;
 	}
 
 	.import-upload-title {
 		margin: 0;
 		color: var(--text-normal);
-		font-size: 18px;
+		font-size: 20px;
 		font-weight: 600;
+		text-align: center;
 	}
 
 	.import-upload-description {
-		code {
-			background: var(--background-modifier-border);
+		width: 100%;
+		margin: 0;
+		flex: 1;
+
+		/* 调用块样式优化 */
+		.yg-callout {
+			margin: 0;
+			font-size: 14px;
+			line-height: 1.5;
+			width: 100%;
+
+			/* 调用块标题区域 */
+			.yg-callout-title {
+				margin-bottom: 12px;
+				font-weight: 500;
+				justify-content: flex-start;
+			}
+
+			/* 调用块内容区域 */
+			.yg-callout-content {
+				overflow-x: auto;
+			}
 		}
 
+		/* 代码块样式优化 */
+		pre {
+			background: var(--background-modifier-border);
+			border: 1px solid var(--background-modifier-border-hover);
+			border-radius: 6px;
+			padding: 16px;
+			margin: 12px 0 0 0;
+			font-family: var(--font-monospace);
+			font-size: 12px;
+			line-height: 1.4;
+			color: var(--text-normal);
+			overflow-x: auto;
+			white-space: pre;
+			max-height: 300px;
+			overflow-y: auto;
+			width: 100%;
+			box-sizing: border-box;
+
+			/* 滚动条样式 */
+			&::-webkit-scrollbar {
+				width: 6px;
+				height: 6px;
+			}
+
+			&::-webkit-scrollbar-track {
+				background: transparent;
+			}
+
+			&::-webkit-scrollbar-thumb {
+				background: var(--background-modifier-border-hover);
+				border-radius: 3px;
+			}
+
+			&::-webkit-scrollbar-thumb:hover {
+				background: var(--background-modifier-border-focus);
+			}
+		}
+
+		/* 内联代码样式 */
+		code {
+			background: var(--background-modifier-border);
+			padding: 2px 4px;
+			border-radius: 3px;
+			font-family: var(--font-monospace);
+			font-size: 13px;
+		}
+
+		/* 列表样式重置 */
 		ul {
 			all: unset;
+			display: block;
+			margin: 8px 0;
+			padding-left: 20px;
+
+			li {
+				display: list-item;
+				list-style-type: disc;
+				margin: 4px 0;
+				line-height: 1.4;
+			}
 		}
+
+		/* 响应式优化 */
+		@media (max-width: 600px) {
+			pre {
+				font-size: 11px;
+				padding: 12px;
+				max-height: 250px;
+			}
+		}
+	}
+
+	/* 上传按钮区域样式 */
+	.import-upload .yg-button {
+		margin-top: 16px;
+		min-width: 160px;
+		align-self: center;
 	}
 
 	input {

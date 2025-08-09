@@ -142,9 +142,9 @@ const translations: BaseMessage = {
 	view: {
 		glanceManager: {
 			name: "Glance manager",
-			events: "Events manager",
+			events: "Events",
 			settings: "Settings",
-			dataPort: "Data port",
+			dataPort: "Data",
 		},
 		yearlyGlance: {
 			name: "Yearly glance",
@@ -298,8 +298,8 @@ const translations: BaseMessage = {
 				actions: {
 					handle: "Export selected events",
 					selectAll: "Select all",
-					reverseAll: "Reverse all",
-					selectCancel: "Cancel selection",
+					reverseAll: "Deselect all",
+					selectCancel: "Deselect ",
 					selectSummary: "Selected {{count}} events",
 				},
 				config: {
@@ -318,8 +318,8 @@ const translations: BaseMessage = {
 					reset: "Re-select file",
 					handle: "Import selected events",
 					selectAll: "Select all",
-					reverseAll: "Reverse all",
-					selectCancel: "Cancel selection",
+					reverseAll: "Deselect all",
+					selectCancel: "Deselect ",
 					selectSummary: "Selected {{count}} events",
 					parseSummary:
 						"Found {{validCount}} valid events, {{invalidCount}} invalid events",

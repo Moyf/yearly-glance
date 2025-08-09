@@ -1,3 +1,4 @@
+import { t } from "@/src/i18n/i18n";
 import {
 	ImportJson,
 	ImportJsonEvent,
@@ -71,7 +72,7 @@ export class ImportJsonProcessor {
 
 		// 检查必需字段
 		if (!event.text || event.text.trim() === "") {
-			warnings.push("缺少事件文本");
+			warnings.push(t("view.dataPortView.import.warn.nullText"));
 		}
 
 		if (
@@ -79,7 +80,7 @@ export class ImportJsonProcessor {
 			!event.userInput.input ||
 			event.userInput.input.trim() === ""
 		) {
-			warnings.push("缺少用户输入的日期");
+			warnings.push(t("view.dataPortView.import.warn.nullDate"));
 		}
 
 		return warnings.length > 0 ? warnings.join("\n") : undefined;

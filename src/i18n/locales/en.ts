@@ -318,7 +318,7 @@ const translations: BaseMessage = {
 			import: {
 				name: "Import",
 				actions: {
-					reset: "Re-select file",
+					reset: "Reset selection",
 					handle: "Import selected events",
 					parseSummary:
 						"Found {{validCount}} valid events, {{invalidCount}} invalid events",

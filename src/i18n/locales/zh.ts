@@ -316,7 +316,7 @@ const translations: BaseMessage = {
 			import: {
 				name: "数据导入",
 				actions: {
-					reset: "重新选择文件",
+					reset: "重新选择导入",
 					handle: "导入选中事件",
 					parseSummary:
 						"发现 {{validCount}} 个有效事件, {{invalidCount}} 个无效事件",

@@ -214,7 +214,7 @@
 
 	/* 无效事件区域 */
 	.import-invalid-events {
-		border: 1px solid var(--background-modifier-border);
+		border: 1px solid var(--background-modifier-error);
 		border-radius: 8px;
 		background-color: var(--background-primary);
 		overflow: hidden;
@@ -224,14 +224,9 @@
 			justify-content: space-between;
 			align-items: center;
 			padding: 12px 16px;
-			background-color: var(--background-modifier-error);
-			border-bottom: 1px solid var(--background-modifier-border);
+			border-bottom: 1px solid var(--background-modifier-error);
 			cursor: pointer;
 			user-select: none;
-		}
-
-		.invalid-events-header:hover {
-			background-color: var(--background-modifier-error-hover);
 		}
 
 		.invalid-events-title {

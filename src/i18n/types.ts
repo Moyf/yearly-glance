@@ -205,13 +205,17 @@ export type BaseMessage = {
 			};
 		};
 		dataPortView: {
+			common: {
+				actions: {
+					selectAll: string;
+					reverseAll: string;
+					selectSummary: string;
+				};
+			};
 			export: {
 				name: string;
 				actions: {
 					handle: string;
-					selectAll: string;
-					reverseAll: string;
-					selectSummary: string;
 				};
 				config: {
 					fileName: string;
@@ -229,14 +233,13 @@ export type BaseMessage = {
 					json: {
 						title: string;
 						message: string;
+						upload: string;
+						paste: string;
 					};
 				};
 				actions: {
 					reset: string;
 					handle: string;
-					selectAll: string;
-					reverseAll: string;
-					selectSummary: string;
 					parseSummary: string;
 				};
 				empty: {

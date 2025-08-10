@@ -293,13 +293,17 @@ const translations: BaseMessage = {
 			},
 		},
 		dataPortView: {
+			common: {
+				actions: {
+					selectAll: "Select all ",
+					reverseAll: "Deselect all ",
+					selectSummary: "Selected {{count}} events",
+				},
+			},
 			export: {
 				name: "Export",
 				actions: {
 					handle: "Export selected events",
-					selectAll: "Select all ",
-					reverseAll: "Deselect all ",
-					selectSummary: "Selected {{count}} events",
 				},
 				config: {
 					fileName: "Export file name",
@@ -316,9 +320,6 @@ const translations: BaseMessage = {
 				actions: {
 					reset: "Re-select file",
 					handle: "Import selected events",
-					selectAll: "Select all ",
-					reverseAll: "Deselect all ",
-					selectSummary: "Selected {{count}} events",
 					parseSummary:
 						"Found {{validCount}} valid events, {{invalidCount}} invalid events",
 				},
@@ -331,6 +332,8 @@ const translations: BaseMessage = {
 							"<li>Events must contain <code>text</code> and <code>userInput</code> fields</li>" +
 							"<li>Supports three event types: <code>holidays</code>, <code>birthdays</code>, <code>customEvents</code></li>" +
 							"<ul>",
+						upload: "Import JSON file",
+						paste: "Paste JSON content",
 					},
 				},
 				empty: {

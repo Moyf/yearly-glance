@@ -291,13 +291,17 @@ const translations: BaseMessage = {
 			},
 		},
 		dataPortView: {
+			common: {
+				actions: {
+					selectAll: "全選",
+					reverseAll: "反選全部",
+					selectSummary: "已選擇 {{count}} 個事件",
+				},
+			},
 			export: {
 				name: "資料匯出",
 				actions: {
 					handle: "匯出選中事件",
-					selectAll: "全選",
-					reverseAll: "反選全部",
-					selectSummary: "已選擇 {{count}} 個事件",
 				},
 				config: {
 					fileName: "檔案名稱",
@@ -314,9 +318,6 @@ const translations: BaseMessage = {
 				actions: {
 					reset: "重新選擇文件",
 					handle: "導入選中事件",
-					selectAll: "全選",
-					reverseAll: "反選全部",
-					selectSummary: "已選擇 {{count}} 個事件",
 					parseSummary:
 						"發現 {{validCount}} 個有效事件，{{invalidCount}} 個無效事件",
 				},
@@ -329,6 +330,8 @@ const translations: BaseMessage = {
 							"<li>事件必须包含 <code>text</code> 和 <code>userInput</code> 字段</li>" +
 							"<li>支持 <code>holidays</code>、<code>birthdays</code>、<code>customEvents</code> 三种事件类型</li>" +
 							"<ul>",
+						upload: "導入 JSON 文件",
+						paste: "粘貼 JSON 內容",
 					},
 				},
 				empty: {

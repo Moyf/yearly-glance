@@ -377,7 +377,7 @@ export const DataImport: React.FC<DataImportProps> = ({
 							<div className="selection-info">
 								<span>
 									{t(
-										"view.dataPortView.import.actions.selectSummary",
+										"view.dataPortView.common.actions.selectSummary",
 										{
 											count: `${selectedValidEvents.size} / ${allValidEventIds.length}`,
 										}
@@ -399,10 +399,10 @@ export const DataImport: React.FC<DataImportProps> = ({
 								>
 									{isAllSelected
 										? t(
-												"view.dataPortView.import.actions.reverseAll"
+												"view.dataPortView.common.actions.reverseAll"
 										  )
 										: t(
-												"view.dataPortView.import.actions.selectAll"
+												"view.dataPortView.common.actions.selectAll"
 										  )}
 								</Button>
 
@@ -447,10 +447,10 @@ export const DataImport: React.FC<DataImportProps> = ({
 											>
 												{hasSelectedInGroup
 													? t(
-															"view.dataPortView.import.actions.reverseAll"
+															"view.dataPortView.common.actions.reverseAll"
 													  )
 													: t(
-															"view.dataPortView.import.actions.selectAll"
+															"view.dataPortView.common.actions.selectAll"
 													  )}
 												{groupInfo.title}
 											</Button>
@@ -509,10 +509,10 @@ export const DataImport: React.FC<DataImportProps> = ({
 													>
 														{isGroupSelected(type)
 															? t(
-																	"view.dataPortView.export.actions.reverseAll"
+																	"view.dataPortView.common.actions.reverseAll"
 															  )
 															: t(
-																	"view.dataPortView.export.actions.selectAll"
+																	"view.dataPortView.common.actions.selectAll"
 															  )}
 													</Button>
 												</div>

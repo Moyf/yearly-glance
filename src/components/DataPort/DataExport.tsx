@@ -408,7 +408,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 			<div className="export-selection-controls">
 				<div className="selection-info">
 					<span>
-						{t("view.dataPortView.export.actions.selectSummary", {
+						{t("view.dataPortView.common.actions.selectSummary", {
 							count: `${selectedEvents.size} / ${allEventIds.length}`,
 						})}
 					</span>
@@ -427,8 +427,8 @@ export const DataExport: React.FC<DataExportProps> = ({
 						onClick={handleSelectAll}
 					>
 						{isAllSelected
-							? t("view.dataPortView.export.actions.reverseAll")
-							: t("view.dataPortView.export.actions.selectAll")}
+							? t("view.dataPortView.common.actions.reverseAll")
+							: t("view.dataPortView.common.actions.selectAll")}
 					</Button>
 
 					{/* 分类选择控制 */}
@@ -461,10 +461,10 @@ export const DataExport: React.FC<DataExportProps> = ({
 							>
 								{hasSelectedInGroup
 									? t(
-											"view.dataPortView.export.actions.reverseAll"
+											"view.dataPortView.common.actions.reverseAll"
 									  )
 									: t(
-											"view.dataPortView.export.actions.selectAll"
+											"view.dataPortView.common.actions.selectAll"
 									  )}
 								{groupInfo.title}
 							</Button>
@@ -508,10 +508,10 @@ export const DataExport: React.FC<DataExportProps> = ({
 									>
 										{isGroupSelected(type)
 											? t(
-													"view.dataPortView.export.actions.reverseAll"
+													"view.dataPortView.common.actions.reverseAll"
 											  )
 											: t(
-													"view.dataPortView.export.actions.selectAll"
+													"view.dataPortView.common.actions.selectAll"
 											  )}
 									</Button>
 								</div>

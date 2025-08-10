@@ -1,0 +1,117 @@
+/* Pre Component Styles */
+.yg-pre-wrapper {
+	position: relative;
+	margin: 1rem 0;
+}
+
+.yg-pre-copy-button {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	background: var(--background-modifier-border);
+	border: none;
+	border-radius: 4px;
+	padding: 0.25rem;
+	cursor: pointer;
+	opacity: 0;
+	transition: opacity 0.2s ease, background-color 0.2s ease;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--text-muted);
+}
+
+.yg-pre-wrapper:hover .yg-pre-copy-button {
+	opacity: 1;
+}
+
+.yg-pre-copy-button:hover {
+	background: var(--background-modifier-hover);
+	color: var(--text-normal);
+}
+
+.yg-pre-copy-button.copied {
+	opacity: 1;
+	background: var(--color-green);
+	color: var(--text-on-accent);
+}
+
+.yg-pre {
+	background: var(--background-primary-alt);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	padding: 1rem;
+	margin: 0;
+	overflow-x: auto;
+	font-family: var(--font-monospace);
+	font-size: 0.875rem;
+	line-height: 1.5;
+	color: var(--text-normal);
+	white-space: pre;
+	position: relative;
+}
+
+/* Obsidian compatibility */
+.yg-pre code {
+	background: transparent;
+	border: none;
+	padding: 0;
+	font-family: inherit;
+	font-size: inherit;
+	color: inherit;
+}
+
+/* Language indicator (optional) */
+.yg-pre.language-json::before,
+.yg-pre.language-javascript::before,
+.yg-pre.language-typescript::before,
+.yg-pre.language-css::before,
+.yg-pre.language-html::before {
+	content: attr(data-language);
+	position: absolute;
+	top: 0.25rem;
+	left: 0.5rem;
+	font-size: 0.75rem;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	font-weight: 500;
+}
+
+/* Dark mode adjustments */
+.theme-dark .yg-pre {
+	background: var(--background-secondary);
+	border-color: var(--background-modifier-border);
+}
+
+/* Scrollbar styling for pre content */
+.yg-pre::-webkit-scrollbar {
+	height: 6px;
+}
+
+.yg-pre::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.yg-pre::-webkit-scrollbar-thumb {
+	background: var(--scrollbar-thumb-bg);
+	border-radius: 3px;
+}
+
+.yg-pre::-webkit-scrollbar-thumb:hover {
+	background: var(--scrollbar-thumb-bg-hover);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.yg-pre {
+		font-size: 0.8rem;
+		padding: 0.75rem;
+	}
+
+	.yg-pre-copy-button {
+		top: 0.25rem;
+		right: 0.25rem;
+		padding: 0.2rem;
+	}
+}

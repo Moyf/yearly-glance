@@ -1,0 +1,193 @@
+/* 粘贴弹出框样式 */
+.yg-paste-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: var(--background-modifier-cover);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: var(--layer-modal);
+	backdrop-filter: blur(var(--blur-radius, 2px));
+
+	.paste-modal {
+		background: var(--background-primary);
+		border: var(--border-width) solid var(--background-modifier-border);
+		border-radius: var(--radius-m);
+		box-shadow: var(--shadow-l);
+		width: 90%;
+		max-width: var(--modal-max-width, 600px);
+		max-height: 80vh;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		animation: modal-appear 0.15s ease-out;
+	}
+
+	.paste-modal-title {
+		display: flex;
+		align-items: center;
+		gap: var(--size-4-2);
+		color: var(--text-normal);
+		font-size: var(--font-ui-larger);
+		font-weight: var(--font-semibold);
+		margin: 0;
+		padding: 0;
+	}
+
+	.paste-modal-content {
+		padding: var(--size-4-6);
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: var(--size-4-4);
+		overflow-y: auto;
+		scrollbar-width: thin;
+	}
+
+	.paste-textarea {
+		width: 100%;
+		min-height: 300px;
+		max-height: 400px;
+		padding: var(--size-4-4);
+		border: var(--border-width) solid var(--background-modifier-border);
+		border-radius: var(--radius-s);
+		background: var(--background-secondary);
+		color: var(--text-normal);
+		font-family: var(--font-monospace);
+		font-size: var(--font-text-size);
+		line-height: var(--line-height-normal);
+		resize: vertical;
+		outline: none;
+		transition: all var(--duration-fast-2) var(--motion-ease-out);
+
+		&:focus {
+			border-color: var(--interactive-accent);
+			box-shadow: 0 0 0 var(--border-width-alt)
+				var(--background-modifier-border-focus);
+		}
+
+		&:hover:not(:focus) {
+			border-color: var(--background-modifier-border-hover);
+		}
+
+		&::placeholder {
+			color: var(--text-muted);
+			opacity: var(--text-muted-opacity, 0.7);
+		}
+
+		&:disabled {
+			opacity: var(--text-disabled-opacity, 0.5);
+			cursor: not-allowed;
+			background: var(--background-modifier-form-field-disabled);
+		}
+	}
+
+	.parse-status {
+		display: flex;
+		align-items: center;
+		gap: var(--size-4-2);
+		padding: var(--size-4-3) var(--size-4-4);
+		border-radius: var(--radius-s);
+		font-size: var(--font-ui-small);
+		font-weight: var(--font-medium);
+		border: var(--border-width) solid transparent;
+
+		&.error {
+			background: var(--background-modifier-error);
+			color: var(--text-error);
+			border-color: var(--background-modifier-error-border);
+		}
+
+		&.success {
+			background: var(--background-modifier-success);
+			color: var(--text-success);
+			border-color: var(--background-modifier-success-border);
+		}
+
+		&.warning {
+			background: var(--background-modifier-warning);
+			color: var(--text-warning);
+			border-color: var(--background-modifier-warning-border);
+		}
+	}
+
+	.paste-modal-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: var(--size-4-3);
+		padding: var(--size-4-6);
+		border-top: var(--border-width) solid var(--background-modifier-border);
+		background: var(--background-secondary);
+		border-bottom-left-radius: var(--radius-m);
+		border-bottom-right-radius: var(--radius-m);
+	}
+}
+
+/* 弹窗动画 */
+@keyframes modal-appear {
+	from {
+		opacity: 0;
+		transform: scale(0.95) translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
+}
+
+/* 响应式设计 - 使用Obsidian的断点系统 */
+@media (max-width: 768px) {
+	.yg-paste-modal-overlay {
+		.paste-modal {
+			width: 95%;
+			max-height: 90vh;
+			margin: var(--size-4-2);
+		}
+
+		.paste-modal-content,
+		.paste-modal-actions {
+			padding: var(--size-4-4);
+		}
+
+		.paste-textarea {
+			min-height: 250px;
+			font-size: var(--font-text-size);
+			padding: var(--size-4-3);
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	.yg-paste-modal-overlay {
+		padding: var(--size-4-1);
+
+		.paste-modal {
+			width: 100%;
+			border-radius: var(--radius-s);
+			margin: 0;
+		}
+
+		.paste-modal-content,
+		.paste-modal-actions {
+			padding: var(--size-4-3);
+		}
+
+		.paste-modal-title {
+			font-size: var(--font-ui-medium);
+		}
+
+		.paste-modal-actions {
+			flex-direction: column;
+			gap: var(--size-4-2);
+		}
+
+		.paste-textarea {
+			min-height: 200px;
+			padding: var(--size-4-3);
+			font-size: var(--font-text-size);
+		}
+	}
+}

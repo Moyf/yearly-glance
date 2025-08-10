@@ -26,7 +26,8 @@ import {
 import "./style/DataImport.css";
 import { DataConverter } from "@/src/core/utils/dataConverter";
 import { ImportJsonProcessor } from "@/src/core/utils/importJsonProcessor";
-import { ImportUpload } from "./ImportUpload";
+import { ImportUpload } from "../Base/ImportUpload";
+import { ImportJson } from "./ImportJson";
 import { Button } from "../Base/Button";
 import { t } from "@/src/i18n/i18n";
 import parse from "html-react-parser";
@@ -661,10 +662,14 @@ export const DataImport: React.FC<DataImportProps> = ({
 				<div className="import-area">
 					<ImportUpload
 						title={t("view.dataPortView.import.type.json.title")}
-						onUpload={handleFileChange}
-						onPasteJson={handlePasteJson}
 						icon={<FileText size={24} />}
-						disabled={isImporting}
+						actions={
+							<ImportJson
+								onUpload={handleFileChange}
+								onPasteJson={handlePasteJson}
+								disabled={isImporting}
+							/>
+						}
 					>
 						<CalloutBlock>
 							{parse(

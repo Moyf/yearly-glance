@@ -235,6 +235,9 @@ export type BaseMessage = {
 						message: string;
 						upload: string;
 						paste: string;
+						pastePlaceholder: string;
+						pasteError: string;
+						submitPaste: string;
 					};
 				};
 				actions: {

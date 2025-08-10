@@ -1,0 +1,143 @@
+/* ImportUpload 通用组件样式 */
+.yg-import-upload {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-height: 400px;
+	text-align: left;
+	max-width: 600px;
+	width: 100%;
+	padding: 32px;
+	border: 2px dashed var(--background-modifier-border);
+	border-radius: 12px;
+	background: var(--background-secondary);
+	transition: all 0.2s ease;
+	gap: 16px;
+
+	&:hover:not(.disabled) {
+		border-color: var(--interactive-accent);
+		background: var(--background-modifier-hover);
+	}
+
+	&.disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.import-upload-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		width: 100%;
+		margin-bottom: 16px;
+	}
+
+	.import-upload-header .import-upload-title {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex: 1;
+	}
+
+	.import-upload-icon {
+		color: var(--interactive-accent);
+		opacity: 0.8;
+	}
+
+	.import-upload-title {
+		margin: 0;
+		color: var(--text-normal);
+		font-size: 20px;
+		font-weight: 600;
+		text-align: left;
+	}
+
+	.import-upload-actions {
+		display: flex;
+		gap: 8px;
+	}
+
+	.import-upload-description {
+		width: 100%;
+		margin: 0;
+		flex: 1;
+
+		/* 调用块样式优化 */
+		.yg-callout {
+			margin: 0;
+			font-size: 14px;
+			line-height: 1.5;
+			width: 100%;
+
+			/* 调用块标题区域 */
+			.yg-callout-title {
+				margin-bottom: 12px;
+				font-weight: 500;
+				justify-content: flex-start;
+			}
+
+			/* 调用块内容区域 */
+			.yg-callout-content {
+				overflow-x: auto;
+			}
+		}
+
+		/* 代码块样式优化 */
+		.yg-pre {
+			margin: 12px 0 0 0;
+			font-size: 12px;
+			line-height: 1.4;
+			max-height: 300px;
+			overflow-y: auto;
+			background: var(--background-primary);
+			border: 1px solid var(--background-modifier-border);
+			border-radius: 6px;
+
+			pre {
+				margin: 0;
+				padding: 16px;
+				white-space: pre-wrap;
+				word-wrap: break-word;
+			}
+		}
+	}
+
+	input[type="file"] {
+		display: none;
+	}
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+	.yg-import-upload {
+		padding: 24px 16px;
+		min-height: 300px;
+
+		.import-upload-header {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 16px;
+		}
+
+		.import-upload-actions {
+			width: 100%;
+			justify-content: center;
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	.yg-import-upload {
+		padding: 20px 12px;
+		border-radius: 8px;
+
+		.import-upload-title {
+			font-size: 18px;
+		}
+
+		.import-upload-actions {
+			flex-direction: column;
+		}
+	}
+}

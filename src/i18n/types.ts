@@ -211,7 +211,6 @@ export type BaseMessage = {
 					handle: string;
 					selectAll: string;
 					reverseAll: string;
-					selectCancel: string;
 					selectSummary: string;
 				};
 				config: {
@@ -237,7 +236,6 @@ export type BaseMessage = {
 					handle: string;
 					selectAll: string;
 					reverseAll: string;
-					selectCancel: string;
 					selectSummary: string;
 					parseSummary: string;
 				};

@@ -382,7 +382,7 @@ export const DataImport: React.FC<DataImportProps> = ({
 											>
 												{hasSelectedInGroup
 													? t(
-															"view.dataPortView.import.actions.selectCancel"
+															"view.dataPortView.import.actions.reverseAll"
 													  )
 													: t(
 															"view.dataPortView.import.actions.selectAll"
@@ -418,6 +418,38 @@ export const DataImport: React.FC<DataImportProps> = ({
 													<span className="group-count">
 														{events.length}
 													</span>
+												</div>
+												<div className="group-actions">
+													<Button
+														variant="secondary"
+														size="small"
+														icon={
+															isGroupSelected(
+																type
+															) ? (
+																<CheckSquare
+																	size={16}
+																/>
+															) : (
+																<Square
+																	size={16}
+																/>
+															)
+														}
+														onClick={() =>
+															handleGroupSelection(
+																type
+															)
+														}
+													>
+														{isGroupSelected(type)
+															? t(
+																	"view.dataPortView.export.actions.reverseAll"
+															  )
+															: t(
+																	"view.dataPortView.export.actions.selectAll"
+															  )}
+													</Button>
 												</div>
 											</div>
 											<div className="import-event-list">

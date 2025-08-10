@@ -461,7 +461,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 							>
 								{hasSelectedInGroup
 									? t(
-											"view.dataPortView.export.actions.selectCancel"
+											"view.dataPortView.export.actions.reverseAll"
 									  )
 									: t(
 											"view.dataPortView.export.actions.selectAll"
@@ -490,6 +490,30 @@ export const DataExport: React.FC<DataExportProps> = ({
 									<span className="group-count">
 										{events.length}
 									</span>
+								</div>
+								<div className="group-actions">
+									<Button
+										variant="secondary"
+										size="small"
+										icon={
+											isGroupSelected(type) ? (
+												<CheckSquare size={16} />
+											) : (
+												<Square size={16} />
+											)
+										}
+										onClick={() =>
+											handleGroupSelection(type)
+										}
+									>
+										{isGroupSelected(type)
+											? t(
+													"view.dataPortView.export.actions.reverseAll"
+											  )
+											: t(
+													"view.dataPortView.export.actions.selectAll"
+											  )}
+									</Button>
 								</div>
 							</div>
 							<div className="export-event-list">

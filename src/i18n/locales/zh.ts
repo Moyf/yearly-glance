@@ -297,7 +297,6 @@ const translations: BaseMessage = {
 					handle: "导出选中事件",
 					selectAll: "全选",
 					reverseAll: "反选全部",
-					selectCancel: "取消选择",
 					selectSummary: "已选择 {{count}} 个事件",
 				},
 				config: {
@@ -317,7 +316,6 @@ const translations: BaseMessage = {
 					handle: "导入选中事件",
 					selectAll: "全选",
 					reverseAll: "反选全部",
-					selectCancel: "取消选择",
 					selectSummary: "已选择 {{count}} 个事件",
 					parseSummary:
 						"发现 {{validCount}} 个有效事件, {{invalidCount}} 个无效事件",

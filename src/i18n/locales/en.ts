@@ -297,9 +297,8 @@ const translations: BaseMessage = {
 				name: "Export",
 				actions: {
 					handle: "Export selected events",
-					selectAll: "Select all",
-					reverseAll: "Deselect all",
-					selectCancel: "Deselect ",
+					selectAll: "Select all ",
+					reverseAll: "Deselect all ",
 					selectSummary: "Selected {{count}} events",
 				},
 				config: {
@@ -317,9 +316,8 @@ const translations: BaseMessage = {
 				actions: {
 					reset: "Re-select file",
 					handle: "Import selected events",
-					selectAll: "Select all",
-					reverseAll: "Deselect all",
-					selectCancel: "Deselect ",
+					selectAll: "Select all ",
+					reverseAll: "Deselect all ",
 					selectSummary: "Selected {{count}} events",
 					parseSummary:
 						"Found {{validCount}} valid events, {{invalidCount}} invalid events",

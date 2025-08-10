@@ -36,8 +36,6 @@ export const ImportJson: React.FC<ImportJsonProps> = ({
 			}, 1000);
 		} catch (error) {
 			setParseError(error.message);
-		} finally {
-			setPasteContent("");
 		}
 	};
 

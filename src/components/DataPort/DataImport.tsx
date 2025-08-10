@@ -45,46 +45,46 @@ interface DataImportProps {
 const JSON_EXAMPLE_CODE = `{
   "holidays": [
     {
-      "id": "holiday-id", // optional
+      "id": "holiday-id",
       "text": "holiday name",
       "userInput": {
         "input": "1949-10-01",
         "calendar": "Gregorian"
       },
-      "emoji": "🎉", // optional
-      "color": "#ff0000", // optional
-      "remark": "holiday remark", // optional
-      "isHidden": false, // optional
-      "foundDate": "1949-10-01" // optional
+      "emoji": "🎉",
+      "color": "#ff0000",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "1949-10-01"
     }
   ],
   "birthdays": [
     {
-      "id": "birthday-id", // optional
+      "id": "birthday-id",
       "text": "person name", 
       "userInput": {
         "input": "1990-01-01",
         "calendar": "Gregorian"
       },
-      "emoji": "🎂", // optional
-      "color": "#00ff00", // optional
-      "remark": "birthday remark", // optional
-      "isHidden": false // optional
+      "emoji": "🎂",
+      "color": "#00ff00",
+      "remark": "birthday remark",
+      "isHidden": false
     }
   ],
   "customEvents": [
     {
-      "id": "custom-event-id", // optional
+      "id": "custom-event-id",
       "text": "event name",
       "userInput": {
         "input": "2023-12-25", 
         "calendar": "Gregorian"
       },
-      "emoji": "📌", // optional
-      "color": "#0000ff", // optional
-      "remark": "event remark", // optional
-      "isHidden": false, // optional
-      "isRepeat": false // optional
+      "emoji": "📌",
+      "color": "#0000ff",
+      "remark": "event remark",
+      "isHidden": false,
+      "isRepeat": false
     }
   ]
 }`;
@@ -157,6 +157,22 @@ export const DataImport: React.FC<DataImportProps> = ({
 		};
 
 		reader.readAsText(file);
+	};
+
+	const handlePasteJson = (jsonContent: string) => {
+		setIsImporting(true);
+		try {
+			const result = DataConverter.fromJSON(jsonContent);
+			setParseResult(result);
+		} catch (error) {
+			throw new Error(
+				`JSON 解析失败: ${
+					error instanceof Error ? error.message : String(error)
+				}`
+			);
+		} finally {
+			setIsImporting(false);
+		}
 	};
 
 	const handleImport = async () => {
@@ -646,6 +662,7 @@ export const DataImport: React.FC<DataImportProps> = ({
 					<ImportUpload
 						title={t("view.dataPortView.import.type.json.title")}
 						onUpload={handleFileChange}
+						onPasteJson={handlePasteJson}
 						icon={<FileText size={24} />}
 						disabled={isImporting}
 					>
@@ -653,9 +670,7 @@ export const DataImport: React.FC<DataImportProps> = ({
 							{parse(
 								t("view.dataPortView.import.type.json.message")
 							)}
-							<Pre language="json">
-								{JSON_EXAMPLE_CODE}
-							</Pre>
+							<Pre language="json">{JSON_EXAMPLE_CODE}</Pre>
 						</CalloutBlock>
 					</ImportUpload>
 				</div>

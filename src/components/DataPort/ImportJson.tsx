@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Button } from "../Base/Button";
+import { Button } from "@/src/components/Base/Button";
 import { AlertCircle, Clipboard, FileText, Upload } from "lucide-react";
 import "./style/ImportJson.css";
-import { t } from "../../i18n/i18n";
+import { t } from "@/src/i18n/i18n";
 
 interface ImportJsonProps {
 	onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;

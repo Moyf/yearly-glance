@@ -1,14 +1,14 @@
 import { IconName, ItemView, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
-import YearlyGlancePlugin from "../main";
-import { t } from "../i18n/i18n";
-import { NavTabs } from "../components/Base/NavTabs";
+import YearlyGlancePlugin from "@/src/main";
+import { t } from "@/src/i18n/i18n";
+import { NavTabs } from "@/src/components/Base/NavTabs";
 import "./style/GlanceManagerView.css";
 import { Bolt, Database, SquareChartGantt } from "lucide-react";
-import { EventManagerView } from "../components/EventManager/EventManager";
-import { ViewSettings } from "../components/Settings/ViewSettings";
-import { DataPortManagerView } from "../components/DataPort/DataPortManager";
+import { EventManagerView } from "@/src/components/EventManager/EventManager";
+import { ViewSettings } from "@/src/components/Settings/ViewSettings";
+import { DataPortManagerView } from "@/src/components/DataPort/DataPortManager";
 
 export const VIEW_TYPE_GLANCE_MANAGER = "yearly-glance-manager-view";
 

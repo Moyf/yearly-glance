@@ -1,7 +1,7 @@
 import * as React from "react";
 import YearlyGlancePlugin from "@/src/main";
-import { YearlyGlanceSettings } from "@/src/core/interfaces/Settings";
-import { Events } from "@/src/core/interfaces/Events";
+import { YearlyGlanceSettings } from "@/src/type/Settings";
+import { Events } from "@/src/type/Events";
 
 // 创建一个总线，用于跨组件通信
 export const YearlyGlanceBus = {

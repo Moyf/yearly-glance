@@ -1,14 +1,11 @@
-import {
-	DEFAULT_PRESET_COLORS,
-	IPresetColor,
-} from "@/src/core/interfaces/Settings";
+import { DEFAULT_PRESET_COLORS, IPresetColor } from "@/src/type/Settings";
 import * as React from "react";
 import { Plus, RotateCcw, Trash2 } from "lucide-react";
-import { Toggle } from "../Base/Toggle";
+import { Toggle } from "@/src/components/Base/Toggle";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
 import "./style/PresetColorSettings.css";
-import { Input } from "../Base/Input";
+import { Input } from "@/src/components/Base/Input";
 
 interface PresetColorSettingsProps {
 	presetColors: IPresetColor[];

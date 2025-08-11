@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-	Birthday,
-	CustomEvent,
-	EventType,
-	Holiday,
-} from "@/src/core/interfaces/Events";
+import { Birthday, CustomEvent, EventType, Holiday } from "@/src/type/Events";
 import { EventItem } from "./EventItem";
 import { SortDirection, SortField } from "./SortControls";
 import { t } from "@/src/i18n/i18n";

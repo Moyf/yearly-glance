@@ -1,7 +1,7 @@
 import {
 	parseUserDateInput,
 	SmartDateProcessor,
-} from "../src/core/utils/smartDateProcessor";
+} from "../src/utils/smartDateProcessor";
 
 describe("SmartDateProcessor", () => {
 	describe("公历日期解析", () => {
@@ -383,7 +383,6 @@ describe("SmartDateProcessor", () => {
 
 		test("应该处理不支持的日历类型", () => {
 			expect(() => {
-				// @ts-expect-error - 故意传入无效的日历类型来测试错误处理
 				SmartDateProcessor.parseUserInput("2025-01-01", "INVALID");
 			}).toThrow("Unsupported calendar type: INVALID");
 		});

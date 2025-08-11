@@ -1,4 +1,4 @@
-import { CalendarType, ParseIsoDate } from "../interfaces/Date";
+import { CalendarType, ParseIsoDate } from "@/src/type/Date";
 import { LunarLibrary } from "./lunarLibrary";
 
 // 月份名称映射

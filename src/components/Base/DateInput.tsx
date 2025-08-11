@@ -1,10 +1,10 @@
 import * as React from "react";
-import { parseUserDateInput } from "@/src/core/utils/smartDateProcessor";
-import { CalendarType, StandardDate } from "@/src/core/interfaces/Date";
+import { parseUserDateInput } from "@/src/utils/smartDateProcessor";
+import { CalendarType, StandardDate } from "@/src/type/Date";
 import "./style/DateInput.css";
 import { TranslationKeys } from "@/src/i18n/types";
 import { t } from "@/src/i18n/i18n";
-import { IsoUtils } from "@/src/core/utils/isoUtils";
+import { IsoUtils } from "@/src/utils/isoUtils";
 
 interface DateInputProps {
 	value: string;

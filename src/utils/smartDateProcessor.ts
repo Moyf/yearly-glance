@@ -6,7 +6,7 @@ import {
 	lunarKeywords,
 	lunarMonths,
 	StandardDate,
-} from "../interfaces/Date";
+} from "@/src/type/Date";
 import { GregorianDateValidator, LunarDateValidator } from "./dateValidator";
 import { LunarLibrary } from "./lunarLibrary";
 

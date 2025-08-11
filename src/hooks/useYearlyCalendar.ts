@@ -1,12 +1,9 @@
 import * as React from "react";
 import YearlyGlancePlugin from "@/src/main";
-import {
-	CalendarDay,
-	CalendarEvent,
-} from "@/src/core/interfaces/CalendarEvent";
-import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
-import { LunarLibrary } from "../utils/lunarLibrary";
-import { IsoUtils } from "../utils/isoUtils";
+import { CalendarDay, CalendarEvent } from "@/src/type/CalendarEvent";
+import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
+import { LunarLibrary } from "@/src/utils/lunarLibrary";
+import { IsoUtils } from "@/src/utils/isoUtils";
 import { t } from "@/src/i18n/i18n";
 
 export const MonthMap: Array<{ name: string; color: string }> = [

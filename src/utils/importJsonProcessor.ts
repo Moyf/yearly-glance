@@ -4,8 +4,8 @@ import {
 	ImportJsonEvent,
 	ImportJsonEventParse,
 	ImportJsonEventParseResult,
-} from "../interfaces/DataPort";
-import { EventType } from "../interfaces/Events";
+} from "@/src/type/DataPort";
+import { EventType } from "@/src/type/Events";
 import { parseUserDateInput } from "./smartDateProcessor";
 
 export class ImportJsonProcessor {

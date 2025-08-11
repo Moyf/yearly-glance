@@ -1,7 +1,7 @@
 import {
 	GregorianDateValidator,
 	LunarDateValidator,
-} from "../src/core/utils/dateValidator";
+} from "../src/utils/dateValidator";
 
 describe("GregorianDateValidator", () => {
 	describe("validDate (无年份)", () => {

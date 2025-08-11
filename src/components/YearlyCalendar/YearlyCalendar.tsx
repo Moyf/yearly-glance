@@ -3,27 +3,21 @@ import { createRoot, Root } from "react-dom/client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import YearlyGlancePlugin from "@/src/main";
 import { VIEW_TYPE_GLANCE_MANAGER } from "@/src/views/GlanceManagerView";
-import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
-import {
-	EVENT_TYPE_DEFAULT,
-	EVENT_TYPE_LIST,
-} from "@/src/core/interfaces/Events";
+import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
+import { EVENT_TYPE_DEFAULT, EVENT_TYPE_LIST } from "@/src/type/Events";
 import {
 	getLayoutOptions,
 	viewTypeOptions,
 } from "@/src/components/Settings/ViewSettings";
-import { useYearlyCalendar } from "@/src/core/hook/useYearlyCalendar";
-import {
-	CalendarDay,
-	CalendarEvent,
-} from "@/src/core/interfaces/CalendarEvent";
+import { useYearlyCalendar } from "@/src/hooks/useYearlyCalendar";
+import { CalendarDay, CalendarEvent } from "@/src/type/CalendarEvent";
 import { EventTooltip } from "./EventTooltip";
-import { Select } from "../Base/Select";
+import { Select } from "@/src/components/Base/Select";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
 import "./style/YearlyCalendarView.css";
-import { Tooltip } from "../Base/Tooltip";
-import { IsoUtils } from "@/src/core/utils/isoUtils";
+import { Tooltip } from "@/src/components/Base/Tooltip";
+import { IsoUtils } from "@/src/utils/isoUtils";
 
 interface YearlyCalendarViewProps {
 	plugin: YearlyGlancePlugin;

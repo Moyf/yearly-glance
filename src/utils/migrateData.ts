@@ -1,7 +1,7 @@
 import YearlyGlancePlugin from "@/src/main";
-import { YearlyGlanceConfig } from "../interfaces/types";
-import { BaseEvent } from "../interfaces/Events";
-import { CalendarType } from "../interfaces/Date";
+import { YearlyGlanceConfig } from "@/src/type/Config";
+import { BaseEvent } from "@/src/type/Events";
+import { CalendarType } from "@/src/type/Date";
 import { parseUserDateInput } from "./smartDateProcessor";
 
 export class MigrateData {

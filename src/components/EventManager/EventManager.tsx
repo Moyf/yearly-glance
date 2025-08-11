@@ -1,24 +1,19 @@
 import * as React from "react";
 import YearlyGlancePlugin from "@/src/main";
-import {
-	Birthday,
-	CustomEvent,
-	EventType,
-	Holiday,
-} from "@/src/core/interfaces/Events";
-import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
-import { EVENT_TYPE_OPTIONS } from "../EventForm/EventForm";
+import { Birthday, CustomEvent, EventType, Holiday } from "@/src/type/Events";
+import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
+import { EVENT_TYPE_OPTIONS } from "@/src/components/EventForm/EventForm";
 import { SortControls, SortDirection, SortField } from "./SortControls";
 import { EventList } from "./EventList";
-import { Input } from "../Base/Input";
-import { ConfirmDialog } from "../Base/ConfirmDialog";
-import { NavTabs } from "../Base/NavTabs";
+import { Input } from "@/src/components/Base/Input";
+import { ConfirmDialog } from "@/src/components/Base/ConfirmDialog";
+import { NavTabs } from "@/src/components/Base/NavTabs";
 import { t } from "@/src/i18n/i18n";
 import { VIEW_TYPE_YEARLY_GLANCE } from "@/src/views/YearlyGlanceView";
 import {
 	EVENT_SEARCH_REQUESTED,
 	EventManagerBus,
-} from "@/src/core/hook/useEventBus";
+} from "@/src/hooks/useEventBus";
 import "./style/EventManagerView.css";
 
 interface EventManagerViewProps {

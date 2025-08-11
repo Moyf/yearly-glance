@@ -1,9 +1,6 @@
 import * as React from "react";
 import { RotateCcw } from "lucide-react";
-import {
-	DEFAULT_PRESET_COLORS,
-	IPresetColor,
-} from "@/src/core/interfaces/Settings";
+import { DEFAULT_PRESET_COLORS, IPresetColor } from "@/src/type/Settings";
 import { Select, SelectOption } from "./Select";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
+import { YearlyGlanceConfig } from "@/src/type/Config";
 import {
 	Birthday,
 	CustomEvent,
@@ -7,19 +7,19 @@ import {
 	EVENT_TYPE_LIST,
 	EventType,
 	Holiday,
-} from "@/src/core/interfaces/Events";
-import { NavTabs } from "../Base/NavTabs";
+} from "@/src/type/Events";
+import { NavTabs } from "@/src/components/Base/NavTabs";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
-import { CalendarType } from "@/src/core/interfaces/Date";
+import { CalendarType } from "@/src/type/Date";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { Select } from "../Base/Select";
-import { ColorSelector } from "../Base/ColorSelector";
-import { Toggle } from "../Base/Toggle";
-import { DateInput } from "../Base/DateInput";
-import { parseUserDateInput } from "@/src/core/utils/smartDateProcessor";
-import { Tooltip } from "../Base/Tooltip";
-import { IsoUtils } from "@/src/core/utils/isoUtils";
+import { Select } from "@/src/components/Base/Select";
+import { ColorSelector } from "@/src/components/Base/ColorSelector";
+import { Toggle } from "@/src/components/Base/Toggle";
+import { DateInput } from "@/src/components/Base/DateInput";
+import { parseUserDateInput } from "@/src/utils/smartDateProcessor";
+import { Tooltip } from "@/src/components/Base/Tooltip";
+import { IsoUtils } from "@/src/utils/isoUtils";
 
 // 事件类型tab
 export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({

@@ -5,11 +5,11 @@ import {
 	EVENT_TYPE_DEFAULT,
 	EventType,
 	Holiday,
-} from "@/src/core/interfaces/Events";
-import { Tooltip } from "../Base/Tooltip";
+} from "@/src/type/Events";
+import { Tooltip } from "@/src/components/Base/Tooltip";
 import { t } from "@/src/i18n/i18n";
-import { CalendarType } from "@/src/core/interfaces/Date";
-import { IsoUtils } from "@/src/core/utils/isoUtils";
+import { CalendarType } from "@/src/type/Date";
+import { IsoUtils } from "@/src/utils/isoUtils";
 
 interface EventItemProps {
 	event: Holiday | Birthday | CustomEvent;

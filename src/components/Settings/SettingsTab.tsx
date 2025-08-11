@@ -2,7 +2,7 @@ import * as React from "react";
 import { App, PluginSettingTab } from "obsidian";
 import YearlyGlancePlugin from "@/src/main";
 import { createRoot, Root } from "react-dom/client";
-import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
+import { YearlyGlanceConfig } from "@/src/type/Config";
 import { ViewSettings } from "./ViewSettings";
 import parse from "html-react-parser";
 import { t } from "@/src/i18n/i18n";

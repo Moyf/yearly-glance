@@ -1,7 +1,7 @@
-import { EVENT_TYPE_DEFAULT, Events } from "../interfaces/Events";
+import { EVENT_TYPE_DEFAULT, Events } from "@/src/type/Events";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
-import { ImportJson, ImportJsonEventParseResult } from "../interfaces/DataPort";
+import { ImportJson, ImportJsonEventParseResult } from "@/src/type/DataPort";
 import { ImportJsonProcessor } from "./importJsonProcessor";
 
 export class DataConverter {

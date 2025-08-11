@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ArrowDown10, ArrowDownZA, ArrowUp01, ArrowUpAZ } from "lucide-react";
-import { Select } from "../Base/Select";
+import { Select } from "@/src/components/Base/Select";
 import { t } from "@/src/i18n/i18n";
 import "./style/SortControls.css";
 import { TranslationKeys } from "@/src/i18n/types";

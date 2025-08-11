@@ -1,20 +1,20 @@
 import * as React from "react";
 import YearlyGlancePlugin from "@/src/main";
-import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
-import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
+import { YearlyGlanceConfig } from "@/src/type/Config";
+import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
 import {
 	EVENT_FONT_SIZE_OPTIONS,
 	GREGORIAN_DISPLAY_FORMAT_OPTIONS,
 	LAYOUT_OPTIONS,
 	VIEW_TYPE_OPTIONS,
-} from "@/src/core/interfaces/Settings";
+} from "@/src/type/Settings";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
 import { SettingsBlock } from "@/src/components/Settings/SettingsBlock";
 import { SettingsItem } from "@/src/components/Settings/SettingsItem";
-import { Toggle } from "../Base/Toggle";
-import { Select } from "../Base/Select";
-import { Input } from "../Base/Input";
+import { Toggle } from "@/src/components/Base/Toggle";
+import { Select } from "@/src/components/Base/Select";
+import { Input } from "@/src/components/Base/Input";
 import { PresetColorSettings } from "./PresetColorSettings";
 
 interface ViewSettingsProps {
@@ -97,7 +97,9 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 					<Toggle
 						checked={config.showEmojiBeforeTabName}
 						onChange={(value) =>
-							handleUpdateConfig({ showEmojiBeforeTabName: value })
+							handleUpdateConfig({
+								showEmojiBeforeTabName: value,
+							})
 						}
 					/>
 				</SettingsItem>

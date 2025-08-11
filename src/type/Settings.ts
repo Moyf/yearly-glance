@@ -1,6 +1,6 @@
 import { SelectOption } from "@/src/components/Base/Select";
 import { t } from "@/src/i18n/i18n";
-import { IsoUtils } from "../utils/isoUtils";
+import { IsoUtils } from "@/src/utils/isoUtils";
 
 export const LAYOUT_OPTIONS = ["12x1", "1x12", "6x2", "2x6", "3x4", "4x3"];
 export const VIEW_TYPE_OPTIONS = ["calendar", "list"];

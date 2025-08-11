@@ -7,15 +7,15 @@ import {
 	EVENT_TYPE_DEFAULT,
 	EventType,
 	Holiday,
-} from "@/src/core/interfaces/Events";
+} from "@/src/type/Events";
 import {
 	EVENT_SEARCH_REQUESTED,
 	EventManagerBus,
-} from "@/src/core/hook/useEventBus";
+} from "@/src/hooks/useEventBus";
 import { t } from "@/src/i18n/i18n";
 import "./style/EventTooltip.css";
-import { CalendarEvent } from "@/src/core/interfaces/CalendarEvent";
-import { IsoUtils } from "@/src/core/utils/isoUtils";
+import { CalendarEvent } from "@/src/type/CalendarEvent";
+import { IsoUtils } from "@/src/utils/isoUtils";
 
 interface EventTooltipContentProps {
 	plugin: YearlyGlancePlugin;

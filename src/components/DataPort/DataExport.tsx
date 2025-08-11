@@ -1,16 +1,16 @@
-import { ExportFormat } from "@/src/core/interfaces/DataPort";
+import { ExportFormat } from "@/src/type/DataPort";
 import {
 	BaseEvent,
 	EVENT_TYPE_DEFAULT,
 	Events,
 	EventType,
-} from "@/src/core/interfaces/Events";
-import { DataConverter } from "@/src/core/utils/dataConverter";
-import { IsoUtils } from "@/src/core/utils/isoUtils";
+} from "@/src/type/Events";
+import { DataConverter } from "@/src/utils/dataConverter";
+import { IsoUtils } from "@/src/utils/isoUtils";
 import * as React from "react";
-import { Button } from "../Base/Button";
-import { NavTabs } from "../Base/NavTabs";
-import { Input } from "../Base/Input";
+import { Button } from "@/src/components/Base/Button";
+import { NavTabs } from "@/src/components/Base/NavTabs";
+import { Input } from "@/src/components/Base/Input";
 import {
 	Calendar,
 	CheckSquare,
@@ -23,7 +23,7 @@ import {
 	Users,
 } from "lucide-react";
 import "./style/DataExport.css";
-import { YearlyGlanceSettings } from "@/src/core/interfaces/Settings";
+import { YearlyGlanceSettings } from "@/src/type/Settings";
 import { t } from "@/src/i18n/i18n";
 
 interface DataExportProps {

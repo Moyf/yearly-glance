@@ -2,16 +2,16 @@ import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import { Modal } from "obsidian";
 import YearlyGlancePlugin from "@/src/main";
-import { YearlyGlanceConfig } from "@/src/core/interfaces/types";
+import { YearlyGlanceConfig } from "@/src/type/Config";
 import {
 	Birthday,
 	CustomEvent,
 	Events,
 	EventType,
 	Holiday,
-} from "@/src/core/interfaces/Events";
+} from "@/src/type/Events";
 import { EventForm } from "./EventForm";
-import { EventCalculator } from "@/src/core/utils/eventCalculator";
+import { EventCalculator } from "@/src/utils/eventCalculator";
 import "./style/EventFormModal.css";
 
 export interface EventFormModalProps {

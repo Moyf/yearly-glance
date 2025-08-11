@@ -5,16 +5,16 @@ import {
 	Events,
 	EventType,
 	Holiday,
-} from "../../core/interfaces/Events";
+} from "@/src/type/Events";
 import "./style/DataPortManager.css";
-import { NavTabs } from "../Base/NavTabs";
+import { NavTabs } from "@/src/components/Base/NavTabs";
 import { DataExport } from "./DataExport";
 import { DataImport } from "./DataImport";
-import { YearlyGlanceSettings } from "@/src/core/interfaces/Settings";
+import { YearlyGlanceSettings } from "@/src/type/Settings";
 import { t } from "@/src/i18n/i18n";
 import YearlyGlancePlugin from "@/src/main";
-import { useYearlyGlanceConfig } from "@/src/core/hook/useYearlyGlanceConfig";
-import { EventFormModal } from "../EventForm/EventFormModal";
+import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
+import { EventFormModal } from "@/src/components/EventForm/EventFormModal";
 
 interface DataPortManagerProps {
 	config: YearlyGlanceSettings;

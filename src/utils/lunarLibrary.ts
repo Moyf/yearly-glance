@@ -1,5 +1,5 @@
 import { Lunar, Solar } from "lunar-typescript";
-import { lunarDays, lunarMonths } from "../interfaces/Date";
+import { lunarDays, lunarMonths } from "@/src/type/Date";
 
 export class LunarLibrary {
 	/**

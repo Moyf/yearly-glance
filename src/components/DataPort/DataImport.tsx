@@ -5,7 +5,7 @@ import {
 	Events,
 	EventType,
 	Holiday,
-} from "@/src/core/interfaces/Events";
+} from "@/src/type/Events";
 import * as React from "react";
 import {
 	AlertTriangle,
@@ -22,17 +22,17 @@ import {
 import {
 	ImportJsonEventParse,
 	ImportJsonEventParseResult,
-} from "@/src/core/interfaces/DataPort";
+} from "@/src/type/DataPort";
 import "./style/DataImport.css";
-import { DataConverter } from "@/src/core/utils/dataConverter";
-import { ImportJsonProcessor } from "@/src/core/utils/importJsonProcessor";
-import { ImportUpload } from "../Base/ImportUpload";
+import { DataConverter } from "@/src/utils/dataConverter";
+import { ImportJsonProcessor } from "@/src/utils/importJsonProcessor";
+import { ImportUpload } from "@/src/components/Base/ImportUpload";
 import { ImportJson } from "./ImportJson";
-import { Button } from "../Base/Button";
+import { Button } from "@/src/components/Base/Button";
 import { t } from "@/src/i18n/i18n";
 import parse from "html-react-parser";
-import { CalloutBlock } from "../Base/CalloutBlock";
-import { Pre } from "../Base/Pre";
+import { CalloutBlock } from "@/src/components/Base/CalloutBlock";
+import { Pre } from "@/src/components/Base/Pre";
 
 interface DataImportProps {
 	currentData: Events;

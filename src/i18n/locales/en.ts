@@ -347,6 +347,7 @@ const translations: BaseMessage = {
 					invalidEvents: "Invalid events",
 					nullText: "Missing event text",
 					nullDate: "Missing user input date",
+					duplicateEvent: "Event may already exist",
 				},
 			},
 		},

@@ -2,7 +2,7 @@ import YearlyGlancePlugin from "@/src/main";
 import { YearlyGlanceConfig } from "@/src/type/Config";
 import { BaseEvent } from "@/src/type/Events";
 import { CalendarType } from "@/src/type/Date";
-import { parseUserDateInput } from "./smartDateProcessor";
+import { parseUserDateInput } from "@/src/service/DateParseService";
 
 export class MigrateData {
 	/**

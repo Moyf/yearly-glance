@@ -17,7 +17,7 @@ import { Select } from "@/src/components/Base/Select";
 import { ColorSelector } from "@/src/components/Base/ColorSelector";
 import { Toggle } from "@/src/components/Base/Toggle";
 import { DateInput } from "@/src/components/Base/DateInput";
-import { parseUserDateInput } from "@/src/utils/smartDateProcessor";
+import { parseUserDateInput } from "@/src/service/DateParseService";
 import { Tooltip } from "@/src/components/Base/Tooltip";
 import { IsoUtils } from "@/src/utils/isoUtils";
 

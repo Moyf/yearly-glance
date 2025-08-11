@@ -53,6 +53,8 @@ export interface CustomEvent extends BaseEvent {
 	isRepeat: boolean;
 }
 
+export type EventData = Holiday | Birthday | CustomEvent;
+
 // 事件类型
 export type EventType = (typeof EVENT_TYPE_LIST)[number];
 export const EVENT_TYPE_LIST = ["customEvent", "birthday", "holiday"] as const;

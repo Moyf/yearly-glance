@@ -1,25 +1,9 @@
 import { EVENT_TYPE_DEFAULT, Events } from "@/src/type/Events";
-import { t } from "@/src/i18n/i18n";
-import { TranslationKeys } from "@/src/i18n/types";
-import { ImportJson, ImportJsonEventParseResult } from "@/src/type/DataPort";
-import { ImportJsonProcessor } from "./importJsonProcessor";
+import { TranslationKeys } from "../i18n/types";
+import { t } from "../i18n/i18n";
 
-export class DataConverter {
-	/**
-	 * 导出为 JSON
-	 * @param data 事件数据
-	 * @returns JSON
-	 */
-	static toJSON(data: Events): string {
-		return JSON.stringify(data, null, 2);
-	}
-
-	/**
-	 * 导出为 ICS
-	 * @param data 事件数据
-	 * @returns ICS
-	 */
-	static toICS(data: Events): string {
+export class iCalendarService {
+	static createICalEvents(eventsData: Events): string {
 		const icsLines = [
 			"BEGIN:VCALENDAR",
 			"VERSION:2.0",
@@ -29,15 +13,15 @@ export class DataConverter {
 
 		// 添加所有事件
 		const allEvents = [
-			...(data.holidays || []).map((h) => ({
+			...eventsData.holidays.map((h) => ({
 				type: "holiday",
 				event: h,
 			})),
-			...(data.birthdays || []).map((b) => ({
+			...eventsData.birthdays.map((b) => ({
 				type: "birthday",
 				event: b,
 			})),
-			...(data.customEvents || []).map((c) => ({
+			...eventsData.customEvents.map((c) => ({
 				type: "customEvent",
 				event: c,
 			})),
@@ -84,32 +68,5 @@ export class DataConverter {
 
 		icsLines.push("END:VCALENDAR");
 		return icsLines.join("\n");
-	}
-
-	/**
-	 * 导出为 Markdown
-	 * @param data 事件数据
-	 * @returns Markdown
-	 */
-	static toMarkdown(data: Events): string {
-		return "";
-	}
-
-	/**
-	 * 从 JSON 导入数据
-	 */
-	static fromJSON(content: string): ImportJsonEventParseResult {
-		const jsonString = JSON.parse(content) as ImportJson;
-		if (
-			!jsonString.holidays &&
-			!jsonString.birthdays &&
-			!jsonString.customEvents
-		) {
-			throw new Error(
-				"导入数据中没有找到任何事件，请检查 JSON 格式是否正确。"
-			);
-		}
-
-		return ImportJsonProcessor.parse(jsonString);
 	}
 }

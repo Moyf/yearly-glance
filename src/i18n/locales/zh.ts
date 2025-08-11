@@ -345,6 +345,7 @@ const translations: BaseMessage = {
 					invalidEvents: "无效事件",
 					nullText: "缺少事件名称",
 					nullDate: "缺少用户输入的日期",
+					duplicateEvent: "该事件可能已存在",
 				},
 			},
 		},

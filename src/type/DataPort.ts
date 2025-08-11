@@ -4,9 +4,9 @@ import { EventType } from "./Events";
 export type ImportFormat = "json";
 
 /**
- * 通过 JSON 导入数据，事件的必需的信息
+ * json格式的必要的数据结构
  */
-export interface ImportJsonEvent {
+export interface JsonEvent {
 	id?: string;
 	text: string;
 	userInput: UserDateInput;
@@ -19,20 +19,20 @@ export interface ImportJsonEvent {
 	isRepeat?: boolean;
 }
 
-export interface ImportJson {
-	holidays?: ImportJsonEvent[];
-	birthdays?: ImportJsonEvent[];
-	customEvents?: ImportJsonEvent[];
+export interface ImportJsonEvents {
+	holidays?: JsonEvent[];
+	birthdays?: JsonEvent[];
+	customEvents?: JsonEvent[];
 }
 
-export interface ImportJsonEventParse extends ImportJsonEvent {
+export interface JsonEventParse extends JsonEvent {
 	eventType: EventType;
 	warnings?: string[];
 }
 
-export interface ImportJsonEventParseResult {
-	validEvents: ImportJsonEventParse[];
-	invalidEvents: ImportJsonEventParse[];
+export interface JsonEventsParseResult {
+	validEvents: JsonEventParse[];
+	invalidEvents: JsonEventParse[];
 }
 
 export type ExportFormat = "json" | "ics" | "md";

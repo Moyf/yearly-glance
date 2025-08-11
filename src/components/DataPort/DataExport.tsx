@@ -5,7 +5,6 @@ import {
 	Events,
 	EventType,
 } from "@/src/type/Events";
-import { DataConverter } from "@/src/utils/dataConverter";
 import { IsoUtils } from "@/src/utils/isoUtils";
 import * as React from "react";
 import { Button } from "@/src/components/Base/Button";
@@ -25,6 +24,8 @@ import {
 import "./style/DataExport.css";
 import { YearlyGlanceSettings } from "@/src/type/Settings";
 import { t } from "@/src/i18n/i18n";
+import { JsonService } from "@/src/service/JsonService";
+import { iCalendarService } from "@/src/service/iCalendarService";
 
 interface DataExportProps {
 	config: YearlyGlanceSettings;
@@ -234,13 +235,13 @@ export const DataExport: React.FC<DataExportProps> = ({
 
 			switch (activeExportFormat) {
 				case "json": {
-					content = DataConverter.toJSON(selectedData);
+					content = JsonService.createJsonEvents(selectedData);
 					filename = `${exportFileName}.json`;
 					mimeType = "application/json";
 					break;
 				}
 				case "ics": {
-					content = DataConverter.toICS(selectedData);
+					content = iCalendarService.createICalEvents(selectedData);
 					filename = `${exportFileName}.ics`;
 					mimeType = "text/calendar";
 					break;

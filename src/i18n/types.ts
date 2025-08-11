@@ -253,6 +253,7 @@ export type BaseMessage = {
 					invalidEvents: string;
 					nullText: string;
 					nullDate: string;
+					duplicateEvent: string;
 				};
 			};
 		};

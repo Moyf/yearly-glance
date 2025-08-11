@@ -20,12 +20,11 @@ import {
 	Users,
 } from "lucide-react";
 import {
-	ImportJsonEventParse,
-	ImportJsonEventParseResult,
+	ImportJsonEvents,
+	JsonEventParse,
+	JsonEventsParseResult,
 } from "@/src/type/DataPort";
 import "./style/DataImport.css";
-import { DataConverter } from "@/src/utils/dataConverter";
-import { ImportJsonProcessor } from "@/src/utils/importJsonProcessor";
 import { ImportUpload } from "@/src/components/Base/ImportUpload";
 import { ImportJson } from "./ImportJson";
 import { Button } from "@/src/components/Base/Button";
@@ -33,6 +32,7 @@ import { t } from "@/src/i18n/i18n";
 import parse from "html-react-parser";
 import { CalloutBlock } from "@/src/components/Base/CalloutBlock";
 import { Pre } from "@/src/components/Base/Pre";
+import { JsonService } from "@/src/service/JsonService";
 
 interface DataImportProps {
 	currentData: Events;
@@ -96,7 +96,7 @@ export const DataImport: React.FC<DataImportProps> = ({
 }) => {
 	const [isImporting, setIsImporting] = React.useState(false);
 	const [parseResult, setParseResult] =
-		React.useState<ImportJsonEventParseResult | null>(null);
+		React.useState<JsonEventsParseResult | null>(null);
 
 	// 选中的有效事件
 	const [selectedValidEvents, setSelectedValidEvents] = React.useState<
@@ -135,7 +135,10 @@ export const DataImport: React.FC<DataImportProps> = ({
 
 				switch (file.type) {
 					case "application/json": {
-						const result = DataConverter.fromJSON(content);
+						const result = JsonService.parseJsonEvents(
+							JSON.parse(content) as ImportJsonEvents,
+							currentData
+						);
 						setParseResult(result);
 						break;
 					}
@@ -163,7 +166,10 @@ export const DataImport: React.FC<DataImportProps> = ({
 	const handlePasteJson = (jsonContent: string) => {
 		setIsImporting(true);
 		try {
-			const result = DataConverter.fromJSON(jsonContent);
+			const result = JsonService.parseJsonEvents(
+				JSON.parse(jsonContent) as ImportJsonEvents,
+				currentData
+			);
 			setParseResult(result);
 		} catch (error) {
 			throw new Error(
@@ -188,8 +194,7 @@ export const DataImport: React.FC<DataImportProps> = ({
 			);
 
 			for (const event of eventsToImport) {
-				const eventData =
-					ImportJsonProcessor.createEventFromParsed(event);
+				const eventData = JsonService.createEventFromParsed(event);
 				const eventType = event.eventType as EventType;
 
 				await onDataImport(
@@ -230,7 +235,7 @@ export const DataImport: React.FC<DataImportProps> = ({
 	const eventGroups = React.useMemo(() => {
 		if (!parseResult) return { holiday: [], birthday: [], customEvent: [] };
 
-		const groups: Record<EventType, ImportJsonEventParse[]> = {
+		const groups: Record<EventType, JsonEventParse[]> = {
 			holiday: [],
 			birthday: [],
 			customEvent: [],
@@ -315,7 +320,7 @@ export const DataImport: React.FC<DataImportProps> = ({
 	};
 
 	// 格式化事件日期显示
-	const formatEventDate = (event: ImportJsonEventParse) => {
+	const formatEventDate = (event: JsonEventParse) => {
 		const userInput = event.userInput?.input;
 		return (
 			<div className="event-date">

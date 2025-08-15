@@ -1,4 +1,4 @@
-import { App } from "obsidian";
+import { App, Notice } from "obsidian";
 import {
 	DEFAULT_MARKDOWN_EXPORT_CONFIG,
 	ExportFormat,
@@ -244,7 +244,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 
 	const handleExport = async () => {
 		if (selectedEvents.size === 0) {
-			alert("请选择要导出的事件");
+			new Notice("请选择要导出的事件");
 			return;
 		}
 
@@ -297,12 +297,12 @@ export const DataExport: React.FC<DataExportProps> = ({
 					);
 
 					if (result.success > 0) {
-						alert(
+						new Notice(
 							`成功导出 ${result.success} 个事件到Markdown文件`
 						);
 					}
 					if (result.failed > 0) {
-						alert(
+						new Notice(
 							`导出失败 ${
 								result.failed
 							} 个事件:\n${result.errors.join("\n")}`
@@ -429,355 +429,163 @@ export const DataExport: React.FC<DataExportProps> = ({
 		);
 	};
 
+	const eventCommonFields = [
+		{
+			key: "id",
+			label: t("view.dataPortView.export.config.id"),
+		},
+		{
+			key: "isoDate",
+			label: t("view.dataPortView.export.config.isoDate"),
+		},
+		{
+			key: "calendar",
+			label: t("view.dataPortView.export.config.calendar"),
+		},
+		{
+			key: "emoji",
+			label: t("view.dataPortView.export.config.emoji"),
+		},
+		{
+			key: "color",
+			label: t("view.dataPortView.export.config.color"),
+		},
+		{
+			key: "remark",
+			label: t("view.dataPortView.export.config.remark"),
+		},
+	];
+
+	// 事件类型配置映射
+	const eventTypeConfigs = {
+		holiday: {
+			title:
+				t("view.yearlyGlance.legend.holiday") +
+				t("view.dataPortView.export.type.configure"),
+			folderKey: "holidayFolder" as const,
+			fields: [
+				...eventCommonFields,
+				{
+					key: "foundDate",
+					label: t("view.dataPortView.export.config.foundDate"),
+				},
+			],
+			configKey: "holidayFields" as const,
+		},
+		birthday: {
+			title:
+				t("view.yearlyGlance.legend.birthday") +
+				t("view.dataPortView.export.type.configure"),
+			folderKey: "birthdayFolder" as const,
+			fields: [
+				...eventCommonFields,
+				{
+					key: "nextBirthday",
+					label: t("view.dataPortView.export.config.nextBirthday"),
+				},
+				{
+					key: "age",
+					label: t("view.dataPortView.export.config.age"),
+				},
+				{
+					key: "animal",
+					label: t("view.dataPortView.export.config.animal"),
+				},
+				{
+					key: "zodiac",
+					label: t("view.dataPortView.export.config.zodiac"),
+				},
+			],
+			configKey: "birthdayFields" as const,
+		},
+		customEvent: {
+			title:
+				t("view.yearlyGlance.legend.customEvent") +
+				t("view.dataPortView.export.type.configure"),
+			folderKey: "customEventFolder" as const,
+			fields: [
+				...eventCommonFields,
+				{
+					key: "isRepeat",
+					label: t("view.dataPortView.export.config.isRepeat"),
+				},
+			],
+			configKey: "customEventFields" as const,
+		},
+	};
+
+	// 渲染单个事件类型的配置区域
+	const renderEventTypeConfig = (type: keyof typeof eventTypeConfigs) => {
+		const config = eventTypeConfigs[type];
+
+		return (
+			<div key={type} className="event-type-config">
+				<h3>{config.title}</h3>
+
+				{/* 文件夹配置 */}
+				<div className="folder-config-section">
+					<label>
+						<FolderOpen size={12} />
+						{t(
+							"view.dataPortView.export.type.markdown.folderLabel"
+						)}
+					</label>
+					<Input
+						value={markdownConfig[config.folderKey]}
+						onChange={(value) =>
+							setMarkdownConfig((prev) => ({
+								...prev,
+								[config.folderKey]: value,
+							}))
+						}
+					/>
+				</div>
+
+				{/* 字段配置 */}
+				<div className="field-config-section">
+					<label>
+						<FileText size={12} />
+						{t(
+							"view.dataPortView.export.type.markdown.fieldsTitle"
+						)}
+					</label>
+					<div className="field-toggles">
+						{config.fields.map((field) => (
+							<Toggle
+								key={field.key}
+								label={field.label}
+								checked={
+									markdownConfig[config.configKey][
+										field.key
+									] || false
+								}
+								onChange={(checked) =>
+									setMarkdownConfig((prev) => ({
+										...prev,
+										[config.configKey]: {
+											...prev[config.configKey],
+											[field.key]: checked,
+										},
+									}))
+								}
+							/>
+						))}
+					</div>
+				</div>
+			</div>
+		);
+	};
+
 	const markdownExportConfig = () => {
 		return (
 			<>
 				<div className="config-group">
-					<label className="config-label">文件夹配置</label>
-					<div className="markdown-folder-config">
-						<div className="folder-item">
-							<label>节假日文件夹：</label>
-							<Input
-								value={markdownConfig.holidayFolder}
-								onChange={(value) =>
-									setMarkdownConfig((prev) => ({
-										...prev,
-										holidayFolder: value,
-									}))
-								}
-								placeholder="Events/Holidays"
-							/>
-						</div>
-						<div className="folder-item">
-							<label>生日文件夹：</label>
-							<Input
-								value={markdownConfig.birthdayFolder}
-								onChange={(value) =>
-									setMarkdownConfig((prev) => ({
-										...prev,
-										birthdayFolder: value,
-									}))
-								}
-								placeholder="Events/Birthdays"
-							/>
-						</div>
-						<div className="folder-item">
-							<label>自定义事件文件夹：</label>
-							<Input
-								value={markdownConfig.customEventFolder}
-								onChange={(value) =>
-									setMarkdownConfig((prev) => ({
-										...prev,
-										customEventFolder: value,
-									}))
-								}
-								placeholder="Events/Custom"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<div className="config-group">
-					<label className="config-label">字段配置</label>
-					<div className="markdown-field-config">
-						{/* 节假日字段配置 */}
-						<div className="field-section">
-							<h4>节假日字段</h4>
-							<div className="field-toggles">
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.holidayFields.id
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												holidayFields: {
-													...prev.holidayFields,
-													id: checked,
-												},
-											}))
-										}
-										aria-label="ID"
-									/>
-									<span>ID</span>
-								</div>
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.holidayFields.isoDate
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												holidayFields: {
-													...prev.holidayFields,
-													isoDate: checked,
-												},
-											}))
-										}
-										aria-label="日期"
-									/>
-									<span>日期</span>
-								</div>
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.holidayFields
-												.calendar
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												holidayFields: {
-													...prev.holidayFields,
-													calendar: checked,
-												},
-											}))
-										}
-										aria-label="日历类型"
-									/>
-									<span>日历类型</span>
-								</div>
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.holidayFields.emoji
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												holidayFields: {
-													...prev.holidayFields,
-													emoji: checked,
-												},
-											}))
-										}
-										aria-label="表情符号"
-									/>
-									<span>表情符号</span>
-								</div>
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.holidayFields.color
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												holidayFields: {
-													...prev.holidayFields,
-													color: checked,
-												},
-											}))
-										}
-										aria-label="颜色"
-									/>
-									<span>颜色</span>
-								</div>
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.holidayFields.remark
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												holidayFields: {
-													...prev.holidayFields,
-													remark: checked,
-												},
-											}))
-										}
-										aria-label="备注"
-									/>
-									<span>备注</span>
-								</div>
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.holidayFields
-												.foundDate || false
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												holidayFields: {
-													...prev.holidayFields,
-													foundDate: checked,
-												},
-											}))
-										}
-										aria-label="成立日期"
-									/>
-									<span>成立日期</span>
-								</div>
-							</div>
-						</div>
-
-						{/* 生日字段配置 */}
-						<div className="field-section">
-							<h4>生日字段</h4>
-							<div className="field-toggles">
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.birthdayFields.id
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												birthdayFields: {
-													...prev.birthdayFields,
-													id: checked,
-												},
-											}))
-										}
-										aria-label="ID"
-									/>
-									<span>ID</span>
-								</div>
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.birthdayFields
-												.isoDate
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												birthdayFields: {
-													...prev.birthdayFields,
-													isoDate: checked,
-												},
-											}))
-										}
-										aria-label="日期"
-									/>
-									<span>日期</span>
-								</div>
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.birthdayFields.age ||
-											false
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												birthdayFields: {
-													...prev.birthdayFields,
-													age: checked,
-												},
-											}))
-										}
-										aria-label="年龄"
-									/>
-									<span>年龄</span>
-								</div>
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.birthdayFields
-												.animal || false
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												birthdayFields: {
-													...prev.birthdayFields,
-													animal: checked,
-												},
-											}))
-										}
-										aria-label="生肖"
-									/>
-									<span>生肖</span>
-								</div>
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.birthdayFields
-												.zodiac || false
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												birthdayFields: {
-													...prev.birthdayFields,
-													zodiac: checked,
-												},
-											}))
-										}
-										aria-label="星座"
-									/>
-									<span>星座</span>
-								</div>
-							</div>
-						</div>
-
-						{/* 自定义事件字段配置 */}
-						<div className="field-section">
-							<h4>自定义事件字段</h4>
-							<div className="field-toggles">
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.customEventFields.id
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												customEventFields: {
-													...prev.customEventFields,
-													id: checked,
-												},
-											}))
-										}
-										aria-label="ID"
-									/>
-									<span>ID</span>
-								</div>
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.customEventFields
-												.isoDate
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												customEventFields: {
-													...prev.customEventFields,
-													isoDate: checked,
-												},
-											}))
-										}
-										aria-label="日期"
-									/>
-									<span>日期</span>
-								</div>
-								<div className="field-toggle-item">
-									<Toggle
-										checked={
-											markdownConfig.customEventFields
-												.isRepeat || false
-										}
-										onChange={(checked) =>
-											setMarkdownConfig((prev) => ({
-												...prev,
-												customEventFields: {
-													...prev.customEventFields,
-													isRepeat: checked,
-												},
-											}))
-										}
-										aria-label="是否重复"
-									/>
-									<span>是否重复</span>
-								</div>
-							</div>
-						</div>
+					<div className="markdown-export-config">
+						{Object.keys(eventTypeConfigs).map((type) =>
+							renderEventTypeConfig(
+								type as keyof typeof eventTypeConfigs
+							)
+						)}
 					</div>
 				</div>
 			</>

@@ -235,12 +235,6 @@
 				min-width: 200px;
 			}
 
-			.config-label {
-				font-size: 0.75rem;
-				font-weight: 500;
-				color: var(--text-muted);
-			}
-
 			.year-selector {
 				display: flex;
 				align-items: center;
@@ -290,58 +284,106 @@
 			max-width: 400px;
 		}
 	}
-}
 
-/* Markdown导出配置样式 */
-.markdown-folder-config {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-
-	.folder-item {
+	/* Markdown导出配置样式 */
+	.markdown-export-config {
 		display: flex;
 		flex-direction: column;
-		gap: 4px;
+		gap: 20px;
 
-		label {
-			font-size: 12px;
-			color: var(--text-muted);
-			font-weight: 500;
-		}
-	}
-}
+		.event-type-config {
+			border: 1px solid var(--background-modifier-border);
+			border-radius: 8px;
+			padding: 16px;
+			background-color: var(--background-secondary);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+			transition: all 0.2s ease;
 
-.markdown-field-config {
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
+			&:hover {
+				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+				border-color: var(--background-modifier-border-hover);
+			}
 
-	.field-section {
-		padding: 12px;
-		background-color: var(--background-secondary);
-		border-radius: 6px;
-		border: 1px solid var(--background-modifier-border);
-
-		h4 {
-			margin: 0 0 8px 0;
-			font-size: 13px;
-			color: var(--text-normal);
-			font-weight: 600;
-		}
-
-		.field-toggles {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-			gap: 8px;
-
-			.field-toggle-item {
+			h3 {
+				margin: 0 0 18px 0;
+				font-size: 16px;
+				color: var(--text-normal);
+				font-weight: 600;
+				border-bottom: 2px solid var(--background-modifier-border);
+				padding-bottom: 4px;
 				display: flex;
 				align-items: center;
 				gap: 8px;
+			}
 
-				span {
-					font-size: 12px;
-					color: var(--text-normal);
+			label {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				margin-bottom: 8px;
+				font-size: 13px;
+				color: var(--text-muted);
+				font-weight: 500;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+			}
+
+			.folder-config-section {
+				padding: 4px;
+
+				label {
+					display: flex;
+					align-items: center;
+					gap: 6px;
+					margin-bottom: 8px;
+					font-size: 13px;
+					color: var(--text-muted);
+					font-weight: 500;
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+				}
+
+				.yg-input {
+					width: 100%;
+				}
+			}
+
+			.field-config-section {
+				padding: 4px;
+
+				.field-toggles {
+					display: grid;
+					grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+					gap: 16px;
+					padding: 12px;
+					background-color: var(--background-primary);
+					border-radius: 8px;
+					border: 1px solid var(--background-modifier-border);
+
+					.yg-toggle {
+						justify-content: space-between;
+						padding: 12px;
+						border-radius: 6px;
+						background-color: var(--background-secondary);
+						border: 1px solid var(--background-modifier-border);
+						transition: all 0.2s ease;
+
+						&:hover {
+							background-color: var(--background-modifier-hover);
+							transform: translateY(-1px);
+							box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+						}
+
+						.toggle-label {
+							font-size: 13px;
+							font-weight: 500;
+							color: var(--text-normal);
+						}
+
+						.toggle-switch {
+							margin-left: auto;
+						}
+					}
 				}
 			}
 		}
@@ -441,12 +483,47 @@
 				}
 			}
 		}
-	}
 
-	.markdown-field-config {
-		.field-section {
-			.field-toggles {
-				grid-template-columns: 1fr;
+		.markdown-export-config {
+			gap: 20px;
+
+			.event-type-config {
+				padding: 16px;
+				border-radius: 8px;
+
+				h3 {
+					font-size: 15px;
+					margin-bottom: 16px;
+					padding-bottom: 8px;
+				}
+
+				.folder-config-section {
+					padding: 12px;
+					margin-bottom: 16px;
+
+					label {
+						font-size: 12px;
+						margin-bottom: 6px;
+					}
+				}
+
+				.field-config-section {
+					h4 {
+						font-size: 13px;
+						margin-bottom: 12px;
+						padding: 6px 10px;
+					}
+
+					.field-toggles {
+						grid-template-columns: 1fr;
+						gap: 12px;
+						padding: 12px;
+
+						.yg-toggle {
+							padding: 10px;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -499,6 +576,53 @@
 				grid-template-columns: 1fr;
 				gap: 8px;
 				padding: 8px;
+			}
+		}
+
+		.markdown-export-config {
+			gap: 16px;
+
+			.event-type-config {
+				padding: 12px;
+				border-radius: 6px;
+
+				h3 {
+					font-size: 14px;
+					margin-bottom: 12px;
+					padding-bottom: 6px;
+				}
+
+				.folder-config-section {
+					padding: 10px;
+					margin-bottom: 12px;
+
+					label {
+						font-size: 11px;
+						margin-bottom: 4px;
+					}
+				}
+
+				.field-config-section {
+					h4 {
+						font-size: 12px;
+						margin-bottom: 8px;
+						padding: 4px 8px;
+					}
+
+					.field-toggles {
+						grid-template-columns: 1fr;
+						gap: 8px;
+						padding: 8px;
+
+						.yg-toggle {
+							padding: 8px;
+
+							.toggle-label {
+								font-size: 12px;
+							}
+						}
+					}
+				}
 			}
 		}
 	}

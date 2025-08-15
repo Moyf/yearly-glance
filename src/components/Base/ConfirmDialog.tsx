@@ -4,6 +4,7 @@ import { Modal } from "obsidian";
 import YearlyGlancePlugin from "@/src/main";
 import { t } from "@/src/i18n/i18n";
 import "./style/ConfirmDialog.css";
+import { Button } from "./Button";
 
 interface ConfirmDialogViewProps {
 	title: string;
@@ -33,10 +34,17 @@ const ConfirmDialogView: React.FC<ConfirmDialogViewProps> = ({
 					<p>{message}</p>
 				</div>
 				<div className="yg-confirm-dialog-actions">
-					<button onClick={onClose}>{t("common.cancel")}</button>
-					<button onClick={handleConfirm}>
+					<Button onClick={onClose} variant="secondary" size="small">
+						{t("common.cancel")}{" "}
+					</Button>
+					<Button
+						className="yg-confirm-dialog-action-confirm"
+						onClick={handleConfirm}
+						variant="primary"
+						size="small"
+					>
 						{t("common.confirm")}
-					</button>
+					</Button>
 				</div>
 			</div>
 		</div>

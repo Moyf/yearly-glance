@@ -2,7 +2,7 @@ import * as React from "react";
 import "./style/Button.css";
 
 interface ButtonProps {
-	children: React.ReactNode;
+	children?: React.ReactNode;
 	onClick?: () => void;
 	disabled?: boolean;
 	variant?: "primary" | "secondary" | "outline" | "danger";
@@ -40,7 +40,7 @@ export const Button: React.FC<ButtonProps> = ({
 			disabled={disabled}
 		>
 			{icon && <span className="yg-button__icon">{icon}</span>}
-			<span className="yg-button__text">{children}</span>
+			{children && <span className="yg-button__text">{children}</span>}
 		</button>
 	);
 };

@@ -13,12 +13,13 @@
 	white-space: nowrap;
 	user-select: none;
 	box-shadow: none !important;
+	padding: var(--size-4-1) var(--size-4-3);
 }
 
-/* .yg-button:focus {
+.yg-button:focus {
 	outline: 2px solid var(--color-accent);
 	outline-offset: 2px;
-} */
+}
 
 /* 大小变体 */
 .yg-button--small {

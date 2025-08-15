@@ -155,11 +155,13 @@ export class MarkdownService {
 			);
 		} else {
 			// 文件不存在，创建新文件
-			const content = this.generateMarkdownContent(
-				event,
-				frontmatterData
+			await this.app.vault.create(filePath, "");
+			await this.frontMatterService.updateFrontMatter(
+				this.app.vault.getAbstractFileByPath(filePath) as TFile,
+				(fm) => {
+					Object.assign(fm, frontmatterData);
+				}
 			);
-			await this.app.vault.create(filePath, content);
 		}
 	}
 
@@ -214,60 +216,10 @@ export class MarkdownService {
 			}
 		}
 
-		// 添加事件类型标识
-		data.eventType = eventType;
-
 		// 添加导出时间戳
-		data.exportedAt = new Date().toISOString();
+		data.exportedAt = new Date().toLocaleString();
 
 		return data;
-	}
-
-	/**
-	 * 生成Markdown文件内容
-	 */
-	private generateMarkdownContent(
-		event: BaseEvent,
-		frontmatterData: Record<string, FrontmatterValue>
-	): string {
-		const frontmatterYaml = this.objectToYaml(frontmatterData);
-
-		return `---
-${frontmatterYaml}---
-
-# ${event.text}
-
-${event.remark || ""}
-`;
-	}
-
-	/**
-	 * 将对象转换为YAML格式
-	 */
-	private objectToYaml(obj: Record<string, FrontmatterValue>): string {
-		return Object.entries(obj)
-			.map(([key, value]) => {
-				if (value === null || value === undefined) {
-					return `${key}: null`;
-				}
-				if (typeof value === "string") {
-					// 处理包含特殊字符的字符串
-					if (
-						value.includes("\n") ||
-						value.includes(":") ||
-						value.includes("#")
-					) {
-						return `${key}: |
-  ${value.split("\n").join("\n  ")}`;
-					}
-					return `${key}: "${value}"`;
-				}
-				if (Array.isArray(value)) {
-					return `${key}: [${value.map((v) => `"${v}"`).join(", ")}]`;
-				}
-				return `${key}: ${value}`;
-			})
-			.join("\n");
 	}
 
 	/**

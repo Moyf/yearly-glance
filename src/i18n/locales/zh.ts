@@ -300,12 +300,33 @@ const translations: BaseMessage = {
 			},
 			export: {
 				name: "数据导出",
+				type: {
+					configure: "配置",
+					markdown: {
+						folderLabel: "导出位置",
+						fieldsTitle: "导出字段",
+					},
+				},
 				actions: {
 					handle: "导出选中事件",
 				},
 				config: {
 					fileName: "文件名",
 					year: "导出年份",
+					id: "ID",
+					isoDate: "ISO日期",
+					calendar: "日历类型",
+					dateArr: "日期数组",
+					emoji: "表情符号",
+					color: "颜色",
+					remark: "备注",
+					isHidden: "是否隐藏",
+					foundDate: "节日起源时间",
+					nextBirthday: "下一次生日",
+					age: "年龄",
+					animal: "生肖",
+					zodiac: "星座",
+					isRepeat: "是否重复",
 				},
 				empty: {
 					text: "暂无事件数据",

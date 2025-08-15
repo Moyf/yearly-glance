@@ -214,12 +214,33 @@ export type BaseMessage = {
 			};
 			export: {
 				name: string;
+				type: {
+					configure: string;
+					markdown: {
+						folderLabel: string;
+						fieldsTitle: string;
+					};
+				};
 				actions: {
 					handle: string;
 				};
 				config: {
 					fileName: string;
 					year: string;
+					id: string;
+					isoDate: string;
+					calendar: string;
+					dateArr: string;
+					emoji: string;
+					color: string;
+					remark: string;
+					isHidden: string;
+					foundDate: string;
+					nextBirthday: string;
+					age: string;
+					animal: string;
+					zodiac: string;
+					isRepeat: string;
 				};
 				empty: {
 					text: string;

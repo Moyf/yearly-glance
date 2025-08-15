@@ -171,7 +171,7 @@ const translations: BaseMessage = {
 				showTooltips: "滑鼠懸浮時顯示完整事件名",
 				hidePreviousMonths: "隱藏當月之前的月份",
 				showPreviousMonths: "顯示當月之前的月份",
-				previousMonths: "过往",
+				previousMonths: "過往",
 				hideFutureMonths: "隱藏當月之後的月份",
 				showFutureMonths: "顯示當月之後的月份",
 				futureMonths: "未來",
@@ -300,12 +300,33 @@ const translations: BaseMessage = {
 			},
 			export: {
 				name: "資料匯出",
+				type: {
+					configure: "配置",
+					markdown: {
+						folderLabel: "匯出位置",
+						fieldsTitle: "匯出欄位",
+					},
+				},
 				actions: {
 					handle: "匯出選中事件",
 				},
 				config: {
 					fileName: "檔案名稱",
 					year: "匯出年份",
+					id: "ID",
+					isoDate: "ISO日期",
+					calendar: "日曆類型",
+					dateArr: "日期陣列",
+					emoji: "表情符號",
+					color: "顏色",
+					remark: "備註",
+					isHidden: "是否隱藏",
+					foundDate: "節日起源時間",
+					nextBirthday: "下一次生日",
+					age: "年齡",
+					animal: "生肖",
+					zodiac: "星座",
+					isRepeat: "是否重複",
 				},
 				empty: {
 					text: "暫無事件資料",
@@ -316,8 +337,8 @@ const translations: BaseMessage = {
 			import: {
 				name: "資料匯入",
 				actions: {
-					reset: "重新選擇導入",
-					handle: "導入選中事件",
+					reset: "重新選擇匯入",
+					handle: "匯入選中事件",
 					parseSummary:
 						"發現 {{validCount}} 個有效事件，{{invalidCount}} 個無效事件",
 				},
@@ -326,13 +347,13 @@ const translations: BaseMessage = {
 						title: "JSON 檔案匯入",
 						message:
 							"<ul>" +
-							"<li>文件必须为 JSON 格式</li>" +
-							"<li>事件必须包含 <code>text</code> 和 <code>userInput</code> 字段</li>" +
-							"<li>支持 <code>holidays</code>、<code>birthdays</code>、<code>customEvents</code> 三种事件类型</li>" +
-							"<ul>",
-						upload: "導入",
-						paste: "粘貼",
-						pastePlaceholder: "在此粘貼 JSON 內容",
+							"<li>檔案必須為 JSON 格式</li>" +
+							"<li>事件必須包含 <code>text</code> 和 <code>userInput</code> 欄位</li>" +
+							"<li>支援 <code>holidays</code>、<code>birthdays</code>、<code>customEvents</code> 三種事件類型</li>" +
+							"</ul>",
+						upload: "匯入",
+						paste: "貼上",
+						pastePlaceholder: "在此貼上 JSON 內容",
 						pasteError: "解析錯誤: {{error}}",
 						submitPaste: "解析 JSON",
 					},

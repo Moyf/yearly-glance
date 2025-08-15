@@ -302,12 +302,33 @@ const translations: BaseMessage = {
 			},
 			export: {
 				name: "Export",
+				type: {
+					configure: " Configure",
+					markdown: {
+						folderLabel: "Export folder",
+						fieldsTitle: "Export fields",
+					},
+				},
 				actions: {
 					handle: "Export selected events",
 				},
 				config: {
 					fileName: "Export file name",
 					year: "Export year",
+					id: "ID",
+					isoDate: "ISO date",
+					calendar: "Calendar type",
+					dateArr: "Date array",
+					emoji: "Emoji",
+					color: "Color",
+					remark: "Remark",
+					isHidden: "Is hidden",
+					foundDate: "Found date",
+					nextBirthday: "Next birthday",
+					age: "Age",
+					animal: "Chinese zodiac",
+					zodiac: "Zodiac",
+					isRepeat: "Is repeat",
 				},
 				empty: {
 					text: "No data to export",

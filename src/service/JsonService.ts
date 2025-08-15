@@ -13,7 +13,7 @@ import {
 	JsonEventParse,
 	JsonEventsParseResult,
 } from "@/src/type/DataPort";
-import { validEventId } from "../utils/uniqueEventId";
+import { prefixMap, validEventId } from "../utils/uniqueEventId";
 
 export class JsonService {
 	static validJsonStructure(jsonString: string): {
@@ -181,6 +181,7 @@ export class JsonService {
 		events.forEach((event) => {
 			const warnings = this.validEventJsonStructure(
 				event,
+				eventType,
 				existingEvents
 			);
 			if (warnings) {
@@ -211,6 +212,7 @@ export class JsonService {
 
 	private static validEventJsonStructure(
 		event: JsonEvent,
+		eventType: EventType,
 		existingEvents: {
 			id?: string;
 			text: string;
@@ -233,7 +235,7 @@ export class JsonService {
 		}
 
 		// 检查重复事件
-		if (this.detectDuplicateEvent(event, existingEvents)) {
+		if (this.detectDuplicateEvent(event, eventType, existingEvents)) {
 			warnings.push(t("view.dataPortView.import.warn.duplicateEvent"));
 		}
 
@@ -242,6 +244,7 @@ export class JsonService {
 
 	private static detectDuplicateEvent(
 		event: JsonEvent,
+		eventType: EventType,
 		existingEvents: {
 			id?: string;
 			text: string;
@@ -250,6 +253,9 @@ export class JsonService {
 	): boolean {
 		// 规则 1: 如果事件有ID，优先检查ID是否重复
 		if (event.id) {
+			if (!event.id.startsWith(`${prefixMap[eventType]}-`)) {
+				event.id = validEventId(eventType, event.id);
+			}
 			return existingEvents.some((existing) => existing.id === event.id);
 		}
 

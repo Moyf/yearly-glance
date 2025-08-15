@@ -1,7 +1,7 @@
 import { EventType } from "../type/Events";
 import { generateUUID } from "./uuid";
 
-const prefixMap: Record<EventType, string> = {
+export const prefixMap: Record<EventType, string> = {
 	birthday: "birth",
 	holiday: "holi",
 	customEvent: "event",
@@ -22,8 +22,8 @@ export function validEventId(eventType?: EventType, id?: string): string {
 		return generateEventId(eventType);
 	}
 
-	if (!id.startsWith(prefix)) {
-		return prefix + "-" + id;
+	if (!id.startsWith(`${prefix}-`)) {
+		return `${prefix}-${id}`;
 	}
 
 	return id;

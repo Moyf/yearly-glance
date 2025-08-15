@@ -96,18 +96,6 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 	const handleDeleteEvent = async (
 		event: Holiday | Birthday | CustomEvent
 	) => {
-		// 判断事件实际类型
-		let eventType = activeTab;
-		if ((event as Holiday).id.contains("holi")) {
-			eventType = "holiday";
-		} else if ((event as Birthday).id.contains("birth")) {
-			eventType = "birthday";
-		} else if ((event as CustomEvent).id.contains("event")) {
-			eventType = "customEvent";
-		} else {
-			throw new Error("Unknown event type");
-		}
-
 		new ConfirmDialog(plugin, {
 			title: t("view.eventManager.actions.delete"),
 			message: t("view.eventManager.actions.deleteConfirm", {
@@ -117,19 +105,16 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 				const newEvents = { ...events };
 				const eventId = event.id;
 
-				if (eventType === "holiday") {
-					newEvents.holidays = events.holidays.filter(
-						(h) => h.id !== eventId
-					);
-				} else if (eventType === "birthday") {
-					newEvents.birthdays = events.birthdays.filter(
-						(b) => b.id !== eventId
-					);
-				} else {
-					newEvents.customEvents = events.customEvents.filter(
-						(c) => c.id !== eventId
-					);
-				}
+				// 直接根据ID在所有事件类型中查找并删除
+				newEvents.holidays = events.holidays.filter(
+					(h) => h.id !== eventId
+				);
+				newEvents.birthdays = events.birthdays.filter(
+					(b) => b.id !== eventId
+				);
+				newEvents.customEvents = events.customEvents.filter(
+					(c) => c.id !== eventId
+				);
 
 				await updateEvents(newEvents);
 			},

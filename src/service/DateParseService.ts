@@ -74,7 +74,7 @@ export class DateParseService {
 		input: string,
 		calendar: CalendarType
 	): StandardDate {
-		switch (calendar) {
+		switch (calendar.toUpperCase()) {
 			case "GREGORIAN":
 				return this.parseGregorianDate(input);
 			case "LUNAR":

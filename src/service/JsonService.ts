@@ -13,6 +13,7 @@ import {
 	JsonEventParse,
 	JsonEventsParseResult,
 } from "@/src/type/DataPort";
+import { validEventId } from "../utils/uniqueEventId";
 
 export class JsonService {
 	static validJsonStructure(jsonString: string): {
@@ -199,7 +200,9 @@ export class JsonService {
 					text: event.text,
 					userInput: {
 						input: event.userInput.input,
-						calendar: event.userInput.calendar || "Gregorian",
+						calendar:
+							event.userInput.calendar?.toUpperCase() ||
+							"GREGORIAN",
 					},
 				});
 			}
@@ -254,13 +257,14 @@ export class JsonService {
 		if (event.text && event.userInput?.input) {
 			const eventText = event.text.trim().toLowerCase();
 			const eventDate = event.userInput.input.trim();
-			const eventCalendar = event.userInput.calendar || "Gregorian";
+			const eventCalendar =
+				event.userInput.calendar?.toUpperCase() || "GREGORIAN";
 
 			return existingEvents.some((existing) => {
 				const existingText = existing.text.trim().toLowerCase();
 				const existingDate = existing.userInput.input.trim();
 				const existingCalendar =
-					existing.userInput.calendar || "Gregorian";
+					existing.userInput.calendar?.toUpperCase() || "GREGORIAN";
 
 				// 检查文本和日期是否完全相同
 				return (
@@ -281,7 +285,7 @@ export class JsonService {
 		);
 
 		return {
-			id: parsedEvent.id,
+			id: validEventId(parsedEvent.eventType, parsedEvent.id),
 			text: parsedEvent.text,
 			eventDate: {
 				...parsedDate,

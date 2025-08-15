@@ -1,0 +1,244 @@
+{
+  "holidays": [
+    {
+      "id": "new-year",
+      "text": "元旦",
+      "userInput": { "input": "2025-01-01", "calendar": "Gregorian" },
+      "emoji": "🎉",
+      "color": "#ff0000",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-01-01"
+    },
+    {
+      "id": "spring-festival",
+      "text": "春节",
+      "userInput": { "input": "2025-01-29", "calendar": "Gregorian" },
+      "emoji": "🧧",
+      "color": "#ff4500",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-01-29"
+    },
+    {
+      "id": "lantern-festival",
+      "text": "元宵节",
+      "userInput": { "input": "2025-02-12", "calendar": "Gregorian" },
+      "emoji": "🏮",
+      "color": "#ff6347",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-02-12"
+    },
+    {
+      "id": "valentines-day",
+      "text": "情人节",
+      "userInput": { "input": "2025-02-14", "calendar": "Gregorian" },
+      "emoji": "❤️",
+      "color": "#ff69b4",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-02-14"
+    },
+    {
+      "id": "womens-day",
+      "text": "国际妇女节",
+      "userInput": { "input": "2025-03-08", "calendar": "Gregorian" },
+      "emoji": "🌸",
+      "color": "#ff69b4",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-03-08"
+    },
+    {
+      "id": "arbor-day",
+      "text": "植树节",
+      "userInput": { "input": "2025-03-12", "calendar": "Gregorian" },
+      "emoji": "🌳",
+      "color": "#228b22",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-03-12"
+    },
+    {
+      "id": "april-fools",
+      "text": "愚人节",
+      "userInput": { "input": "2025-04-01", "calendar": "Gregorian" },
+      "emoji": "🤡",
+      "color": "#ffa500",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-04-01"
+    },
+    {
+      "id": "qingming-festival",
+      "text": "清明节",
+      "userInput": { "input": "2025-04-04", "calendar": "Gregorian" },
+      "emoji": "🌿",
+      "color": "#2e8b57",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-04-04"
+    },
+    {
+      "id": "earth-day",
+      "text": "世界地球日",
+      "userInput": { "input": "2025-04-22", "calendar": "Gregorian" },
+      "emoji": "🌍",
+      "color": "#3cb371",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-04-22"
+    },
+    {
+      "id": "labour-day",
+      "text": "劳动节",
+      "userInput": { "input": "2025-05-01", "calendar": "Gregorian" },
+      "emoji": "🛠",
+      "color": "#ff0000",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-05-01"
+    },
+    {
+      "id": "youth-day",
+      "text": "青年节",
+      "userInput": { "input": "2025-05-04", "calendar": "Gregorian" },
+      "emoji": "💪",
+      "color": "#1e90ff",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-05-04"
+    },
+    {
+      "id": "mothers-day",
+      "text": "母亲节",
+      "userInput": { "input": "2025-05-11", "calendar": "Gregorian" },
+      "emoji": "💐",
+      "color": "#ff69b4",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-05-11"
+    },
+    {
+      "id": "dragon-boat-festival",
+      "text": "端午节",
+      "userInput": { "input": "2025-05-31", "calendar": "Gregorian" },
+      "emoji": "🍃",
+      "color": "#228b22",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-05-31"
+    },
+    {
+      "id": "childrens-day",
+      "text": "儿童节",
+      "userInput": { "input": "2025-06-01", "calendar": "Gregorian" },
+      "emoji": "🧸",
+      "color": "#ffcc00",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-06-01"
+    },
+    {
+      "id": "fathers-day",
+      "text": "父亲节",
+      "userInput": { "input": "2025-06-15", "calendar": "Gregorian" },
+      "emoji": "👔",
+      "color": "#4682b4",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-06-15"
+    },
+    {
+      "id": "party-day",
+      "text": "建党节",
+      "userInput": { "input": "2025-07-01", "calendar": "Gregorian" },
+      "emoji": "🚩",
+      "color": "#ff0000",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-07-01"
+    },
+    {
+      "id": "army-day",
+      "text": "建军节",
+      "userInput": { "input": "2025-08-01", "calendar": "Gregorian" },
+      "emoji": "🎖",
+      "color": "#006400",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-08-01"
+    },
+    {
+      "id": "qixi-festival",
+      "text": "七夕节",
+      "userInput": { "input": "2025-08-29", "calendar": "Gregorian" },
+      "emoji": "💖",
+      "color": "#ff69b4",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-08-29"
+    },
+    {
+      "id": "mid-autumn-festival",
+      "text": "中秋节",
+      "userInput": { "input": "2025-10-06", "calendar": "Gregorian" },
+      "emoji": "🌕",
+      "color": "#ffd700",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-10-06"
+    },
+    {
+      "id": "national-day",
+      "text": "国庆节",
+      "userInput": { "input": "2025-10-01", "calendar": "Gregorian" },
+      "emoji": "🇨🇳",
+      "color": "#ff0000",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-10-01"
+    },
+    {
+      "id": "double-ninth-festival",
+      "text": "重阳节",
+      "userInput": { "input": "2025-10-29", "calendar": "Gregorian" },
+      "emoji": "🌄",
+      "color": "#ffa500",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-10-29"
+    },
+    {
+      "id": "halloween",
+      "text": "万圣节",
+      "userInput": { "input": "2025-10-31", "calendar": "Gregorian" },
+      "emoji": "🎃",
+      "color": "#ff8c00",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-10-31"
+    },
+    {
+      "id": "thanksgiving",
+      "text": "感恩节",
+      "userInput": { "input": "2025-11-27", "calendar": "Gregorian" },
+      "emoji": "🦃",
+      "color": "#d2691e",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-11-27"
+    },
+    {
+      "id": "christmas",
+      "text": "圣诞节",
+      "userInput": { "input": "2025-12-25", "calendar": "Gregorian" },
+      "emoji": "🎄",
+      "color": "#008000",
+      "remark": "holiday remark",
+      "isHidden": false,
+      "foundDate": "2025-12-25"
+    }
+  ]
+}

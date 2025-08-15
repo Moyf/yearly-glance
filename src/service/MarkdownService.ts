@@ -133,7 +133,11 @@ export class MarkdownService {
 	): Promise<void> {
 		// 生成安全的文件名
 		const fileName = this.sanitizeFileName(event.text) + ".md";
-		const filePath = `${folderPath}/${fileName}`;
+		// 处理根目录路径，避免双斜杠
+		const normalizedFolderPath = normalizePath(folderPath);
+		const filePath = normalizedFolderPath
+			? `${normalizedFolderPath}/${fileName}`
+			: fileName;
 
 		// 构建frontmatter数据
 		const frontmatterData = this.buildFrontmatterData(
@@ -238,6 +242,11 @@ export class MarkdownService {
 	 * 确保文件夹存在，不存在则创建
 	 */
 	private async ensureFolderExists(folderPath: string): Promise<void> {
+		// 如果是根目录，无需创建
+		if (folderPath === "/" || folderPath === "") {
+			return;
+		}
+
 		const folder = this.app.vault.getAbstractFileByPath(folderPath);
 
 		if (!folder) {

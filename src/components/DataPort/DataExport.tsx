@@ -34,6 +34,8 @@ import { t } from "@/src/i18n/i18n";
 import { JsonService } from "@/src/service/JsonService";
 import { iCalendarService } from "@/src/service/iCalendarService";
 import { MarkdownService } from "@/src/service/MarkdownService";
+import { ObsidianAppContext } from "@/src/context/obsidianAppContext";
+import { FolderAutoComplete } from "@/src/components/Base/FolderAutoComplete";
 
 interface DataExportProps {
 	app: App;
@@ -524,21 +526,25 @@ export const DataExport: React.FC<DataExportProps> = ({
 
 				{/* 文件夹配置 */}
 				<div className="folder-config-section">
-					<label>
-						<FolderOpen size={12} />
-						{t(
-							"view.dataPortView.export.type.markdown.folderLabel"
-						)}
-					</label>
-					<Input
-						value={markdownConfig[config.folderKey]}
-						onChange={(value) =>
-							setMarkdownConfig((prev) => ({
-								...prev,
-								[config.folderKey]: value,
-							}))
-						}
-					/>
+					<ObsidianAppContext value={app}>
+						<FolderAutoComplete
+							label={
+								<>
+									<FolderOpen size={12} />
+									{t(
+										"view.dataPortView.export.type.markdown.folderLabel"
+									)}
+								</>
+							}
+							value={markdownConfig[config.folderKey]}
+							onChange={(value) =>
+								setMarkdownConfig((prev) => ({
+									...prev,
+									[config.folderKey]: value,
+								}))
+							}
+						/>
+					</ObsidianAppContext>
 				</div>
 
 				{/* 字段配置 */}

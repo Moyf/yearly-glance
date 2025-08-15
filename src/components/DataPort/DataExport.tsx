@@ -246,7 +246,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 
 	const handleExport = async () => {
 		if (selectedEvents.size === 0) {
-			new Notice("请选择要导出的事件");
+			new Notice(t("view.dataPortView.export.empty.noSelectedEvents"));
 			return;
 		}
 
@@ -300,14 +300,21 @@ export const DataExport: React.FC<DataExportProps> = ({
 
 					if (result.success > 0) {
 						new Notice(
-							`成功导出 ${result.success} 个事件到Markdown文件`
+							t(
+								"view.dataPortView.export.type.markdown.success",
+								{ count: result.success }
+							)
 						);
 					}
 					if (result.failed > 0) {
 						new Notice(
-							`导出失败 ${
-								result.failed
-							} 个事件:\n${result.errors.join("\n")}`
+							t(
+								"view.dataPortView.export.type.markdown.failure",
+								{ count: result.failed }
+							)
+						);
+						throw new Error(
+							`导出失败: ${result.errors.join(", ")}`
 						);
 					}
 					break;

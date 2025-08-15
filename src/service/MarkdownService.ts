@@ -1,4 +1,4 @@
-import { App, TFile, TFolder } from "obsidian";
+import { App, normalizePath, TFile, TFolder } from "obsidian";
 import {
 	BaseEvent,
 	Birthday,

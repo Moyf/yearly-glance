@@ -219,6 +219,8 @@ export type BaseMessage = {
 					markdown: {
 						folderLabel: string;
 						fieldsTitle: string;
+						success: string;
+						failure: string;
 					};
 				};
 				actions: {
@@ -246,6 +248,7 @@ export type BaseMessage = {
 					text: string;
 					subtext: string;
 					noDate: string;
+					noSelectedEvents: string;
 				};
 			};
 			import: {

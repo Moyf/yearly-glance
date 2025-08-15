@@ -305,6 +305,8 @@ const translations: BaseMessage = {
 					markdown: {
 						folderLabel: "导出位置",
 						fieldsTitle: "导出字段",
+						success: "成功导出 {{count}} 个事件到 markdown 文件",
+						failure: "导出失败 {{count}} 个事件, 请检查日志",
 					},
 				},
 				actions: {
@@ -332,6 +334,7 @@ const translations: BaseMessage = {
 					text: "暂无事件数据",
 					subtext: "请先添加一些事件再进行导出操作",
 					noDate: "无日期",
+					noSelectedEvents: "未选择任何事件",
 				},
 			},
 			import: {

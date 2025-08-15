@@ -307,6 +307,10 @@ const translations: BaseMessage = {
 					markdown: {
 						folderLabel: "Export folder",
 						fieldsTitle: "Export fields",
+						success:
+							"Successfully exported {{count}} events to markdown files",
+						failure:
+							"Failed to export {{count}} events, please check the logs",
 					},
 				},
 				actions: {
@@ -334,6 +338,7 @@ const translations: BaseMessage = {
 					text: "No data to export",
 					subtext: "Please add events first",
 					noDate: "No date",
+					noSelectedEvents: "No events selected for export",
 				},
 			},
 			import: {

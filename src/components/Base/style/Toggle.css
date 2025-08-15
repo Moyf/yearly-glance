@@ -1,9 +1,9 @@
 .yg-toggle {
 	position: relative;
-	display: inline-block;
+	display: flex;
+	align-items: center;
+	gap: 8px;
 	cursor: pointer;
-	width: 40px;
-	height: 24px;
 }
 
 .yg-toggle.is-disabled {
@@ -11,15 +11,20 @@
 	cursor: not-allowed;
 }
 
+.yg-toggle-label {
+	font-size: 12px;
+	color: var(--text-normal);
+	white-space: nowrap;
+}
+
 .yg-toggle-slider {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	position: relative;
+	width: 40px;
+	height: 24px;
 	background-color: var(--text-muted);
 	border-radius: 34px;
 	transition: 0.2s;
+	flex-shrink: 0;
 
 	&::before {
 		position: absolute;

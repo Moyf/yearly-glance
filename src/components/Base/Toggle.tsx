@@ -6,6 +6,7 @@ interface ToggleProps {
 	onChange: (checked: boolean) => void;
 	className?: string;
 	"aria-label"?: string;
+	label?: string;
 }
 
 export const Toggle: React.FC<ToggleProps> = ({
@@ -13,6 +14,7 @@ export const Toggle: React.FC<ToggleProps> = ({
 	onChange,
 	className = "",
 	"aria-label": ariaLabel,
+	label,
 }) => {
 	const handleChange = React.useCallback(() => {
 		onChange(!checked);
@@ -37,6 +39,7 @@ export const Toggle: React.FC<ToggleProps> = ({
 			onKeyDown={handleKeyDown}
 			tabIndex={0}
 		>
+			{label && <span className="yg-toggle-label">{label}</span>}
 			<div className="yg-toggle-slider" />
 		</div>
 	);

@@ -1,3 +1,4 @@
+import { App } from "obsidian";
 import * as React from "react";
 import {
 	Birthday,
@@ -17,6 +18,7 @@ import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
 import { EventFormModal } from "@/src/components/EventForm/EventFormModal";
 
 interface DataPortManagerProps {
+	app: App;
 	config: YearlyGlanceSettings;
 	data: Events;
 	onConfigUpdate: (config: Partial<YearlyGlanceSettings>) => Promise<void>;
@@ -51,6 +53,7 @@ export const DataPortManagerView: React.FC<{
 
 	return (
 		<DataPortManager
+			app={plugin.app}
 			config={config}
 			data={events}
 			onConfigUpdate={updateConfig}
@@ -60,6 +63,7 @@ export const DataPortManagerView: React.FC<{
 };
 
 const DataPortManager: React.FC<DataPortManagerProps> = ({
+	app,
 	config,
 	data,
 	onConfigUpdate,
@@ -91,6 +95,7 @@ const DataPortManager: React.FC<DataPortManagerProps> = ({
 			<div className="yg-data-port-content">
 				{activeTab === "export" ? (
 					<DataExport
+						app={app}
 						config={config}
 						currentData={data}
 						onConfigUpdate={onConfigUpdate}

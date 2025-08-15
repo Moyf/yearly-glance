@@ -57,3 +57,86 @@ export interface MarkdownEvent {
 	// CustomEvent 独有字段
 	isRepeat?: boolean;
 }
+
+// Markdown导出配置
+export interface MarkdownExportConfig {
+	// 文件夹配置
+	holidayFolder: string;
+	birthdayFolder: string;
+	customEventFolder: string;
+
+	// 字段配置 - 每种事件类型可选择导出哪些字段到frontmatter
+	holidayFields: MarkdownFieldConfig;
+	birthdayFields: MarkdownFieldConfig;
+	customEventFields: MarkdownFieldConfig;
+}
+
+export interface MarkdownFieldConfig {
+	// 基础字段
+	id: boolean;
+	isoDate: boolean;
+	calendar: boolean;
+	dateArr: boolean;
+	emoji: boolean;
+	color: boolean;
+	remark: boolean;
+	isHidden: boolean;
+
+	// Holiday 字段
+	foundDate?: boolean;
+
+	// Birthday 字段
+	nextBirthday?: boolean;
+	age?: boolean;
+	animal?: boolean;
+	zodiac?: boolean;
+
+	// CustomEvent 字段
+	isRepeat?: boolean;
+}
+
+// 默认Markdown导出配置
+export const DEFAULT_MARKDOWN_EXPORT_CONFIG: MarkdownExportConfig = {
+	holidayFolder: "Events/Holidays",
+	birthdayFolder: "Events/Birthdays",
+	customEventFolder: "Events/Custom",
+
+	holidayFields: {
+		id: true,
+		isoDate: true,
+		calendar: true,
+		dateArr: true,
+		emoji: true,
+		color: true,
+		remark: true,
+		isHidden: false,
+		foundDate: true,
+	},
+
+	birthdayFields: {
+		id: true,
+		isoDate: true,
+		calendar: true,
+		dateArr: true,
+		emoji: true,
+		color: true,
+		remark: true,
+		isHidden: false,
+		nextBirthday: true,
+		age: true,
+		animal: true,
+		zodiac: true,
+	},
+
+	customEventFields: {
+		id: true,
+		isoDate: true,
+		calendar: true,
+		dateArr: true,
+		emoji: true,
+		color: true,
+		remark: true,
+		isHidden: false,
+		isRepeat: true,
+	},
+};

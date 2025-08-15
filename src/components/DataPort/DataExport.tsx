@@ -1,4 +1,9 @@
-import { ExportFormat } from "@/src/type/DataPort";
+import { App } from "obsidian";
+import {
+	DEFAULT_MARKDOWN_EXPORT_CONFIG,
+	ExportFormat,
+	MarkdownExportConfig,
+} from "@/src/type/DataPort";
 import {
 	BaseEvent,
 	EVENT_TYPE_DEFAULT,
@@ -10,6 +15,7 @@ import * as React from "react";
 import { Button } from "@/src/components/Base/Button";
 import { NavTabs } from "@/src/components/Base/NavTabs";
 import { Input } from "@/src/components/Base/Input";
+import { Toggle } from "@/src/components/Base/Toggle";
 import {
 	Calendar,
 	CheckSquare,
@@ -17,6 +23,7 @@ import {
 	ChevronRight,
 	Download,
 	FileText,
+	FolderOpen,
 	Sparkles,
 	Square,
 	Users,
@@ -26,8 +33,10 @@ import { YearlyGlanceSettings } from "@/src/type/Settings";
 import { t } from "@/src/i18n/i18n";
 import { JsonService } from "@/src/service/JsonService";
 import { iCalendarService } from "@/src/service/iCalendarService";
+import { MarkdownService } from "@/src/service/MarkdownService";
 
 interface DataExportProps {
+	app: App;
 	config: YearlyGlanceSettings;
 	currentData: Events;
 	onConfigUpdate: (config: Partial<YearlyGlanceSettings>) => Promise<void>;
@@ -38,6 +47,7 @@ interface EventWithType extends BaseEvent {
 }
 
 export const DataExport: React.FC<DataExportProps> = ({
+	app,
 	config,
 	currentData,
 	onConfigUpdate,
@@ -63,6 +73,10 @@ export const DataExport: React.FC<DataExportProps> = ({
 	const [exportYear, setExportYear] = React.useState(config.year);
 	const [exportFileName, setExportFileName] = React.useState("");
 
+	// Markdown导出配置
+	const [markdownConfig, setMarkdownConfig] =
+		React.useState<MarkdownExportConfig>(DEFAULT_MARKDOWN_EXPORT_CONFIG);
+
 	// 保存原始年份以便恢复
 	const originalYear = React.useRef(config.year);
 
@@ -81,6 +95,9 @@ export const DataExport: React.FC<DataExportProps> = ({
 			setExportFileName(`yearly-glance-events-${today}`);
 		} else if (activeExportFormat === "ics") {
 			setExportFileName(`yearly-glance-events-${exportYear}`);
+		} else if (activeExportFormat === "md") {
+			// Markdown导出不需要文件名，因为会直接创建到指定文件夹
+			setExportFileName("");
 		}
 	}, [activeExportFormat, exportYear]);
 
@@ -95,6 +112,11 @@ export const DataExport: React.FC<DataExportProps> = ({
 			label: "ICS",
 			value: "ics" as ExportFormat,
 			icon: <Calendar size={16} />,
+		},
+		{
+			label: "Markdown",
+			value: "md" as ExportFormat,
+			icon: <FolderOpen size={16} />,
 		},
 	];
 
@@ -229,21 +251,63 @@ export const DataExport: React.FC<DataExportProps> = ({
 		setIsExporting(true);
 		try {
 			const selectedData = getSelectedData();
-			let content: string;
-			let filename: string;
-			let mimeType: string;
 
 			switch (activeExportFormat) {
 				case "json": {
-					content = JsonService.createJsonEvents(selectedData);
-					filename = `${exportFileName}.json`;
-					mimeType = "application/json";
+					const content = JsonService.createJsonEvents(selectedData);
+					const filename = `${exportFileName}.json`;
+					const mimeType = "application/json";
+
+					// 创建下载链接
+					const blob = new Blob([content], { type: mimeType });
+					const url = URL.createObjectURL(blob);
+					const link = document.createElement("a");
+					link.href = url;
+					link.download = filename;
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					URL.revokeObjectURL(url);
 					break;
 				}
 				case "ics": {
-					content = iCalendarService.createICalEvents(selectedData);
-					filename = `${exportFileName}.ics`;
-					mimeType = "text/calendar";
+					const content =
+						iCalendarService.createICalEvents(selectedData);
+					const filename = `${exportFileName}.ics`;
+					const mimeType = "text/calendar";
+
+					// 创建下载链接
+					const blob = new Blob([content], { type: mimeType });
+					const url = URL.createObjectURL(blob);
+					const link = document.createElement("a");
+					link.href = url;
+					link.download = filename;
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					URL.revokeObjectURL(url);
+					break;
+				}
+				case "md": {
+					// Markdown导出直接创建文件到Obsidian vault
+					const markdownService = new MarkdownService(app);
+					const result = await markdownService.exportMarkdownEvents(
+						selectedData,
+						markdownConfig
+					);
+
+					if (result.success > 0) {
+						alert(
+							`成功导出 ${result.success} 个事件到Markdown文件`
+						);
+					}
+					if (result.failed > 0) {
+						alert(
+							`导出失败 ${
+								result.failed
+							} 个事件:\n${result.errors.join("\n")}`
+						);
+					}
 					break;
 				}
 				default:
@@ -251,17 +315,6 @@ export const DataExport: React.FC<DataExportProps> = ({
 						`Unsupported export format: ${activeExportFormat}`
 					);
 			}
-
-			// 创建下载链接
-			const blob = new Blob([content], { type: mimeType });
-			const url = URL.createObjectURL(blob);
-			const link = document.createElement("a");
-			link.href = url;
-			link.download = filename;
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-			URL.revokeObjectURL(url);
 		} catch (error) {
 			throw new Error(`导出失败: ${error.message}`);
 		} finally {
@@ -376,6 +429,361 @@ export const DataExport: React.FC<DataExportProps> = ({
 		);
 	};
 
+	const markdownExportConfig = () => {
+		return (
+			<>
+				<div className="config-group">
+					<label className="config-label">文件夹配置</label>
+					<div className="markdown-folder-config">
+						<div className="folder-item">
+							<label>节假日文件夹：</label>
+							<Input
+								value={markdownConfig.holidayFolder}
+								onChange={(value) =>
+									setMarkdownConfig((prev) => ({
+										...prev,
+										holidayFolder: value,
+									}))
+								}
+								placeholder="Events/Holidays"
+							/>
+						</div>
+						<div className="folder-item">
+							<label>生日文件夹：</label>
+							<Input
+								value={markdownConfig.birthdayFolder}
+								onChange={(value) =>
+									setMarkdownConfig((prev) => ({
+										...prev,
+										birthdayFolder: value,
+									}))
+								}
+								placeholder="Events/Birthdays"
+							/>
+						</div>
+						<div className="folder-item">
+							<label>自定义事件文件夹：</label>
+							<Input
+								value={markdownConfig.customEventFolder}
+								onChange={(value) =>
+									setMarkdownConfig((prev) => ({
+										...prev,
+										customEventFolder: value,
+									}))
+								}
+								placeholder="Events/Custom"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<div className="config-group">
+					<label className="config-label">字段配置</label>
+					<div className="markdown-field-config">
+						{/* 节假日字段配置 */}
+						<div className="field-section">
+							<h4>节假日字段</h4>
+							<div className="field-toggles">
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.holidayFields.id
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												holidayFields: {
+													...prev.holidayFields,
+													id: checked,
+												},
+											}))
+										}
+										aria-label="ID"
+									/>
+									<span>ID</span>
+								</div>
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.holidayFields.isoDate
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												holidayFields: {
+													...prev.holidayFields,
+													isoDate: checked,
+												},
+											}))
+										}
+										aria-label="日期"
+									/>
+									<span>日期</span>
+								</div>
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.holidayFields
+												.calendar
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												holidayFields: {
+													...prev.holidayFields,
+													calendar: checked,
+												},
+											}))
+										}
+										aria-label="日历类型"
+									/>
+									<span>日历类型</span>
+								</div>
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.holidayFields.emoji
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												holidayFields: {
+													...prev.holidayFields,
+													emoji: checked,
+												},
+											}))
+										}
+										aria-label="表情符号"
+									/>
+									<span>表情符号</span>
+								</div>
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.holidayFields.color
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												holidayFields: {
+													...prev.holidayFields,
+													color: checked,
+												},
+											}))
+										}
+										aria-label="颜色"
+									/>
+									<span>颜色</span>
+								</div>
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.holidayFields.remark
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												holidayFields: {
+													...prev.holidayFields,
+													remark: checked,
+												},
+											}))
+										}
+										aria-label="备注"
+									/>
+									<span>备注</span>
+								</div>
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.holidayFields
+												.foundDate || false
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												holidayFields: {
+													...prev.holidayFields,
+													foundDate: checked,
+												},
+											}))
+										}
+										aria-label="成立日期"
+									/>
+									<span>成立日期</span>
+								</div>
+							</div>
+						</div>
+
+						{/* 生日字段配置 */}
+						<div className="field-section">
+							<h4>生日字段</h4>
+							<div className="field-toggles">
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.birthdayFields.id
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												birthdayFields: {
+													...prev.birthdayFields,
+													id: checked,
+												},
+											}))
+										}
+										aria-label="ID"
+									/>
+									<span>ID</span>
+								</div>
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.birthdayFields
+												.isoDate
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												birthdayFields: {
+													...prev.birthdayFields,
+													isoDate: checked,
+												},
+											}))
+										}
+										aria-label="日期"
+									/>
+									<span>日期</span>
+								</div>
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.birthdayFields.age ||
+											false
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												birthdayFields: {
+													...prev.birthdayFields,
+													age: checked,
+												},
+											}))
+										}
+										aria-label="年龄"
+									/>
+									<span>年龄</span>
+								</div>
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.birthdayFields
+												.animal || false
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												birthdayFields: {
+													...prev.birthdayFields,
+													animal: checked,
+												},
+											}))
+										}
+										aria-label="生肖"
+									/>
+									<span>生肖</span>
+								</div>
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.birthdayFields
+												.zodiac || false
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												birthdayFields: {
+													...prev.birthdayFields,
+													zodiac: checked,
+												},
+											}))
+										}
+										aria-label="星座"
+									/>
+									<span>星座</span>
+								</div>
+							</div>
+						</div>
+
+						{/* 自定义事件字段配置 */}
+						<div className="field-section">
+							<h4>自定义事件字段</h4>
+							<div className="field-toggles">
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.customEventFields.id
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												customEventFields: {
+													...prev.customEventFields,
+													id: checked,
+												},
+											}))
+										}
+										aria-label="ID"
+									/>
+									<span>ID</span>
+								</div>
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.customEventFields
+												.isoDate
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												customEventFields: {
+													...prev.customEventFields,
+													isoDate: checked,
+												},
+											}))
+										}
+										aria-label="日期"
+									/>
+									<span>日期</span>
+								</div>
+								<div className="field-toggle-item">
+									<Toggle
+										checked={
+											markdownConfig.customEventFields
+												.isRepeat || false
+										}
+										onChange={(checked) =>
+											setMarkdownConfig((prev) => ({
+												...prev,
+												customEventFields: {
+													...prev.customEventFields,
+													isRepeat: checked,
+												},
+											}))
+										}
+										aria-label="是否重复"
+									/>
+									<span>是否重复</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</>
+		);
+	};
+
 	return (
 		<div className="yg-data-export">
 			{/* 导出操作区域 */}
@@ -402,6 +810,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 				<div className="export-config">
 					{activeExportFormat === "json" && jsonExportConfig()}
 					{activeExportFormat === "ics" && icsExportConfig()}
+					{activeExportFormat === "md" && markdownExportConfig()}
 				</div>
 			</div>
 

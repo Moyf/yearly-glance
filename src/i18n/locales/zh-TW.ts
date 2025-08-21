@@ -354,7 +354,7 @@ const translations: BaseMessage = {
 							"<li>事件必須包含 <code>text</code> 和 <code>userInput</code> 欄位</li>" +
 							"<li>支援 <code>holidays</code>、<code>birthdays</code>、<code>customEvents</code> 三種事件類型</li>" +
 							"</ul>",
-						upload: "匯入",
+						upload: "選擇",
 						paste: "貼上",
 						pastePlaceholder: "在此貼上 JSON 內容",
 						pasteError: "解析錯誤: {{error}}",

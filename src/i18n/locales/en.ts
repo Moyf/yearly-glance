@@ -358,7 +358,7 @@ const translations: BaseMessage = {
 							"<li>Events must contain <code>text</code> and <code>userInput</code> fields</li>" +
 							"<li>Supports three event types: <code>holidays</code>, <code>birthdays</code>, <code>customEvents</code></li>" +
 							"<ul>",
-						upload: "Upload",
+						upload: "Choose",
 						paste: "Paste",
 						pastePlaceholder: "Paste JSON content here",
 						pasteError: "Parse error: {{error}}",

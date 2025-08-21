@@ -348,6 +348,7 @@ const translations: BaseMessage = {
 				type: {
 					json: {
 						title: "JSON 檔案匯入",
+						format_example: "有效 JSON 格式範例",
 						message:
 							"<ul>" +
 							"<li>檔案必須為 JSON 格式</li>" +

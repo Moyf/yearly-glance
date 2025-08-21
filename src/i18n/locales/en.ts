@@ -352,6 +352,7 @@ const translations: BaseMessage = {
 				type: {
 					json: {
 						title: "JSON File Import",
+						format_example: "Example of valid JSON format",
 						message:
 							"<ul>" +
 							"<li>File must be in JSON format</li>" +

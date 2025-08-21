@@ -256,6 +256,7 @@ export type BaseMessage = {
 				type: {
 					json: {
 						title: string;
+						format_example: string;
 						message: string;
 						upload: string;
 						paste: string;

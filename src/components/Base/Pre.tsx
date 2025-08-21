@@ -7,6 +7,7 @@ interface PreProps {
 	className?: string;
 	language?: string;
 	showCopyButton?: boolean;
+	title?: string;
 }
 
 export const Pre: React.FC<PreProps> = ({
@@ -14,6 +15,7 @@ export const Pre: React.FC<PreProps> = ({
 	className = "",
 	language,
 	showCopyButton = true,
+	title,
 }) => {
 	const [copied, setCopied] = React.useState(false);
 	const preRef = React.useRef<HTMLPreElement>(null);
@@ -41,6 +43,7 @@ export const Pre: React.FC<PreProps> = ({
 
 	return (
 		<div className="yg-pre-wrapper">
+			{title && <div className="yg-pre-title">{title}</div>}
 			{showCopyButton && (
 				<button
 					className={`yg-pre-copy-button ${copied ? "copied" : ""}`}

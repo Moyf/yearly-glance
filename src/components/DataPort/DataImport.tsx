@@ -687,7 +687,14 @@ export const DataImport: React.FC<DataImportProps> = ({
 							{parse(
 								t("view.dataPortView.import.type.json.message")
 							)}
-							<Pre language="json">{JSON_EXAMPLE_CODE}</Pre>
+							<Pre
+								language="json"
+								title={t(
+									"view.dataPortView.import.type.json.format_example"
+								)}
+							>
+								{JSON_EXAMPLE_CODE}
+							</Pre>
 						</CalloutBlock>
 					</ImportUpload>
 				</div>

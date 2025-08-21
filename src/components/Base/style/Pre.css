@@ -4,6 +4,17 @@
 	margin: 1rem 0;
 }
 
+.yg-pre-title {
+	margin-bottom: 0.5rem;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--text-accent);
+	letter-spacing: 0.02em;
+	line-height: 0.5;
+	padding-left: 0.5rem;
+	background: transparent;
+}
+
 .yg-pre-copy-button {
 	position: absolute;
 	top: 0.5rem;

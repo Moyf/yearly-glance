@@ -33,6 +33,7 @@ import parse from "html-react-parser";
 import { CalloutBlock } from "@/src/components/Base/CalloutBlock";
 import { Pre } from "@/src/components/Base/Pre";
 import { JsonService } from "@/src/service/JsonService";
+import { Notice } from "obsidian";
 
 interface DataImportProps {
 	currentData: Events;
@@ -204,6 +205,12 @@ export const DataImport: React.FC<DataImportProps> = ({
 			}
 
 			// 导入成功后清除解析结果
+			new Notice(
+				t("view.dataPortView.import.type.json.success", {
+					count: eventsToImport.length,
+				})
+			);
+
 			setParseResult(null);
 			setSelectedValidEvents(new Set());
 		} catch (error) {

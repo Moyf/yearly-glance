@@ -359,6 +359,7 @@ const translations: BaseMessage = {
 						pastePlaceholder: "在此粘贴 JSON 内容",
 						pasteError: "解析错误: {{error}}",
 						submitPaste: "解析 JSON",
+						success: "成功导入 {{count}} 个事件",
 					},
 				},
 				empty: {

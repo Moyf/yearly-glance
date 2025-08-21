@@ -262,6 +262,7 @@ export type BaseMessage = {
 						pastePlaceholder: string;
 						pasteError: string;
 						submitPaste: string;
+						success: string;
 					};
 				};
 				actions: {

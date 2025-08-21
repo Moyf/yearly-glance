@@ -363,6 +363,7 @@ const translations: BaseMessage = {
 						pastePlaceholder: "Paste JSON content here",
 						pasteError: "Parse error: {{error}}",
 						submitPaste: "Parse JSON",
+						success: "Successfully imported {{count}} events",
 					},
 				},
 				empty: {

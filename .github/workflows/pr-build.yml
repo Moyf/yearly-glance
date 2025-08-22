@@ -91,14 +91,17 @@ jobs:
             - name: Prepare artifacts
               run: |
                   mkdir -p build-artifacts
+                  TIMESTAMP=$(date +%s)
+                  ARTIFACT_NAME="${{ env.PLUGIN_ID }}-pr-${TIMESTAMP}"
+                  echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
                   cp main.js manifest.json styles.css build-artifacts/
                   cd build-artifacts
-                  zip -r "${{ env.PLUGIN_ID }}-pr-${{ github.event.number }}.zip" .
+                  zip -r "${ARTIFACT_NAME}.zip" .
 
             - name: Upload artifacts
               uses: actions/upload-artifact@v4
               with:
-                  name: plugin-pr-${{ github.event.number }}
+                  name: ${{ env.ARTIFACT_NAME }}
                   path: build-artifacts/
                   retention-days: 7
 
@@ -119,12 +122,18 @@ jobs:
                         triggerInfo = `\n**触发原因：** PR ${eventAction}`;
                       }
 
+                      // 双时区显示
+                      const utcDate = new Date();
+                      const beijingDate = new Date(utcDate.getTime() + 8 * 60 * 60 * 1000);
+                      const formatBJ = beijingDate.toISOString().replace('T', ' ').replace('Z', '').slice(0, 19);
+
                       const commentBody = `## 🔧 PR 构建完成
 
                       **构建信息：**
                       - PR: #${prNumber}
                       - Commit: ${shortSha}
-                      - 构建时间: ${new Date().toISOString()}${triggerInfo}
+                      - 构建时间（UTC）: ${utcDate.toISOString()}
+                      - 构建时间（北京时间）: ${formatBJ}${triggerInfo}
 
                       **下载链接：**
                       [下载插件构建产物](https://github.com/${{ github.repository }}/actions/runs/${runId})

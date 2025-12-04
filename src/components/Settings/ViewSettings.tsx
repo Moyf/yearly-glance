@@ -317,6 +317,18 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						}
 					/>
 				</SettingsItem>
+				{/* 显示 Bases 事件 */}
+				<SettingsItem
+					name={t("setting.general.showBasesEvents.name")}
+					desc={t("setting.general.showBasesEvents.desc")}
+				>
+					<Toggle
+						checked={config.showBasesEvents}
+						onChange={(value) =>
+							handleUpdateConfig({ showBasesEvents: value })
+						}
+					/>
+				</SettingsItem>
 			</SettingsBlock>
 
 			{/* 颜色设置 */}

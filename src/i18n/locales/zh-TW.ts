@@ -64,6 +64,10 @@ const translations: BaseMessage = {
 				name: "顯示自訂事件",
 				desc: "在視圖中顯示自訂事件",
 			},
+			showBasesEvents: {
+				name: "顯示 Bases 事件",
+				desc: "在視圖中顯示從 Frontmatter 讀取的 Bases 事件",
+			},
 			mondayFirst: {
 				name: "週一作為一週的第一天",
 				desc: "設定週一（而不是週日）作為一週的第一天",
@@ -303,6 +307,9 @@ const translations: BaseMessage = {
 			customEvent: {
 				name: "自訂事件",
 				repeat: "重複",
+			},
+			frontmatterEvent: {
+				name: "Frontmatter 事件",
 			},
 		},
 		dataPortView: {

@@ -44,6 +44,7 @@ export type BaseMessage = {
 			showHolidays: IBaseSettingsItem;
 			showBirthdays: IBaseSettingsItem;
 			showCustomEvents: IBaseSettingsItem;
+			showBasesEvents: IBaseSettingsItem;
 			mondayFirst: IBaseSettingsItem;
 			showTooltips: IBaseSettingsItem;
 			colorful: IBaseSettingsItem;
@@ -217,6 +218,9 @@ export type BaseMessage = {
 			customEvent: {
 				name: string;
 				repeat: string;
+			};
+			frontmatterEvent: {
+				name: string;
 			};
 		};
 		dataPortView: {

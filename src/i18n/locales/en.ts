@@ -64,6 +64,10 @@ const translations: BaseMessage = {
 				name: "Show custom events",
 				desc: "Show custom events in view",
 			},
+			showBasesEvents: {
+				name: "Show Bases events",
+				desc: "Show Bases events from Frontmatter in view",
+			},
 			mondayFirst: {
 				name: "Start week on Monday",
 				desc: "Use Monday as the first day of the week",
@@ -305,6 +309,9 @@ const translations: BaseMessage = {
 			customEvent: {
 				name: "Custom event",
 				repeat: "Repeat",
+			},
+			frontmatterEvent: {
+				name: "Frontmatter event",
 			},
 		},
 		dataPortView: {

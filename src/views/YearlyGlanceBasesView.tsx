@@ -1,17 +1,35 @@
-import { ItemView, WorkspaceLeaf } from "obsidian";
-import YearlyGlancePlugin from "@/src/main";
-import { createRoot, Root } from "react-dom/client";
+import { BasesView, ItemView, WorkspaceLeaf } from "obsidian";
 import { StrictMode } from "react";
+import { createRoot, Root } from "react-dom/client";
 import { ObsidianAppContext } from "@/src/context/obsidianAppContext";
 import { t } from "@/src/i18n/i18n";
+import YearlyGlancePlugin from "@/src/main";
 
-// 类型声明 - Bases API 可能需要在运行时可用
-declare class BasesView {
-	readonly type: string;
-	controller: any;
-	data: any;
-	config: any;
-	constructor(controller: any);
+// 增强 obsidian 模块
+declare module "obsidian" {
+	export interface ViewOption {
+		type: string;
+		name: string;
+	}
+
+	export class BasesView {
+		readonly controller: any;
+		data: any;
+		constructor(controller: any);
+		onDataUpdated(): void;
+	}
+
+	interface Plugin {
+		registerBasesView?(
+			viewType: string,
+			config: {
+				name: string;
+				icon: string;
+				factory: (controller: any, containerEl: HTMLElement) => BasesView;
+				options?: () => ViewOption[];
+			}
+		): void;
+	}
 }
 
 type QueryController = any;
@@ -70,22 +88,69 @@ export class YearlyGlanceBasesView extends ItemView {
 }
 
 export class BasesViewImpl extends BasesView {
+	static viewOptions = [
+		{ type: "calendar", name: "Calendar View" },
+		{ type: "list", name: "List View" }
+	];
+	static getViewOptions() {
+		return BasesViewImpl.viewOptions;
+	}
 	readonly type = VIEW_TYPE_YEARLY_GLANCE_BASES;
 	private plugin: YearlyGlancePlugin;
-	private year: number;
+	private containerEl: HTMLElement;
+	private root?: Root;
 
 	constructor(
-		controller: any,
-		parentEl: HTMLElement,
+		controller: QueryController,
+		containerEl: HTMLElement,
 		plugin: YearlyGlancePlugin
 	) {
 		super(controller);
+		this.containerEl = containerEl;
 		this.plugin = plugin;
-		this.year = plugin.getConfig().year;
+
+		// 初始化渲染
+		this.init();
+	}
+
+	private init(): void {
+		// 创建容器
+		const viewEl = this.containerEl.createDiv({
+			cls: "yearly-glance-bases-view"
+		});
+
+		// 使用 React 渲染
+		this.root = createRoot(viewEl);
+		this.render();
+	}
+
+	private render(): void {
+		if (!this.root) return;
+
+		this.root.render(
+			<StrictMode>
+				<ObsidianAppContext.Provider value={this.plugin.app}>
+					<div className="yg-bases-view">
+						<h2>Yearly Glance Bases View</h2>
+						<p>This view displays events from notes with event_date property.</p>
+						<p>Total items: {this.data?.length || 0}</p>
+					</div>
+				</ObsidianAppContext.Provider>
+			</StrictMode>
+		);
 	}
 
 	public onDataUpdated(): void {
-		// 这里将实现从 Bases 数据渲染 Yearly Glance 日历
+		// 数据已经由 Bases 框架自动更新到 this.data
+		this.render();
 		console.log("Bases view data updated", this.data);
+	}
+
+	public destroy(): void {
+		// 清理 React root
+		if (this.root) {
+			this.root.unmount();
+			this.root = undefined;
+		}
 	}
 }

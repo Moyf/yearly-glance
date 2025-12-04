@@ -28,25 +28,39 @@ import { EventCalculator } from "./utils/eventCalculator";
 import { IsoUtils } from "./utils/isoUtils";
 import { generateEventId } from "./utils/uniqueEventId";
 import { FrontmatterService } from "./service/FrontmatterService";
-// import { BasesViewImpl, VIEW_TYPE_YEARLY_GLANCE_BASES } from "./views/YearlyGlanceBasesView";
+import { BasesViewImpl } from "./views/YearlyGlanceBasesView";
 
 export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
-	frontmatterService: FrontmatterService;
+	frontmatterService!: FrontmatterService;
 	private refreshFrontmatterEventsDebounced: () => void;
 
 	async onload() {
+		// 初始化 frontmatter 服务（必须在 loadSettings 之前）
+		this.frontmatterService = new FrontmatterService(this.app);
+
 		// 加载设置
 		await this.loadSettings();
-
-		// 初始化 frontmatter 服务
-		this.frontmatterService = new FrontmatterService(this.app);
 
 		// 注册视图
 		this.registerLeafViews();
 
 		// 注册 Bases 视图
-		this.registerBasesViews();
+		// 使用类型断言访问 Bases API
+		const basesPlugin = this as any;
+		if (typeof basesPlugin.registerBasesView === 'function') {
+			basesPlugin.registerBasesView('yearly-glance', {
+				name: 'Yearly Glance',
+				icon: 'calendar',
+				factory: (controller: any, containerEl: HTMLElement) => {
+					return new BasesViewImpl(controller, containerEl, this);
+				},
+				options: BasesViewImpl.getViewOptions
+			});
+		}
+
+		// 扫描 frontmatter 事件（在 frontmatterService 初始化后）
+		await this.refreshFrontmatterEvents();
 
 		// 注册命令
 		this.registerCommands();
@@ -83,9 +97,6 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 检查是否为第一次安装，如果是则添加示例事件
 		await this.addSampleEventOnFirstInstall(savedData);
-
-		// 扫描 frontmatter 事件
-		await this.refreshFrontmatterEvents();
 
 		// 更新所有事件的dateArr字段
 		await this.updateAllEventsDateObj();
@@ -366,29 +377,6 @@ export default class YearlyGlancePlugin extends Plugin {
 	}
 
 	/**
-	 * 注册 Bases 视图
-	 */
-	private registerBasesViews() {
-		this.registerView(
-			VIEW_TYPE_YEARLY_GLANCE,
-			(leaf) => new YearlyGlanceView(leaf, this)
-		);
-
-		// 只有安装了 Bases 插件时才注册 Bases 视图
-		// NOTE: Bases 插件集成暂时保留，等待 stable API
-		// const basesPlugin = (this.app as any).plugins?.getPlugin?.('obsidian-plugin-bases');
-		// if (basesPlugin?.enabled) {
-		// 	this.registerBasesView(VIEW_TYPE_YEARLY_GLANCE_BASES, {
-		// 		name: "Yearly Glance",
-		// 		icon: "calendar",
-		// 		factory: (controller, containerEl) => {
-		// 			new BasesViewImpl(controller, containerEl, this);
-		// 		},
-		// 	});
-		// }
-	}
-
-	/**
 	 * 注册文件监听器
 	 */
 	private registerFileListeners() {
@@ -450,8 +438,14 @@ export default class YearlyGlancePlugin extends Plugin {
 			return;
 		}
 
+		// 更新调试模式
+		this.frontmatterService.setDebug(this.settings.config.showDebugInfo);
+
 		try {
 			const events = await this.frontmatterService.scanEvents(config);
+			if (this.settings.config.showDebugInfo) {
+				console.log(`[main.ts] Frontmatter scan completed, found ${events.length} events`);
+			}
 			this.settings.data.basesEvents = events;
 
 			// 更新事件的日期数组

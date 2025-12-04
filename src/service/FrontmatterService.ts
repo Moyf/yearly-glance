@@ -37,9 +37,18 @@ export const DEFAULT_FRONTMATTER_CONFIG: FrontmatterConfig = {
 
 export class FrontmatterService {
 	private app: App;
+	private debug: boolean;
 
-	constructor(app: App) {
+	constructor(app: App, debug: boolean = false) {
 		this.app = app;
+		this.debug = debug;
+	}
+
+	/**
+	 * 设置调试模式
+	 */
+	setDebug(debug: boolean): void {
+		this.debug = debug;
 	}
 
 	/**
@@ -49,18 +58,55 @@ export class FrontmatterService {
 		const events: FrontmatterEvent[] = [];
 
 		if (!config.folderPath) {
+			if (this.debug) {
+				console.log("[FrontmatterService] No folder path configured, returning empty events list");
+			}
 			return events;
+		}
+
+		if (this.debug) {
+			console.log(`[FrontmatterService] Starting scan of folder: ${config.folderPath}${config.recursive ? " (recursive)" : " (non-recursive)"}`);
+			console.log(`[FrontmatterService] Looking for property names:`, config.propertyNames);
 		}
 
 		try {
 			// 获取文件夹下的所有文件
 			const files = await this.getFilesInFolder(config.folderPath, config.recursive);
 
+			if (this.debug) {
+				console.log(`[FrontmatterService] Found ${files.length} markdown files to analyze`);
+				files.forEach((file, index) => {
+					console.log(`[FrontmatterService] File ${index + 1}: ${file.path}`);
+				});
+			}
+
 			for (const file of files) {
+				if (this.debug) {
+					console.log(`[FrontmatterService] Analyzing file: ${file.path}`);
+				}
+
 				const event = await this.parseEventFromFile(file, config);
 				if (event) {
+					if (this.debug) {
+						console.log(`[FrontmatterService] ✓ Successfully parsed event from ${file.path}:`, {
+							title: event.text,
+							date: event.eventDate.isoDate,
+							calendar: event.eventDate.calendar,
+							icon: event.emoji,
+							color: event.color,
+							isHidden: event.isHidden,
+						});
+					}
 					events.push(event);
+				} else {
+					if (this.debug) {
+						console.log(`[FrontmatterService] ✗ File does not contain valid event data: ${file.path}`);
+					}
 				}
+			}
+
+			if (this.debug) {
+				console.log(`[FrontmatterService] Scan complete. Found ${events.length} valid events out of ${files.length} files`);
 			}
 		} catch (error) {
 			console.error("Failed to scan events from folder:", error);
@@ -81,12 +127,23 @@ export class FrontmatterService {
 			const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
 
 			if (!frontmatter) {
+				if (this.debug) {
+					console.log(`[FrontmatterService] ✗ No frontmatter found in ${file.path}`);
+				}
 				return null;
+			}
+
+			if (this.debug) {
+				console.log(`[FrontmatterService] Analyzing frontmatter from ${file.path}:`, JSON.stringify(frontmatter, null, 2));
 			}
 
 			// 检查必要属性是否存在
 			const eventDateValue = frontmatter[config.propertyNames.eventDate];
 			if (!eventDateValue) {
+				if (this.debug) {
+					console.log(`[FrontmatterService] ✗ Missing required property '${config.propertyNames.eventDate}' in ${file.path}`);
+					console.log(`[FrontmatterService] Available properties in frontmatter:`, Object.keys(frontmatter));
+				}
 				return null;
 			}
 
@@ -109,18 +166,26 @@ export class FrontmatterService {
 			};
 
 			// 计算结束日期或持续时间
-			let durationDays = 1;
+			let finalDurationDays = 1;
 			const durationDaysValue =
 				config.propertyNames.durationDays && frontmatter[config.propertyNames.durationDays];
 			if (durationDaysValue) {
-				durationDays = parseInt(durationDaysValue, 10) || 1;
+				finalDurationDays = parseInt(durationDaysValue, 10) || 1;
+				if (this.debug) {
+					console.log(`[FrontmatterService] Duration from duration_days: ${finalDurationDays} days`);
+				}
 			} else {
 				const endDateValue = config.propertyNames.endDate && frontmatter[config.propertyNames.endDate];
 				if (endDateValue) {
 					const startDate = new Date(eventDateValue);
 					const endDate = new Date(endDateValue);
 					const diffTime = endDate.getTime() - startDate.getTime();
-					durationDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+					finalDurationDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+					if (this.debug) {
+						console.log(`[FrontmatterService] Duration from end_date (${endDateValue}): ${finalDurationDays} days`);
+					}
+				} else if (this.debug) {
+					console.log(`[FrontmatterService] No duration specified, using default: 1 day`);
 				}
 			}
 
@@ -139,9 +204,26 @@ export class FrontmatterService {
 				dateArr: [], // 将由 EventCalculator 填充
 			};
 
+			if (this.debug) {
+				console.log(`[FrontmatterService] ✓ Event parsing successful:`, {
+					title: event.text,
+					date: event.eventDate.isoDate,
+					calendar: event.eventDate.calendar,
+					durationDays: finalDurationDays,
+					description: event.remark || "(none)",
+					icon: event.emoji || "(none)",
+					color: event.color || "(none)",
+					hidden: event.isHidden,
+					source: event.sourcePath,
+				});
+			}
+
 			return event;
 		} catch (error) {
-			console.error(`Failed to parse event from file ${file.path}:`, error);
+			console.error(`[FrontmatterService] ✗ Failed to parse event from ${file.path}:`, error);
+			if (this.debug) {
+				console.error(`[FrontmatterService] Error details:`, error);
+			}
 			return null;
 		}
 	}

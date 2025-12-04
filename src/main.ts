@@ -32,6 +32,8 @@ export default class YearlyGlancePlugin extends Plugin {
 		// 注册视图
 		this.registerLeafViews();
 
+		this.
+
 		// 注册命令
 		this.registerCommands();
 		this.registerRibbonCommands();

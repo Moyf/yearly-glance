@@ -1,0 +1,8 @@
+skills:
+  - name: obsidian-plugin-dev
+    description: "Provides specialized assistance for Obsidian plugin development"
+    file: ".claude/skills/obsidian-plugin-dev.md"
+    triggers:
+      - "obsidian plugin"
+      - "obsidian"
+      - "plugin development"

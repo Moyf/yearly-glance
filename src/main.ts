@@ -10,6 +10,10 @@ import {
 	GlanceManagerView,
 	VIEW_TYPE_GLANCE_MANAGER,
 } from "./views/GlanceManagerView";
+import {
+	VIEW_TYPE_YEARLY_GLANCE_BASES,
+	YearlyGlanceBasesView,
+} from "./views/YearlyGlanceBasesView";
 import { Birthday, CustomEvent, EventType, Holiday } from "@/src/type/Events";
 import {
 	EventFormModal,
@@ -31,6 +35,7 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 注册视图
 		this.registerLeafViews();
+		this.registerBasesViews();
 
 		// 注册命令
 		this.registerCommands();
@@ -105,6 +110,18 @@ export default class YearlyGlancePlugin extends Plugin {
 		this.registerView(VIEW_TYPE_GLANCE_MANAGER, (leaf) => {
 			return new GlanceManagerView(leaf, this);
 		});
+	}
+
+	private registerBasesViews() {
+		
+		this.registerBasesView(VIEW_TYPE_YEARLY_GLANCE_BASES, {
+			name: 'Yearly Glance',
+			icon: 'telescope',
+			factory: (controller, containerEl) => {
+				return new YearlyGlanceBasesView(controller, containerEl);
+			}
+		});
+		
 	}
 
 	private registerCommands() {

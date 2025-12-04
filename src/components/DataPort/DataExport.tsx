@@ -62,6 +62,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 		allIds.push(...currentData.holidays.map((event) => event.id));
 		allIds.push(...currentData.birthdays.map((event) => event.id));
 		allIds.push(...currentData.customEvents.map((event) => event.id));
+		allIds.push(...(currentData.basesEvents || []).map((event) => event.id));
 		return allIds;
 	}, [currentData]);
 
@@ -153,6 +154,12 @@ export const DataExport: React.FC<DataExportProps> = ({
 					type: "customEvent" as EventType,
 				}))
 			),
+			frontmatterEvent: sortEventsByDate(
+				(currentData.basesEvents || []).map((event) => ({
+					...event,
+					type: "frontmatterEvent" as EventType,
+				}))
+			),
 		};
 		return groups;
 	}, [currentData, config]);
@@ -239,6 +246,9 @@ export const DataExport: React.FC<DataExportProps> = ({
 				selectedEvents.has(event.id)
 			),
 			customEvents: currentData.customEvents.filter((event) =>
+				selectedEvents.has(event.id)
+			),
+			basesEvents: (currentData.basesEvents || []).filter((event) =>
 				selectedEvents.has(event.id)
 			),
 		};
@@ -520,6 +530,14 @@ export const DataExport: React.FC<DataExportProps> = ({
 				},
 			],
 			configKey: "customEventFields" as const,
+		},
+		frontmatterEvent: {
+			title:
+				t("view.yearlyGlance.legend.frontmatterEvent") +
+				t("view.dataPortView.export.type.configure"),
+			folderKey: "frontmatterEventFolder" as const,
+			fields: [...eventCommonFields],
+			configKey: "frontmatterEventFields" as const,
 		},
 	};
 

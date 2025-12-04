@@ -114,6 +114,28 @@ export const DataImport: React.FC<DataImportProps> = ({
 		);
 	}, [parseResult]);
 
+	const allImportableEvents = React.useMemo(() => {
+		if (!parseResult) return { holiday: [], birthday: [], customEvent: [] };
+		const groups: Record<EventType, JsonEventParse[]> = {
+			holiday: [],
+			birthday: [],
+			customEvent: [],
+			frontmatterEvent: [], // 导入时不包含frontmatterEvent，因为用户不应导入此类事件
+		};
+		parseResult.validEvents.forEach((event) => {
+			if (event.eventType in groups) {
+				groups[event.eventType as EventType].push(event);
+			}
+		});
+		// 按文本排序
+		Object.keys(groups).forEach((type) => {
+			groups[type as EventType].sort((a, b) =>
+				a.text.localeCompare(b.text)
+			);
+		});
+		return groups;
+	}, [parseResult]);
+
 	// 当解析结果变化时，默认选择所有有效事件
 	React.useEffect(() => {
 		if (parseResult) {
@@ -239,28 +261,7 @@ export const DataImport: React.FC<DataImportProps> = ({
 	};
 
 	// 按事件类型分组
-	const eventGroups = React.useMemo(() => {
-		if (!parseResult) return { holiday: [], birthday: [], customEvent: [] };
-
-		const groups: Record<EventType, JsonEventParse[]> = {
-			holiday: [],
-			birthday: [],
-			customEvent: [],
-		};
-
-		parseResult.validEvents.forEach((event) => {
-			groups[event.eventType].push(event);
-		});
-
-		// 按文本排序
-		Object.keys(groups).forEach((type) => {
-			groups[type as EventType].sort((a, b) =>
-				a.text.localeCompare(b.text)
-			);
-		});
-
-		return groups;
-	}, [parseResult]);
+	const eventGroups = allImportableEvents;
 
 	// 选择/取消选择某个分组的所有事件
 	const handleGroupSelection = (type: EventType) => {
@@ -321,6 +322,10 @@ export const DataImport: React.FC<DataImportProps> = ({
 			customEvent: {
 				title: t("view.yearlyGlance.legend.customEvent"),
 				icon: <Calendar className="group-icon" />,
+			},
+			frontmatterEvent: {
+				title: t("view.yearlyGlance.legend.frontmatterEvent"),
+				icon: <FileText className="group-icon" />,
 			},
 		};
 		return config[type];

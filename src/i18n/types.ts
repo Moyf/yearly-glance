@@ -69,6 +69,17 @@ export type BaseMessage = {
 					enFullDmy: string;
 				};
 			}>;
+			frontmatter: {
+				title: string;
+				enabled: string;
+				enabledDesc: string;
+				folderPath: string;
+				folderPathDesc: string;
+				recursive: string;
+				recursiveDesc: string;
+				showBasesEvents: string;
+				showBasesEventsDesc: string;
+			};
 		}>;
 		events: IBaseSettingsItem;
 		group: {
@@ -86,6 +97,9 @@ export type BaseMessage = {
 			settings: string;
 			dataPort: string;
 		};
+		yearlyGlanceBases: {
+			name: string;
+		};
 		yearlyGlance: {
 			name: string;
 			yearlyCalendar: string;
@@ -93,6 +107,7 @@ export type BaseMessage = {
 				holiday: string;
 				birthday: string;
 				customEvent: string;
+				frontmatterEvent: string;
 			};
 			viewPreset: {
 				yearOverview: string;

@@ -16,6 +16,7 @@ import { Toggle } from "@/src/components/Base/Toggle";
 import { Select } from "@/src/components/Base/Select";
 import { Input } from "@/src/components/Base/Input";
 import { PresetColorSettings } from "./PresetColorSettings";
+import { FrontmatterSettings } from "./FrontmatterSettings";
 
 interface ViewSettingsProps {
 	plugin: YearlyGlancePlugin;
@@ -338,6 +339,9 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 					/>
 				</SettingsItem>
 			</SettingsBlock>
+
+			{/* Frontmatter Settings */}
+			<FrontmatterSettings plugin={plugin} />
 		</>
 	);
 };

@@ -111,6 +111,17 @@ const translations: BaseMessage = {
 					enFullDmy: "完整英文日月年格式(1 October 1949)",
 				},
 			},
+			frontmatter: {
+				title: "Frontmatter 事件",
+				enabled: "啟用 Frontmatter 事件",
+				enabledDesc: "從筆記 Frontmatter 讀取事件",
+				folderPath: "源資料夾",
+				folderPathDesc: "包含事件筆記的資料夾（例如：'Events'）",
+				recursive: "遞迴掃描",
+				recursiveDesc: "掃描子資料夾中的事件",
+				showBasesEvents: "顯示 Bases 事件",
+				showBasesEventsDesc: "啟用 Bases 外掛整合",
+			},
 		},
 		events: {
 			name: "事件",
@@ -146,6 +157,9 @@ const translations: BaseMessage = {
 			settings: "外掛設定",
 			dataPort: "數據流轉",
 		},
+		yearlyGlanceBases: {
+			name: "年度概覽",
+		},
 		yearlyGlance: {
 			name: "年度概覽",
 			yearlyCalendar: "年 年曆",
@@ -153,6 +167,7 @@ const translations: BaseMessage = {
 				holiday: "節日",
 				birthday: "生日",
 				customEvent: "自訂事件",
+				frontmatterEvent: "Frontmatter 事件",
 			},
 			viewPreset: {
 				yearOverview: "全年一覽",

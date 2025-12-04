@@ -111,6 +111,17 @@ const translations: BaseMessage = {
 					enFullDmy: "Full English Day-Month-Year (1 October 1949)",
 				},
 			},
+			frontmatter: {
+				title: "Frontmatter Events",
+				enabled: "Enable frontmatter events",
+				enabledDesc: "Read events from note frontmatter",
+				folderPath: "Source folder",
+				folderPathDesc: "Folder containing event notes (e.g., 'Events')",
+				recursive: "Recursive scan",
+				recursiveDesc: "Include subfolders when scanning for events",
+				showBasesEvents: "Show Bases events",
+				showBasesEventsDesc: "Enable Bases plugin integration",
+			},
 		},
 		events: {
 			name: "Events",
@@ -146,6 +157,9 @@ const translations: BaseMessage = {
 			settings: "Settings",
 			dataPort: "Data",
 		},
+		yearlyGlanceBases: {
+			name: "Yearly Glance",
+		},
 		yearlyGlance: {
 			name: "Yearly glance",
 			yearlyCalendar: "Year calendar",
@@ -153,6 +167,7 @@ const translations: BaseMessage = {
 				holiday: "Holiday",
 				birthday: "Birthday",
 				customEvent: "Custom event",
+				frontmatterEvent: "Frontmatter event",
 			},
 			viewPreset: {
 				yearOverview: "Year overview",

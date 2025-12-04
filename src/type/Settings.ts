@@ -87,6 +87,25 @@ export const DEFAULT_PRESET_COLORS: IPresetColor[] = [
 	{ label: "", value: "#A2845E", enable: true, id: "brown" },
 ];
 
+// Frontmatter 配置接口
+export interface IFrontmatterConfig {
+	enabled: boolean;
+	folderPath: string;
+	recursive: boolean;
+	propertyNames: {
+		title: string;
+		eventDate: string;
+		endDate?: string;
+		durationDays?: string;
+		description?: string;
+		icon?: string;
+		color?: string;
+		hidden?: string;
+		calendar?: string;
+	};
+	showBasesEvents: boolean; // 是否显示从 frontmatter 读取的事件
+}
+
 // 插件设置接口
 export interface YearlyGlanceSettings {
 	year: number; // 当前选择的年份
@@ -102,6 +121,7 @@ export interface YearlyGlanceSettings {
 	showHolidays: boolean; // 是否显示节假日
 	showBirthdays: boolean; // 是否显示生日
 	showCustomEvents: boolean; // 是否显示自定义事件
+	showBasesEvents: boolean; // 是否显示 Bases 事件
 	mondayFirst: boolean; // 是否以周一为一周的第一天
 	title: string; // 年历标题
 	showEmojiBeforeTabName: boolean; // 是否在标签名称前显示emoji
@@ -114,6 +134,8 @@ export interface YearlyGlanceSettings {
 	emojiOnTop: boolean; // 是否在事件上方显示emoji（仅日历视图）
 	wrapEventText: boolean; // 是否换行显示事件文本
 	gregorianDisplayFormat: (typeof GREGORIAN_DISPLAY_FORMAT_OPTIONS)[number]["value"]; // 公历显示格式
+	// Frontmatter 设置
+	frontmatter: IFrontmatterConfig;
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -130,6 +152,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	showHolidays: true,
 	showBirthdays: true,
 	showCustomEvents: true,
+	showBasesEvents: true,
 	mondayFirst: true,
 	title: "",
 	showEmojiBeforeTabName: true,
@@ -141,4 +164,22 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	emojiOnTop: false, // 默认在左侧显示emoji
 	wrapEventText: false,
 	gregorianDisplayFormat: "YYYY-MM-DD", // 默认使用ISO格式
+	// Frontmatter 默认设置
+	frontmatter: {
+		enabled: false,
+		folderPath: "",
+		recursive: true,
+		propertyNames: {
+			title: "title",
+			eventDate: "event_date",
+			endDate: "end_date",
+			durationDays: "duration_days",
+			description: "description",
+			icon: "icon",
+			color: "color",
+			hidden: "hidden",
+			calendar: "calendar",
+		},
+		showBasesEvents: true,
+	},
 };

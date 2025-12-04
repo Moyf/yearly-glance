@@ -29,6 +29,10 @@ export interface UserDateInput {
 export interface EventDate extends StandardDate {
 	/** 用户原始输入（用于编辑和显示） */
 	userInput: UserDateInput;
+	/** 结束日期（用于多日事件） - ISO格式 */
+	endDate?: string;
+	/** 事件持续天数 */
+	durationDays?: number;
 }
 
 export interface ParseIsoDate {

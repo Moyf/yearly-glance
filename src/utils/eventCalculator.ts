@@ -334,4 +334,58 @@ export class EventCalculator {
 			zodiac,
 		};
 	}
+
+	/**
+	 * 更新 frontmatter 事件信息，计算 dateArr
+	 */
+	static updateFrontmatterEventsInfo(
+		events: import("@/src/type/Events").FrontmatterEvent[],
+		yearSelected: number
+	): import("@/src/type/Events").FrontmatterEvent[] {
+		return events.map((event) => {
+			const dateArr = this.calculateDateArr(
+				"frontmatterEvent" as EventType,
+				event.eventDate.isoDate,
+				event.eventDate.calendar,
+				yearSelected,
+				false // frontmatter 事件不重复
+			);
+
+			// 如果有持续时间，生成连续的日期
+			let finalDateArr = [...dateArr];
+			const durationDays =
+				event.eventDate.durationDays ||
+				(event.eventDate.isoDate && event.eventDate.endDate
+					? this.calculateDurationDays(
+							event.eventDate.isoDate,
+							event.eventDate.endDate
+					  )
+					: 1);
+
+			if (durationDays > 1 && dateArr.length > 0) {
+				finalDateArr = [];
+				const startDate = new Date(dateArr[0]);
+				for (let i = 0; i < durationDays; i++) {
+					const currentDate = new Date(startDate);
+					currentDate.setDate(startDate.getDate() + i);
+					finalDateArr.push(currentDate.toISOString().split("T")[0]);
+				}
+			}
+
+			return {
+				...event,
+				dateArr: finalDateArr,
+			};
+		});
+	}
+
+	/**
+	 * 计算持续时间天数
+	 */
+	private static calculateDurationDays(startDate: string, endDate: string): number {
+		const start = new Date(startDate);
+		const end = new Date(endDate);
+		const diffTime = end.getTime() - start.getTime();
+		return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+	}
 }

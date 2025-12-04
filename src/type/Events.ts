@@ -4,6 +4,7 @@ export interface Events {
 	holidays: Holiday[];
 	birthdays: Birthday[];
 	customEvents: CustomEvent[];
+	basesEvents: FrontmatterEvent[];
 }
 
 export interface BaseEvent {
@@ -53,11 +54,32 @@ export interface CustomEvent extends BaseEvent {
 	isRepeat: boolean;
 }
 
-export type EventData = Holiday | Birthday | CustomEvent;
+/**
+ * Frontmatter事件接口 - 从笔记frontmatter读取的事件
+ * sourcePath: 源文件路径
+ * isEditable: 是否可编辑（frontmatter事件总是可编辑）
+ */
+export interface FrontmatterEvent extends BaseEvent {
+	sourcePath: string;
+	propertyNames: {
+		title: string;
+		eventDate: string;
+		endDate?: string;
+		durationDays?: string;
+		description?: string;
+		icon?: string;
+		color?: string;
+		hidden?: string;
+		calendar?: string;
+	};
+	isEditable: boolean;
+}
+
+export type EventData = Holiday | Birthday | CustomEvent | FrontmatterEvent;
 
 // 事件类型
 export type EventType = (typeof EVENT_TYPE_LIST)[number];
-export const EVENT_TYPE_LIST = ["customEvent", "birthday", "holiday"] as const;
+export const EVENT_TYPE_LIST = ["customEvent", "birthday", "holiday", "frontmatterEvent"] as const;
 
 // 事件类型默认图标
 export const EVENT_TYPE_DEFAULT: Record<
@@ -67,10 +89,12 @@ export const EVENT_TYPE_DEFAULT: Record<
 	customEvent: { emoji: "📌", color: "#73d13d" },
 	birthday: { emoji: "🎂", color: "#fa8c16" },
 	holiday: { emoji: "🎉", color: "#ff7875" },
+	frontmatterEvent: { emoji: "📝", color: "#8e44ad" },
 };
 
 export const DEFAULT_EVENTS: Events = {
 	holidays: [], // 内置节日将通过验证和合并机制添加
 	birthdays: [],
 	customEvents: [],
+	basesEvents: [],
 };

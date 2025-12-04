@@ -1,4 +1,4 @@
-import { Notice, Plugin } from "obsidian";
+import { debounce, Notice, Plugin, TAbstractFile, TFile } from "obsidian";
 import { DEFAULT_CONFIG, YearlyGlanceConfig } from "./type/Config";
 import YearlyGlanceSettingsTab from "./components/Settings/SettingsTab";
 import {
@@ -10,7 +10,13 @@ import {
 	GlanceManagerView,
 	VIEW_TYPE_GLANCE_MANAGER,
 } from "./views/GlanceManagerView";
-import { Birthday, CustomEvent, EventType, Holiday } from "@/src/type/Events";
+import {
+	Birthday,
+	CustomEvent,
+	EventType,
+	Holiday,
+	FrontmatterEvent,
+} from "@/src/type/Events";
 import {
 	EventFormModal,
 	EventFormModalProps,
@@ -21,16 +27,26 @@ import { MigrateData } from "./utils/migrateData";
 import { EventCalculator } from "./utils/eventCalculator";
 import { IsoUtils } from "./utils/isoUtils";
 import { generateEventId } from "./utils/uniqueEventId";
+import { FrontmatterService } from "./service/FrontmatterService";
+// import { BasesViewImpl, VIEW_TYPE_YEARLY_GLANCE_BASES } from "./views/YearlyGlanceBasesView";
 
 export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
+	frontmatterService: FrontmatterService;
+	private refreshFrontmatterEventsDebounced: () => void;
 
 	async onload() {
 		// 加载设置
 		await this.loadSettings();
 
+		// 初始化 frontmatter 服务
+		this.frontmatterService = new FrontmatterService(this.app);
+
 		// 注册视图
 		this.registerLeafViews();
+
+		// 注册 Bases 视图
+		this.registerBasesViews();
 
 		// 注册命令
 		this.registerCommands();
@@ -38,9 +54,24 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 添加设置选项卡
 		this.addSettingTab(new YearlyGlanceSettingsTab(this.app, this));
+
+		// 注册文件监听器（防抖 5 秒）
+		this.registerFileListeners();
+
+		// 创建防抖的刷新函数
+		this.refreshFrontmatterEventsDebounced = debounce(
+			() => this.refreshFrontmatterEvents(),
+			5000,
+			true
+		);
 	}
 
-	onunload() {}
+	onunload() {
+		// 清理防抖函数
+		if (this.refreshFrontmatterEventsDebounced) {
+			(this.refreshFrontmatterEventsDebounced as any).cancel?.();
+		}
+	}
 
 	async loadSettings() {
 		// 加载数据
@@ -52,6 +83,9 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 检查是否为第一次安装，如果是则添加示例事件
 		await this.addSampleEventOnFirstInstall(savedData);
+
+		// 扫描 frontmatter 事件
+		await this.refreshFrontmatterEvents();
 
 		// 更新所有事件的dateArr字段
 		await this.updateAllEventsDateObj();
@@ -321,8 +355,181 @@ export default class YearlyGlancePlugin extends Plugin {
 			year
 		);
 
+		// 更新 frontmatter 事件
+		events.basesEvents = EventCalculator.updateFrontmatterEventsInfo(
+			events.basesEvents,
+			year
+		);
+
 		// 不触发保存的通知，因为这是内部计算，不需要通知用户
 		await this.saveData(this.settings);
+	}
+
+	/**
+	 * 注册 Bases 视图
+	 */
+	private registerBasesViews() {
+		this.registerView(
+			VIEW_TYPE_YEARLY_GLANCE,
+			(leaf) => new YearlyGlanceView(leaf, this)
+		);
+
+		// 只有安装了 Bases 插件时才注册 Bases 视图
+		// NOTE: Bases 插件集成暂时保留，等待 stable API
+		// const basesPlugin = (this.app as any).plugins?.getPlugin?.('obsidian-plugin-bases');
+		// if (basesPlugin?.enabled) {
+		// 	this.registerBasesView(VIEW_TYPE_YEARLY_GLANCE_BASES, {
+		// 		name: "Yearly Glance",
+		// 		icon: "calendar",
+		// 		factory: (controller, containerEl) => {
+		// 			new BasesViewImpl(controller, containerEl, this);
+		// 		},
+		// 	});
+		// }
+	}
+
+	/**
+	 * 注册文件监听器
+	 */
+	private registerFileListeners() {
+		// 监听文件修改
+		this.registerEvent(
+			this.app.vault.on("modify", (file) => {
+				if (this.isEventFile(file)) {
+					this.refreshFrontmatterEventsDebounced();
+				}
+			})
+		);
+
+		// 监听文件创建
+		this.registerEvent(
+			this.app.vault.on("create", (file) => {
+				if (this.isEventFile(file)) {
+					this.refreshFrontmatterEventsDebounced();
+				}
+			})
+		);
+
+		// 监听文件删除
+		this.registerEvent(
+			this.app.vault.on("delete", (file) => {
+				if (this.isEventFile(file)) {
+					this.refreshFrontmatterEventsDebounced();
+				}
+			})
+		);
+	}
+
+	/**
+	 * 检查文件是否为事件文件
+	 */
+	private isEventFile(file: TAbstractFile): file is TFile {
+		if (!(file instanceof TFile)) return false;
+		if (file.extension !== "md") return false;
+
+		const config = this.settings.config.frontmatter;
+		if (!config.enabled || !config.folderPath) return false;
+
+		// 检查文件是否在配置的文件夹中
+		if (config.recursive) {
+			return file.path.startsWith(config.folderPath);
+		} else {
+			const fileFolder = file.path.substring(0, file.path.lastIndexOf("/"));
+			return fileFolder === config.folderPath;
+		}
+	}
+
+	/**
+	 * 刷新 frontmatter 事件
+	 */
+	async refreshFrontmatterEvents(): Promise<void> {
+		const config = this.settings.config.frontmatter;
+
+		if (!config.enabled || !config.folderPath) {
+			this.settings.data.basesEvents = [];
+			return;
+		}
+
+		try {
+			const events = await this.frontmatterService.scanEvents(config);
+			this.settings.data.basesEvents = events;
+
+			// 更新事件的日期数组
+			const year = this.settings.config.year;
+			this.settings.data.basesEvents = EventCalculator.updateFrontmatterEventsInfo(
+				events,
+				year
+			);
+
+			// 通知视图更新
+			YearlyGlanceBus.publish();
+		} catch (error) {
+			console.error("Failed to refresh frontmatter events:", error);
+		}
+	}
+
+	/**
+	 * 更新 frontmatter 事件
+	 */
+	async updateFrontmatterEvent(
+		eventId: string,
+		updates: Partial<FrontmatterEvent>
+	): Promise<boolean> {
+		const event = this.settings.data.basesEvents.find((e) => e.id === eventId);
+		if (!event) return false;
+
+		try {
+			// 使用 Obsidian API 更新 frontmatter
+			const file = this.app.vault.getAbstractFileByPath(event.sourcePath);
+			if (file instanceof TFile) {
+				await this.app.fileManager.processFrontMatter(
+					file,
+					(frontmatter) => {
+						if (updates.text !== undefined) {
+							frontmatter[event.propertyNames.title] = updates.text;
+						}
+						if (updates.eventDate !== undefined) {
+							frontmatter[event.propertyNames.eventDate] =
+								updates.eventDate.isoDate;
+							if (event.propertyNames.calendar) {
+								frontmatter[event.propertyNames.calendar] =
+									updates.eventDate.calendar;
+							}
+						}
+						if (updates.remark !== undefined && event.propertyNames.description) {
+							frontmatter[event.propertyNames.description] = updates.remark;
+						}
+						if (updates.emoji !== undefined && event.propertyNames.icon) {
+							frontmatter[event.propertyNames.icon] = updates.emoji;
+						}
+						if (updates.color !== undefined && event.propertyNames.color) {
+							frontmatter[event.propertyNames.color] = updates.color;
+						}
+						if (updates.isHidden !== undefined && event.propertyNames.hidden) {
+							frontmatter[event.propertyNames.hidden] = updates.isHidden;
+						}
+					}
+				);
+
+				// 更新本地缓存
+				Object.assign(event, updates);
+
+				// 重新计算日期
+				const year = this.settings.config.year;
+				this.settings.data.basesEvents = EventCalculator.updateFrontmatterEventsInfo(
+					this.settings.data.basesEvents,
+					year
+				);
+
+				await this.saveSettings();
+				return true;
+			}
+		} catch (error) {
+			console.error("Failed to update frontmatter event:", error);
+			new Notice("Failed to update frontmatter event");
+		}
+
+		return false;
 	}
 
 	/**

@@ -283,6 +283,12 @@ export type BaseMessage = {
 				};
 			};
 		};
+		basesView: {
+			options: {
+				propTitle: string;
+				propDate: string;
+			}
+		}
 	};
 	command: {
 		openYearlyGlance: string;

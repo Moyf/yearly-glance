@@ -119,7 +119,21 @@ export default class YearlyGlancePlugin extends Plugin {
 			icon: 'telescope',
 			factory: (controller, containerEl) => {
 				return new YearlyGlanceBasesView(controller, containerEl);
-			}
+			},
+			options: () => ([
+				{
+					type: 'text',
+					displayName: t("view.basesView.options.propTitle"),
+					key: 'propTitle',
+					default: 'title'
+				},
+				{
+					type: 'text',
+					displayName: t("view.basesView.options.propDate"),
+					key: 'propDate',
+					default: 'date'
+				}
+			])
 		});
 		
 	}

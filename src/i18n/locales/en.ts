@@ -140,6 +140,12 @@ const translations: BaseMessage = {
 		},
 	},
 	view: {
+		basesView: {
+			options: {
+				propTitle: "Title Property",
+				propDate: "Date Property",
+			},
+		},
 		glanceManager: {
 			name: "Glance manager",
 			events: "Events",

@@ -140,6 +140,12 @@ const translations: BaseMessage = {
 		},
 	},
 	view: {
+		basesView: {
+			options: {
+				propTitle: "标题属性",
+				propDate: "日期属性",
+			},
+		},
 		glanceManager: {
 			name: "概览管理",
 			events: "事件管理",

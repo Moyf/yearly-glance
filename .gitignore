@@ -38,3 +38,6 @@ dist
 
 # obsidian
 .obsidian
+
+/.claude/skills/references/obsidian-maps
+/.claude/skills/references/obsidian-developer-docs/Assets

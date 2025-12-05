@@ -118,7 +118,7 @@ export default class YearlyGlancePlugin extends Plugin {
 			name: 'Yearly Glance',
 			icon: 'telescope',
 			factory: (controller, containerEl) => {
-				return new YearlyGlanceBasesView(controller, containerEl);
+				return new YearlyGlanceBasesView(controller, containerEl, this);
 			},
 			options: () => ([
 				{

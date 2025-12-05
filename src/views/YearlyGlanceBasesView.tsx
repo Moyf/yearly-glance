@@ -1,42 +1,83 @@
-import { BasesView, CachedMetadata, Keymap, parsePropertyId, QueryController } from "obsidian";
-// import YearlyGlancePlugin from "@/src/main";
+import {
+    BasesView,
+    CachedMetadata,
+    Keymap,
+    parsePropertyId,
+    QueryController
+} from "obsidian";
+import type YearlyGlancePlugin from "@/src/main";
+import { YearlyCalendar } from "@/src/components/YearlyCalendar/YearlyCalendar";
 
 // 定义视图类型
 export const VIEW_TYPE_YEARLY_GLANCE_BASES = "yearly-glance-bases-view";
 
 export class YearlyGlanceBasesView extends BasesView {
     readonly type = VIEW_TYPE_YEARLY_GLANCE_BASES;
+    scrollEl: HTMLElement;
     private containerEl: HTMLElement;
+    glanceEl: HTMLElement;
+    plugin: YearlyGlancePlugin;
+    private yearlyCalendar: YearlyCalendar | null = null;
 
-    constructor(controller: QueryController, parentEl: HTMLElement) {
+    constructor(controller: QueryController, parentEl: HTMLElement, plugin: YearlyGlancePlugin) {
         super(controller);
-        this.containerEl = parentEl.createDiv("yg-bases-view-container");
+        this.scrollEl = parentEl.createDiv("yg-bases-view-container");
+        this.containerEl = this.scrollEl.createDiv("yg-bases-view-content");
+        this.glanceEl = this.containerEl.createDiv("yg-bases-view-glance");
+        this.plugin = plugin;
+        
+        // 初始化 YearlyCalendar
+        this.yearlyCalendar = new YearlyCalendar(this.glanceEl, this.plugin);
     }
 
     // onDataUpdated is called by Obsidian whenever there is a configuration
     // or data change in the vault which may affect your view.
     public onDataUpdated(): void {
         const { app } = this;
+
+        const isEmbedded = this.isEmbedded();
         
+		if (isEmbedded) {
+			this.glanceEl.style.height = '400px';
+		}
+		else {
+			// Let CSS handle the height for direct base file views
+			this.glanceEl.style.height = '';
+		}
+
         // Retrieve the user configured order set in the Properties menu.
         const order = this.config.getOrder()
 
         // Clear entries created by previous iterations. Remember, you should
         // instead attempt element reuse when possible.
         this.containerEl.empty();
+        
+        // 重新创建 glanceEl，因为 containerEl.empty() 会清空它
+        this.glanceEl = this.containerEl.createDiv("yg-bases-view-glance");
 
         // 读取配置
         const propTitle = String(this.config.get('propTitle') || 'title');
         const propDate = String(this.config.get('propDate') || 'date');
 
-        this.containerEl.createDiv({ text: 'Hello Bases View 😄' });
-        this.containerEl.createDiv({ text: `当前的配置: 标题属性=${propTitle}, 日期属性=${propDate}` });
-        console.log(propTitle, propDate);
-        console.log("----------------------")
-
         console.log("%cYearlyGlanceBasesView onDataUpdated", 'color: yellow; font-weight: bold;');
+        console.log('propTitle:', propTitle, 'propDate:', propDate);
         console.log(this.config);
         console.log(this.data);
+
+        // 初始化并渲染 YearlyCalendar
+        if (this.yearlyCalendar) {
+            this.yearlyCalendar.destroy();
+        }
+        this.yearlyCalendar = new YearlyCalendar(this.glanceEl, this.plugin);
+        this.yearlyCalendar.initialize(this.plugin).then(() => {
+            this.yearlyCalendar?.render();
+        });
+
+        // 设置 glanceEl 的高度
+        if (isEmbedded) {
+            this.glanceEl.style.height = '400px';
+        }
+        
 
         // this.data contains both grouped and ungrouped versions of the data.
         // If it's appropriate for your view type, use the grouped form.
@@ -170,6 +211,34 @@ export class YearlyGlanceBasesView extends BasesView {
                 });
 
             }
+        }
+    }
+
+    
+    /**
+     * Check if this view is embedded in a markdown file
+     * If embedded, we may want to adjust rendering or behavior
+    */
+    isEmbedded(): boolean {
+            // Check if this map view is embedded in a markdown file rather than opened directly
+            // If the scrollEl has a parent with 'bases-embed' class, it's embedded
+            let element = this.scrollEl.parentElement;
+            while (element) {
+                if (element.hasClass('bases-embed') || element.hasClass('block-language-base')) {
+                    return true;
+                }
+                element = element.parentElement;
+            }
+            return false;
+    }
+
+    /**
+     * Clean up resources when the view is destroyed
+     */
+    destroy(): void {
+        if (this.yearlyCalendar) {
+            this.yearlyCalendar.destroy();
+            this.yearlyCalendar = null;
         }
     }
 }

@@ -12,6 +12,7 @@ export default class YearlyGlanceSettingsTab extends PluginSettingTab {
 	plugin: YearlyGlancePlugin;
 	root: Root | null = null;
 	config: YearlyGlanceConfig;
+	icon: string = "telescope";
 
 	constructor(app: App, plugin: YearlyGlancePlugin) {
 		super(app, plugin);

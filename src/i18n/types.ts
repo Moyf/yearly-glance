@@ -186,6 +186,7 @@ export type BaseMessage = {
 				eventRemark: string;
 				customEventRepeat: string;
 				holidayFoundDate: string;
+				frontmatterSync: string;
 			};
 			holiday: {
 				name: string;
@@ -287,6 +288,7 @@ export type BaseMessage = {
 			options: {
 				propTitle: string;
 				propDate: string;
+				inheritPluginData: string;
 			}
 		}
 	};

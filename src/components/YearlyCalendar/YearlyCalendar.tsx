@@ -21,6 +21,7 @@ import { IsoUtils } from "@/src/utils/isoUtils";
 
 interface YearlyCalendarViewProps {
 	plugin: YearlyGlancePlugin;
+	externalEvents?: CalendarEvent[];
 }
 
 // 定义视图预设选项
@@ -42,7 +43,7 @@ const presetConfigs = {
 	classicCalendar: { layout: "4x3", viewType: "calendar" },
 };
 
-const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
+const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externalEvents }) => {
 	const { config, updateConfig } = useYearlyGlanceConfig(plugin);
 	const [hidePreviousMonths, setHidePreviousMonths] = React.useState(false);
 	const [hideFutureMonths, setHideFutureMonths] = React.useState(false);
@@ -148,7 +149,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		};
 	}, [title, year]);
 
-	const { monthsData, weekdays } = useYearlyCalendar(plugin);
+	const { monthsData, weekdays } = useYearlyCalendar(plugin, externalEvents);
 
 	// 预设更改处理函数
 	const handlePresetChange = (preset: string) => {
@@ -838,14 +839,24 @@ export class YearlyCalendar {
 	private container: HTMLElement;
 	private root: Root | null = null;
 	private plugin: YearlyGlancePlugin;
+	private externalEvents?: CalendarEvent[];
 
 	constructor(container: HTMLElement, plugin: YearlyGlancePlugin) {
 		this.container = container;
 		this.plugin = plugin;
 	}
 
+	// 新增：支持外部数据渲染
+	renderWithEvents(events: CalendarEvent[]) {
+		this.externalEvents = events;
+		this.container.empty();
+		this.root = createRoot(this.container);
+		this.render();
+	}
+
 	async initialize(plugin: YearlyGlancePlugin) {
 		this.plugin = plugin;
+		this.externalEvents = undefined;
 		this.container.empty();
 		this.root = createRoot(this.container);
 		this.render();
@@ -855,7 +866,7 @@ export class YearlyCalendar {
 		if (this.root) {
 			this.root.render(
 				<React.StrictMode>
-					<YearlyCalendarView plugin={this.plugin} />
+					<YearlyCalendarView plugin={this.plugin} externalEvents={this.externalEvents} />
 				</React.StrictMode>
 			);
 		}
@@ -871,5 +882,6 @@ export class YearlyCalendar {
 			this.root.unmount();
 			this.root = null;
 		}
+		this.externalEvents = undefined;
 	}
 }

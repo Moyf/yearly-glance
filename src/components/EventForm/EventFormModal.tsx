@@ -13,9 +13,11 @@ import {
 import { EventForm } from "./EventForm";
 import { EventCalculator } from "@/src/utils/eventCalculator";
 import "./style/EventFormModal.css";
+import { CalendarEvent } from "@/src/type/CalendarEvent";
 
 export interface EventFormModalProps {
 	date?: string; // 可选的日期属性
+	syncToFrontmatter?: boolean; // 是否同步到 frontmatter（仅 Bases 事件）
 }
 
 export class EventFormModal extends Modal {
@@ -27,6 +29,7 @@ export class EventFormModal extends Modal {
 	allowTypeChange: boolean;
 	settings: YearlyGlanceConfig;
 	props: EventFormModalProps;
+	isBasesEvent: boolean;
 
 	constructor(
 		plugin: YearlyGlancePlugin,
@@ -44,6 +47,8 @@ export class EventFormModal extends Modal {
 		this.allowTypeChange = allowTypeChange;
 		this.settings = plugin.getSettings();
 		this.props = props;
+		// 检查是否是 Bases 事件（通过 id 判断）
+		this.isBasesEvent = event.id ? event.id.startsWith('bases-') : false;
 	}
 
 	onOpen(): void {
@@ -65,6 +70,10 @@ export class EventFormModal extends Modal {
 					onSave={this.onSave.bind(this)}
 					onCancel={() => this.close()}
 					props={this.props}
+					isBasesEvent={this.isBasesEvent}
+					updateProps={(newProps: Partial<EventFormModalProps>) => {
+						Object.assign(this.props, newProps);
+					}}
 				/>
 			</React.StrictMode>
 		);
@@ -145,6 +154,26 @@ export class EventFormModal extends Modal {
 		}
 
 		await this.plugin.updateData(newEvents);
+
+		// 如果是 Bases 事件且启用了 frontmatter 同步，则同步到 frontmatter
+		if (this.isBasesEvent && this.props.syncToFrontmatter) {
+			// 将事件转换为 CalendarEvent 格式以传递给同步方法
+			const calendarEvent: CalendarEvent = {
+				id: event.id,
+				text: event.text,
+				eventDate: event.eventDate,
+				dateArr: event.dateArr,
+				emoji: event.emoji,
+				color: event.color,
+				isHidden: event.isHidden,
+				remark: event.remark,
+				eventType: eventType,
+				isRepeat: (event as CustomEvent).isRepeat
+			};
+
+			await this.plugin.syncBasesEventToFrontmatter(calendarEvent);
+		}
+
 		this.close();
 	}
 }

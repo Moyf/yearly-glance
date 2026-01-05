@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat -A \"D:\\\\Codes\\\\yearly-glance\\\\src\\\\i18n\\\\locales\\\\zh.ts\")",
+      "Bash(xxd)",
+      "Bash(cat -A)",
+      "Bash(node -e \"require\\(''typescript''\\).transpileModule\\(require\\(''fs''\\).readFileSync\\(''D:\\\\Codes\\\\yearly-glance\\\\src\\\\components\\\\EventForm\\\\EventForm.tsx'', ''utf8''\\), {compilerOptions: {jsx: ''react'', target: ''ES2020''}}\\)\")",
+      "Bash(npx tsc --noEmit)"
+    ]
+  }
+}

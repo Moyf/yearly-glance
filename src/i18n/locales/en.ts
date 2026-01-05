@@ -144,6 +144,7 @@ const translations: BaseMessage = {
 			options: {
 				propTitle: "Title Property",
 				propDate: "Date Property",
+				inheritPluginData: "Inherit Plugin Data",
 			},
 		},
 		glanceManager: {
@@ -280,6 +281,7 @@ const translations: BaseMessage = {
 					"When selected, the event will repeat every year on the same date",
 				holidayFoundDate:
 					"Holiday founding date, will be used to calculate holiday anniversaries in future plans",
+				frontmatterSync: "Sync to note metadata (frontmatter)",
 			},
 			holiday: {
 				name: "Holiday",

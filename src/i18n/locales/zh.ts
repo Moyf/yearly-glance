@@ -144,6 +144,7 @@ const translations: BaseMessage = {
 			options: {
 				propTitle: "标题属性",
 				propDate: "日期属性",
+				inheritPluginData: "继承插件数据",
 			},
 		},
 		glanceManager: {
@@ -278,6 +279,7 @@ const translations: BaseMessage = {
 					"对事件的额外说明，点击事件时（或在管理事件中）可查看备注内容",
 				customEventRepeat: "选中时，将会在每年的该日期都重复显示事件",
 				holidayFoundDate: "节日起源日期，后续计划会用于计算节庆周年",
+				frontmatterSync: "同步到笔记元数据（frontmatter）",
 			},
 			holiday: {
 				name: "节日",

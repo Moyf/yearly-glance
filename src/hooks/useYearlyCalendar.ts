@@ -91,7 +91,7 @@ function hexToRgb(hex: string): string {
 }
 
 // 主要 Hook
-export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
+export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: CalendarEvent[]) {
 	const { config, events } = useYearlyGlanceConfig(plugin);
 
 	const {
@@ -111,6 +111,11 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 
 	// 处理所有事件
 	const allEvents = React.useMemo(() => {
+		// 如果有外部事件，直接使用外部事件
+		if (externalEvents && externalEvents.length > 0) {
+			return externalEvents;
+		}
+
 		const events: CalendarEvent[] = [];
 
 		// 处理节假日
@@ -150,7 +155,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 		}
 
 		return events;
-	}, [config, events]);
+	}, [externalEvents, config, events]);
 
 	// 月份数据
 	const monthsData = React.useMemo(() => {
@@ -216,7 +221,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 				firstDayPosition: firstDayWeekday,
 			};
 		});
-	}, [config, events]);
+	}, [config, events, externalEvents]);
 
 	// 获取星期几标题
 	const weekdays = React.useMemo(() => {

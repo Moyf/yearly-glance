@@ -25,6 +25,7 @@ import { MigrateData } from "./utils/migrateData";
 import { EventCalculator } from "./utils/eventCalculator";
 import { IsoUtils } from "./utils/isoUtils";
 import { generateEventId } from "./utils/uniqueEventId";
+import { CalendarEvent } from "./type/CalendarEvent";
 
 export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
@@ -113,7 +114,7 @@ export default class YearlyGlancePlugin extends Plugin {
 	}
 
 	private registerBasesViews() {
-		
+
 		this.registerBasesView(VIEW_TYPE_YEARLY_GLANCE_BASES, {
 			name: 'Yearly Glance',
 			icon: 'telescope',
@@ -132,10 +133,16 @@ export default class YearlyGlancePlugin extends Plugin {
 					displayName: t("view.basesView.options.propDate"),
 					key: 'propDate',
 					default: 'date'
+				},
+				{
+					type: 'toggle',
+					displayName: t("view.basesView.options.inheritPluginData"),
+					key: 'inheritPluginData',
+					default: false
 				}
 			])
 		});
-		
+
 	}
 
 	private registerCommands() {
@@ -290,6 +297,44 @@ export default class YearlyGlancePlugin extends Plugin {
 			allowTypeChange,
 			props
 		).open();
+	}
+
+	// 同步 Bases 事件到 frontmatter
+	async syncBasesEventToFrontmatter(event: CalendarEvent): Promise<void> {
+		// 检查是否是 Bases 事件
+		if (!event.id.startsWith('bases-')) {
+			console.log('Event is not from Bases, skipping frontmatter sync');
+			return;
+		}
+
+		// 获取所有 Bases 视图
+		const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_YEARLY_GLANCE_BASES);
+
+		if (leaves.length === 0) {
+			console.warn('No Bases view found for frontmatter sync');
+			return;
+		}
+
+		// 遍历所有 Bases 视图，找到包含该事件的视图
+		for (const leaf of leaves) {
+			const view = leaf.view as any;
+			if (view && view instanceof YearlyGlanceBasesView) {
+				// 检查视图是否包含该事件
+				if (view.isBasesEvent && view.isBasesEvent(event.id)) {
+					try {
+						if (view.updateEventFrontmatter) {
+							await view.updateEventFrontmatter(event);
+							console.log('Frontmatter sync completed');
+							return;
+						}
+					} catch (error) {
+						console.error('Failed to sync frontmatter:', error);
+					}
+				}
+			}
+		}
+
+		console.warn('Could not find Bases view containing event:', event.id);
 	}
 
 	// 重载插件

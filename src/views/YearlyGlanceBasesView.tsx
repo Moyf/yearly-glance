@@ -1,12 +1,13 @@
 import {
     BasesView,
-    CachedMetadata,
-    Keymap,
-    parsePropertyId,
-    QueryController
+    QueryController,
+    TFile
 } from "obsidian";
 import type YearlyGlancePlugin from "@/src/main";
 import { YearlyCalendar } from "@/src/components/YearlyCalendar/YearlyCalendar";
+import { CalendarEvent } from "@/src/type/CalendarEvent";
+import { IsoUtils } from "@/src/utils/isoUtils";
+import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 
 // 定义视图类型
 export const VIEW_TYPE_YEARLY_GLANCE_BASES = "yearly-glance-bases-view";
@@ -18,6 +19,8 @@ export class YearlyGlanceBasesView extends BasesView {
     glanceEl: HTMLElement;
     plugin: YearlyGlancePlugin;
     private yearlyCalendar: YearlyCalendar | null = null;
+    private unsubscribeBus?: () => void;
+    private basesEventMap: Map<string, string> = new Map(); // event id -> file path
 
     constructor(controller: QueryController, parentEl: HTMLElement, plugin: YearlyGlancePlugin) {
         super(controller);
@@ -25,196 +28,245 @@ export class YearlyGlanceBasesView extends BasesView {
         this.containerEl = this.scrollEl.createDiv("yg-bases-view-content");
         this.glanceEl = this.containerEl.createDiv("yg-bases-view-glance");
         this.plugin = plugin;
-        
+
         // 初始化 YearlyCalendar
         this.yearlyCalendar = new YearlyCalendar(this.glanceEl, this.plugin);
+
+        // 订阅插件数据更新，实现自动刷新
+        this.unsubscribeBus = YearlyGlanceBus.subscribe(() => {
+            this.onDataUpdated();
+        });
     }
 
     // onDataUpdated is called by Obsidian whenever there is a configuration
     // or data change in the vault which may affect your view.
     public onDataUpdated(): void {
         const { app } = this;
-
         const isEmbedded = this.isEmbedded();
-        
-		if (isEmbedded) {
-			this.glanceEl.style.height = '400px';
-		}
-		else {
-			// Let CSS handle the height for direct base file views
-			this.glanceEl.style.height = '';
-		}
 
-        // Retrieve the user configured order set in the Properties menu.
-        const order = this.config.getOrder()
+        // 1. 读取配置
+        const config = {
+            inheritPluginData: this.config.get('inheritPluginData') === true,
+            propTitle: String(this.config.get('propTitle') || 'title'),
+            propDate: String(this.config.get('propDate') || 'date')
+        };
 
-        // Clear entries created by previous iterations. Remember, you should
-        // instead attempt element reuse when possible.
+        // 2. 准备容器
         this.containerEl.empty();
-        
-        // 重新创建 glanceEl，因为 containerEl.empty() 会清空它
         this.glanceEl = this.containerEl.createDiv("yg-bases-view-glance");
+        this.glanceEl.style.height = isEmbedded ? '400px' : '';
 
-        // 读取配置
-        const propTitle = String(this.config.get('propTitle') || 'title');
-        const propDate = String(this.config.get('propDate') || 'date');
-
-        console.log("%cYearlyGlanceBasesView onDataUpdated", 'color: yellow; font-weight: bold;');
-        console.log('propTitle:', propTitle, 'propDate:', propDate);
-        console.log(this.config);
-        console.log(this.data);
-
-        // 初始化并渲染 YearlyCalendar
+        // 3. 销毁旧实例
         if (this.yearlyCalendar) {
             this.yearlyCalendar.destroy();
         }
+
+        // 4. 构建混合数据（同时填充 basesEventMap）
+        this.basesEventMap.clear();
+        const mixedEvents = this.buildMixedEvents(config);
+
+        // 5. 使用 YearlyCalendar 渲染
         this.yearlyCalendar = new YearlyCalendar(this.glanceEl, this.plugin);
-        this.yearlyCalendar.initialize(this.plugin).then(() => {
-            this.yearlyCalendar?.render();
-        });
 
-        // 设置 glanceEl 的高度
-        if (isEmbedded) {
-            this.glanceEl.style.height = '400px';
-        }
-        
+        // 6. 传递混合数据给 YearlyCalendar
+        this.yearlyCalendar.renderWithEvents(mixedEvents);
+    }
 
-        // this.data contains both grouped and ungrouped versions of the data.
-        // If it's appropriate for your view type, use the grouped form.
-        for (const group of this.data.groupedData) {
-            // 首先过滤出有效的条目
-            const validEntries: Array<{
-                entry: (typeof group.entries)[0];
-                metadata: CachedMetadata | null;
-                formattedDate: string;
-                fileName: string;
-            }> = [];
-            
-            for (const entry of group.entries) {
-                // 预检查数据有效性
-                const fileName = String(entry.file.name);
-                const metadata = app.metadataCache.getFileCache(entry.file);
-                const eventDate = metadata?.frontmatter ? metadata.frontmatter[propDate] : null;
-                const formattedDate = eventDate ? String(eventDate) : null;
+    /**
+     * 构建混合事件数据：插件数据 + Bases 数据
+     */
+    private buildMixedEvents(config: any): CalendarEvent[] {
+        const events: CalendarEvent[] = [];
 
-                if (!formattedDate) {
-                    console.warn(`Entry ${fileName} is missing date property (${propDate}), skipping entry`);
-                    console.info(metadata);
-                    continue;
-                }
+        // 1. 插件数据（如果启用继承）
+        if (config.inheritPluginData) {
+            const pluginData = this.plugin.getData();
+            const pluginConfig = this.plugin.getConfig();
 
-                // 检查是否有有效的属性值可以显示
-                let hasValidProperties = false;
-                for (const propertyName of order) {
-                    const value = entry.getValue(propertyName);
-                    if (value?.isTruthy()) {
-                        hasValidProperties = true;
-                        break;
-                    }
-                }
-
-                if (!hasValidProperties) {
-                    console.warn(`Entry ${fileName} has no valid properties to display, skipping entry`);
-                    continue;
-                }
-
-                // 添加到有效条目列表
-                validEntries.push({ entry, metadata, formattedDate, fileName });
-            }
-
-            // 只有当有有效条目时才渲染组
-            if (validEntries.length === 0) {
-                console.warn(`Group ${group.key} has no valid entries, skipping group`);
-                continue;
-            }
-
-            const groupEl = this.containerEl.createDiv('yg-list-group');
-
-            groupEl.createEl('h3', { text: `Group: ${group.key} (${validEntries.length} valid entries)` });
-
-            const groupListEl = groupEl.createEl('ul', 'yg-list-group-list');
-
-            // Each entry in the group is a separate file in the vault matching
-            // the Base filters. For list view, each entry is a separate line.
-            console.log("%cGroup:", 'color: green; font-weight: bold;');
-            console.log(group);
-            console.log(`Valid entries: ${validEntries.length}/${group.entries.length}`);
-
-            for (const { entry, metadata, formattedDate, fileName } of validEntries) {
-
-                groupListEl.createEl('li', 'yg-list-entry', (el) => {
-                    let firstProp = true;
-                    
-                    for (const propertyName of order) {
-                        // Properties in the order can be parsed to determine what type
-                        // they are: formula, note, or file.
-                        // 获取到这个属性对应的类型和名称
-                        const { type, name } = parsePropertyId(propertyName);
-                        console.log(`Rendering property: ${propertyName} (type=${type}, name=${name})`);
-
-                        // `entry.getValue` returns the evaluated result of the property
-                        // in the context of this entry.
-                        const value = entry.getValue(propertyName);
-            
-                        // Skip rendering properties which have an empty value.
-                        // The list items for each file may have differing length.
-                        if (!value?.isTruthy()) continue;
-            
-                        if (!firstProp) {
-                            el.createSpan({
-                                cls: 'yg-list-separator',
-                                text: ' | '
-                            });
-                        }
-
-                        firstProp = false;
-            
-                        // If the `file.name` property is included in the order, render
-                        // it specially so that it links to that file.
-                        if (name === 'name' && type === 'file') {
-                            console.log(typeof entry);
-                            
-                            const titleValue = metadata?.frontmatter ? metadata.frontmatter[propTitle] : null;
-                            const displayText = titleValue ? String(titleValue) : fileName;
-
-                            const linkEl = el.createEl('a', { text: `${displayText} (${formattedDate})` });
-
-                            linkEl.onClickEvent((evt) => {
-                                if (evt.button !== 0 && evt.button !== 1) return;
-                                evt.preventDefault();
-                                const path = entry.file.path;
-                                const modEvent = Keymap.isModEvent(evt);
-                                void app.workspace.openLinkText(path, '', modEvent);
-                            });
-                
-                            linkEl.addEventListener('mouseover', (evt) => {
-                                app.workspace.trigger('hover-link', {
-                                event: evt,
-                                source: 'bases',
-                                hoverParent: this,
-                                targetEl: linkEl,
-                                linktext: entry.file.path,
-                                });
-                            });
-                        }
-
-                        // For all other properties, just display the value as text.
-                        // In your view you may also choose to use the `Value.renderTo`
-                        // API to better support photos, links, icons, etc.
-                        else {
-                            el.createSpan({
-                                cls: 'bases-list-entry-property',
-                                text: value?.toString() || '',
-                            });
-                        }
+            // 使用插件的全局显示设置
+            if (pluginConfig.showHolidays) {
+                pluginData.holidays.forEach(h => {
+                    if (!h.isHidden) {
+                        events.push({ ...h, eventType: 'holiday' });
                     }
                 });
-
             }
+            if (pluginConfig.showBirthdays) {
+                pluginData.birthdays.forEach(b => {
+                    if (!b.isHidden) {
+                        events.push({ ...b, eventType: 'birthday' });
+                    }
+                });
+            }
+            if (pluginConfig.showCustomEvents) {
+                pluginData.customEvents.forEach(c => {
+                    if (!c.isHidden) {
+                        events.push({ ...c, eventType: 'customEvent' });
+                    }
+                });
+            }
+        }
+
+        // 2. Bases 数据
+        // 优先使用 groupedData，如果不存在则使用 data
+        const entriesToProcess = this.data?.groupedData
+            ? this.data.groupedData.flatMap(group => group.entries)
+            : this.data?.data || [];
+
+        if (entriesToProcess.length > 0) {
+            for (const entry of entriesToProcess) {
+                const metadata = this.app.metadataCache.getFileCache(entry.file);
+                const dateValue = metadata?.frontmatter?.[config.propDate];
+
+                if (dateValue) {
+                    const titleValue = metadata?.frontmatter?.[config.propTitle];
+                    const event = this.convertBasesEvent(
+                        entry,
+                        dateValue,
+                        titleValue || entry.file.name,
+                        entry.file.path
+                    );
+                    if (event) {
+                        events.push(event);
+                        // 填充 event id 到 file path 的映射，用于 frontmatter 更新
+                        this.basesEventMap.set(event.id, entry.file.path);
+                    }
+                }
+            }
+        }
+
+        return events;
+    }
+
+    /**
+     * 将 Bases 事件转换为 CalendarEvent 格式
+     */
+    private convertBasesEvent(
+        entry: any,
+        dateValue: any,
+        text: string,
+        filePath: string
+    ): CalendarEvent | null {
+        try {
+            // 获取文件的元数据和 frontmatter
+            const metadata = this.app.metadataCache.getFileCache(entry.file);
+            const frontmatter = metadata?.frontmatter || {};
+
+            // 尝试解析日期
+            let isoDate: string;
+
+            if (typeof dateValue === 'string') {
+                // 如果是字符串，尝试解析为日期
+                const date = new Date(dateValue);
+                if (isNaN(date.getTime())) return null;
+                isoDate = date.toISOString().split('T')[0];
+            } else if (dateValue instanceof Date) {
+                // 如果已经是 Date 对象
+                if (isNaN(dateValue.getTime())) return null;
+                isoDate = dateValue.toISOString().split('T')[0];
+            } else {
+                // 其他类型，尝试转换为字符串再解析
+                const dateStr = String(dateValue);
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) return null;
+                isoDate = date.toISOString().split('T')[0];
+            }
+
+            // 从 frontmatter 读取属性
+            const title = frontmatter.title || text;
+            const icon = frontmatter.icon;
+            const color = frontmatter.color;
+            const description = frontmatter.description;
+
+            // 对于 Bases 数据，我们不限制年份，允许显示所有年份的事件
+            // 这样用户可以在 Bases 视图中看到所有数据
+
+            return {
+                id: `bases-${filePath}-${isoDate}`,
+                text: title,
+                eventDate: {
+                    isoDate,
+                    calendar: 'GREGORIAN',
+                    userInput: { input: isoDate, calendar: 'GREGORIAN' }
+                },
+                dateArr: [isoDate],
+                emoji: icon || '📄',
+                color: color || '#52c41a',
+                isHidden: false,
+                remark: description || `From Bases: ${filePath}`,
+                eventType: 'customEvent',
+                isRepeat: false
+            } as CalendarEvent;
+        } catch (error) {
+            console.warn('Failed to convert Bases event:', error, entry);
+            return null;
         }
     }
 
-    
+    /**
+     * 获取 Bases 事件对应的文件路径
+     */
+    getBasesFilePath(eventId: string): string | undefined {
+        return this.basesEventMap.get(eventId);
+    }
+
+    /**
+     * 检查事件是否来自 Bases
+     */
+    isBasesEvent(eventId: string): boolean {
+        return eventId.startsWith('bases-') && this.basesEventMap.has(eventId);
+    }
+
+    /**
+     * 更新 Bases 事件对应笔记的 frontmatter
+     */
+    async updateEventFrontmatter(event: CalendarEvent): Promise<void> {
+        const filePath = this.getBasesFilePath(event.id);
+        if (!filePath) {
+            console.warn('No file path found for event:', event.id);
+            return;
+        }
+
+        const file = this.app.vault.getAbstractFileByPath(filePath);
+        if (!file || !(file instanceof TFile)) {
+            console.warn('File not found or not a TFile:', filePath);
+            return;
+        }
+
+        // 检查 dateArr 是否存在
+        const eventDate = event.dateArr?.[0];
+        if (!eventDate) {
+            console.warn('Event has no date array:', event.id);
+            return;
+        }
+
+        try {
+            await this.app.fileManager.processFrontMatter(file, (fm) => {
+                // 更新 frontmatter 字段
+                fm.title = event.text;
+                fm.event_date = eventDate;
+
+                // 只有当事件有自定义图标时才更新
+                if (event.emoji && event.emoji !== '📄') {
+                    fm.icon = event.emoji;
+                }
+
+                // 只有当事件有自定义颜色时才更新
+                if (event.color && event.color !== '#52c41a') {
+                    fm.color = event.color;
+                }
+
+                // 只有当 remark 不是默认值且不是来自 Bases 的说明时才更新为 description
+                if (event.remark && !event.remark.startsWith('From Bases:')) {
+                    fm.description = event.remark;
+                }
+            });
+            console.log('Frontmatter updated successfully for:', filePath);
+        } catch (error) {
+            console.error('Failed to update frontmatter:', error);
+        }
+    }
+
     /**
      * Check if this view is embedded in a markdown file
      * If embedded, we may want to adjust rendering or behavior
@@ -236,10 +288,20 @@ export class YearlyGlanceBasesView extends BasesView {
      * Clean up resources when the view is destroyed
      */
     destroy(): void {
+        // 清理总线订阅
+        if (this.unsubscribeBus) {
+            this.unsubscribeBus();
+            this.unsubscribeBus = undefined;
+        }
+
+        // 销毁日历实例
         if (this.yearlyCalendar) {
             this.yearlyCalendar.destroy();
             this.yearlyCalendar = null;
         }
+
+        // 清理事件映射
+        this.basesEventMap.clear();
     }
 }
 

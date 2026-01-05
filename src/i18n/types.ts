@@ -136,6 +136,7 @@ export type BaseMessage = {
 				yearlyCalendar: string;
 				deleteConfirm: string;
 				location: string;
+				openOriginalNote: string;
 				toggleBuiltinEventHidden: string;
 				sort: {
 					name: string;
@@ -203,6 +204,9 @@ export type BaseMessage = {
 			customEvent: {
 				name: string;
 				repeat: string;
+			};
+			source: {
+				bases: string;
 			};
 		};
 		dataPortView: {

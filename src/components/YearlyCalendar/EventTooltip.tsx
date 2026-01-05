@@ -1,12 +1,13 @@
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
-import { Modal } from "obsidian";
+import { Modal, TFile } from "obsidian";
 import YearlyGlancePlugin from "@/src/main";
 import {
 	Birthday,
 	EVENT_TYPE_DEFAULT,
 	EventType,
 	Holiday,
+	EventSource,
 } from "@/src/type/Events";
 import {
 	EVENT_SEARCH_REQUESTED,
@@ -46,26 +47,77 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 		}, 100);
 	};
 
-	// 在事件管理中打开
+	// 在事件管理中打开或打开原始笔记
 	const handleLocationEvent = () => {
 		// 关闭当前tooltip
 		onClose();
 
-		// 使用延迟确保tooltip已完全关闭
-		setTimeout(() => {
-			// 打开事件管理器视图
-			plugin.openGlanceManagerWithTab("events");
+		// 检查是否是 Bases 事件
+		const isBasesEvent = event.id.startsWith('bases-');
 
-			// 使用延迟确保事件管理器视图已完全加载
+		if (isBasesEvent) {
+			// 对于 Bases 事件，打开原始笔记
+			openOriginalNoteForBasesEvent();
+		} else {
+			// 对于 Config 事件，打开事件管理器
 			setTimeout(() => {
-				// 通过事件总线发送搜索请求
-				EventManagerBus.publish(EVENT_SEARCH_REQUESTED, {
-					searchType: "id",
-					searchValue: event.id,
-				});
-			}, 500);
-		}, 100);
+				// 打开事件管理器视图
+				plugin.openGlanceManagerWithTab("events");
+
+				// 使用延迟确保事件管理器视图已完全加载
+				setTimeout(() => {
+					// 通过事件总线发送搜索请求
+					EventManagerBus.publish(EVENT_SEARCH_REQUESTED, {
+						searchType: "id",
+						searchValue: event.id,
+					});
+				}, 500);
+			}, 100);
+		}
 	};
+
+	// 打开 Bases 事件的原始笔记
+	const openOriginalNoteForBasesEvent = () => {
+		// 从事件ID中提取文件路径
+		// bases-{filePath}-{isoDate} -> {filePath}
+		// 例如: bases-Events/event-samples/测试事件.md-2026-01-10 -> Events/event-samples/测试事件.md
+		const idWithoutPrefix = event.id.replace('bases-', '');
+
+		// 找到最后一个 '-' 的位置（日期部分的开始）
+		const lastDashIndex = idWithoutPrefix.lastIndexOf('-');
+
+		// 提取文件路径（移除最后的日期部分）
+		const filePath = lastDashIndex > 0
+			? idWithoutPrefix.substring(0, lastDashIndex)
+			: idWithoutPrefix;
+
+		// 在应用中查找文件
+		const file = plugin.app.vault.getAbstractFileByPath(filePath);
+
+		if (file && file instanceof TFile) {
+			// 打开文件
+			plugin.app.workspace.openLinkText(filePath, '', true);
+		} else {
+			// 如果找不到文件，显示通知
+			console.warn(`[Yearly Glance] Could not find file: ${filePath}`);
+		}
+	};
+
+	// 获取位置按钮的显示属性
+	const getLocationButtonProps = () => {
+		const isBasesEvent = event.id.startsWith('bases-');
+		if (isBasesEvent) {
+			return {
+				icon: "📄",
+				title: t("view.eventManager.actions.openOriginalNote"),
+			};
+		}
+		return {
+			icon: "📍",
+			title: t("view.eventManager.actions.location"),
+		};
+	};
+
 	return (
 		<div className="yg-event-tooltip-content">
 			<div
@@ -83,9 +135,9 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 					<button
 						className="location-button"
 						onClick={handleLocationEvent}
-						title={t("view.eventManager.actions.location")}
+						title={getLocationButtonProps().title}
 					>
-						📍
+						{getLocationButtonProps().icon}
 					</button>
 					<button
 						className="edit-button"

@@ -8,6 +8,7 @@ import { YearlyCalendar } from "@/src/components/YearlyCalendar/YearlyCalendar";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
 import { IsoUtils } from "@/src/utils/isoUtils";
 import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
+import { EventSource } from "@/src/type/Events";
 
 // 定义视图类型
 export const VIEW_TYPE_YEARLY_GLANCE_BASES = "yearly-glance-bases-view";
@@ -195,7 +196,8 @@ export class YearlyGlanceBasesView extends BasesView {
                 isHidden: false,
                 remark: description || `From Bases: ${filePath}`,
                 eventType: 'customEvent',
-                isRepeat: false
+                isRepeat: false,
+                eventSource: EventSource.BASES
             } as CalendarEvent;
         } catch (error) {
             console.warn('Failed to convert Bases event:', error, entry);
@@ -233,10 +235,10 @@ export class YearlyGlanceBasesView extends BasesView {
             return;
         }
 
-        // 检查 dateArr 是否存在
-        const eventDate = event.dateArr?.[0];
+        // 使用 eventDate.isoDate 而不是 dateArr（Bases events 可能没有 dateArr）
+        const eventDate = event.eventDate?.isoDate;
         if (!eventDate) {
-            console.warn('Event has no date array:', event.id);
+            console.warn('Event has no date:', event.id);
             return;
         }
 

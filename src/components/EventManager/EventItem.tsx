@@ -5,6 +5,7 @@ import {
 	EVENT_TYPE_DEFAULT,
 	EventType,
 	Holiday,
+	EventSource,
 } from "@/src/type/Events";
 import { Tooltip } from "@/src/components/Base/Tooltip";
 import { t } from "@/src/i18n/i18n";
@@ -224,6 +225,13 @@ export const EventItem: React.FC<EventItemProps> = ({
 					<div className="event-remark">
 						<span className="remark-icon">💬</span>
 						<span>{event.remark}</span>
+					</div>
+				)}
+
+				{event.eventSource === EventSource.BASES && (
+					<div className="event-source-info">
+						<span className="source-icon">📄</span>
+						<span>{t("view.eventManager.source.bases")}</span>
 					</div>
 				)}
 

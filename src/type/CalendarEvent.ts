@@ -1,8 +1,9 @@
-import { Birthday, CustomEvent, EventType, Holiday } from "./Events";
+import { Birthday, CustomEvent, EventType, Holiday, EventSource } from "./Events";
 
 // 日历事件接口
 export type CalendarEvent = (Holiday | Birthday | CustomEvent) & {
 	eventType: EventType; // 事件类型
+	eventSource?: EventSource; // 事件来源
 };
 
 // 日数据接口

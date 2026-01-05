@@ -9,6 +9,7 @@ import {
 	Events,
 	EventType,
 	Holiday,
+	EventSource,
 } from "@/src/type/Events";
 import { EventForm } from "./EventForm";
 import { EventCalculator } from "@/src/utils/eventCalculator";
@@ -114,6 +115,8 @@ export class EventFormModal extends Modal {
 						c.id === event.id ? (event as CustomEvent) : c
 					);
 				} else {
+					// 新增事件时添加 eventSource
+					(event as CustomEvent).eventSource = EventSource.CONFIG;
 					newEvents.customEvents.push(event as CustomEvent);
 				}
 				break;
@@ -129,6 +132,8 @@ export class EventFormModal extends Modal {
 						b.id === event.id ? (event as Birthday) : b
 					);
 				} else {
+					// 新增事件时添加 eventSource
+					(event as Birthday).eventSource = EventSource.CONFIG;
 					newEvents.birthdays.push(event as Birthday);
 				}
 				break;
@@ -144,6 +149,8 @@ export class EventFormModal extends Modal {
 						h.id === event.id ? (event as Holiday) : h
 					);
 				} else {
+					// 新增事件时添加 eventSource
+					(event as Holiday).eventSource = EventSource.CONFIG;
 					newEvents.holidays.push(event as Holiday);
 				}
 				break;

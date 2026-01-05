@@ -14,7 +14,7 @@ import {
 	VIEW_TYPE_YEARLY_GLANCE_BASES,
 	YearlyGlanceBasesView,
 } from "./views/YearlyGlanceBasesView";
-import { Birthday, CustomEvent, EventType, Holiday } from "@/src/type/Events";
+import { Birthday, CustomEvent, EventType, Holiday, EventSource } from "@/src/type/Events";
 import {
 	EventFormModal,
 	EventFormModalProps,
@@ -357,17 +357,29 @@ export default class YearlyGlancePlugin extends Plugin {
 			if (!birthday.id) {
 				birthday.id = generateEventId("birthday");
 			}
+			// 确保 config 事件有 eventSource
+			if (!birthday.eventSource) {
+				birthday.eventSource = EventSource.CONFIG;
+			}
 		});
 
 		events.holidays.forEach((holiday) => {
 			if (!holiday.id) {
 				holiday.id = generateEventId("holiday");
 			}
+			// 确保 config 事件有 eventSource
+			if (!holiday.eventSource) {
+				holiday.eventSource = EventSource.CONFIG;
+			}
 		});
 
 		events.customEvents.forEach((customEvent) => {
 			if (!customEvent.id) {
 				customEvent.id = generateEventId("customEvent");
+			}
+			// 确保 config 事件有 eventSource
+			if (!customEvent.eventSource) {
+				customEvent.eventSource = EventSource.CONFIG;
 			}
 		});
 
@@ -440,6 +452,7 @@ export default class YearlyGlancePlugin extends Plugin {
 				color: "#73d13d",
 				isRepeat: false,
 				remark: t("data.sampleEvent.remark"),
+				eventSource: EventSource.CONFIG,
 			};
 
 			// 添加到自定义事件列表

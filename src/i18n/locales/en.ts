@@ -203,6 +203,7 @@ const translations: BaseMessage = {
 				yearlyCalendar: "Open yearly calendar",
 				deleteConfirm: "Are you sure you want to delete this event?",
 				location: "Open in event manager",
+				openOriginalNote: "Open original note",
 				toggleBuiltinEventHidden: "Toggle built-in events hidden",
 				sort: {
 					name: "Event name",
@@ -298,6 +299,9 @@ const translations: BaseMessage = {
 			customEvent: {
 				name: "Custom event",
 				repeat: "Repeat",
+			},
+			source: {
+				bases: "From note",
 			},
 		},
 		dataPortView: {

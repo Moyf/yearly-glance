@@ -6,6 +6,13 @@ export interface Events {
 	customEvents: CustomEvent[];
 }
 
+// 事件来源类型
+export enum EventSource {
+	CONFIG = "config",    // 插件配置数据
+	BASES = "bases",      // 笔记 frontmatter
+	CODEBLOCK = "codeblock" // 代码块（未来支持）
+}
+
 export interface BaseEvent {
 	id: string;
 	text: string;
@@ -20,6 +27,8 @@ export interface BaseEvent {
 	color?: string;
 	remark?: string;
 	isHidden?: boolean;
+	/** 事件来源 */
+	eventSource?: EventSource;
 }
 
 /**

@@ -203,6 +203,7 @@ const translations: BaseMessage = {
 				yearlyCalendar: "打开年度概览",
 				deleteConfirm: "确认删除事件",
 				location: "在事件管理中打开",
+				openOriginalNote: "打开原始笔记",
 				toggleBuiltinEventHidden: "切换内置节日显示状态",
 				sort: {
 					name: "事件名称",
@@ -280,6 +281,7 @@ const translations: BaseMessage = {
 				customEventRepeat: "选中时，将会在每年的该日期都重复显示事件",
 				holidayFoundDate: "节日起源日期，后续计划会用于计算节庆周年",
 				frontmatterSync: "同步到笔记元数据（frontmatter）",
+		basesEventHint: "这是来自笔记 {{file}} 的事件，保存时会将数据写入原始笔记的元数据",
 			},
 			holiday: {
 				name: "节日",
@@ -296,6 +298,9 @@ const translations: BaseMessage = {
 			customEvent: {
 				name: "自定义事件",
 				repeat: "重复",
+			},
+			source: {
+				bases: "来自笔记",
 			},
 		},
 		dataPortView: {

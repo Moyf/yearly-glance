@@ -203,6 +203,7 @@ const translations: BaseMessage = {
 				yearlyCalendar: "開啟年度概覽",
 				deleteConfirm: "確認刪除事件",
 				location: "在事件管理中開啟",
+				openOriginalNote: "開啟原始筆記",
 				toggleBuiltinEventHidden: "切換內建節日顯示狀態",
 				sort: {
 					name: "事件名稱",
@@ -296,6 +297,9 @@ const translations: BaseMessage = {
 			customEvent: {
 				name: "自訂事件",
 				repeat: "重複",
+			},
+			source: {
+				bases: "來自筆記",
 			},
 		},
 		dataPortView: {

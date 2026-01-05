@@ -873,10 +873,9 @@ export class YearlyCalendar {
 	}
 
 	destroy() {
-		// Reset the year configuration to current year when view is closed
-		// 使用时区安全的方法获取当前年份
-		const currentYear = IsoUtils.getCurrentYear();
-		this.plugin.updateConfig({ year: currentYear });
+		// 注意：不在 destroy() 中更新配置，以避免触发 YearlyGlanceBus
+		// 导致 YearlyGlanceBasesView 无限循环
+		// 配置重置应该由调用者负责处理
 
 		if (this.root) {
 			this.root.unmount();

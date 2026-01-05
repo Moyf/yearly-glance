@@ -73,10 +73,8 @@ interface EventFormProps {
 	onCancel: () => void;
 	props?: {
 		date?: string; // 可选的日期属性
-		syncToFrontmatter?: boolean; // 是否同步到 frontmatter
 	};
 	isBasesEvent?: boolean;
-	updateProps?: (newProps: { syncToFrontmatter?: boolean }) => void;
 }
 
 export const EventForm: React.FC<EventFormProps> = ({
@@ -89,7 +87,6 @@ export const EventForm: React.FC<EventFormProps> = ({
 	onCancel,
 	props = {},
 	isBasesEvent = false,
-	updateProps,
 }) => {
 	const today = IsoUtils.getTodayLocalDateString(); // 获取今天的日期字符串（时区安全）
 	const todayString = props.date || today; // 如果传入了特定日期，则使用它，否则使用今天的日期
@@ -100,11 +97,6 @@ export const EventForm: React.FC<EventFormProps> = ({
 	// 表单容器和表单元素的引用，用于键盘快捷键
 	const modalRef = React.useRef<HTMLDivElement>(null);
 	const formRef = React.useRef<HTMLFormElement>(null);
-
-	// Bases 事件的 frontmatter 同步状态
-	const [syncToFrontmatter, setSyncToFrontmatter] = React.useState(
-		props.syncToFrontmatter ?? false
-	);
 
 	// 当前选择的事件类型
 	const [currentEventType, setCurrentEventType] =
@@ -147,13 +139,6 @@ export const EventForm: React.FC<EventFormProps> = ({
 			...prev,
 			[name]: value === "" ? undefined : value,
 		}));
-	};
-	// 处理 frontmatter 同步状态变化
-	const handleSyncToFrontmatterChange = (checked: boolean) => {
-		setSyncToFrontmatter(checked);
-		if (updateProps) {
-			updateProps({ syncToFrontmatter: checked });
-		}
 	};
 
 	const [optionalCollapsed, setOptionalCollapsed] = React.useState(false);
@@ -446,17 +431,16 @@ export const EventForm: React.FC<EventFormProps> = ({
 						/>
 					</div>
 					{isBasesEvent && (
-						<div className="form-group checkbox">
-							<label>
-								{t("view.eventManager.help.frontmatterSync")}
-								<Tooltip
-									text={t("view.eventManager.help.frontmatterSync")}
-								/>
-							</label>
-							<Toggle
-								checked={syncToFrontmatter}
-								onChange={handleSyncToFrontmatterChange}
-							/>
+						<div className="form-group">
+							<div className="bases-event-hint">
+								{t("view.eventManager.help.basesEventHint", {
+									file: (() => {
+										const idWithoutPrefix = event.id?.replace(/^bases-/, "") || "";
+										const mdIndex = idWithoutPrefix.indexOf(".md");
+										return mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
+									})()
+								})}
+							</div>
 						</div>
 					)}
 				</div>

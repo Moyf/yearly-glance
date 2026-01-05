@@ -18,7 +18,6 @@ import { CalendarEvent } from "@/src/type/CalendarEvent";
 
 export interface EventFormModalProps {
 	date?: string; // 可选的日期属性
-	syncToFrontmatter?: boolean; // 是否同步到 frontmatter（仅 Bases 事件）
 }
 
 export class EventFormModal extends Modal {
@@ -72,9 +71,6 @@ export class EventFormModal extends Modal {
 					onCancel={() => this.close()}
 					props={this.props}
 					isBasesEvent={this.isBasesEvent}
-					updateProps={(newProps: Partial<EventFormModalProps>) => {
-						Object.assign(this.props, newProps);
-					}}
 				/>
 			</React.StrictMode>
 		);
@@ -162,8 +158,8 @@ export class EventFormModal extends Modal {
 
 		await this.plugin.updateData(newEvents);
 
-		// 如果是 Bases 事件且启用了 frontmatter 同步，则同步到 frontmatter
-		if (this.isBasesEvent && this.props.syncToFrontmatter) {
+		// 如果是 Bases 事件，则总是同步到 frontmatter（默认行为）
+		if (this.isBasesEvent) {
 			// 将事件转换为 CalendarEvent 格式以传递给同步方法
 			const calendarEvent: CalendarEvent = {
 				id: event.id,

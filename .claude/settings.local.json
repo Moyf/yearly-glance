@@ -10,7 +10,13 @@
       "Bash(cat -A \"V:\\\\Code\\\\CodeRepos\\\\yearly-glance\\\\src\\\\components\\\\EventForm\\\\EventForm.tsx\")",
       "Bash(Select-String -Pattern \"isBasesEvent\" -Context 0,15)",
       "Bash(cat -A \"V:\\\\Code\\\\CodeRepos\\\\yearly-glance\\\\src\\\\i18n\\\\types.ts\")",
-      "Bash(Select-String -Pattern \"frontmatterSync\" -Context 0,2)"
+      "Bash(Select-String -Pattern \"frontmatterSync\" -Context 0,2)",
+      "Bash(xxd /v/Code/CodeRepos/yearly-glance/src/i18n/types.ts)",
+      "Bash(cat -A /v/Code/CodeRepos/yearly-glance/src/i18n/types.ts)",
+      "Bash(cat -A /v/Code/CodeRepos/yearly-glance/src/components/EventForm/EventForm.tsx)",
+      "Bash(cat -A \"V:\\\\Code\\\\CodeRepos\\\\yearly-glance\\\\src\\\\components\\\\EventForm\\\\EventFormModal.tsx\")",
+      "Bash(Select-String -Pattern \"EventForm\" -Context 0,15)",
+      "Bash(echo \"Exit code: $?\")"
     ]
   }
 }

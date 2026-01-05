@@ -1,4 +1,4 @@
-import { Notice, Plugin } from "obsidian";
+import { Notice, Plugin, TFile } from "obsidian";
 import { DEFAULT_CONFIG, YearlyGlanceConfig } from "./type/Config";
 import YearlyGlanceSettingsTab from "./components/Settings/SettingsTab";
 import {
@@ -307,34 +307,55 @@ export default class YearlyGlancePlugin extends Plugin {
 			return;
 		}
 
-		// 获取所有 Bases 视图
-		const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_YEARLY_GLANCE_BASES);
+		// 从事件 ID 中提取文件路径
+		// 事件 ID 格式: bases-{filePath}-{isoDate}
+		// 例如: bases-Events/event-samples/测试事件.md-2026-01-10
+		const idWithoutPrefix = event.id.replace('bases-', '');
 
-		if (leaves.length === 0) {
-			console.warn('No Bases view found for frontmatter sync');
+		// 从 .md 开始截断，获取文件路径
+		const mdIndex = idWithoutPrefix.indexOf('.md');
+		const filePath = mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
+
+		// 获取文件
+		const file = this.app.vault.getAbstractFileByPath(filePath);
+		if (!file || !(file instanceof TFile)) {
+			console.warn('File not found or not a TFile:', filePath);
 			return;
 		}
 
-		// 遍历所有 Bases 视图，找到包含该事件的视图
-		for (const leaf of leaves) {
-			const view = leaf.view as any;
-			if (view && view instanceof YearlyGlanceBasesView) {
-				// 检查视图是否包含该事件
-				if (view.isBasesEvent && view.isBasesEvent(event.id)) {
-					try {
-						if (view.updateEventFrontmatter) {
-							await view.updateEventFrontmatter(event);
-							console.log('Frontmatter sync completed');
-							return;
-						}
-					} catch (error) {
-						console.error('Failed to sync frontmatter:', error);
-					}
-				}
-			}
+		// 检查事件是否有日期
+		const eventDate = event.eventDate?.isoDate;
+		if (!eventDate) {
+			console.warn('Event has no date:', event.id);
+			return;
 		}
 
-		console.warn('Could not find Bases view containing event:', event.id);
+		try {
+			// 使用 fileManager.processFrontMatter 直接更新 frontmatter
+			await this.app.fileManager.processFrontMatter(file, (fm) => {
+				// 更新 frontmatter 字段
+				fm.title = event.text;
+				fm.event_date = eventDate;
+
+				// 只有当事件有自定义图标时才更新
+				if (event.emoji && event.emoji !== '📄') {
+					fm.icon = event.emoji;
+				}
+
+				// 只有当事件有自定义颜色时才更新
+				if (event.color && event.color !== '#52c41a') {
+					fm.color = event.color;
+				}
+
+				// 只有当 remark 不是默认值且不是来自 Bases 的说明时才更新为 description
+				if (event.remark && !event.remark.startsWith('From Bases:')) {
+					fm.description = event.remark;
+				}
+			});
+			console.log('Frontmatter sync completed for:', filePath);
+		} catch (error) {
+			console.error('Failed to sync frontmatter:', error);
+		}
 	}
 
 	// 重载插件

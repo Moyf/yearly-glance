@@ -283,6 +283,7 @@ const translations: BaseMessage = {
 				holidayFoundDate:
 					"Holiday founding date, will be used to calculate holiday anniversaries in future plans",
 				frontmatterSync: "Sync to note metadata (frontmatter)",
+				basesEventHint: "This is an event from note {{file}}, saving will write data to the original note metadata",
 			},
 			holiday: {
 				name: "Holiday",

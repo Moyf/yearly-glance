@@ -83,13 +83,9 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 		// 例如: bases-Events/event-samples/测试事件.md-2026-01-10 -> Events/event-samples/测试事件.md
 		const idWithoutPrefix = event.id.replace('bases-', '');
 
-		// 找到最后一个 '-' 的位置（日期部分的开始）
-		const lastDashIndex = idWithoutPrefix.lastIndexOf('-');
-
-		// 提取文件路径（移除最后的日期部分）
-		const filePath = lastDashIndex > 0
-			? idWithoutPrefix.substring(0, lastDashIndex)
-			: idWithoutPrefix;
+		// 从 .md 开始截断，获取文件路径
+		const mdIndex = idWithoutPrefix.indexOf('.md');
+		const filePath = mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
 
 		// 在应用中查找文件
 		const file = plugin.app.vault.getAbstractFileByPath(filePath);

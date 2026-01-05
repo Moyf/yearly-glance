@@ -188,6 +188,7 @@ export type BaseMessage = {
 				customEventRepeat: string;
 				holidayFoundDate: string;
 				frontmatterSync: string;
+				basesEventHint: string;
 			};
 			holiday: {
 				name: string;

@@ -281,7 +281,7 @@ const translations: BaseMessage = {
 				customEventRepeat: "选中时，将会在每年的该日期都重复显示事件",
 				holidayFoundDate: "节日起源日期，后续计划会用于计算节庆周年",
 				frontmatterSync: "同步到笔记元数据（frontmatter）",
-		basesEventHint: "这是来自笔记 {{file}} 的事件，保存时会将数据写入原始笔记的元数据",
+				basesEventHint: "这是来自笔记 {{file}} 的事件，保存时会将数据写入原始笔记的元数据",
 			},
 			holiday: {
 				name: "节日",

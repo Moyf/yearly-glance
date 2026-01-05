@@ -281,6 +281,7 @@ const translations: BaseMessage = {
 				customEventRepeat: "選中時，將會在每年的該日期都重複顯示事件",
 				holidayFoundDate: "節日起源日期，後續計劃會用於計算節慶週年",
 				frontmatterSync: "同步到筆記元數據（frontmatter）",
+				basesEventHint: "這是來自筆記 {{file}} 的事件，保存時會將數據寫入原始筆記的元數據",
 			},
 			holiday: {
 				name: "節日",

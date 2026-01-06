@@ -81,8 +81,13 @@ const translations: BaseMessage = {
 				desc: "在視圖中顯示農曆日",
 			},
 			showEmojiBeforeTabName: {
-				name: "顯示標籤名稱前的emoji",
-				desc: "在UI中顯示標籤名稱前的emoji",
+				name: "標籤圖示顯示方式",
+				desc: "選擇標籤頁圖示的顯示方式",
+				options: {
+					none: "不顯示圖示",
+					lucide: "Lucide 矢量圖示",
+					emoji: "Emoji 圖示",
+				},
 			},
 			showDebugInfo: {
 				name: "顯示偵錯資訊",

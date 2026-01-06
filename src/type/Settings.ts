@@ -6,6 +6,10 @@ export const LAYOUT_OPTIONS = ["12x1", "1x12", "6x2", "2x6", "3x4", "4x3"];
 export const VIEW_TYPE_OPTIONS = ["calendar", "list"];
 export const EVENT_FONT_SIZE_OPTIONS = ["small", "medium", "large"];
 
+// 图标显示选项
+export const ICON_DISPLAY_OPTIONS = ["none", "lucide", "emoji"] as const;
+export type IconDisplayOption = typeof ICON_DISPLAY_OPTIONS[number];
+
 // 公历日期显示格式选项
 export const GREGORIAN_DISPLAY_FORMAT_OPTIONS: SelectOption[] = [
 	{
@@ -104,7 +108,7 @@ export interface YearlyGlanceSettings {
 	showCustomEvents: boolean; // 是否显示自定义事件
 	mondayFirst: boolean; // 是否以周一为一周的第一天
 	title: string; // 年历标题
-	showEmojiBeforeTabName: boolean; // 是否在标签名称前显示emoji
+	showEmojiBeforeTabName: IconDisplayOption; // 标签图标显示方式
 	showTooltips: boolean; // 是否显示提示
 	colorful: boolean; // 是否多彩
 	showLunarDay: boolean; // 是否显示农历日
@@ -132,7 +136,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	showCustomEvents: true,
 	mondayFirst: true,
 	title: "",
-	showEmojiBeforeTabName: true,
+	showEmojiBeforeTabName: "emoji",
 	showTooltips: true,
 	colorful: false,
 	showLunarDay: false,

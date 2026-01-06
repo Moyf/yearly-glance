@@ -25,13 +25,22 @@ export class YearlyGlanceView extends ItemView {
 	}
 
 	getIcon(): IconName {
-		return "telescope";
+		const config = this.plugin.getConfig();
+		return config.showEmojiBeforeTabName === "lucide" ? "telescope" : ("" as IconName);
 	}
 
 	getDisplayText(): string {
 		const name = t("view.yearlyGlance.name");
 		const config = this.plugin.getConfig();
-		return config.showEmojiBeforeTabName ? `🔭 ${name}` : name;
+		switch (config.showEmojiBeforeTabName) {
+			case "lucide":
+				return name;
+			case "emoji":
+				return `🔭 ${name}`;
+			case "none":
+			default:
+				return name;
+		}
 	}
 
 	async onOpen() {

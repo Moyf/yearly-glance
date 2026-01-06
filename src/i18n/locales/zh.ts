@@ -81,8 +81,13 @@ const translations: BaseMessage = {
 				desc: "在日期下方显示农历日期",
 			},
 			showEmojiBeforeTabName: {
-				name: "标签名称前显示emoji",
-				desc: "在标签页名称前显示对应的emoji图标",
+				name: "标签图标显示方式",
+				desc: "选择标签页图标的显示方式",
+				options: {
+					none: "不显示图标",
+					lucide: "Lucide 矢量图标",
+					emoji: "Emoji 图标",
+				},
 			},
 			showDebugInfo: {
 				name: "显示调试信息",

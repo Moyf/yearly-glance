@@ -81,8 +81,13 @@ const translations: BaseMessage = {
 				desc: "Show lunar date in view",
 			},
 			showEmojiBeforeTabName: {
-				name: "Show emoji before tab name",
-				desc: "Show emoji before tab names in the UI",
+				name: "Tab icon display",
+				desc: "Choose how to display tab icons",
+				options: {
+					none: "No icon",
+					lucide: "Lucide icon",
+					emoji: "Emoji icon",
+				},
 			},
 			showDebugInfo: {
 				name: "Debug information",

@@ -1,22 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(cat -A \"D:\\\\Codes\\\\yearly-glance\\\\src\\\\i18n\\\\locales\\\\zh.ts\")",
-      "Bash(xxd)",
-      "Bash(cat -A)",
-      "Bash(node -e \"require\\(''typescript''\\).transpileModule\\(require\\(''fs''\\).readFileSync\\(''D:\\\\Codes\\\\yearly-glance\\\\src\\\\components\\\\EventForm\\\\EventForm.tsx'', ''utf8''\\), {compilerOptions: {jsx: ''react'', target: ''ES2020''}}\\)\")",
-      "Bash(npx tsc --noEmit)",
-      "Bash(npx tsc --noEmit --skipLibCheck)",
-      "Bash(cat -A \"V:\\\\Code\\\\CodeRepos\\\\yearly-glance\\\\src\\\\components\\\\EventForm\\\\EventForm.tsx\")",
-      "Bash(Select-String -Pattern \"isBasesEvent\" -Context 0,15)",
-      "Bash(cat -A \"V:\\\\Code\\\\CodeRepos\\\\yearly-glance\\\\src\\\\i18n\\\\types.ts\")",
-      "Bash(Select-String -Pattern \"frontmatterSync\" -Context 0,2)",
-      "Bash(xxd /v/Code/CodeRepos/yearly-glance/src/i18n/types.ts)",
-      "Bash(cat -A /v/Code/CodeRepos/yearly-glance/src/i18n/types.ts)",
-      "Bash(cat -A /v/Code/CodeRepos/yearly-glance/src/components/EventForm/EventForm.tsx)",
-      "Bash(cat -A \"V:\\\\Code\\\\CodeRepos\\\\yearly-glance\\\\src\\\\components\\\\EventForm\\\\EventFormModal.tsx\")",
-      "Bash(Select-String -Pattern \"EventForm\" -Context 0,15)",
-      "Bash(echo \"Exit code: $?\")"
+      "Bash(cat:*)",
+      "Bash(xxd:*)",
+      "Bash(node:*)",
+      "Bash(npx:*)",
+      "Bash(Select-String:*)",
+      "Bash(echo:*)",
+      "Bash(tree:*)",
+      "Bash(git checkout -b feat/icon-display-options)",
+      "Bash(npm run build)",
+      "Bash(git add -A)"
     ]
   }
 }

@@ -5,6 +5,7 @@ import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
 import {
 	EVENT_FONT_SIZE_OPTIONS,
 	GREGORIAN_DISPLAY_FORMAT_OPTIONS,
+	ICON_DISPLAY_OPTIONS,
 	LAYOUT_OPTIONS,
 	VIEW_TYPE_OPTIONS,
 } from "@/src/type/Settings";
@@ -45,6 +46,13 @@ export const eventFontSizeOptions = EVENT_FONT_SIZE_OPTIONS.map(
 		),
 	})
 );
+
+export const iconDisplayOptions = ICON_DISPLAY_OPTIONS.map((option) => ({
+	value: option,
+	label: t(
+		`setting.general.showEmojiBeforeTabName.options.${option}` as TranslationKeys
+	),
+}));
 
 export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 	const { config, updateConfig } = useYearlyGlanceConfig(plugin);
@@ -89,14 +97,15 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						}
 					/>
 				</SettingsItem>
-				{/* 标签名称前显示emoji */}
+				{/* 标签图标显示方式 */}
 				<SettingsItem
 					name={t("setting.general.showEmojiBeforeTabName.name")}
 					desc={t("setting.general.showEmojiBeforeTabName.desc")}
 				>
-					<Toggle
-						checked={config.showEmojiBeforeTabName}
-						onChange={(value) =>
+					<Select
+						options={iconDisplayOptions}
+						value={config.showEmojiBeforeTabName}
+						onValueChange={(value) =>
 							handleUpdateConfig({
 								showEmojiBeforeTabName: value,
 							})

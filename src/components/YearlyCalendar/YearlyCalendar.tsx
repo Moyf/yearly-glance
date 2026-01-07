@@ -225,16 +225,36 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 			}
 		}
 
+		// 获取事件颜色
+		const eventColor = event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color;
+
+		// 构建样式对象
+		const eventStyle: React.CSSProperties = {
+			backgroundColor: `${eventColor}20`,
+			borderLeft: `3px solid ${eventColor}`,
+		};
+
+		// 为多日事件添加特殊边框
+		if (event._totalDays && event._totalDays > 1) {
+			if (dayView) {
+				// 日历视图：第一天和最后一天添加右边框
+				if (event._isFirstDay || event._isLastDay) {
+					eventStyle.borderRight = `3px solid ${eventColor}`;
+				}
+			} else {
+				// 列表视图：第一天添加顶部边框，最后一天添加底部边框
+				if (event._isFirstDay) {
+					eventStyle.borderTop = `3px solid ${eventColor}`;
+				}
+				if (event._isLastDay) {
+					eventStyle.borderBottom = `3px solid ${eventColor}`;
+				}
+			}
+		}
+
 		const eventProps: React.HTMLAttributes<HTMLDivElement> = {
 			className: eventClasses.filter(Boolean).join(" "),
-			style: {
-				backgroundColor: `${
-					event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color
-				}20`,
-				borderLeft: `3px solid ${
-					event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color
-				}`,
-			},
+			style: eventStyle,
 			onClick: (e) => handleEventTooltip(event),
 		};
 

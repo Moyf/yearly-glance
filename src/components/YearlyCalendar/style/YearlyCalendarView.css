@@ -610,16 +610,6 @@
 		position: relative;
 	}
 
-	/* 首日：左边框 + 右边框 */
-	.multi-day-first {
-		border-right: 2px solid var(--yg-event-border-color);
-	}
-
-	/* 末日：右边框 */
-	.multi-day-last {
-		border-right: 2px solid var(--yg-event-border-color);
-	}
-
 	/* 中间日：无边框，简化样式 */
 	.multi-day-middle {
 		border-left: none;
@@ -635,13 +625,10 @@
 
 	.events-list .multi-day-first {
 		border-radius: 4px 4px 0 0;
-		border-top: 3px solid var(--yg-event-border-color);
-		border-bottom: 1px solid var(--yg-border-color);
 	}
 
 	.events-list .multi-day-last {
 		border-radius: 0 0 4px 4px;
-		border-bottom: 3px solid var(--yg-event-border-color);
 	}
 
 	.events-list .multi-day-middle {

@@ -3,9 +3,9 @@ import {
 	Birthday,
 	CustomEvent,
 	EVENT_TYPE_DEFAULT,
+	EventSource,
 	EventType,
 	Holiday,
-	EventSource,
 } from "@/src/type/Events";
 import { Tooltip } from "@/src/components/Base/Tooltip";
 import { t } from "@/src/i18n/i18n";

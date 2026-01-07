@@ -300,9 +300,16 @@ export type BaseMessage = {
 			};
 		};
 		basesView: {
+			name: string;
 			options: {
+				display: string;
+				embeddedHeight: string;
+				limitHeight: string;
+				maxHeight: string;
+				properties: string;
 				propTitle: string;
 				propDate: string;
+				propDuration: string;
 				inheritPluginData: string;
 			}
 		}

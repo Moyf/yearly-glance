@@ -7,9 +7,9 @@ import {
 	Birthday,
 	CustomEvent,
 	Events,
+	EventSource,
 	EventType,
 	Holiday,
-	EventSource,
 } from "@/src/type/Events";
 import { EventForm } from "./EventForm";
 import { EventCalculator } from "@/src/utils/eventCalculator";

@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Notice: 构建的时候请优先使用 npm run build:local 。
+
 ## Project Overview
 
 Yearly Glance is an Obsidian plugin that provides a visual yearly calendar view for managing holidays, birthdays, and custom events. It supports both Gregorian and Chinese lunar calendars, with multi-language support (English, Simplified Chinese, Traditional Chinese).

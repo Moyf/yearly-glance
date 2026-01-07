@@ -6,7 +6,6 @@ import {
 import type YearlyGlancePlugin from "@/src/main";
 import { YearlyCalendar } from "@/src/components/YearlyCalendar/YearlyCalendar";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
-import { IsoUtils } from "@/src/utils/isoUtils";
 import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 import { EventSource } from "@/src/type/Events";
 
@@ -22,6 +21,10 @@ export class YearlyGlanceBasesView extends BasesView {
     private yearlyCalendar: YearlyCalendar | null = null;
     private unsubscribeBus?: () => void;
     private basesEventMap: Map<string, string> = new Map(); // event id -> file path
+    private lastConfigSnapshot: string = '';
+    private lastDataHash: string = '';
+    private updatePending: boolean = false;
+    private updateTimer?: number;
 
     constructor(controller: QueryController, parentEl: HTMLElement, plugin: YearlyGlancePlugin) {
         super(controller);
@@ -42,20 +45,28 @@ export class YearlyGlanceBasesView extends BasesView {
     // onDataUpdated is called by Obsidian whenever there is a configuration
     // or data change in the vault which may affect your view.
     public onDataUpdated(): void {
-        const { app } = this;
-        const isEmbedded = this.isEmbedded();
-
         // 1. 读取配置
         const config = {
             inheritPluginData: this.config.get('inheritPluginData') === true,
-            propTitle: String(this.config.get('propTitle') || 'title'),
-            propDate: String(this.config.get('propDate') || 'date')
+            propTitle: this.config.getAsPropertyId('propTitle') || null,
+            propDate: this.config.getAsPropertyId('propDate') || null,
+            propDuration: this.config.getAsPropertyId('propDuration') || null,
+            limitHeight: this.config.get('limitHeight') === true,
+            embeddedHeight: typeof this.config.get('embeddedHeight') === 'number'
+                ? this.config.get('embeddedHeight')
+                : 600,
         };
 
         // 2. 准备容器
         this.containerEl.empty();
         this.glanceEl = this.containerEl.createDiv("yg-bases-view-glance");
-        // this.glanceEl.style.height = isEmbedded ? '400px' : '';
+
+        // 应用高度限制
+        if (config.limitHeight && this.isEmbedded()) {
+            this.glanceEl.style.height = `${config.embeddedHeight}px`;
+        } else {
+            this.glanceEl.style.height = '';
+        }
 
         // 3. 销毁旧实例
         if (this.yearlyCalendar) {
@@ -116,15 +127,35 @@ export class YearlyGlanceBasesView extends BasesView {
 
         if (entriesToProcess.length > 0) {
             for (const entry of entriesToProcess) {
-                const metadata = this.app.metadataCache.getFileCache(entry.file);
-                const dateValue = metadata?.frontmatter?.[config.propDate];
+                // 使用 entry.getValue() 获取属性值（Obsidian Bases API，自动处理 note. 前缀）
+                const dateValue = config.propDate ? entry.getValue(config.propDate) : null;
 
-                if (dateValue) {
-                    const titleValue = metadata?.frontmatter?.[config.propTitle];
+                if (dateValue && dateValue.isTruthy()) {
+                    // 如果配置了 title 属性，尝试获取值；如果值为空或属性不存在，fallback 到文件名（去掉 .md 后缀）
+                    let titleValue = entry.file.name.replace(/\.md$/, '');
+                    if (config.propTitle) {
+                        const rawTitle = entry.getValue(config.propTitle);
+                        if (rawTitle && rawTitle.isTruthy()) {
+                            titleValue = rawTitle.toString();
+                        }
+                    }
+                    const durationValue = config.propDuration ? entry.getValue(config.propDuration) : null;
+
+                    // 将 duration 转换为数字
+                    let durationNum = 1;
+                    if (durationValue && durationValue.isTruthy()) {
+                        const durationStr = durationValue.toString();
+                        const parsed = parseInt(durationStr, 10);
+                        if (!isNaN(parsed) && parsed > 0) {
+                            durationNum = parsed;
+                        }
+                    }
+
                     const event = this.convertBasesEvent(
                         entry,
                         dateValue,
-                        titleValue || entry.file.name,
+                        titleValue,
+                        durationNum,
                         entry.file.path
                     );
                     if (event) {
@@ -145,7 +176,8 @@ export class YearlyGlanceBasesView extends BasesView {
     private convertBasesEvent(
         entry: any,
         dateValue: any,
-        text: string,
+        text: any,
+        duration: number,
         filePath: string
     ): CalendarEvent | null {
         try {
@@ -173,12 +205,14 @@ export class YearlyGlanceBasesView extends BasesView {
                 isoDate = date.toISOString().split('T')[0];
             }
 
-            // 从 frontmatter 读取属性
-            const title = frontmatter.title || text;
+            // 使用传入的参数，这些参数已经从配置的属性中读取
+            const title = text || entry.file.name;
+
             const icon = frontmatter.icon;
             const color = frontmatter.color;
             const description = frontmatter.description;
-            const duration = frontmatter.duration_days || frontmatter.duration || frontmatter.event_duration || 1;
+            // duration 已经从参数传入，这里直接使用
+            const eventDuration = duration || 1;
 
             // 对于 Bases 数据，我们不限制年份，允许显示所有年份的事件
             // 这样用户可以在 Bases 视图中看到所有数据
@@ -192,7 +226,7 @@ export class YearlyGlanceBasesView extends BasesView {
                     userInput: { input: isoDate, calendar: 'GREGORIAN' }
                 },
                 dateArr: [isoDate],
-                duration: duration, // 添加 duration 字段
+                duration: eventDuration,
                 emoji: icon || '📄',
                 color: color || '#52c41a',
                 isHidden: false,

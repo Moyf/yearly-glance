@@ -146,10 +146,17 @@ const translations: BaseMessage = {
 	},
 	view: {
 		basesView: {
+			name: "Yearly Glance",
 			options: {
-				propTitle: "Title Property",
-				propDate: "Date Property",
-				inheritPluginData: "Inherit Plugin Data",
+				embeddedHeight: "Embedded height",
+				limitHeight: "Limit height",
+				maxHeight: "Maximum height",
+				properties: "Properties",
+				display: "Display",
+				propTitle: "Title property",
+				propDate: "Date property",
+				propDuration: "Duration property",
+				inheritPluginData: "Inherit plugin data",
 			},
 		},
 		glanceManager: {

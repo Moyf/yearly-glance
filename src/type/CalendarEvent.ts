@@ -1,4 +1,4 @@
-import { Birthday, CustomEvent, EventType, Holiday, EventSource } from "./Events";
+import { Birthday, CustomEvent, EventSource, EventType, Holiday } from "./Events";
 
 // 日历事件接口
 export type CalendarEvent = (Holiday | Birthday | CustomEvent) & {

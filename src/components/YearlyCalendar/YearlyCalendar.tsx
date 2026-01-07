@@ -900,16 +900,24 @@ export class YearlyCalendar {
 	// 新增：支持外部数据渲染
 	renderWithEvents(events: CalendarEvent[]) {
 		this.externalEvents = events;
-		this.container.empty();
-		this.root = createRoot(this.container);
+
+		// 复用现有的 root，避免闪烁
+		if (!this.root) {
+			this.container.empty();
+			this.root = createRoot(this.container);
+		}
 		this.render();
 	}
 
 	async initialize(plugin: YearlyGlancePlugin) {
 		this.plugin = plugin;
 		this.externalEvents = undefined;
-		this.container.empty();
-		this.root = createRoot(this.container);
+
+		// 复用现有的 root，避免闪烁
+		if (!this.root) {
+			this.container.empty();
+			this.root = createRoot(this.container);
+		}
 		this.render();
 	}
 

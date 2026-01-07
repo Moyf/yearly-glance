@@ -144,11 +144,18 @@ const translations: BaseMessage = {
 			},
 		},
 	},
-	view: {
+		view: {
 		basesView: {
+			name: "年度概览",
 			options: {
+				embeddedHeight: "嵌入高度",
+				limitHeight: "限制高度",
+				maxHeight: "最大高度",
+				properties: "属性",
+				display: "显示",
 				propTitle: "标题属性",
 				propDate: "日期属性",
+				propDuration: "持续天数属性",
 				inheritPluginData: "继承插件数据",
 			},
 		},

@@ -14,7 +14,7 @@ import {
 	VIEW_TYPE_YEARLY_GLANCE_BASES,
 	YearlyGlanceBasesView,
 } from "./views/YearlyGlanceBasesView";
-import { Birthday, CustomEvent, EventType, Holiday, EventSource } from "@/src/type/Events";
+import { Birthday, CustomEvent, EventSource, EventType, Holiday } from "@/src/type/Events";
 import {
 	EventFormModal,
 	EventFormModalProps,
@@ -122,23 +122,61 @@ export default class YearlyGlancePlugin extends Plugin {
 				return new YearlyGlanceBasesView(controller, containerEl, this);
 			},
 			options: () => ([
-				{
-					type: 'text',
-					displayName: t("view.basesView.options.propTitle"),
-					key: 'propTitle',
-					default: 'title'
-				},
-				{
-					type: 'text',
-					displayName: t("view.basesView.options.propDate"),
-					key: 'propDate',
-					default: 'date'
-				},
+				
 				{
 					type: 'toggle',
 					displayName: t("view.basesView.options.inheritPluginData"),
 					key: 'inheritPluginData',
 					default: false
+				},
+				{
+					type: 'group',
+					displayName: t("view.basesView.options.properties"),
+					items: [
+						{
+							type: 'property',
+							displayName: t("view.basesView.options.propTitle"),
+							key: 'propTitle',
+							filter: prop => !prop.startsWith('file.'),
+							placeholder: 'Property',
+						},
+						{
+							type: 'property',
+							displayName: t("view.basesView.options.propDate"),
+							key: 'propDate',
+							filter: prop => !prop.startsWith('file.'),
+							placeholder: 'Property',
+						},
+						{
+							type: 'property',
+							displayName: t("view.basesView.options.propDuration"),
+							key: 'propDuration',
+							filter: prop => !prop.startsWith('file.'),
+							placeholder: 'Property',
+							default: 'duration_days',
+						},
+					]
+				},
+				{
+					type: 'group',
+					displayName: t("view.basesView.options.display"),
+					items: [
+						{
+							type: 'toggle',
+							displayName: t("view.basesView.options.limitHeight"),
+							key: 'limitHeight',
+							default: false,
+						},
+						{
+							type: 'slider',
+							displayName: t("view.basesView.options.embeddedHeight"),
+							key: 'embeddedHeight',
+							min: 400,
+							max: 1200,
+							step: 50,
+							default: 600,
+						},
+					]
 				}
 			])
 		});

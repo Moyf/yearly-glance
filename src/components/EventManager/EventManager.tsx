@@ -153,21 +153,21 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 						event.text.toLowerCase().includes(term) ||
 						(event.remark &&
 							event.remark.toLowerCase().includes(term)) ||
-						event.eventDate.isoDate.includes(term)
+						event.eventDate?.isoDate?.includes(term)
 				),
 				...events.birthdays.filter(
 					(event) =>
 						event.text.toLowerCase().includes(term) ||
 						(event.remark &&
 							event.remark.toLowerCase().includes(term)) ||
-						event.eventDate.isoDate.includes(term)
+						event.eventDate?.isoDate?.includes(term)
 				),
 				...events.customEvents.filter(
 					(event) =>
 						event.text.toLowerCase().includes(term) ||
 						(event.remark &&
 							event.remark.toLowerCase().includes(term)) ||
-						event.eventDate.isoDate.includes(term)
+						event.eventDate?.isoDate?.includes(term)
 				),
 			];
 			return results;

@@ -45,6 +45,7 @@ interface EventFormData {
 	text: string;
 	userInputDate: string;
 	userInputCalendar?: string;
+	duration?: number; // 事件持续天数
 	emoji?: string;
 	color?: string;
 	remark?: string;
@@ -109,6 +110,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 			text: event.text || "",
 			userInputDate: event.eventDate?.userInput?.input || todayString,
 			userInputCalendar: event.eventDate?.userInput?.calendar,
+			duration: event.duration || 1, // 默认为1天
 			emoji: event.emoji,
 			color: event.color,
 			remark: event.remark,
@@ -208,6 +210,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 						| undefined,
 				},
 			},
+			duration: formData.duration || 1, // 添加 duration 字段
 			emoji: formData.emoji,
 			color: formData.color,
 			remark: formData.remark,
@@ -291,6 +294,21 @@ export const EventForm: React.FC<EventFormProps> = ({
 							settings.config.gregorianDisplayFormat
 						}
 						required
+					/>
+				</div>
+				<div className="form-group">
+					<label>
+						{t("view.eventManager.form.eventDuration")}
+						<Tooltip text={t("view.eventManager.help.eventDuration")} />
+					</label>
+					<input
+						type="number"
+						min="1"
+						max="365"
+						value={formData.duration || 1}
+						onChange={(e) =>
+							handleFieldChange("duration", parseInt(e.target.value) || 1)
+						}
 					/>
 				</div>
 				<div className="form-group">

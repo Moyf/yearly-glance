@@ -337,6 +337,13 @@ export default class YearlyGlancePlugin extends Plugin {
 				fm.title = event.text;
 				fm.event_date = eventDate;
 
+				// 同步 duration 字段
+				if (event.duration && event.duration > 1) {
+					fm.duration = event.duration;
+				} else if (fm.duration) {
+					delete fm.duration;
+				}
+
 				// 只有当事件有自定义图标时才更新
 				if (event.emoji && event.emoji !== '📄') {
 					fm.icon = event.emoji;

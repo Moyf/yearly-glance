@@ -178,6 +178,7 @@ export class YearlyGlanceBasesView extends BasesView {
             const icon = frontmatter.icon;
             const color = frontmatter.color;
             const description = frontmatter.description;
+            const duration = frontmatter.duration || frontmatter.event_duration || 1;
 
             // 对于 Bases 数据，我们不限制年份，允许显示所有年份的事件
             // 这样用户可以在 Bases 视图中看到所有数据
@@ -191,6 +192,7 @@ export class YearlyGlanceBasesView extends BasesView {
                     userInput: { input: isoDate, calendar: 'GREGORIAN' }
                 },
                 dateArr: [isoDate],
+                duration: duration, // 添加 duration 字段
                 emoji: icon || '📄',
                 color: color || '#52c41a',
                 isHidden: false,
@@ -247,6 +249,13 @@ export class YearlyGlanceBasesView extends BasesView {
                 // 更新 frontmatter 字段
                 fm.title = event.text;
                 fm.event_date = eventDate;
+
+                // 新增：同步 duration 字段
+                if (event.duration && event.duration > 1) {
+                    fm.duration = event.duration;
+                } else if (fm.duration) {
+                    delete fm.duration;
+                }
 
                 // 只有当事件有自定义图标时才更新
                 if (event.emoji && event.emoji !== '📄') {

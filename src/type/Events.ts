@@ -23,6 +23,8 @@ export interface BaseEvent {
 	dateType?: "SOLAR" | "LUNAR";
 	/** 计算后的公历日期数组（运行时生成） */
 	dateArr?: string[];
+	/** 事件持续天数，默认为1（单日事件） */
+	duration?: number;
 	emoji?: string;
 	color?: string;
 	remark?: string;

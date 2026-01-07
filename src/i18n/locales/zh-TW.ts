@@ -227,6 +227,7 @@ const translations: BaseMessage = {
 				eventType: "事件類型",
 				eventName: "事件名稱",
 				eventDate: "事件日期",
+				eventDuration: "事件天數",
 				eventDateType: "日期類型",
 				optional: "可選",
 				eventHidden: "隱藏",
@@ -268,6 +269,10 @@ const translations: BaseMessage = {
 					"標準格式：2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01<br>" +
 					"舊格式：2025,6,1  2025,-6,1  6,1  -6,1<br>" +
 					"中文格式：2025年正月初一, 正月初一, 閏二月初一, 二〇二五年閏六月初一",
+				eventDuration:
+					"設置事件持續的天數<br>" +
+					"默認為1天（單日事件）<br>" +
+					"設置為大於1的數字時，事件會在多個日期中顯示，例如設置為3會在連續3天中顯示該事件",
 				eventDateType:
 					"事件日期類型，自動推斷或手動選擇<br>" +
 					"<b>自動推斷</b>：根據輸入日期自動判斷是公曆，農曆或者農曆閏月<br>" +

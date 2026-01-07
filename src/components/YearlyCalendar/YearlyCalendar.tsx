@@ -211,12 +211,22 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 			`font-${eventFontSize}`,
 			emojiOnTop ? "emoji-top" : "",
 			config.wrapEventText ? "wrap-text" : "",
-		]
-			.filter(Boolean)
-			.join(" ");
+		];
+
+		// 添加多日事件的样式类
+		if (event._totalDays && event._totalDays > 1) {
+			eventClasses.push("multi-day-event");
+			if (event._isFirstDay) {
+				eventClasses.push("multi-day-first");
+			} else if (event._isLastDay) {
+				eventClasses.push("multi-day-last");
+			} else {
+				eventClasses.push("multi-day-middle");
+			}
+		}
 
 		const eventProps: React.HTMLAttributes<HTMLDivElement> = {
-			className: eventClasses,
+			className: eventClasses.filter(Boolean).join(" "),
 			style: {
 				backgroundColor: `${
 					event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color
@@ -228,10 +238,20 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 			onClick: (e) => handleEventTooltip(event),
 		};
 
+		// 构建天数标记文本
+		const dayLabel = event._totalDays && event._totalDays > 1
+			? ` (${event._dayIndex! + 1}/${event._totalDays})`
+			: "";
+
+		// 使用原始 event.id 或 event.id + dayIndex 作为 key
+		const eventKey = event._totalDays && event._totalDays > 1
+			? `${event.id}-${event._dayIndex}`
+			: `${event.text}-${event.eventDate.isoDate}`;
+
 		return (
 			<Tooltip text={event.text} disabled={!showTooltips}>
 				<div
-					key={`${event.text}-${event.eventDate.isoDate}`}
+					key={eventKey}
 					{...eventProps}
 				>
 					<span className="event-emoji">
@@ -239,7 +259,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 							? EVENT_TYPE_DEFAULT[event.eventType].emoji
 							: event.emoji}
 					</span>
-					<span className="event-text">{event.text}</span>
+					<span className="event-text">{event.text}{dayLabel}</span>
 				</div>
 			</Tooltip>
 		);

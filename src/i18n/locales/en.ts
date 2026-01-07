@@ -227,6 +227,7 @@ const translations: BaseMessage = {
 				eventType: "Event type",
 				eventName: "Event name",
 				eventDate: "Event date",
+				eventDuration: "Event duration",
 				eventDateType: "Date type",
 				optional: "Optional",
 				eventHidden: "Hidden",
@@ -268,6 +269,10 @@ const translations: BaseMessage = {
 					"Standard format: 2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01<br>" +
 					"Legacy format: 2025,6,1  2025,-6,1  6,1  -6,1<br>" +
 					"Chinese format: 2025年正月初一, 正月初一, 闰二月初一, 二〇二五年闰六月初一",
+				eventDuration:
+					"Set the duration of the event in days<br>" +
+					"Default is 1 day (single-day event)<br>" +
+					"When set to a number greater than 1, the event will be displayed across multiple consecutive days. For example, setting it to 3 will display the event for 3 consecutive days",
 				eventDateType:
 					"Event date type, auto-detect or manually select<br>" +
 					"<b>Auto detect</b>: Automatically determine if the input date is Gregorian, lunar, or lunar leap month<br>" +

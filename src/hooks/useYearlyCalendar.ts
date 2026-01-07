@@ -118,14 +118,42 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 
 		const events: CalendarEvent[] = [];
 
+		// 根据 duration 扩展事件到多天的辅助函数
+		const expandEventByDuration = (
+			event: any,
+			eventType: any
+		) => {
+			const duration = event.duration || 1;
+			const baseDate = event.eventDate?.isoDate;
+			if (!baseDate) return;
+
+			for (let dayIndex = 0; dayIndex < duration; dayIndex++) {
+				const currentDate = new Date(baseDate);
+				currentDate.setDate(currentDate.getDate() + dayIndex);
+				const currentDateISO = IsoUtils.toLocalDateString(currentDate);
+
+				events.push({
+					...event,
+					eventType,
+					// 添加天数标记信息（用于渲染时显示）
+					_dayIndex: dayIndex,
+					_totalDays: duration,
+					_isFirstDay: dayIndex === 0,
+					_isLastDay: dayIndex === duration - 1,
+					// 更新当前日期的 ISO 日期
+					eventDate: {
+						...event.eventDate,
+						isoDate: currentDateISO
+					}
+				});
+			}
+		};
+
 		// 处理节假日
 		if (showHolidays) {
 			holidays.forEach((holiday) => {
 				if (!holiday.isHidden) {
-					events.push({
-						...holiday,
-						eventType: "holiday",
-					});
+					expandEventByDuration(holiday, "holiday");
 				}
 			});
 		}
@@ -134,10 +162,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		if (showBirthdays) {
 			birthdays.forEach((birthday) => {
 				if (!birthday.isHidden) {
-					events.push({
-						...birthday,
-						eventType: "birthday",
-					});
+					expandEventByDuration(birthday, "birthday");
 				}
 			});
 		}
@@ -146,10 +171,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		if (showCustomEvents) {
 			customEvents.forEach((customEvent) => {
 				if (!customEvent.isHidden) {
-					events.push({
-						...customEvent,
-						eventType: "customEvent",
-					});
+					expandEventByDuration(customEvent, "customEvent");
 				}
 			});
 		}
@@ -191,13 +213,17 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 				// 使用 IsoUtils.toLocalDateString 生成当前日期的 ISO 字符串用于比较，避免时区问题
 				const currentDateISO = IsoUtils.toLocalDateString(date);
 
-				// 查找当天的事件
-				const dayEvents = allEvents.filter((event) =>
-					event.dateArr?.some((dateStr: string) => {
-						// 直接比较 ISO 日期字符串，避免时区转换问题
+				// 查找当天的事件（包括多日事件的每一天）
+				const dayEvents = allEvents.filter((event) => {
+					// 优先检查扩展后的 eventDate.isoDate（用于多日事件）
+					if (event.eventDate?.isoDate === currentDateISO) {
+						return true;
+					}
+					// 兼容旧的 dateArr 匹配方式
+					return event.dateArr?.some((dateStr: string) => {
 						return dateStr === currentDateISO;
-					})
-				);
+					});
+				});
 
 				days.push({
 					date,

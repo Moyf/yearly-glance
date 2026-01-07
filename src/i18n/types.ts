@@ -161,6 +161,7 @@ export type BaseMessage = {
 				eventType: string;
 				eventName: string;
 				eventDate: string;
+				eventDuration: string;
 				eventDateType: string;
 				optional: string;
 				eventHidden: string;
@@ -186,6 +187,7 @@ export type BaseMessage = {
 			help: {
 				eventName: string;
 				eventDate: string;
+				eventDuration: string;
 				eventDateType: string;
 				eventEmoji: string;
 				eventColor: string;

@@ -122,6 +122,11 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 			const baseDate = event.eventDate?.isoDate;
 			if (!baseDate) return;
 
+			// 调试日志
+			if (duration > 1) {
+				console.log(`[expandEventByDuration] Expanding event: ${event.text}, duration: ${duration}, baseDate: ${baseDate}`);
+			}
+
 			for (let dayIndex = 0; dayIndex < duration; dayIndex++) {
 				const currentDate = new Date(baseDate);
 				currentDate.setDate(currentDate.getDate() + dayIndex);
@@ -148,10 +153,13 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 
 		// 如果有外部事件（Bases 事件），先扩展它们
 		if (externalEvents && externalEvents.length > 0) {
+			console.log(`[useYearlyCalendar] Processing ${externalEvents.length} external events`);
 			externalEvents.forEach((event) => {
+				console.log(`[useYearlyCalendar] External event: ${event.text}, duration: ${event.duration}, eventType: ${event.eventType}`);
 				// 扩展 Bases 事件
 				expandEventByDuration(event, event.eventType);
 			});
+			console.log(`[useYearlyCalendar] Expanded to ${events.length} events`);
 			return events;
 		}
 

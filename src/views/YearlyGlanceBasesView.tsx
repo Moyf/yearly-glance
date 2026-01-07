@@ -250,11 +250,11 @@ export class YearlyGlanceBasesView extends BasesView {
                 fm.title = event.text;
                 fm.event_date = eventDate;
 
-                // 新增：同步 duration 字段
+                // 同步 duration_days 字段（笔记事件使用 duration_days）
                 if (event.duration && event.duration > 1) {
-                    fm.duration = event.duration;
-                } else if (fm.duration) {
-                    delete fm.duration;
+                    fm.duration_days = event.duration;
+                } else if (fm.duration_days) {
+                    delete fm.duration_days;
                 }
 
                 // 只有当事件有自定义图标时才更新

@@ -121,6 +121,36 @@ const translations: BaseMessage = {
 				desc: "When creating note events, new notes will be saved to this folder",
 				placeholder: "Leave empty to save to vault root",
 			},
+			basesEventTitleProp: {
+				name: "Title property name",
+				desc: "Property name in note frontmatter for storing event title",
+				placeholder: "Default: title",
+			},
+			basesEventDateProp: {
+				name: "Date property name",
+				desc: "Property name in note frontmatter for storing event date",
+				placeholder: "Default: event_date",
+			},
+			basesEventDurationProp: {
+				name: "Duration property name",
+				desc: "Property name in note frontmatter for storing event duration",
+				placeholder: "Default: duration_days",
+			},
+			basesEventIconProp: {
+				name: "Icon property name",
+				desc: "Property name in note frontmatter for storing event icon",
+				placeholder: "Default: icon",
+			},
+			basesEventColorProp: {
+				name: "Color property name",
+				desc: "Property name in note frontmatter for storing event color",
+				placeholder: "Default: color",
+			},
+			basesEventDescriptionProp: {
+				name: "Description property name",
+				desc: "Property name in note frontmatter for storing event description",
+				placeholder: "Default: description",
+			},
 		},
 		events: {
 			name: "Events",
@@ -130,6 +160,10 @@ const translations: BaseMessage = {
 			basic: {
 				name: "Basic",
 				desc: "Configure the basic information of the calendar.",
+			},
+			basesEvent: {
+				name: "Note Events",
+				desc: "Configuration for note events",
 			},
 			layout: {
 				name: "Layout",

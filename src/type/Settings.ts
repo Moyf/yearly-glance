@@ -120,6 +120,12 @@ export interface YearlyGlanceSettings {
 	gregorianDisplayFormat: (typeof GREGORIAN_DISPLAY_FORMAT_OPTIONS)[number]["value"]; // 公历显示格式
 	// 笔记事件设置
 	defaultBasesEventPath?: string; // 默认笔记事件路径
+	basesEventTitleProp?: string; // 笔记事件标题属性名
+	basesEventDateProp?: string; // 笔记事件日期属性名
+	basesEventDurationProp?: string; // 笔记事件持续天数属性名
+	basesEventIconProp?: string; // 笔记事件图标属性名
+	basesEventColorProp?: string; // 笔记事件颜色属性名
+	basesEventDescriptionProp?: string; // 笔记事件描述属性名
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -148,4 +154,10 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	wrapEventText: false,
 	gregorianDisplayFormat: "YYYY-MM-DD", // 默认使用ISO格式
 	defaultBasesEventPath: "", // 默认笔记事件路径为空（根目录）
+	basesEventTitleProp: "title", // 默认标题属性名
+	basesEventDateProp: "event_date", // 默认日期属性名
+	basesEventDurationProp: "duration_days", // 默认持续天数属性名
+	basesEventIconProp: "icon", // 默认图标属性名
+	basesEventColorProp: "color", // 默认颜色属性名
+	basesEventDescriptionProp: "description", // 默认描述属性名
 };

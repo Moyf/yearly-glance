@@ -78,10 +78,29 @@ export type BaseMessage = {
 			defaultBasesEventPath: SettingsItem<{
 				placeholder: string;
 			}>;
+			basesEventTitleProp: SettingsItem<{
+				placeholder: string;
+			}>;
+			basesEventDateProp: SettingsItem<{
+				placeholder: string;
+			}>;
+			basesEventDurationProp: SettingsItem<{
+				placeholder: string;
+			}>;
+			basesEventIconProp: SettingsItem<{
+				placeholder: string;
+			}>;
+			basesEventColorProp: SettingsItem<{
+				placeholder: string;
+			}>;
+			basesEventDescriptionProp: SettingsItem<{
+				placeholder: string;
+			}>;
 		}>;
 		events: IBaseSettingsItem;
 		group: {
 			basic: IBaseSettingsItem;
+			basesEvent: IBaseSettingsItem;
 			layout: IBaseSettingsItem;
 			displayContent: IBaseSettingsItem;
 			eventDisplay: IBaseSettingsItem;

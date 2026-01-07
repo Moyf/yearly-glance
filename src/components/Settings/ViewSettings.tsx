@@ -86,19 +86,6 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						}
 					/>
 				</SettingsItem>
-				{/* 默认笔记事件路径 */}
-				<SettingsItem
-					name={t("setting.general.defaultBasesEventPath.name")}
-					desc={t("setting.general.defaultBasesEventPath.desc")}
-				>
-					<FolderAutoComplete
-						value={config.defaultBasesEventPath || ""}
-						onChange={(value) =>
-							handleUpdateConfig({ defaultBasesEventPath: value })
-						}
-						placeholder={t("setting.general.defaultBasesEventPath.placeholder")}
-					/>
-				</SettingsItem>
 				{/* 显示周几 */}
 				<SettingsItem
 					name={t("setting.general.showWeekdays.name")}
@@ -151,6 +138,112 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 								gregorianDisplayFormat: value,
 							})
 						}
+					/>
+				</SettingsItem>
+			</SettingsBlock>
+
+			{/* 笔记事件设置 */}
+			<SettingsBlock
+				name={t("setting.group.basesEvent.name")}
+				desc={t("setting.group.basesEvent.desc")}
+				collapsible
+				defaultCollapsed={false}
+			>
+				{/* 默认笔记事件路径 */}
+				<SettingsItem
+					name={t("setting.general.defaultBasesEventPath.name")}
+					desc={t("setting.general.defaultBasesEventPath.desc")}
+				>
+					<FolderAutoComplete
+						value={config.defaultBasesEventPath || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ defaultBasesEventPath: value })
+						}
+						placeholder={t("setting.general.defaultBasesEventPath.placeholder")}
+					/>
+				</SettingsItem>
+				{/* 标题属性名 */}
+				<SettingsItem
+					name={t("setting.general.basesEventTitleProp.name")}
+					desc={t("setting.general.basesEventTitleProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.basesEventTitleProp || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ basesEventTitleProp: value })
+						}
+						placeholder={t("setting.general.basesEventTitleProp.placeholder")}
+					/>
+				</SettingsItem>
+				{/* 日期属性名 */}
+				<SettingsItem
+					name={t("setting.general.basesEventDateProp.name")}
+					desc={t("setting.general.basesEventDateProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.basesEventDateProp || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ basesEventDateProp: value })
+						}
+						placeholder={t("setting.general.basesEventDateProp.placeholder")}
+					/>
+				</SettingsItem>
+				{/* 持续天数属性名 */}
+				<SettingsItem
+					name={t("setting.general.basesEventDurationProp.name")}
+					desc={t("setting.general.basesEventDurationProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.basesEventDurationProp || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ basesEventDurationProp: value })
+						}
+						placeholder={t("setting.general.basesEventDurationProp.placeholder")}
+					/>
+				</SettingsItem>
+				{/* 图标属性名 */}
+				<SettingsItem
+					name={t("setting.general.basesEventIconProp.name")}
+					desc={t("setting.general.basesEventIconProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.basesEventIconProp || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ basesEventIconProp: value })
+						}
+						placeholder={t("setting.general.basesEventIconProp.placeholder")}
+					/>
+				</SettingsItem>
+				{/* 颜色属性名 */}
+				<SettingsItem
+					name={t("setting.general.basesEventColorProp.name")}
+					desc={t("setting.general.basesEventColorProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.basesEventColorProp || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ basesEventColorProp: value })
+						}
+						placeholder={t("setting.general.basesEventColorProp.placeholder")}
+					/>
+				</SettingsItem>
+				{/* 描述属性名 */}
+				<SettingsItem
+					name={t("setting.general.basesEventDescriptionProp.name")}
+					desc={t("setting.general.basesEventDescriptionProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.basesEventDescriptionProp || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ basesEventDescriptionProp: value })
+						}
+						placeholder={t("setting.general.basesEventDescriptionProp.placeholder")}
 					/>
 				</SettingsItem>
 			</SettingsBlock>

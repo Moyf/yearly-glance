@@ -121,6 +121,36 @@ const translations: BaseMessage = {
 				desc: "创建笔记事件时，新笔记将保存到此文件夹",
 				placeholder: "留空则保存到库根目录",
 			},
+			basesEventTitleProp: {
+				name: "标题属性名",
+				desc: "笔记 frontmatter 中用于存储事件标题的属性名",
+				placeholder: "默认: title",
+			},
+			basesEventDateProp: {
+				name: "日期属性名",
+				desc: "笔记 frontmatter 中用于存储事件日期的属性名",
+				placeholder: "默认: event_date",
+			},
+			basesEventDurationProp: {
+				name: "持续天数属性名",
+				desc: "笔记 frontmatter 中用于存储事件持续天数的属性名",
+				placeholder: "默认: duration_days",
+			},
+			basesEventIconProp: {
+				name: "图标属性名",
+				desc: "笔记 frontmatter 中用于存储事件图标的属性名",
+				placeholder: "默认: icon",
+			},
+			basesEventColorProp: {
+				name: "颜色属性名",
+				desc: "笔记 frontmatter 中用于存储事件颜色的属性名",
+				placeholder: "默认: color",
+			},
+			basesEventDescriptionProp: {
+				name: "描述属性名",
+				desc: "笔记 frontmatter 中用于存储事件描述的属性名",
+				placeholder: "默认: description",
+			},
 		},
 		events: {
 			name: "事件",
@@ -130,6 +160,10 @@ const translations: BaseMessage = {
 			basic: {
 				name: "基本设置",
 				desc: "年历的基础信息配置",
+			},
+			basesEvent: {
+				name: "笔记事件",
+				desc: "笔记事件相关配置",
 			},
 			layout: {
 				name: "布局相关",

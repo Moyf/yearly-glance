@@ -121,64 +121,106 @@ export default class YearlyGlancePlugin extends Plugin {
 			factory: (controller, containerEl) => {
 				return new YearlyGlanceBasesView(controller, containerEl, this);
 			},
-			options: () => ([
-				
-				{
-					type: 'toggle',
-					displayName: t("view.basesView.options.inheritPluginData"),
-					key: 'inheritPluginData',
-					default: false
-				},
-				{
-					type: 'group',
-					displayName: t("view.basesView.options.properties"),
-					items: [
-						{
-							type: 'property',
-							displayName: t("view.basesView.options.propTitle"),
-							key: 'propTitle',
-							filter: prop => !prop.startsWith('file.'),
-							placeholder: 'Property',
-						},
-						{
-							type: 'property',
-							displayName: t("view.basesView.options.propDate"),
-							key: 'propDate',
-							filter: prop => !prop.startsWith('file.'),
-							placeholder: 'Property',
-						},
-						{
-							type: 'property',
-							displayName: t("view.basesView.options.propDuration"),
-							key: 'propDuration',
-							filter: prop => !prop.startsWith('file.'),
-							placeholder: 'Property',
-							default: 'duration_days',
-						},
-					]
-				},
-				{
-					type: 'group',
-					displayName: t("view.basesView.options.display"),
-					items: [
-						{
-							type: 'toggle',
-							displayName: t("view.basesView.options.limitHeight"),
-							key: 'limitHeight',
-							default: false,
-						},
-						{
-							type: 'slider',
-							displayName: t("view.basesView.options.embeddedHeight"),
-							key: 'embeddedHeight',
-							min: 400,
-							max: 1200,
-							step: 50,
-							default: 600,
-						},
-					]
-				}
-			])
+			options: () => {
+				// 获取自定义属性名作为默认值
+				const config = this.settings.config;
+				const defaultTitleProp = config.basesEventTitleProp || 'title';
+				const defaultDateProp = config.basesEventDateProp || 'event_date';
+				const defaultDurationProp = config.basesEventDurationProp || 'duration_days';
+				const defaultIconProp = config.basesEventIconProp || 'icon';
+				const defaultColorProp = config.basesEventColorProp || 'color';
+				const defaultDescriptionProp = config.basesEventDescriptionProp || 'description';
+
+				return [
+					{
+						type: 'toggle',
+						displayName: t("view.basesView.options.inheritPluginData"),
+						key: 'inheritPluginData',
+						default: false
+					},
+					{
+						type: 'group',
+						displayName: t("view.basesView.options.properties"),
+						items: [
+							{
+								type: 'property',
+								displayName: t("view.basesView.options.propTitle"),
+								key: 'propTitle',
+								filter: prop => !prop.startsWith('file.'),
+								placeholder: 'Property',
+								default: defaultTitleProp,
+							},
+							{
+								type: 'property',
+								displayName: t("view.basesView.options.propDate"),
+								key: 'propDate',
+								filter: prop => !prop.startsWith('file.'),
+								placeholder: 'Property',
+								default: defaultDateProp,
+							},
+							{
+								type: 'property',
+								displayName: t("view.basesView.options.propDuration"),
+								key: 'propDuration',
+								filter: prop => !prop.startsWith('file.'),
+								placeholder: 'Property',
+								default: defaultDurationProp,
+							},
+						]
+					},
+					{
+						type: 'group',
+						displayName: '拓展属性',
+						items: [
+							{
+								type: 'property',
+								displayName: '图标属性',
+								key: 'propIcon',
+								filter: prop => !prop.startsWith('file.'),
+								placeholder: 'Property',
+								default: defaultIconProp,
+							},
+							{
+								type: 'property',
+								displayName: '颜色属性',
+								key: 'propColor',
+								filter: prop => !prop.startsWith('file.'),
+								placeholder: 'Property',
+								default: defaultColorProp,
+							},
+							{
+								type: 'property',
+								displayName: '描述属性',
+								key: 'propDescription',
+								filter: prop => !prop.startsWith('file.'),
+								placeholder: 'Property',
+								default: defaultDescriptionProp,
+							},
+						]
+					},
+					{
+						type: 'group',
+						displayName: t("view.basesView.options.display"),
+						items: [
+							{
+								type: 'toggle',
+								displayName: t("view.basesView.options.limitHeight"),
+								key: 'limitHeight',
+								default: false,
+							},
+							{
+								type: 'slider',
+								displayName: t("view.basesView.options.embeddedHeight"),
+								key: 'embeddedHeight',
+								min: 400,
+								max: 1200,
+								step: 50,
+								default: 600,
+							},
+						]
+					}
+				];
+			}
 		});
 
 	}
@@ -345,6 +387,15 @@ export default class YearlyGlancePlugin extends Plugin {
 			return;
 		}
 
+		// 获取自定义属性名
+		const config = this.settings.config;
+		const titleProp = config.basesEventTitleProp || "title";
+		const dateProp = config.basesEventDateProp || "event_date";
+		const durationProp = config.basesEventDurationProp || "duration_days";
+		const iconProp = config.basesEventIconProp || "icon";
+		const colorProp = config.basesEventColorProp || "color";
+		const descriptionProp = config.basesEventDescriptionProp || "description";
+
 		// 从事件 ID 中提取文件路径
 		// 事件 ID 格式: bases-{filePath}-{isoDate}
 		// 例如: bases-Events/event-samples/测试事件.md-2026-01-10
@@ -371,30 +422,30 @@ export default class YearlyGlancePlugin extends Plugin {
 		try {
 			// 使用 fileManager.processFrontMatter 直接更新 frontmatter
 			await this.app.fileManager.processFrontMatter(file, (fm) => {
-				// 更新 frontmatter 字段
-				fm.title = event.text;
-				fm.event_date = eventDate;
+				// 更新 frontmatter 字段（使用自定义属性名）
+				fm[titleProp] = event.text;
+				fm[dateProp] = eventDate;
 
-				// 同步 duration_days 字段（笔记事件使用 duration_days）
+				// 同步持续天数字段
 				if (event.duration && event.duration > 1) {
-					fm.duration_days = event.duration;
-				} else if (fm.duration_days) {
-					delete fm.duration_days;
+					fm[durationProp] = event.duration;
+				} else if (fm[durationProp]) {
+					delete fm[durationProp];
 				}
 
 				// 只有当事件有自定义图标时才更新
 				if (event.emoji && event.emoji !== EVENT_TYPE_DEFAULT.basesEvent.emoji) {
-					fm.icon = event.emoji;
+					fm[iconProp] = event.emoji;
 				}
 
 				// 只有当事件有自定义颜色时才更新
 				if (event.color && event.color !== EVENT_TYPE_DEFAULT.basesEvent.color) {
-					fm.color = event.color;
+					fm[colorProp] = event.color;
 				}
 
-				// 只有当 remark 不是默认值且不是来自 Bases 的说明时才更新为 description
+				// 只有当 remark 不是默认值且不是来自 Bases 的说明时才更新
 				if (event.remark && typeof event.remark === 'string' && !event.remark.startsWith('From Bases:')) {
-					fm.description = event.remark;
+					fm[descriptionProp] = event.remark;
 				}
 			});
 			console.log('Frontmatter sync completed for:', filePath);
@@ -409,8 +460,17 @@ export default class YearlyGlancePlugin extends Plugin {
 	 * @returns 创建的文件路径
 	 */
 	async createBasesEventNote(event: CustomEvent): Promise<string> {
-		// 1. 获取配置的默认路径
-		const defaultPath = this.settings.config.defaultBasesEventPath?.trim();
+		// 1. 获取配置的默认路径和属性名
+		const config = this.settings.config;
+		const defaultPath = config.defaultBasesEventPath?.trim();
+
+		// 获取自定义属性名，如果未设置则使用默认值
+		const titleProp = config.basesEventTitleProp || "title";
+		const dateProp = config.basesEventDateProp || "event_date";
+		const durationProp = config.basesEventDurationProp || "duration_days";
+		const iconProp = config.basesEventIconProp || "icon";
+		const colorProp = config.basesEventColorProp || "color";
+		const descriptionProp = config.basesEventDescriptionProp || "description";
 
 		// 2. 确定文件夹路径
 		let folderPath = "";
@@ -432,22 +492,22 @@ export default class YearlyGlancePlugin extends Plugin {
 		// 4. 创建文件
 		await this.app.vault.create(filePath, "");
 
-		// 5. 写入 frontmatter
+		// 5. 写入 frontmatter（使用自定义属性名）
 		const file = this.app.vault.getAbstractFileByPath(filePath) as TFile;
 		await this.app.fileManager.processFrontMatter(file, (fm) => {
-			fm.title = event.text;
-			fm.event_date = event.eventDate.isoDate;
+			fm[titleProp] = event.text;
+			fm[dateProp] = event.eventDate.isoDate;
 			if (event.duration && event.duration > 1) {
-				fm.duration_days = event.duration;
+				fm[durationProp] = event.duration;
 			}
 			if (event.emoji) {
-				fm.icon = event.emoji;
+				fm[iconProp] = event.emoji;
 			}
 			if (event.color) {
-				fm.color = event.color;
+				fm[colorProp] = event.color;
 			}
 			if (event.remark) {
-				fm.description = event.remark;
+				fm[descriptionProp] = event.remark;
 			}
 		});
 

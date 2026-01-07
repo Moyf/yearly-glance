@@ -121,6 +121,36 @@ const translations: BaseMessage = {
 				desc: "建立筆記事件時，新筆記將儲存到此資料夾",
 				placeholder: "留空則儲存到庫根目錄",
 			},
+			basesEventTitleProp: {
+				name: "標題屬性名",
+				desc: "筆記 frontmatter 中用於儲存事件標題的屬性名",
+				placeholder: "預設: title",
+			},
+			basesEventDateProp: {
+				name: "日期屬性名",
+				desc: "筆記 frontmatter 中用於儲存事件日期的屬性名",
+				placeholder: "預設: event_date",
+			},
+			basesEventDurationProp: {
+				name: "持續天數屬性名",
+				desc: "筆記 frontmatter 中用於儲存事件持續天數的屬性名",
+				placeholder: "預設: duration_days",
+			},
+			basesEventIconProp: {
+				name: "圖示屬性名",
+				desc: "筆記 frontmatter 中用於儲存事件圖示的屬性名",
+				placeholder: "預設: icon",
+			},
+			basesEventColorProp: {
+				name: "顏色屬性名",
+				desc: "筆記 frontmatter 中用於儲存事件顏色的屬性名",
+				placeholder: "預設: color",
+			},
+			basesEventDescriptionProp: {
+				name: "描述屬性名",
+				desc: "筆記 frontmatter 中用於儲存事件描述的屬性名",
+				placeholder: "預設: description",
+			},
 		},
 		events: {
 			name: "事件",
@@ -130,6 +160,10 @@ const translations: BaseMessage = {
 			basic: {
 				name: "基本設定",
 				desc: "年曆的基礎資訊配置",
+			},
+			basesEvent: {
+				name: "筆記事件",
+				desc: "筆記事件相關配置",
 			},
 			layout: {
 				name: "佈局相關",

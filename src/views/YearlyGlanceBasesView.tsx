@@ -80,6 +80,37 @@ export class YearlyGlanceBasesView extends BasesView {
             };
 
             // 2. 计算配置快照
+            const pluginConfig = this.plugin.getConfig();
+            const pluginData = this.plugin.getData();
+
+            // 当继承插件数据时，需要包含插件数据的哈希以检测变化
+            const pluginDataHash = config.inheritPluginData ? JSON.stringify({
+                showHolidays: pluginConfig.showHolidays,
+                showBirthdays: pluginConfig.showBirthdays,
+                showCustomEvents: pluginConfig.showCustomEvents,
+                holidays: pluginData.holidays.map(h => ({
+                    id: h.id,
+                    text: h.text,
+                    emoji: h.emoji,
+                    color: h.color,
+                    isHidden: h.isHidden,
+                })),
+                birthdays: pluginData.birthdays.map(b => ({
+                    id: b.id,
+                    text: b.text,
+                    emoji: b.emoji,
+                    color: b.color,
+                    isHidden: b.isHidden,
+                })),
+                customEvents: pluginData.customEvents.map(c => ({
+                    id: c.id,
+                    text: c.text,
+                    emoji: c.emoji,
+                    color: c.color,
+                    isHidden: c.isHidden,
+                })),
+            }) : null;
+
             const configSnapshot = JSON.stringify({
                 inheritPluginData: config.inheritPluginData,
                 propTitle: config.propTitle,
@@ -87,9 +118,7 @@ export class YearlyGlanceBasesView extends BasesView {
                 propDuration: config.propDuration,
                 limitHeight: config.limitHeight,
                 embeddedHeight: config.embeddedHeight,
-                showHolidays: this.plugin.getConfig().showHolidays,
-                showBirthdays: this.plugin.getConfig().showBirthdays,
-                showCustomEvents: this.plugin.getConfig().showCustomEvents,
+                pluginDataHash,
             });
 
             // 3. 计算数据哈希

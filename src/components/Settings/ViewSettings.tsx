@@ -160,6 +160,7 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 							handleUpdateConfig({ defaultBasesEventPath: value })
 						}
 						placeholder={t("setting.general.defaultBasesEventPath.placeholder")}
+						app={plugin.app}
 					/>
 				</SettingsItem>
 				{/* 标题属性名 */}

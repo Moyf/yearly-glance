@@ -455,7 +455,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 							rows={3}
 						/>
 					</div>
-					{isBasesEvent && (
+					{currentEventType === 'basesEvent' && (
 						<div className="form-group bases-event-hint">
 							<div className="yg-bases-event-hint-content">
 								{isEditing ? (

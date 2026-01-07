@@ -221,6 +221,18 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 					</>
 				)}
 
+				{/* basesEvent 特有信息 - 来自笔记 */}
+				{eventType === "basesEvent" && event.id?.startsWith("bases-") && (
+					<div className="tooltip-row">
+						<span className="tooltip-label">
+							{t("view.eventManager.basesEvent.sourceNote")}:
+						</span>
+						<span className="tooltip-value">
+							{event.id.replace(/^bases-/, "").replace(/-\d{4}-\d{2}-\d{2}$/, "")}
+						</span>
+					</div>
+				)}
+
 				{/* 备注信息（所有事件类型共有） */}
 				{event.remark && (
 					<div className="tooltip-row tooltip-remark">

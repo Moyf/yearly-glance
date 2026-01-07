@@ -365,6 +365,7 @@ const translations: BaseMessage = {
 			},
 			basesEvent: {
 				name: "Note event",
+				sourceNote: "From note",
 			},
 			source: {
 				bases: "From note",

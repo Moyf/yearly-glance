@@ -242,6 +242,7 @@ export type BaseMessage = {
 			};
 			basesEvent: {
 				name: string;
+				sourceNote: string;
 			};
 			source: {
 				bases: string;

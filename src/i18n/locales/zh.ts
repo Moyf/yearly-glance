@@ -363,6 +363,7 @@ const translations: BaseMessage = {
 			},
 			basesEvent: {
 				name: "笔记事件",
+				sourceNote: "来自笔记",
 			},
 			source: {
 				bases: "来自笔记",

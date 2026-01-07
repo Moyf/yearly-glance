@@ -94,6 +94,8 @@ export class YearlyGlanceBasesView extends BasesView {
                     emoji: h.emoji,
                     color: h.color,
                     isHidden: h.isHidden,
+                    remark: h.remark,
+                    isoDate: h.eventDate.isoDate,
                 })),
                 birthdays: pluginData.birthdays.map(b => ({
                     id: b.id,
@@ -101,6 +103,8 @@ export class YearlyGlanceBasesView extends BasesView {
                     emoji: b.emoji,
                     color: b.color,
                     isHidden: b.isHidden,
+                    remark: b.remark,
+                    isoDate: b.eventDate.isoDate,
                 })),
                 customEvents: pluginData.customEvents.map(c => ({
                     id: c.id,
@@ -108,6 +112,8 @@ export class YearlyGlanceBasesView extends BasesView {
                     emoji: c.emoji,
                     color: c.color,
                     isHidden: c.isHidden,
+                    remark: c.remark,
+                    isoDate: c.eventDate.isoDate,
                 })),
             }) : null;
 
@@ -338,7 +344,7 @@ export class YearlyGlanceBasesView extends BasesView {
                 emoji: icon || EVENT_TYPE_DEFAULT.basesEvent.emoji,
                 color: color || EVENT_TYPE_DEFAULT.basesEvent.color,
                 isHidden: false,
-                remark: description || `From Bases: ${filePath}`,
+                remark: description || "",
                 eventType: 'basesEvent',
                 isRepeat: false,
                 eventSource: EventSource.BASES
@@ -409,9 +415,11 @@ export class YearlyGlanceBasesView extends BasesView {
                     fm.color = event.color;
                 }
 
-                // 只有当 remark 不是默认值且不是来自 Bases 的说明时才更新为 description
-                if (event.remark && typeof event.remark === 'string' && !event.remark.startsWith('From Bases:')) {
+                // 同步描述字段
+                if (event.remark && typeof event.remark === 'string') {
                     fm.description = event.remark;
+                } else if (fm.description) {
+                    delete fm.description;
                 }
             });
             console.log('Frontmatter updated successfully for:', filePath);

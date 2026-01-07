@@ -178,7 +178,7 @@ export class YearlyGlanceBasesView extends BasesView {
             const icon = frontmatter.icon;
             const color = frontmatter.color;
             const description = frontmatter.description;
-            const duration = frontmatter.duration || frontmatter.event_duration || 1;
+            const duration = frontmatter.duration_days || frontmatter.duration || frontmatter.event_duration || 1;
 
             // 对于 Bases 数据，我们不限制年份，允许显示所有年份的事件
             // 这样用户可以在 Bases 视图中看到所有数据

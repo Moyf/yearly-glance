@@ -67,20 +67,24 @@ export class YearlyGlanceBasesView extends BasesView {
         this.updatePending = true;
 
         try {
-            // 1. 读取配置
+            // 2. 计算配置快照
+            const pluginConfig = this.plugin.getConfig();
+
+            // 1. 读取配置（如果 Bases 配置未设置，回退到插件全局设置）
             const config = {
                 inheritPluginData: this.config.get('inheritPluginData') === true,
-                propTitle: this.config.getAsPropertyId('propTitle') || null,
-                propDate: this.config.getAsPropertyId('propDate') || null,
-                propDuration: this.config.getAsPropertyId('propDuration') || null,
+                propTitle: this.config.getAsPropertyId('propTitle') || pluginConfig.basesEventTitleProp || null,
+                propDate: this.config.getAsPropertyId('propDate') || pluginConfig.basesEventDateProp || null,
+                propDuration: this.config.getAsPropertyId('propDuration') || pluginConfig.basesEventDurationProp || null,
+                propIcon: this.config.getAsPropertyId('propIcon') || pluginConfig.basesEventIconProp || null,
+                propColor: this.config.getAsPropertyId('propColor') || pluginConfig.basesEventColorProp || null,
+                propDescription: this.config.getAsPropertyId('propDescription') || pluginConfig.basesEventDescriptionProp || null,
                 limitHeight: this.config.get('limitHeight') === true,
                 embeddedHeight: typeof this.config.get('embeddedHeight') === 'number'
                     ? this.config.get('embeddedHeight')
                     : 600,
             };
 
-            // 2. 计算配置快照
-            const pluginConfig = this.plugin.getConfig();
             const pluginData = this.plugin.getData();
 
             // 当继承插件数据时，需要包含插件数据的哈希以检测变化
@@ -122,6 +126,9 @@ export class YearlyGlanceBasesView extends BasesView {
                 propTitle: config.propTitle,
                 propDate: config.propDate,
                 propDuration: config.propDuration,
+                propIcon: config.propIcon,
+                propColor: config.propColor,
+                propDescription: config.propDescription,
                 limitHeight: config.limitHeight,
                 embeddedHeight: config.embeddedHeight,
                 pluginDataHash,
@@ -184,11 +191,19 @@ export class YearlyGlanceBasesView extends BasesView {
             const titleValue = config.propTitle ? entry.getValue(config.propTitle) : null;
             const durationValue = config.propDuration ? entry.getValue(config.propDuration) : null;
 
+            // 从配置的属性中读取拓展属性
+            const iconValue = config.propIcon ? entry.getValue(config.propIcon) : null;
+            const colorValue = config.propColor ? entry.getValue(config.propColor) : null;
+            const descriptionValue = config.propDescription ? entry.getValue(config.propDescription) : null;
+
             return {
                 path: entry.file.path,
                 date: dateValue ? String(dateValue) : null,
                 title: titleValue ? String(titleValue) : null,
                 duration: durationValue ? String(durationValue) : null,
+                icon: iconValue ? String(iconValue) : null,
+                color: colorValue ? String(colorValue) : null,
+                description: descriptionValue ? String(descriptionValue) : null,
             };
         });
 
@@ -265,11 +280,39 @@ export class YearlyGlanceBasesView extends BasesView {
                         }
                     }
 
+                    // 读取拓展属性（图标、颜色、描述）
+                    let iconValue: string | null = null;
+                    if (config.propIcon) {
+                        const rawIcon = entry.getValue(config.propIcon);
+                        if (rawIcon && rawIcon.isTruthy()) {
+                            iconValue = rawIcon.toString();
+                        }
+                    }
+
+                    let colorValue: string | null = null;
+                    if (config.propColor) {
+                        const rawColor = entry.getValue(config.propColor);
+                        if (rawColor && rawColor.isTruthy()) {
+                            colorValue = rawColor.toString();
+                        }
+                    }
+
+                    let descriptionValue: string | null = null;
+                    if (config.propDescription) {
+                        const rawDescription = entry.getValue(config.propDescription);
+                        if (rawDescription && rawDescription.isTruthy()) {
+                            descriptionValue = rawDescription.toString();
+                        }
+                    }
+
                     const event = this.convertBasesEvent(
                         entry,
                         dateValue,
                         titleValue,
                         durationNum,
+                        iconValue,
+                        colorValue,
+                        descriptionValue,
                         entry.file.path
                     );
                     if (event) {
@@ -292,13 +335,12 @@ export class YearlyGlanceBasesView extends BasesView {
         dateValue: any,
         text: any,
         duration: number,
+        icon: string | null,
+        color: string | null,
+        description: string | null,
         filePath: string
     ): CalendarEvent | null {
         try {
-            // 获取文件的元数据和 frontmatter
-            const metadata = this.app.metadataCache.getFileCache(entry.file);
-            const frontmatter = metadata?.frontmatter || {};
-
             // 尝试解析日期
             let isoDate: string;
 
@@ -321,11 +363,6 @@ export class YearlyGlanceBasesView extends BasesView {
 
             // 使用传入的参数，这些参数已经从配置的属性中读取
             const title = text || entry.file.name;
-
-            const icon = frontmatter.icon;
-            const color = frontmatter.color;
-            const description = frontmatter.description;
-            // duration 已经从参数传入，这里直接使用
             const eventDuration = duration || 1;
 
             // 对于 Bases 数据，我们不限制年份，允许显示所有年份的事件

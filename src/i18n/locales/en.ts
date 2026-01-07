@@ -163,7 +163,7 @@ const translations: BaseMessage = {
 			},
 			basesEvent: {
 				name: "Note Events",
-				desc: "Configuration for note events",
+				desc: "Use specific notes as event sources, for use with Bases view",
 			},
 			layout: {
 				name: "Layout",

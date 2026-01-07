@@ -163,7 +163,7 @@ const translations: BaseMessage = {
 			},
 			basesEvent: {
 				name: "笔记事件",
-				desc: "笔记事件相关配置",
+				desc: "使用特定的笔记作为事件来源，用于配合 Bases 视图使用",
 			},
 			layout: {
 				name: "布局相关",

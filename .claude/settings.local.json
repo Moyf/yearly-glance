@@ -14,7 +14,8 @@
       "Bash(git add -A)",
       "Bash(git commit -m \"feat: change icon display setting to dropdown menu\n\n- Add IconDisplayOption type with ''none'' | ''lucide'' | ''emoji'' options\n- Update Settings.ts to use new enum type for showEmojiBeforeTabName\n- Change ViewSettings UI from Toggle to Select component\n- Update YearlyGlanceView and GlanceManagerView display logic\n- Add migration logic for boolean to enum conversion\n- Add i18n support for all three languages \\(zh, en, zh-TW\\)\n- Update i18n types to include options structure\")",
       "Bash(git checkout -b feat/multi-day-events)",
-      "Bash(git add src/)"
+      "Bash(git add src/)",
+      "Bash(git log --oneline --all --grep=\"内置节日\\\\|built.*holiday\\\\|holiday\" -i)"
     ]
   }
 }

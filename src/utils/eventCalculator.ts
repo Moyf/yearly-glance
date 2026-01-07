@@ -185,6 +185,10 @@ export class EventCalculator {
 
 		return {
 			...customEvent,
+			eventDate: {
+				...customEvent.eventDate,
+				isoDate: dateArr[0],
+			},
 			dateArr,
 		};
 	}
@@ -327,6 +331,10 @@ export class EventCalculator {
 
 		return {
 			...birthday,
+			eventDate: {
+				...birthday.eventDate,
+				isoDate: dateArr[0],
+			},
 			dateArr,
 			nextBirthday,
 			age,

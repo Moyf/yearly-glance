@@ -268,7 +268,7 @@ export class YearlyGlanceBasesView extends BasesView {
                 }
 
                 // 只有当 remark 不是默认值且不是来自 Bases 的说明时才更新为 description
-                if (event.remark && !event.remark.startsWith('From Bases:')) {
+                if (event.remark && typeof event.remark === 'string' && !event.remark.startsWith('From Bases:')) {
                     fm.description = event.remark;
                 }
             });

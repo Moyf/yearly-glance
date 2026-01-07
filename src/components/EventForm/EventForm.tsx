@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MarkdownRenderer } from "obsidian";
+import { Component, MarkdownRenderer } from "obsidian";
 import { YearlyGlanceConfig } from "@/src/type/Config";
 import {
 	Birthday,
@@ -77,6 +77,7 @@ interface EventFormProps {
 		date?: string; // 可选的日期属性
 	};
 	isBasesEvent?: boolean;
+	obsidianComponent?: Component; // Obsidian Component 用于 MarkdownRenderer
 }
 
 export const EventForm: React.FC<EventFormProps> = ({
@@ -89,6 +90,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 	onCancel,
 	props = {},
 	isBasesEvent = false,
+	obsidianComponent,
 }) => {
 	const today = IsoUtils.getTodayLocalDateString(); // 获取今天的日期字符串（时区安全）
 	const todayString = props.date || today; // 如果传入了特定日期，则使用它，否则使用今天的日期
@@ -158,7 +160,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 
 	// Markdown 渲染 hook - 为 Bases 事件渲染 Markdown 提示
 	React.useEffect(() => {
-		if (!markdownContainerRef.current || !isBasesEvent) return;
+		if (!markdownContainerRef.current || !isBasesEvent || !obsidianComponent) return;
 
 		const container = markdownContainerRef.current;
 
@@ -171,9 +173,8 @@ export const EventForm: React.FC<EventFormProps> = ({
 			})()
 		});
 
-		// 使用 Obsidian 的 MarkdownRenderer.renderMarkdown
-		// @ts-ignore - Component 参数在某些版本是可选的
-		MarkdownRenderer.renderMarkdown(markdownText, container, "", null).then(() => {
+		// 使用 Obsidian 的 MarkdownRenderer.renderMarkdown，传入 Component 避免内存泄漏
+		MarkdownRenderer.renderMarkdown(markdownText, container, "", obsidianComponent).then(() => {
 			// 渲染完成
 		});
 
@@ -183,7 +184,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 				container.empty();
 			}
 		};
-	}, [isBasesEvent, event.id]);
+	}, [isBasesEvent, event.id, obsidianComponent]);
 
 	// 处理键盘快捷键提交表单
 	React.useEffect(() => {

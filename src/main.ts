@@ -433,19 +433,25 @@ export default class YearlyGlancePlugin extends Plugin {
 					delete fm[durationProp];
 				}
 
-				// 只有当事件有自定义图标时才更新
+				// 同步图标：如果有自定义值则设置，否则删除
 				if (event.emoji && event.emoji !== EVENT_TYPE_DEFAULT.basesEvent.emoji) {
 					fm[iconProp] = event.emoji;
+				} else if (fm[iconProp]) {
+					delete fm[iconProp];
 				}
 
-				// 只有当事件有自定义颜色时才更新
+				// 同步颜色：如果有自定义值则设置，否则删除
 				if (event.color && event.color !== EVENT_TYPE_DEFAULT.basesEvent.color) {
 					fm[colorProp] = event.color;
+				} else if (fm[colorProp]) {
+					delete fm[colorProp];
 				}
 
-				// 只有当 remark 不是默认值且不是来自 Bases 的说明时才更新
+				// 同步描述：如果有值则设置，否则删除
 				if (event.remark && typeof event.remark === 'string' && !event.remark.startsWith('From Bases:')) {
 					fm[descriptionProp] = event.remark;
+				} else if (fm[descriptionProp]) {
+					delete fm[descriptionProp];
 				}
 			});
 			console.log('Frontmatter sync completed for:', filePath);

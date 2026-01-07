@@ -339,11 +339,16 @@ const translations: BaseMessage = {
 				customEventRepeat: "選中時，將會在每年的該日期都重複顯示事件",
 				holidayFoundDate: "節日起源日期，後續計劃會用於計算節慶週年",
 				frontmatterSync: "同步到筆記元數據（frontmatter）",
-				basesEventHint:
-					"**事件來源**：此事件來自筆記 *{{file}}*\n\n" +
-					"保存時會將修改同步到原始筆記的 frontmatter 元數據。",
-				basesEventCreateHint: "<b>創建新筆記</b>：保存後將在 <i>{{path}}</i> 文件夾中創建新筆記，可在插件設置中配置默認路徑。",
-				basesEventCreateHintWithName: "<b>創建新筆記</b>：將保存為新筆記： <i>{{path}}</i> ",
+				basesEventCreate: {
+					label: "創建新筆記",
+					text: "保存後將在 {{path}} 文件夾中創建新筆記，可在插件設置中配置默認路徑。",
+					textWithName: "將保存為新筆記：",
+				},
+				basesEventEdit: {
+					label: "事件來源",
+					notePrefix: "此事件來自筆記",
+					syncText: "保存時會將修改同步到原始筆記的 frontmatter 元數據。",
+				},
 			},
 			holiday: {
 				name: "節日",

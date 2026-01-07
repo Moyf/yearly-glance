@@ -341,11 +341,16 @@ const translations: BaseMessage = {
 				holidayFoundDate:
 					"Holiday founding date, will be used to calculate holiday anniversaries in future plans",
 				frontmatterSync: "Sync to note metadata (frontmatter)",
-				basesEventHint:
-					"**Event Source**: This event is from note *{{file}}*\n\n" +
-					"Changes will be synced to the original note's frontmatter metadata.",
-				basesEventCreateHint: "<b>Create new note</b>: A new note will be created in the <i>{{path}}</i> folder after saving. Configure default path in plugin settings.",
-				basesEventCreateHintWithName: "<b>Create new note</b>: Will be saved as: <i>{{path}}</i> ",
+				basesEventCreate: {
+					label: "Create new note",
+					text: "A new note will be created in the {{path}} folder after saving. Configure default path in plugin settings.",
+					textWithName: "Will be saved as:",
+				},
+				basesEventEdit: {
+					label: "Event Source",
+					notePrefix: "This event is from note",
+					syncText: "Changes will be synced to the original note's frontmatter metadata.",
+				},
 			},
 			holiday: {
 				name: "Holiday",

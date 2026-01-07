@@ -461,24 +461,29 @@ export const EventForm: React.FC<EventFormProps> = ({
 								{isEditing ? (
 									// 编辑模式：显示来源笔记
 									<>
-										<b>事件来源</b>：此事件来自笔记 <i>{
+										<b>{t("view.eventManager.help.basesEventEdit.label")}：</b>
+										{t("view.eventManager.help.basesEventEdit.notePrefix")} <i>{
 											event.id?.replace(/^bases-/, "")?.replace(/-\d{4}-\d{2}-\d{2}$/, "") || ""
 										}</i>
 										<br />
-										保存时会将修改同步到原始笔记的 frontmatter 元数据中。
+										{t("view.eventManager.help.basesEventEdit.syncText")}
 									</>
 								) : (
 									// 新增模式
 									<>
+										<b>{t("view.eventManager.help.basesEventCreate.label")}：</b>
 										{formData.text ? (
 											// 有事件名：显示完整路径
-											t("view.eventManager.help.basesEventCreateHintWithName", {
-												path: `${settings.config.defaultBasesEventPath || '根目录'}/${formData.text}.md`
-											})
+											<>
+												{t("view.eventManager.help.basesEventCreate.textWithName")}<br />
+												<i>{
+													`${settings.config.defaultBasesEventPath || ''}/${formData.text}.md`
+												}</i>
+											</>
 										) : (
 											// 无事件名：显示文件夹
-											t("view.eventManager.help.basesEventCreateHint", {
-												path: settings.config.defaultBasesEventPath || '根目录'
+											t("view.eventManager.help.basesEventCreate.text", {
+												path: settings.config.defaultBasesEventPath || '/'
 											})
 										)}
 									</>

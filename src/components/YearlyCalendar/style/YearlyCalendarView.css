@@ -597,6 +597,14 @@
 
 	/* ------- 多日事件样式 ------- */
 
+	/* 多日事件的天数指示器样式 */
+	.event-day-label {
+		color: var(--text-muted);
+		font-size: 0.85em;
+		font-weight: normal;
+		margin-left: 2px;
+	}
+
 	/* 日历视图：多日事件基础样式 */
 	.multi-day-event {
 		position: relative;

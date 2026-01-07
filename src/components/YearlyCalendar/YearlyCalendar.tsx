@@ -240,8 +240,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 
 		// 构建天数标记文本
 		const dayLabel = event._totalDays && event._totalDays > 1
-			? ` (${event._dayIndex! + 1}/${event._totalDays})`
-			: "";
+			? <span className="event-day-label"> ({event._dayIndex! + 1}/{event._totalDays})</span>
+			: null;
 
 		// 使用原始 event.id 或 event.id + dayIndex 作为 key
 		const eventKey = event._totalDays && event._totalDays > 1

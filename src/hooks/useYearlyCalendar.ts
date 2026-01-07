@@ -144,7 +144,9 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 					eventDate: {
 						...event.eventDate,
 						isoDate: currentDateISO
-					}
+					},
+					// 移除 dateArr，避免扩展后的事件通过 dateArr 重复匹配到原始日期
+					dateArr: undefined
 				});
 			}
 		};

@@ -45,43 +45,122 @@ export class YearlyGlanceBasesView extends BasesView {
     // onDataUpdated is called by Obsidian whenever there is a configuration
     // or data change in the vault which may affect your view.
     public onDataUpdated(): void {
-        // 1. 读取配置
-        const config = {
-            inheritPluginData: this.config.get('inheritPluginData') === true,
-            propTitle: this.config.getAsPropertyId('propTitle') || null,
-            propDate: this.config.getAsPropertyId('propDate') || null,
-            propDuration: this.config.getAsPropertyId('propDuration') || null,
-            limitHeight: this.config.get('limitHeight') === true,
-            embeddedHeight: typeof this.config.get('embeddedHeight') === 'number'
-                ? this.config.get('embeddedHeight')
-                : 600,
-        };
-
-        // 2. 准备容器
-        this.containerEl.empty();
-        this.glanceEl = this.containerEl.createDiv("yg-bases-view-glance");
-
-        // 应用高度限制
-        if (config.limitHeight && this.isEmbedded()) {
-            this.glanceEl.style.height = `${config.embeddedHeight}px`;
-        } else {
-            this.glanceEl.style.height = '';
+        // 清除之前的定时器
+        if (this.updateTimer !== undefined) {
+            window.clearTimeout(this.updateTimer);
         }
 
-        // 3. 销毁旧实例
-        if (this.yearlyCalendar) {
-            this.yearlyCalendar.destroy();
+        // 防抖：100ms 内只执行一次更新
+        this.updateTimer = window.setTimeout(() => {
+            this.performUpdate();
+        }, 100);
+    }
+
+    /**
+     * 执行实际的更新操作
+     */
+    private performUpdate(): void {
+        if (this.updatePending) {
+            return; // 如果已经有更新在进行，跳过
         }
 
-        // 4. 构建混合数据（同时填充 basesEventMap）
-        this.basesEventMap.clear();
-        const mixedEvents = this.buildMixedEvents(config);
+        this.updatePending = true;
 
-        // 5. 使用 YearlyCalendar 渲染
-        this.yearlyCalendar = new YearlyCalendar(this.glanceEl, this.plugin);
+        try {
+            // 1. 读取配置
+            const config = {
+                inheritPluginData: this.config.get('inheritPluginData') === true,
+                propTitle: this.config.getAsPropertyId('propTitle') || null,
+                propDate: this.config.getAsPropertyId('propDate') || null,
+                propDuration: this.config.getAsPropertyId('propDuration') || null,
+                limitHeight: this.config.get('limitHeight') === true,
+                embeddedHeight: typeof this.config.get('embeddedHeight') === 'number'
+                    ? this.config.get('embeddedHeight')
+                    : 600,
+            };
 
-        // 6. 传递混合数据给 YearlyCalendar
-        this.yearlyCalendar.renderWithEvents(mixedEvents);
+            // 2. 计算配置快照
+            const configSnapshot = JSON.stringify({
+                inheritPluginData: config.inheritPluginData,
+                propTitle: config.propTitle,
+                propDate: config.propDate,
+                propDuration: config.propDuration,
+                limitHeight: config.limitHeight,
+                embeddedHeight: config.embeddedHeight,
+                showHolidays: this.plugin.getConfig().showHolidays,
+                showBirthdays: this.plugin.getConfig().showBirthdays,
+                showCustomEvents: this.plugin.getConfig().showCustomEvents,
+            });
+
+            // 3. 计算数据哈希
+            const entriesToProcess = this.data?.groupedData
+                ? this.data.groupedData.flatMap(group => group.entries)
+                : this.data?.data || [];
+            const dataHash = this.hashData(entriesToProcess, config);
+
+            // 4. 检查是否有实际变化
+            const configChanged = this.lastConfigSnapshot !== configSnapshot;
+            const dataChanged = this.lastDataHash !== dataHash;
+
+            if (!configChanged && !dataChanged) {
+                // 没有实际变化，跳过更新
+                this.updatePending = false;
+                return;
+            }
+
+            // 5. 准备容器（只在首次渲染时）
+            if (!this.yearlyCalendar) {
+                this.containerEl.empty();
+                this.glanceEl = this.containerEl.createDiv("yg-bases-view-glance");
+            }
+
+            // 6. 应用高度限制
+            if (config.limitHeight && this.isEmbedded()) {
+                this.glanceEl.style.height = `${config.embeddedHeight}px`;
+            } else {
+                this.glanceEl.style.height = '';
+            }
+
+            // 7. 构建混合数据（同时填充 basesEventMap）
+            this.basesEventMap.clear();
+            const mixedEvents = this.buildMixedEvents(config);
+
+            // 8. 使用 YearlyCalendar 渲染（复用现有实例，避免闪烁）
+            if (!this.yearlyCalendar) {
+                this.yearlyCalendar = new YearlyCalendar(this.glanceEl, this.plugin);
+            }
+            this.yearlyCalendar.renderWithEvents(mixedEvents);
+
+            // 9. 保存当前快照
+            this.lastConfigSnapshot = configSnapshot;
+            this.lastDataHash = dataHash;
+        } finally {
+            this.updatePending = false;
+        }
+    }
+
+    /**
+     * 计算数据的哈希值，用于检测变化
+     */
+    private hashData(entries: any[], config: any): string {
+        // 只计算影响渲染的关键字段
+        const simplifiedEntries = entries.map(entry => {
+            const dateValue = config.propDate ? entry.getValue(config.propDate) : null;
+            const titleValue = config.propTitle ? entry.getValue(config.propTitle) : null;
+            const durationValue = config.propDuration ? entry.getValue(config.propDuration) : null;
+
+            return {
+                path: entry.file.path,
+                date: dateValue ? String(dateValue) : null,
+                title: titleValue ? String(titleValue) : null,
+                duration: durationValue ? String(durationValue) : null,
+            };
+        });
+
+        // 对数据进行排序以确保顺序不影响哈希
+        simplifiedEntries.sort((a, b) => a.path.localeCompare(b.path));
+
+        return JSON.stringify(simplifiedEntries);
     }
 
     /**

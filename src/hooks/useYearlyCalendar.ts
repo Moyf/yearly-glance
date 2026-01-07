@@ -111,11 +111,6 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 
 	// 处理所有事件
 	const allEvents = React.useMemo(() => {
-		// 如果有外部事件，直接使用外部事件
-		if (externalEvents && externalEvents.length > 0) {
-			return externalEvents;
-		}
-
 		const events: CalendarEvent[] = [];
 
 		// 根据 duration 扩展事件到多天的辅助函数
@@ -150,6 +145,15 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 				});
 			}
 		};
+
+		// 如果有外部事件（Bases 事件），先扩展它们
+		if (externalEvents && externalEvents.length > 0) {
+			externalEvents.forEach((event) => {
+				// 扩展 Bases 事件
+				expandEventByDuration(event, event.eventType);
+			});
+			return events;
+		}
 
 		// 处理节假日
 		if (showHolidays) {

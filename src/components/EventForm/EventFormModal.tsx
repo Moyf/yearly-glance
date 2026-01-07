@@ -15,7 +15,6 @@ import { EventForm } from "./EventForm";
 import { EventCalculator } from "@/src/utils/eventCalculator";
 import "./style/EventFormModal.css";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
-import { VIEW_TYPE_YEARLY_GLANCE_BASES } from "@/src/views/YearlyGlanceBasesView";
 
 export interface EventFormModalProps {
 	date?: string; // 可选的日期属性
@@ -48,18 +47,8 @@ export class EventFormModal extends Modal {
 		this.allowTypeChange = allowTypeChange;
 		this.settings = plugin.getSettings();
 		this.props = props;
-
 		// 检查是否是 Bases 事件（通过 id 判断或事件类型判断）
 		this.isBasesEvent = event.id ? event.id.startsWith('bases-') : eventType === 'basesEvent';
-
-		// 新增模式下，检测当前视图是否为 Bases 视图
-		if (!this.isEditing && !this.isBasesEvent) {
-			const leaves = plugin.app.workspace.getLeavesOfType(VIEW_TYPE_YEARLY_GLANCE_BASES);
-			const activeLeaf = plugin.app.workspace.activeLeaf;
-			if (leaves.length > 0 && leaves.includes(activeLeaf!)) {
-				this.isBasesEvent = true;
-			}
-		}
 	}
 
 	onOpen(): void {
@@ -109,45 +98,7 @@ export class EventFormModal extends Modal {
 		if (!newEvents.birthdays) newEvents.birthdays = [];
 		if (!newEvents.holidays) newEvents.holidays = [];
 
-		// 如果是 Bases 视图，所有事件类型都创建为笔记事件
-		if (this.isBasesEvent) {
-			// 计算事件信息（使用 CustomEvent 的计算逻辑）
-			event = EventCalculator.updateCustomEventInfo(
-				event as CustomEvent,
-				currentYear
-			) as CustomEvent | Birthday | Holiday;
-
-			// 如果是新增事件，创建笔记文件
-			if (!this.isEditing) {
-				const filePath = await this.plugin.createBasesEventNote(event as CustomEvent);
-				const idWithoutDate = filePath.replace(/\.md$/, "");
-				event.id = `bases-${idWithoutDate}-${event.eventDate.isoDate}`;
-			}
-
-			// 标记事件来源为 BASES
-			(event as CustomEvent).eventSource = EventSource.BASES;
-
-			// 同步到 frontmatter
-			const calendarEvent: CalendarEvent = {
-				id: event.id,
-				text: event.text,
-				eventDate: event.eventDate,
-				dateArr: event.dateArr,
-				duration: (event as CustomEvent).duration,
-				emoji: event.emoji,
-				color: event.color,
-				isHidden: event.isHidden,
-				remark: event.remark,
-				eventType: eventType,
-				isRepeat: (event as CustomEvent).isRepeat
-			};
-			await this.plugin.syncBasesEventToFrontmatter(calendarEvent);
-
-			this.close();
-			return;
-		}
-
-		// 原有的 switch 逻辑（非 Bases 视图）
+		// 根据事件类型进行不同的处理
 		switch (eventType) {
 			case "customEvent": {
 				// 计算并更新自定义事件的完整信息

@@ -122,15 +122,6 @@ export default class YearlyGlancePlugin extends Plugin {
 				return new YearlyGlanceBasesView(controller, containerEl, this);
 			},
 			options: () => {
-				// 获取自定义属性名作为默认值
-				const config = this.settings.config;
-				const defaultTitleProp = config.basesEventTitleProp || 'title';
-				const defaultDateProp = config.basesEventDateProp || 'event_date';
-				const defaultDurationProp = config.basesEventDurationProp || 'duration_days';
-				const defaultIconProp = config.basesEventIconProp || 'icon';
-				const defaultColorProp = config.basesEventColorProp || 'color';
-				const defaultDescriptionProp = config.basesEventDescriptionProp || 'description';
-
 				return [
 					{
 						type: 'toggle',
@@ -148,7 +139,6 @@ export default class YearlyGlancePlugin extends Plugin {
 								key: 'propTitle',
 								filter: prop => !prop.startsWith('file.'),
 								placeholder: 'Property',
-								default: defaultTitleProp,
 							},
 							{
 								type: 'property',
@@ -156,7 +146,6 @@ export default class YearlyGlancePlugin extends Plugin {
 								key: 'propDate',
 								filter: prop => !prop.startsWith('file.'),
 								placeholder: 'Property',
-								default: defaultDateProp,
 							},
 							{
 								type: 'property',
@@ -164,7 +153,6 @@ export default class YearlyGlancePlugin extends Plugin {
 								key: 'propDuration',
 								filter: prop => !prop.startsWith('file.'),
 								placeholder: 'Property',
-								default: defaultDurationProp,
 							},
 						]
 					},
@@ -178,7 +166,6 @@ export default class YearlyGlancePlugin extends Plugin {
 								key: 'propIcon',
 								filter: prop => !prop.startsWith('file.'),
 								placeholder: 'Property',
-								default: defaultIconProp,
 							},
 							{
 								type: 'property',
@@ -186,7 +173,6 @@ export default class YearlyGlancePlugin extends Plugin {
 								key: 'propColor',
 								filter: prop => !prop.startsWith('file.'),
 								placeholder: 'Property',
-								default: defaultColorProp,
 							},
 							{
 								type: 'property',
@@ -194,7 +180,6 @@ export default class YearlyGlancePlugin extends Plugin {
 								key: 'propDescription',
 								filter: prop => !prop.startsWith('file.'),
 								placeholder: 'Property',
-								default: defaultDescriptionProp,
 							},
 						]
 					},

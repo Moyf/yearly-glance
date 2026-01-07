@@ -224,6 +224,8 @@ const translations: BaseMessage = {
 			form: {
 				edit: "编辑",
 				add: "添加",
+				editBasesEvent: "编辑笔记事件",
+				addBasesEvent: "添加笔记事件",
 				eventType: "事件类型",
 				eventName: "事件名称",
 				eventDate: "事件日期",

@@ -250,12 +250,19 @@ export const EventForm: React.FC<EventFormProps> = ({
 			>
 				{/* 表单标题 */}
 				<h3 className="yg-event-form-title">
-					{isEditing
-						? t("view.eventManager.form.edit")
-						: t("view.eventManager.form.add")}
-					{t(
-						`view.eventManager.${currentEventType}.name` as TranslationKeys
-					)}
+					{isBasesEvent
+						? isEditing
+							? t("view.eventManager.form.editBasesEvent")
+							: t("view.eventManager.form.addBasesEvent")
+						: isEditing
+						? t("view.eventManager.form.edit") +
+						  t(
+								`view.eventManager.${currentEventType}.name` as TranslationKeys
+						  )
+						: t("view.eventManager.form.add") +
+						  t(
+								`view.eventManager.${currentEventType}.name` as TranslationKeys
+						  )}
 				</h3>
 
 				{/* 基础字段 */}

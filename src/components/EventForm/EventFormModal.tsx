@@ -166,6 +166,7 @@ export class EventFormModal extends Modal {
 				text: event.text,
 				eventDate: event.eventDate,
 				dateArr: event.dateArr,
+				duration: (event as CustomEvent).duration, // 添加 duration 字段
 				emoji: event.emoji,
 				color: event.color,
 				isHidden: event.isHidden,

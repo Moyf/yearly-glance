@@ -158,6 +158,8 @@ export type BaseMessage = {
 			form: {
 				edit: string;
 				add: string;
+				editBasesEvent: string;
+				addBasesEvent: string;
 				eventType: string;
 				eventName: string;
 				eventDate: string;

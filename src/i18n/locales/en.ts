@@ -224,6 +224,8 @@ const translations: BaseMessage = {
 			form: {
 				edit: "Edit",
 				add: "Add",
+				editBasesEvent: "Edit note event",
+				addBasesEvent: "Add note event",
 				eventType: "Event type",
 				eventName: "Event name",
 				eventDate: "Event date",

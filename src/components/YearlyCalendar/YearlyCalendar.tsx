@@ -237,9 +237,20 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 		// 为多日事件添加特殊边框
 		if (event._totalDays && event._totalDays > 1) {
 			if (dayView) {
-				// 日历视图：第一天和最后一天添加右边框
-				if (event._isFirstDay || event._isLastDay) {
+				// 日历视图边框规则：
+				// - 第一天：仅 border-left（默认已有），无其他边框
+				// - 最后一天：仅 border-right，无 border-left
+				// - 中间日：无边框
+				if (event._isLastDay) {
+					// 最后一天：移除 border-left，添加 border-right
+					eventStyle.borderLeft = undefined;
 					eventStyle.borderRight = `3px solid ${eventColor}`;
+				} else if (event._isFirstDay) {
+					// 第一天：保持默认的 border-left，不添加其他边框
+					//（默认已有 border-left，无需额外操作）
+				} else {
+					// 中间日：移除所有边框
+					eventStyle.borderLeft = undefined;
 				}
 			} else {
 				// 列表视图：第一天添加顶部边框，最后一天添加底部边框

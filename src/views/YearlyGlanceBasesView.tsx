@@ -55,7 +55,7 @@ export class YearlyGlanceBasesView extends BasesView {
         // 2. 准备容器
         this.containerEl.empty();
         this.glanceEl = this.containerEl.createDiv("yg-bases-view-glance");
-        this.glanceEl.style.height = isEmbedded ? '400px' : '';
+        // this.glanceEl.style.height = isEmbedded ? '400px' : '';
 
         // 3. 销毁旧实例
         if (this.yearlyCalendar) {

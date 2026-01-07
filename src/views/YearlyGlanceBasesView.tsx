@@ -72,17 +72,15 @@ export class YearlyGlanceBasesView extends BasesView {
 
             // 1. 读取配置（如果 Bases 配置未设置，回退到插件全局设置）
             const config = {
-                inheritPluginData: this.config.get('inheritPluginData') === true,
+                inheritPluginData: this.getBooleanConfig('inheritPluginData', false),
                 propTitle: this.config.getAsPropertyId('propTitle') || pluginConfig.basesEventTitleProp || null,
                 propDate: this.config.getAsPropertyId('propDate') || pluginConfig.basesEventDateProp || null,
                 propDuration: this.config.getAsPropertyId('propDuration') || pluginConfig.basesEventDurationProp || null,
                 propIcon: this.config.getAsPropertyId('propIcon') || pluginConfig.basesEventIconProp || null,
                 propColor: this.config.getAsPropertyId('propColor') || pluginConfig.basesEventColorProp || null,
                 propDescription: this.config.getAsPropertyId('propDescription') || pluginConfig.basesEventDescriptionProp || null,
-                limitHeight: this.config.get('limitHeight') === true,
-                embeddedHeight: typeof this.config.get('embeddedHeight') === 'number'
-                    ? this.config.get('embeddedHeight')
-                    : 600,
+                limitHeight: this.getBooleanConfig('limitHeight', false),
+                embeddedHeight: this.getNumericConfig('embeddedHeight', 600, 400, 2000),
             };
 
             const pluginData = this.plugin.getData();
@@ -187,14 +185,48 @@ export class YearlyGlanceBasesView extends BasesView {
     private hashData(entries: any[], config: any): string {
         // 只计算影响渲染的关键字段
         const simplifiedEntries = entries.map(entry => {
-            const dateValue = config.propDate ? entry.getValue(config.propDate) : null;
-            const titleValue = config.propTitle ? entry.getValue(config.propTitle) : null;
-            const durationValue = config.propDuration ? entry.getValue(config.propDuration) : null;
+            let dateValue = null;
+            let titleValue = null;
+            let durationValue = null;
+            let iconValue = null;
+            let colorValue = null;
+            let descriptionValue = null;
 
-            // 从配置的属性中读取拓展属性
-            const iconValue = config.propIcon ? entry.getValue(config.propIcon) : null;
-            const colorValue = config.propColor ? entry.getValue(config.propColor) : null;
-            const descriptionValue = config.propDescription ? entry.getValue(config.propDescription) : null;
+            try {
+                dateValue = config.propDate ? entry.getValue(config.propDate) : null;
+            } catch (error) {
+                // 忽略错误，使用 null
+            }
+
+            try {
+                titleValue = config.propTitle ? entry.getValue(config.propTitle) : null;
+            } catch (error) {
+                // 忽略错误，使用 null
+            }
+
+            try {
+                durationValue = config.propDuration ? entry.getValue(config.propDuration) : null;
+            } catch (error) {
+                // 忽略错误，使用 null
+            }
+
+            try {
+                iconValue = config.propIcon ? entry.getValue(config.propIcon) : null;
+            } catch (error) {
+                // 忽略错误，使用 null
+            }
+
+            try {
+                colorValue = config.propColor ? entry.getValue(config.propColor) : null;
+            } catch (error) {
+                // 忽略错误，使用 null
+            }
+
+            try {
+                descriptionValue = config.propDescription ? entry.getValue(config.propDescription) : null;
+            } catch (error) {
+                // 忽略错误，使用 null
+            }
 
             return {
                 path: entry.file.path,
@@ -256,70 +288,98 @@ export class YearlyGlanceBasesView extends BasesView {
 
         if (entriesToProcess.length > 0) {
             for (const entry of entriesToProcess) {
-                // 使用 entry.getValue() 获取属性值（Obsidian Bases API，自动处理 note. 前缀）
-                const dateValue = config.propDate ? entry.getValue(config.propDate) : null;
+                // 读取日期（必需字段）
+                let dateValue: any = null;
+                try {
+                    dateValue = config.propDate ? entry.getValue(config.propDate) : null;
+                } catch (error) {
+                    console.warn(`Failed to read date property for ${entry.file.name}:`, error);
+                    continue; // 跳过此条目
+                }
 
-                if (dateValue && dateValue.isTruthy()) {
-                    // 如果配置了 title 属性，尝试获取值；如果值为空或属性不存在，fallback 到文件名（去掉 .md 后缀）
-                    let titleValue = entry.file.name.replace(/\.md$/, '');
-                    if (config.propTitle) {
+                if (!dateValue || !dateValue.isTruthy()) continue;
+
+                // 读取标题（可选字段）
+                let titleValue = entry.file.name.replace(/\.md$/, '');
+                if (config.propTitle) {
+                    try {
                         const rawTitle = entry.getValue(config.propTitle);
                         if (rawTitle && rawTitle.isTruthy()) {
                             titleValue = rawTitle.toString();
                         }
+                    } catch (error) {
+                        console.warn(`Failed to read title for ${entry.file.name}, using filename:`, error);
                     }
-                    const durationValue = config.propDuration ? entry.getValue(config.propDuration) : null;
+                }
 
-                    // 将 duration 转换为数字
-                    let durationNum = 1;
-                    if (durationValue && durationValue.isTruthy()) {
-                        const durationStr = durationValue.toString();
-                        const parsed = parseInt(durationStr, 10);
-                        if (!isNaN(parsed) && parsed > 0) {
-                            durationNum = parsed;
+                // 读取 duration（可选字段）
+                let durationNum = 1;
+                if (config.propDuration) {
+                    try {
+                        const durationValue = entry.getValue(config.propDuration);
+                        if (durationValue && durationValue.isTruthy()) {
+                            const durationStr = durationValue.toString();
+                            const parsed = parseInt(durationStr, 10);
+                            if (!isNaN(parsed) && parsed > 0) {
+                                durationNum = parsed;
+                            }
                         }
+                    } catch (error) {
+                        console.warn(`Failed to read duration for ${entry.file.name}, using default (1):`, error);
                     }
+                }
 
-                    // 读取拓展属性（图标、颜色、描述）
-                    let iconValue: string | null = null;
-                    if (config.propIcon) {
+                // 读取拓展属性（图标、颜色、描述）
+                let iconValue: string | null = null;
+                if (config.propIcon) {
+                    try {
                         const rawIcon = entry.getValue(config.propIcon);
                         if (rawIcon && rawIcon.isTruthy()) {
                             iconValue = rawIcon.toString();
                         }
+                    } catch (error) {
+                        console.warn(`Failed to read icon for ${entry.file.name}:`, error);
                     }
+                }
 
-                    let colorValue: string | null = null;
-                    if (config.propColor) {
+                let colorValue: string | null = null;
+                if (config.propColor) {
+                    try {
                         const rawColor = entry.getValue(config.propColor);
                         if (rawColor && rawColor.isTruthy()) {
                             colorValue = rawColor.toString();
                         }
+                    } catch (error) {
+                        console.warn(`Failed to read color for ${entry.file.name}:`, error);
                     }
+                }
 
-                    let descriptionValue: string | null = null;
-                    if (config.propDescription) {
+                let descriptionValue: string | null = null;
+                if (config.propDescription) {
+                    try {
                         const rawDescription = entry.getValue(config.propDescription);
                         if (rawDescription && rawDescription.isTruthy()) {
                             descriptionValue = rawDescription.toString();
                         }
+                    } catch (error) {
+                        console.warn(`Failed to read description for ${entry.file.name}:`, error);
                     }
+                }
 
-                    const event = this.convertBasesEvent(
-                        entry,
-                        dateValue,
-                        titleValue,
-                        durationNum,
-                        iconValue,
-                        colorValue,
-                        descriptionValue,
-                        entry.file.path
-                    );
-                    if (event) {
-                        events.push(event);
-                        // 填充 event id 到 file path 的映射，用于 frontmatter 更新
-                        this.basesEventMap.set(event.id, entry.file.path);
-                    }
+                const event = this.convertBasesEvent(
+                    entry,
+                    dateValue,
+                    titleValue,
+                    durationNum,
+                    iconValue,
+                    colorValue,
+                    descriptionValue,
+                    entry.file.path
+                );
+                if (event) {
+                    events.push(event);
+                    // 填充 event id 到 file path 的映射，用于 frontmatter 更新
+                    this.basesEventMap.set(event.id, entry.file.path);
                 }
             }
         }
@@ -463,6 +523,58 @@ export class YearlyGlanceBasesView extends BasesView {
         } catch (error) {
             console.error('Failed to update frontmatter:', error);
         }
+    }
+
+    /**
+     * 获取数字类型配置，带验证和范围限制
+     * @param key 配置键
+     * @param defaultValue 默认值
+     * @param min 最小值（可选）
+     * @param max 最大值（可选）
+     * @returns 验证后的数字值
+     */
+    private getNumericConfig(key: string, defaultValue: number, min?: number, max?: number): number {
+        const value = this.config.get(key);
+        if (value == null || typeof value !== 'number') return defaultValue;
+
+        let result = value;
+        if (min !== undefined) result = Math.max(min, result);
+        if (max !== undefined) result = Math.min(max, result);
+        return result;
+    }
+
+    /**
+     * 获取数组类型配置，自动过滤空值
+     * @param key 配置键
+     * @returns 字符串数组
+     */
+    private getArrayConfig(key: string): string[] {
+        const value = this.config.get(key);
+        if (!value) return [];
+
+        // 处理数组类型
+        if (Array.isArray(value)) {
+            return value.filter(item => typeof item === 'string' && item.trim().length > 0);
+        }
+
+        // 处理单个字符串类型
+        if (typeof value === 'string' && value.trim().length > 0) {
+            return [value.trim()];
+        }
+
+        return [];
+    }
+
+    /**
+     * 获取布尔类型配置，带默认值
+     * @param key 配置键
+     * @param defaultValue 默认值
+     * @returns 布尔值
+     */
+    private getBooleanConfig(key: string, defaultValue: boolean): boolean {
+        const value = this.config.get(key);
+        if (value == null) return defaultValue;
+        return value === true;
     }
 
     /**

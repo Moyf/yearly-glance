@@ -744,7 +744,7 @@ export class MigrateData {
 
 ## 扩展阅读
 
-### BasesView 最佳实践
+### 1. BasesView 最佳实践
 
 **适用场景**：
 
@@ -759,6 +759,57 @@ export class MigrateData {
 1. **错误处理模式**：如何在 `entry.getValue()` 调用中添加 try-catch
 2. **配置验证辅助方法**：`getNumericConfig`、`getArrayConfig`、`getBooleanConfig` 的实现
 3. **实施指南**：逐步改造现有代码的步骤
+
+### 2. BasesView 更新策略
+
+**适用场景**：
+
+- BasesView 数据频繁更新导致性能问题
+- 需要优化 `onDataUpdated()` 的调用频率
+- 需要检测配置和数据的变化
+
+**详细文档**：参见 [BasesView 更新策略最佳实践](./basesview-update-strategies.md)
+
+**核心内容**：
+
+1. **防抖更新机制**：避免频繁重新渲染
+2. **配置快照模式**：检测配置变化
+3. **数据哈希比较**：检测数据变化
+4. **更新锁**：防止重复更新
+
+### 3. React vs MarkdownRenderer
+
+**适用场景**：
+
+- 需要渲染用户输入的内容
+- 需要动态更新或条件渲染
+- 决定使用 JSX 还是 MarkdownRenderer
+
+**详细文档**：参见 [React 组件 vs MarkdownRenderer 渲染选择指南](./react-vs-markdown-rendering.md)
+
+**核心内容**：
+
+1. **决策树**：如何选择渲染方式
+2. **MarkdownRenderer 使用场景**：用户输入、安全性
+3. **JSX 使用场景**：动态内容、交互性
+4. **常见陷阱**：Component 参数传递、性能优化
+
+### 4. 配置默认值的 UI/运行时分离
+
+**适用场景**：
+
+- 设计插件配置系统
+- 实现 BasesView 属性配置
+- 需要区分"未配置"和"使用默认值"
+
+**详细文档**：参见 [配置默认值的 UI/运行时分离模式](./config-default-pattern.md)
+
+**核心内容**：
+
+1. **分离原则**：UI 不显示默认值，运行时回退
+2. **实施步骤**：完整的改造流程
+3. **用户体验优化**：清晰的视觉反馈
+4. **适用场景**：何时使用这种模式
 
 ---
 

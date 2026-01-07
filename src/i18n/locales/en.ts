@@ -344,6 +344,8 @@ const translations: BaseMessage = {
 				basesEventHint:
 					"**Event Source**: This event is from note *{{file}}*\n\n" +
 					"Changes will be synced to the original note's frontmatter metadata.",
+				basesEventCreateHint: "<b>Create new note</b>: A new note will be created in the <i>{{path}}</i> folder after saving. Configure default path in plugin settings.",
+				basesEventCreateHintWithName: "<b>Create new note</b>: Will be saved as: <i>{{path}}</i> ",
 			},
 			holiday: {
 				name: "Holiday",

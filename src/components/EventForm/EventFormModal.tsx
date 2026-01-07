@@ -71,7 +71,6 @@ export class EventFormModal extends Modal {
 					onCancel={() => this.close()}
 					props={this.props}
 					isBasesEvent={this.isBasesEvent}
-					obsidianComponent={this as any}
 				/>
 			</React.StrictMode>
 		);

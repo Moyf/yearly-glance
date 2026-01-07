@@ -342,6 +342,8 @@ const translations: BaseMessage = {
 				basesEventHint:
 					"**事件来源**：此事件来自笔记 *{{file}}*\n\n" +
 					"保存时会将修改同步到原始笔记的 frontmatter 元数据中。",
+				basesEventCreateHint: "<b>创建新笔记</b>：保存后将在 <i>{{path}}</i> 文件夹中创建新笔记，可在插件设置中配置默认路径。",
+				basesEventCreateHintWithName: "<b>创建新笔记</b>：将保存为新笔记： <i>{{path}}</i> ",
 			},
 			holiday: {
 				name: "节日",

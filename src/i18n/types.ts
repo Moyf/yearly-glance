@@ -221,6 +221,8 @@ export type BaseMessage = {
 				holidayFoundDate: string;
 				frontmatterSync: string;
 				basesEventHint: string;
+				basesEventCreateHint: string;
+				basesEventCreateHintWithName: string;
 			};
 			holiday: {
 				name: string;

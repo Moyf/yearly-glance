@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Component, MarkdownRenderer } from "obsidian";
 import { YearlyGlanceConfig } from "@/src/type/Config";
 import {
 	Birthday,
@@ -77,7 +76,6 @@ interface EventFormProps {
 		date?: string; // 可选的日期属性
 	};
 	isBasesEvent?: boolean;
-	obsidianComponent?: Component; // Obsidian Component 用于 MarkdownRenderer
 }
 
 export const EventForm: React.FC<EventFormProps> = ({
@@ -90,7 +88,6 @@ export const EventForm: React.FC<EventFormProps> = ({
 	onCancel,
 	props = {},
 	isBasesEvent = false,
-	obsidianComponent,
 }) => {
 	const today = IsoUtils.getTodayLocalDateString(); // 获取今天的日期字符串（时区安全）
 	const todayString = props.date || today; // 如果传入了特定日期，则使用它，否则使用今天的日期
@@ -101,9 +98,6 @@ export const EventForm: React.FC<EventFormProps> = ({
 	// 表单容器和表单元素的引用，用于键盘快捷键
 	const modalRef = React.useRef<HTMLDivElement>(null);
 	const formRef = React.useRef<HTMLFormElement>(null);
-
-	// Markdown 渲染容器的引用
-	const markdownContainerRef = React.useRef<HTMLDivElement>(null);
 
 	// 当前选择的事件类型
 	const [currentEventType, setCurrentEventType] =
@@ -157,34 +151,6 @@ export const EventForm: React.FC<EventFormProps> = ({
 			firstInputRef.current.focus();
 		}
 	}, []);
-
-	// Markdown 渲染 hook - 为 Bases 事件渲染 Markdown 提示
-	React.useEffect(() => {
-		if (!markdownContainerRef.current || !isBasesEvent || !obsidianComponent) return;
-
-		const container = markdownContainerRef.current;
-
-		// 获取 Markdown 文本
-		const markdownText = t("view.eventManager.help.basesEventHint", {
-			file: (() => {
-				const idWithoutPrefix = event.id?.replace(/^bases-/, "") || "";
-				const mdIndex = idWithoutPrefix.indexOf(".md");
-				return mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
-			})()
-		});
-
-		// 使用 Obsidian 的 MarkdownRenderer.renderMarkdown，传入 Component 避免内存泄漏
-		MarkdownRenderer.renderMarkdown(markdownText, container, "", obsidianComponent).then(() => {
-			// 渲染完成
-		});
-
-		// 清理函数
-		return () => {
-			if (container) {
-				container.empty();
-			}
-		};
-	}, [isBasesEvent, event.id, obsidianComponent]);
 
 	// 处理键盘快捷键提交表单
 	React.useEffect(() => {
@@ -491,7 +457,33 @@ export const EventForm: React.FC<EventFormProps> = ({
 					</div>
 					{isBasesEvent && (
 						<div className="form-group bases-event-hint">
-							<div ref={markdownContainerRef} className="yg-bases-event-hint-content" />
+							<div className="yg-bases-event-hint-content">
+								{isEditing ? (
+									// 编辑模式：显示来源笔记
+									<>
+										<b>事件来源</b>：此事件来自笔记 <i>{
+											event.id?.replace(/^bases-/, "")?.replace(/-\d{4}-\d{2}-\d{2}$/, "") || ""
+										}</i>
+										<br />
+										保存时会将修改同步到原始笔记的 frontmatter 元数据中。
+									</>
+								) : (
+									// 新增模式
+									<>
+										{formData.text ? (
+											// 有事件名：显示完整路径
+											t("view.eventManager.help.basesEventCreateHintWithName", {
+												path: `${settings.config.defaultBasesEventPath || '根目录'}/${formData.text}.md`
+											})
+										) : (
+											// 无事件名：显示文件夹
+											t("view.eventManager.help.basesEventCreateHint", {
+												path: settings.config.defaultBasesEventPath || '根目录'
+											})
+										)}
+									</>
+								)}
+							</div>
 						</div>
 					)}
 				</div>

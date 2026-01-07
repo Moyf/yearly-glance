@@ -118,6 +118,8 @@ export interface YearlyGlanceSettings {
 	emojiOnTop: boolean; // 是否在事件上方显示emoji（仅日历视图）
 	wrapEventText: boolean; // 是否换行显示事件文本
 	gregorianDisplayFormat: (typeof GREGORIAN_DISPLAY_FORMAT_OPTIONS)[number]["value"]; // 公历显示格式
+	// 笔记事件设置
+	defaultBasesEventPath?: string; // 默认笔记事件路径
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -145,4 +147,5 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	emojiOnTop: false, // 默认在左侧显示emoji
 	wrapEventText: false,
 	gregorianDisplayFormat: "YYYY-MM-DD", // 默认使用ISO格式
+	defaultBasesEventPath: "", // 默认笔记事件路径为空（根目录）
 };

@@ -165,3 +165,24 @@
 		pointer-events: none;
 	}
 }
+
+.bases-event-hint {
+	padding: 0.75em;
+	border-radius: 4px;
+	color: var(--text-warning);
+	border: 1px solid currentColor;
+
+	.yg-bases-event-hint-content {
+		/* Markdown 内容容器 */
+		p {
+			margin: 0;
+		}
+
+		code {
+			background-color: var(--background-secondary);
+			padding: 0.2em 0.4em;
+			border-radius: 3px;
+			font-family: var(--font-monospace);
+		}
+	}
+}

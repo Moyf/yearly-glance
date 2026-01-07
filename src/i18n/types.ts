@@ -75,6 +75,9 @@ export type BaseMessage = {
 					enFullDmy: string;
 				};
 			}>;
+			defaultBasesEventPath: SettingsItem<{
+				placeholder: string;
+			}>;
 		}>;
 		events: IBaseSettingsItem;
 		group: {
@@ -215,6 +218,9 @@ export type BaseMessage = {
 			customEvent: {
 				name: string;
 				repeat: string;
+			};
+			basesEvent: {
+				name: string;
 			};
 			source: {
 				bases: string;

@@ -1,4 +1,4 @@
-import { Notice, Plugin, TFile } from "obsidian";
+import { normalizePath, Notice, Plugin, TFile, TFolder } from "obsidian";
 import { DEFAULT_CONFIG, YearlyGlanceConfig } from "./type/Config";
 import YearlyGlanceSettingsTab from "./components/Settings/SettingsTab";
 import {
@@ -14,7 +14,7 @@ import {
 	VIEW_TYPE_YEARLY_GLANCE_BASES,
 	YearlyGlanceBasesView,
 } from "./views/YearlyGlanceBasesView";
-import { Birthday, CustomEvent, EventSource, EventType, Holiday } from "@/src/type/Events";
+import { Birthday, CustomEvent, EVENT_TYPE_DEFAULT, EventSource, EventType, Holiday } from "@/src/type/Events";
 import {
 	EventFormModal,
 	EventFormModalProps,
@@ -383,12 +383,12 @@ export default class YearlyGlancePlugin extends Plugin {
 				}
 
 				// 只有当事件有自定义图标时才更新
-				if (event.emoji && event.emoji !== '📄') {
+				if (event.emoji && event.emoji !== EVENT_TYPE_DEFAULT.basesEvent.emoji) {
 					fm.icon = event.emoji;
 				}
 
 				// 只有当事件有自定义颜色时才更新
-				if (event.color && event.color !== '#52c41a') {
+				if (event.color && event.color !== EVENT_TYPE_DEFAULT.basesEvent.color) {
 					fm.color = event.color;
 				}
 
@@ -401,6 +401,62 @@ export default class YearlyGlancePlugin extends Plugin {
 		} catch (error) {
 			console.error('Failed to sync frontmatter:', error);
 		}
+	}
+
+	/**
+	 * 为 Bases 事件创建新笔记文件
+	 * @param event 事件对象
+	 * @returns 创建的文件路径
+	 */
+	async createBasesEventNote(event: CustomEvent): Promise<string> {
+		// 1. 获取配置的默认路径
+		const defaultPath = this.settings.config.defaultBasesEventPath?.trim();
+
+		// 2. 确定文件夹路径
+		let folderPath = "";
+		let pathWarning = false;
+
+		if (defaultPath) {
+			const folder = this.app.vault.getAbstractFileByPath(defaultPath);
+			if (folder instanceof TFolder) {
+				folderPath = defaultPath;
+			} else {
+				pathWarning = true;
+			}
+		}
+
+		// 3. 生成文件名（使用事件标题）
+		const fileName = `${event.text}.md`;
+		const filePath = folderPath ? normalizePath(`${folderPath}/${fileName}`) : fileName;
+
+		// 4. 创建文件
+		await this.app.vault.create(filePath, "");
+
+		// 5. 写入 frontmatter
+		const file = this.app.vault.getAbstractFileByPath(filePath) as TFile;
+		await this.app.fileManager.processFrontMatter(file, (fm) => {
+			fm.title = event.text;
+			fm.event_date = event.eventDate.isoDate;
+			if (event.duration && event.duration > 1) {
+				fm.duration_days = event.duration;
+			}
+			if (event.emoji) {
+				fm.icon = event.emoji;
+			}
+			if (event.color) {
+				fm.color = event.color;
+			}
+			if (event.remark) {
+				fm.description = event.remark;
+			}
+		});
+
+		// 6. 如果路径有问题，显示 Notice
+		if (pathWarning) {
+			new Notice("提示：请在插件设置中选择默认笔记事件路径");
+		}
+
+		return filePath;
 	}
 
 	// 重载插件

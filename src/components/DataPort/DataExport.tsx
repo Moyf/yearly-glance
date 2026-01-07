@@ -153,6 +153,8 @@ export const DataExport: React.FC<DataExportProps> = ({
 					type: "customEvent" as EventType,
 				}))
 			),
+			// bases events are tied to notes and don't need to be exported through data port
+			basesEvent: [],
 		};
 		return groups;
 	}, [currentData, config]);

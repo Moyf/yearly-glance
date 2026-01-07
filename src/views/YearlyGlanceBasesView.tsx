@@ -7,7 +7,7 @@ import type YearlyGlancePlugin from "@/src/main";
 import { YearlyCalendar } from "@/src/components/YearlyCalendar/YearlyCalendar";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
 import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
-import { EventSource } from "@/src/type/Events";
+import { EVENT_TYPE_DEFAULT, EventSource } from "@/src/type/Events";
 
 // 定义视图类型
 export const VIEW_TYPE_YEARLY_GLANCE_BASES = "yearly-glance-bases-view";
@@ -306,11 +306,11 @@ export class YearlyGlanceBasesView extends BasesView {
                 },
                 dateArr: [isoDate],
                 duration: eventDuration,
-                emoji: icon || '📄',
-                color: color || '#52c41a',
+                emoji: icon || EVENT_TYPE_DEFAULT.basesEvent.emoji,
+                color: color || EVENT_TYPE_DEFAULT.basesEvent.color,
                 isHidden: false,
                 remark: description || `From Bases: ${filePath}`,
-                eventType: 'customEvent',
+                eventType: 'basesEvent',
                 isRepeat: false,
                 eventSource: EventSource.BASES
             } as CalendarEvent;
@@ -371,12 +371,12 @@ export class YearlyGlanceBasesView extends BasesView {
                 }
 
                 // 只有当事件有自定义图标时才更新
-                if (event.emoji && event.emoji !== '📄') {
+                if (event.emoji && event.emoji !== EVENT_TYPE_DEFAULT.basesEvent.emoji) {
                     fm.icon = event.emoji;
                 }
 
                 // 只有当事件有自定义颜色时才更新
-                if (event.color && event.color !== '#52c41a') {
+                if (event.color && event.color !== EVENT_TYPE_DEFAULT.basesEvent.color) {
                     fm.color = event.color;
                 }
 

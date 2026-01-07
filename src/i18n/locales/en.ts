@@ -116,6 +116,11 @@ const translations: BaseMessage = {
 					enFullDmy: "Full English Day-Month-Year (1 October 1949)",
 				},
 			},
+			defaultBasesEventPath: {
+				name: "Default note event path",
+				desc: "When creating note events, new notes will be saved to this folder",
+				placeholder: "Leave empty to save to vault root",
+			},
 		},
 		events: {
 			name: "Events",
@@ -302,7 +307,9 @@ const translations: BaseMessage = {
 				holidayFoundDate:
 					"Holiday founding date, will be used to calculate holiday anniversaries in future plans",
 				frontmatterSync: "Sync to note metadata (frontmatter)",
-				basesEventHint: "This is an event from note {{file}}, saving will write data to the original note metadata",
+				basesEventHint:
+					"**Event Source**: This event is from note *{{file}}*\n\n" +
+					"Changes will be synced to the original note's frontmatter metadata.",
 			},
 			holiday: {
 				name: "Holiday",
@@ -319,6 +326,9 @@ const translations: BaseMessage = {
 			customEvent: {
 				name: "Custom event",
 				repeat: "Repeat",
+			},
+			basesEvent: {
+				name: "Note event",
 			},
 			source: {
 				bases: "From note",

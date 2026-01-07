@@ -16,6 +16,7 @@ import { SettingsItem } from "@/src/components/Settings/SettingsItem";
 import { Toggle } from "@/src/components/Base/Toggle";
 import { Select } from "@/src/components/Base/Select";
 import { Input } from "@/src/components/Base/Input";
+import { FolderAutoComplete } from "@/src/components/Base/FolderAutoComplete";
 import { PresetColorSettings } from "./PresetColorSettings";
 
 interface ViewSettingsProps {
@@ -83,6 +84,19 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						onChange={(value) =>
 							handleUpdateConfig({ title: value })
 						}
+					/>
+				</SettingsItem>
+				{/* 默认笔记事件路径 */}
+				<SettingsItem
+					name={t("setting.general.defaultBasesEventPath.name")}
+					desc={t("setting.general.defaultBasesEventPath.desc")}
+				>
+					<FolderAutoComplete
+						value={config.defaultBasesEventPath || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ defaultBasesEventPath: value })
+						}
+						placeholder={t("setting.general.defaultBasesEventPath.placeholder")}
 					/>
 				</SettingsItem>
 				{/* 显示周几 */}

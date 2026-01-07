@@ -1,4 +1,5 @@
 import * as React from "react";
+import { MarkdownRenderer } from "obsidian";
 import { YearlyGlanceConfig } from "@/src/type/Config";
 import {
 	Birthday,
@@ -99,6 +100,9 @@ export const EventForm: React.FC<EventFormProps> = ({
 	const modalRef = React.useRef<HTMLDivElement>(null);
 	const formRef = React.useRef<HTMLFormElement>(null);
 
+	// Markdown 渲染容器的引用
+	const markdownContainerRef = React.useRef<HTMLDivElement>(null);
+
 	// 当前选择的事件类型
 	const [currentEventType, setCurrentEventType] =
 		React.useState<EventType>(eventType);
@@ -151,6 +155,35 @@ export const EventForm: React.FC<EventFormProps> = ({
 			firstInputRef.current.focus();
 		}
 	}, []);
+
+	// Markdown 渲染 hook - 为 Bases 事件渲染 Markdown 提示
+	React.useEffect(() => {
+		if (!markdownContainerRef.current || !isBasesEvent) return;
+
+		const container = markdownContainerRef.current;
+
+		// 获取 Markdown 文本
+		const markdownText = t("view.eventManager.help.basesEventHint", {
+			file: (() => {
+				const idWithoutPrefix = event.id?.replace(/^bases-/, "") || "";
+				const mdIndex = idWithoutPrefix.indexOf(".md");
+				return mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
+			})()
+		});
+
+		// 使用 Obsidian 的 MarkdownRenderer.renderMarkdown
+		// @ts-ignore - Component 参数在某些版本是可选的
+		MarkdownRenderer.renderMarkdown(markdownText, container, "", null).then(() => {
+			// 渲染完成
+		});
+
+		// 清理函数
+		return () => {
+			if (container) {
+				container.empty();
+			}
+		};
+	}, [isBasesEvent, event.id]);
 
 	// 处理键盘快捷键提交表单
 	React.useEffect(() => {
@@ -456,16 +489,8 @@ export const EventForm: React.FC<EventFormProps> = ({
 						/>
 					</div>
 					{isBasesEvent && (
-						<div className="form-group">
-							<div className="bases-event-hint">
-								{t("view.eventManager.help.basesEventHint", {
-									file: (() => {
-										const idWithoutPrefix = event.id?.replace(/^bases-/, "") || "";
-										const mdIndex = idWithoutPrefix.indexOf(".md");
-										return mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
-									})()
-								})}
-							</div>
+						<div className="form-group bases-event-hint">
+							<div ref={markdownContainerRef} className="yg-bases-event-hint-content" />
 						</div>
 					)}
 				</div>

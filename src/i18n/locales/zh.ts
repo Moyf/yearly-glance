@@ -116,6 +116,11 @@ const translations: BaseMessage = {
 					enFullDmy: "完整英文日月年格式(1 October 1949)",
 				},
 			},
+			defaultBasesEventPath: {
+				name: "默认笔记事件路径",
+				desc: "创建笔记事件时，新笔记将保存到此文件夹",
+				placeholder: "留空则保存到库根目录",
+			},
 		},
 		events: {
 			name: "事件",
@@ -300,7 +305,9 @@ const translations: BaseMessage = {
 				customEventRepeat: "选中时，将会在每年的该日期都重复显示事件",
 				holidayFoundDate: "节日起源日期，后续计划会用于计算节庆周年",
 				frontmatterSync: "同步到笔记元数据（frontmatter）",
-				basesEventHint: "这是来自笔记 {{file}} 的事件，保存时会将数据写入原始笔记的元数据",
+				basesEventHint:
+					"**事件来源**：此事件来自笔记 *{{file}}*\n\n" +
+					"保存时会将修改同步到原始笔记的 frontmatter 元数据中。",
 			},
 			holiday: {
 				name: "节日",
@@ -317,6 +324,9 @@ const translations: BaseMessage = {
 			customEvent: {
 				name: "自定义事件",
 				repeat: "重复",
+			},
+			basesEvent: {
+				name: "笔记事件",
 			},
 			source: {
 				bases: "来自笔记",

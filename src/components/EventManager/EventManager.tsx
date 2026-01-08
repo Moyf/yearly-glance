@@ -1,7 +1,7 @@
 import * as React from "react";
 import YearlyGlancePlugin from "@/src/main";
 import { Birthday, CustomEvent, EventType, Holiday } from "@/src/type/Events";
-import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
+import { useYearlyGlanceConfig, YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 import { EVENT_TYPE_OPTIONS } from "@/src/components/EventForm/EventForm";
 import { SortControls, SortDirection, SortField } from "./SortControls";
 import { EventList } from "./EventList";
@@ -39,24 +39,34 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 
 	// 笔记事件状态
 	const [basesEvents, setBasesEvents] = React.useState<CalendarEvent[]>([]);
+	const { config } = useYearlyGlanceConfig(plugin);
 
-	const gregorianDisplayFormat = plugin.getConfig().gregorianDisplayFormat;
+	const gregorianDisplayFormat = config.gregorianDisplayFormat;
 
 	// 加载笔记事件
 	React.useEffect(() => {
-		const config = plugin.getConfig();
-		if (config.showBasesEvents && config.defaultBasesEventPath) {
-			const noteEventService = new NoteEventService(plugin.app, config);
-			noteEventService.loadEventsFromPath(config.defaultBasesEventPath, config.year)
-				.then(setBasesEvents)
-				.catch((error) => {
-					console.error("[YearlyGlance] Failed to load note events:", error);
-					setBasesEvents([]);
-				});
-		} else {
-			setBasesEvents([]);
-		}
-	}, [plugin, plugin.app, plugin.getConfig()]);
+		const loadBasesEvents = () => {
+			if (config.showBasesEvents && config.defaultBasesEventPath) {
+				const noteEventService = new NoteEventService(plugin.app, config);
+				noteEventService.loadEventsFromPath(config.defaultBasesEventPath, config.year)
+					.then(setBasesEvents)
+					.catch((error) => {
+						console.error("[YearlyGlance] Failed to load note events:", error);
+						setBasesEvents([]);
+					});
+			} else {
+				setBasesEvents([]);
+			}
+		};
+
+		// 初始加载
+		loadBasesEvents();
+
+		// 订阅 YearlyGlanceBus，当笔记事件更新时重新加载
+		const unsubscribe = YearlyGlanceBus.subscribe(loadBasesEvents);
+
+		return unsubscribe;
+	}, [plugin, plugin.app, config.showBasesEvents, config.defaultBasesEventPath, config.year, config.dataVersion]);
 
 	// 订阅事件总线，处理搜索请求
 	React.useEffect(() => {
@@ -362,6 +372,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 					sortDirection={sortDirection}
 					isSearchMode={isSearching}
 					gregorianDisplayFormat={gregorianDisplayFormat}
+					plugin={plugin}
 				/>
 			</div>
 		</div>

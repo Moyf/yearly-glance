@@ -66,7 +66,7 @@ const translations: BaseMessage = {
 			},
 			showBasesEvents: {
 				name: "显示笔记事件",
-				desc: "在视图中显示来自笔记 frontmatter 的事件",
+				desc: "在视图中显示来自笔记属性的事件",
 			},
 			mondayFirst: {
 				name: "周一作为一周的第一天",
@@ -127,32 +127,32 @@ const translations: BaseMessage = {
 			},
 			basesEventTitleProp: {
 				name: "标题属性名",
-				desc: "笔记 frontmatter 中用于存储事件标题的属性名",
+				desc: "笔记属性中用于存储事件标题的属性名",
 				placeholder: "默认: title",
 			},
 			basesEventDateProp: {
 				name: "日期属性名",
-				desc: "笔记 frontmatter 中用于存储事件日期的属性名",
+				desc: "笔记属性中用于存储事件日期的属性名",
 				placeholder: "默认: event_date",
 			},
 			basesEventDurationProp: {
 				name: "持续天数属性名",
-				desc: "笔记 frontmatter 中用于存储事件持续天数的属性名",
+				desc: "笔记属性中用于存储事件持续天数的属性名",
 				placeholder: "默认: duration_days",
 			},
 			basesEventIconProp: {
 				name: "图标属性名",
-				desc: "笔记 frontmatter 中用于存储事件图标的属性名",
+				desc: "笔记属性中用于存储事件图标的属性名",
 				placeholder: "默认: icon",
 			},
 			basesEventColorProp: {
 				name: "颜色属性名",
-				desc: "笔记 frontmatter 中用于存储事件颜色的属性名",
+				desc: "笔记属性中用于存储事件颜色的属性名",
 				placeholder: "默认: color",
 			},
 			basesEventDescriptionProp: {
 				name: "描述属性名",
-				desc: "笔记 frontmatter 中用于存储事件描述的属性名",
+				desc: "笔记属性中用于存储事件描述的属性名",
 				placeholder: "默认: description",
 			},
 		},
@@ -356,7 +356,7 @@ const translations: BaseMessage = {
 				basesEventEdit: {
 					label: "事件来源",
 					notePrefix: "此事件来自笔记",
-					syncText: "保存时会将修改同步到原始笔记的 frontmatter 元数据中。",
+					syncText: "保存时会将修改同步到原始笔记的属性中。",
 				},
 			},
 			holiday: {

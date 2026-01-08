@@ -66,7 +66,7 @@ const translations: BaseMessage = {
 			},
 			showBasesEvents: {
 				name: "顯示筆記事件",
-				desc: "在視圖中顯示來自筆記 frontmatter 的事件",
+				desc: "在視圖中顯示來自筆記屬性的事件",
 			},
 			mondayFirst: {
 				name: "週一作為一週的第一天",
@@ -127,32 +127,32 @@ const translations: BaseMessage = {
 			},
 			basesEventTitleProp: {
 				name: "標題屬性名",
-				desc: "筆記 frontmatter 中用於儲存事件標題的屬性名",
+				desc: "筆記屬性中用於儲存事件標題的屬性名",
 				placeholder: "預設: title",
 			},
 			basesEventDateProp: {
 				name: "日期屬性名",
-				desc: "筆記 frontmatter 中用於儲存事件日期的屬性名",
+				desc: "筆記屬性中用於儲存事件日期的屬性名",
 				placeholder: "預設: event_date",
 			},
 			basesEventDurationProp: {
 				name: "持續天數屬性名",
-				desc: "筆記 frontmatter 中用於儲存事件持續天數的屬性名",
+				desc: "筆記屬性中用於儲存事件持續天數的屬性名",
 				placeholder: "預設: duration_days",
 			},
 			basesEventIconProp: {
 				name: "圖示屬性名",
-				desc: "筆記 frontmatter 中用於儲存事件圖示的屬性名",
+				desc: "筆記屬性中用於儲存事件圖示的屬性名",
 				placeholder: "預設: icon",
 			},
 			basesEventColorProp: {
 				name: "顏色屬性名",
-				desc: "筆記 frontmatter 中用於儲存事件顏色的屬性名",
+				desc: "筆記屬性中用於儲存事件顏色的屬性名",
 				placeholder: "預設: color",
 			},
 			basesEventDescriptionProp: {
 				name: "描述屬性名",
-				desc: "筆記 frontmatter 中用於儲存事件描述的屬性名",
+				desc: "筆記屬性中用於儲存事件描述的屬性名",
 				placeholder: "預設: description",
 			},
 		},

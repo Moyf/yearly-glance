@@ -3,16 +3,19 @@ import { Birthday, CustomEvent, EventType, Holiday } from "@/src/type/Events";
 import { EventItem } from "./EventItem";
 import { SortDirection, SortField } from "./SortControls";
 import { t } from "@/src/i18n/i18n";
+import YearlyGlancePlugin from "@/src/main";
+import { CalendarEvent } from "@/src/type/CalendarEvent";
 
 interface EventListProps {
-	events: Array<Holiday | Birthday | CustomEvent>;
-	onEdit: (event: Holiday | Birthday | CustomEvent) => void;
+	events: Array<Holiday | Birthday | CustomEvent | CalendarEvent>;
+	onEdit: (event: Holiday | Birthday | CustomEvent | CalendarEvent) => void;
 	onDelete: (event: Holiday | Birthday | CustomEvent) => void;
 	eventType: EventType;
 	sortField: SortField;
 	sortDirection: SortDirection;
 	isSearchMode?: boolean; // 是否为搜索模式
 	gregorianDisplayFormat: string; // 公历显示格式
+	plugin: YearlyGlancePlugin;
 }
 
 // 事件列表组件
@@ -25,6 +28,7 @@ export const EventList: React.FC<EventListProps> = ({
 	sortDirection,
 	isSearchMode = false, // 默认为非搜索模式
 	gregorianDisplayFormat,
+	plugin,
 }) => {
 	if (events.length === 0) {
 		return (
@@ -42,7 +46,7 @@ export const EventList: React.FC<EventListProps> = ({
 
 	// 排序事件的函数
 	const sortEvents = (
-		eventsToSort: Array<Holiday | Birthday | CustomEvent>
+		eventsToSort: Array<Holiday | Birthday | CustomEvent | CalendarEvent>
 	) => {
 		if (!sortField) return eventsToSort;
 
@@ -51,8 +55,9 @@ export const EventList: React.FC<EventListProps> = ({
 				const compareResult = a.text.localeCompare(b.text);
 				return sortDirection === "asc" ? compareResult : -compareResult;
 			} else if (sortField === "date") {
-				const dateA = a.dateArr![0];
-				const dateB = b.dateArr![0];
+				// 优先使用 eventDate.isoDate，如果没有则使用 dateArr[0]
+				const dateA = a.eventDate?.isoDate || a.dateArr?.[0];
+				const dateB = b.eventDate?.isoDate || b.dateArr?.[0];
 
 				if (dateA && dateB) {
 					return sortDirection === "asc"
@@ -75,6 +80,9 @@ export const EventList: React.FC<EventListProps> = ({
 		);
 		const customEvents = sortEvents(
 			events.filter((event) => event.id.contains("event"))
+		);
+		const basesEvents = sortEvents(
+			events.filter((event) => event.id.startsWith("bases-"))
 		);
 
 		return (
@@ -100,6 +108,7 @@ export const EventList: React.FC<EventListProps> = ({
 									gregorianDisplayFormat={
 										gregorianDisplayFormat
 									}
+									plugin={plugin}
 								/>
 							))}
 						</div>
@@ -127,6 +136,7 @@ export const EventList: React.FC<EventListProps> = ({
 									gregorianDisplayFormat={
 										gregorianDisplayFormat
 									}
+									plugin={plugin}
 								/>
 							))}
 						</div>
@@ -156,6 +166,37 @@ export const EventList: React.FC<EventListProps> = ({
 									gregorianDisplayFormat={
 										gregorianDisplayFormat
 									}
+									plugin={plugin}
+								/>
+							))}
+						</div>
+					</div>
+				)}
+
+				{basesEvents.length > 0 && (
+					<div className="event-group">
+						<div className="event-group-header">
+							<div className="header-left">
+								<h4>
+									{t("view.eventManager.basesEvent.name")}
+								</h4>
+							</div>
+							<span className="event-count">
+								{basesEvents.length}
+							</span>
+						</div>
+						<div className="event-items-grid">
+							{basesEvents.map((event, index) => (
+								<EventItem
+									key={`bases-${index}`}
+									event={event}
+									onEdit={() => onEdit(event)}
+									onDelete={() => onDelete(event)}
+									eventType="basesEvent"
+									gregorianDisplayFormat={
+										gregorianDisplayFormat
+									}
+									plugin={plugin}
 								/>
 							))}
 						</div>
@@ -176,6 +217,7 @@ export const EventList: React.FC<EventListProps> = ({
 						onDelete={() => onDelete(event)}
 						eventType={eventType}
 						gregorianDisplayFormat={gregorianDisplayFormat}
+						plugin={plugin}
 					/>
 				))}
 			</div>

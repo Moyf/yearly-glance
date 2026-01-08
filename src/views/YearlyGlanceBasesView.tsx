@@ -520,6 +520,9 @@ export class YearlyGlanceBasesView extends BasesView {
                 }
             });
             console.log('Frontmatter updated successfully for:', filePath);
+
+            // 同步成功后触发刷新，通知所有订阅者更新视图
+            YearlyGlanceBus.publish();
         } catch (error) {
             console.error('Failed to update frontmatter:', error);
         }

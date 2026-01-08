@@ -127,6 +127,7 @@ export interface YearlyGlanceSettings {
 	basesEventIconProp?: string; // 笔记事件图标属性名
 	basesEventColorProp?: string; // 笔记事件颜色属性名
 	basesEventDescriptionProp?: string; // 笔记事件描述属性名
+	dataVersion?: number; // 数据版本号，用于强制刷新笔记事件
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -162,4 +163,5 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	basesEventIconProp: "icon", // 默认图标属性名
 	basesEventColorProp: "color", // 默认颜色属性名
 	basesEventDescriptionProp: "description", // 默认描述属性名
+	dataVersion: 0, // 初始版本号为 0
 };

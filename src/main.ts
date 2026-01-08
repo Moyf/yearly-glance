@@ -99,6 +99,8 @@ export default class YearlyGlancePlugin extends Plugin {
 	}
 
 	async saveSettings() {
+		// 更新数据版本号，触发笔记事件重新加载
+		this.settings.config.dataVersion = Date.now();
 		await this.saveData(this.settings);
 		YearlyGlanceBus.publish();
 	}
@@ -440,6 +442,9 @@ export default class YearlyGlancePlugin extends Plugin {
 				}
 			});
 			console.log('[YearlyGlance] Frontmatter sync completed for:', filePath);
+
+			// 同步成功后触发刷新，通知所有订阅者更新视图
+			YearlyGlanceBus.publish();
 		} catch (error) {
 			console.error('[YearlyGlance] Failed to sync frontmatter:', error);
 		}

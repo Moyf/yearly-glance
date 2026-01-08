@@ -105,6 +105,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		showCustomEvents,
 		showBasesEvents,
 		defaultBasesEventPath,
+		dataVersion,
 	} = config;
 
 	const { holidays, birthdays, customEvents } = events;
@@ -128,7 +129,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 			console.error("[YearlyGlance] Failed to load note events:", error);
 			setBasesEvents([]);
 		});
-	}, [showBasesEvents, defaultBasesEventPath, year, plugin.app, config]);
+	}, [showBasesEvents, defaultBasesEventPath, year, plugin.app, dataVersion]);
 
 	// 处理所有事件
 	const allEvents = React.useMemo(() => {
@@ -283,7 +284,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 				firstDayPosition: firstDayWeekday,
 			};
 		});
-	}, [config, events, externalEvents]);
+	}, [allEvents, config, year, today, mondayFirst, highlightWeekends, highlightToday]);
 
 	// 获取星期几标题
 	const weekdays = React.useMemo(() => {

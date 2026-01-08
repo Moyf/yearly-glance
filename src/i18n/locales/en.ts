@@ -66,7 +66,7 @@ const translations: BaseMessage = {
 			},
 			showBasesEvents: {
 				name: "Show note events",
-				desc: "Show events from note frontmatter in view",
+				desc: "Show events from notes' properties in view",
 			},
 			mondayFirst: {
 				name: "Start week on Monday",
@@ -127,32 +127,32 @@ const translations: BaseMessage = {
 			},
 			basesEventTitleProp: {
 				name: "Title property name",
-				desc: "Property name in note frontmatter for storing event title",
+				desc: "Property name in note properties for storing event title",
 				placeholder: "Default: title",
 			},
 			basesEventDateProp: {
 				name: "Date property name",
-				desc: "Property name in note frontmatter for storing event date",
+				desc: "Property name in note properties for storing event date",
 				placeholder: "Default: event_date",
 			},
 			basesEventDurationProp: {
 				name: "Duration property name",
-				desc: "Property name in note frontmatter for storing event duration",
+				desc: "Property name in note properties for storing event duration",
 				placeholder: "Default: duration_days",
 			},
 			basesEventIconProp: {
 				name: "Icon property name",
-				desc: "Property name in note frontmatter for storing event icon",
+				desc: "Property name in note properties for storing event icon",
 				placeholder: "Default: icon",
 			},
 			basesEventColorProp: {
 				name: "Color property name",
-				desc: "Property name in note frontmatter for storing event color",
+				desc: "Property name in note properties for storing event color",
 				placeholder: "Default: color",
 			},
 			basesEventDescriptionProp: {
 				name: "Description property name",
-				desc: "Property name in note frontmatter for storing event description",
+				desc: "Property name in note properties for storing event description",
 				placeholder: "Default: description",
 			},
 		},
@@ -349,7 +349,7 @@ const translations: BaseMessage = {
 					"When selected, the event will repeat every year on the same date",
 				holidayFoundDate:
 					"Holiday founding date, will be used to calculate holiday anniversaries in future plans",
-				frontmatterSync: "Sync to note metadata (frontmatter)",
+				frontmatterSync: "Sync to note's properties (frontmatter)",
 				basesEventCreate: {
 					label: "Create new note",
 					text: "A new note will be created in the {{path}} folder after saving. Configure default path in plugin settings.",
@@ -358,7 +358,7 @@ const translations: BaseMessage = {
 				basesEventEdit: {
 					label: "Event Source",
 					notePrefix: "This event is from note",
-					syncText: "Changes will be synced to the original note's frontmatter metadata.",
+					syncText: "Changes will be synced to the original note's properties.",
 				},
 			},
 			holiday: {

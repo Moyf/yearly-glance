@@ -6,7 +6,7 @@ import { YearlyGlanceSettings } from "@/src/type/Settings";
 
 /**
  * 笔记事件服务
- * 从笔记 frontmatter 加载事件数据，不依赖 Bases API
+ * 从笔记属性加载事件数据，不依赖 Bases API
  */
 export class NoteEventService {
 	private app: App;

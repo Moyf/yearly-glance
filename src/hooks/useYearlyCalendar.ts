@@ -5,6 +5,7 @@ import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
 import { LunarLibrary } from "@/src/utils/lunarLibrary";
 import { IsoUtils } from "@/src/utils/isoUtils";
 import { t } from "@/src/i18n/i18n";
+import { NoteEventService } from "@/src/service/NoteEventService";
 
 export const MonthMap: Array<{ name: string; color: string }> = [
 	{
@@ -102,12 +103,32 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		showHolidays,
 		showBirthdays,
 		showCustomEvents,
+		showBasesEvents,
+		defaultBasesEventPath,
 	} = config;
 
 	const { holidays, birthdays, customEvents } = events;
 
 	// 当前日期 - 使用时区安全的方法
 	const today = React.useMemo(() => new Date(), []);
+
+	// 笔记事件状态
+	const [basesEvents, setBasesEvents] = React.useState<CalendarEvent[]>([]);
+
+	// 异步加载笔记事件
+	React.useEffect(() => {
+		if (!showBasesEvents || !defaultBasesEventPath) {
+			setBasesEvents([]);
+			return;
+		}
+		const noteEventService = new NoteEventService(plugin.app, config);
+		noteEventService.loadEventsFromPath(defaultBasesEventPath, year).then((loadedEvents) => {
+			setBasesEvents(loadedEvents);
+		}).catch((error) => {
+			console.error("[YearlyGlance] Failed to load note events:", error);
+			setBasesEvents([]);
+		});
+	}, [showBasesEvents, defaultBasesEventPath, year, plugin.app, config]);
 
 	// 处理所有事件
 	const allEvents = React.useMemo(() => {
@@ -182,8 +203,17 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 			});
 		}
 
+		// 处理笔记事件
+		if (showBasesEvents && basesEvents.length > 0) {
+			basesEvents.forEach((basesEvent) => {
+				if (!basesEvent.isHidden) {
+					expandEventByDuration(basesEvent, "basesEvent");
+				}
+			});
+		}
+
 		return events;
-	}, [externalEvents, config, events]);
+	}, [externalEvents, config, events, basesEvents, showBasesEvents]);
 
 	// 月份数据
 	const monthsData = React.useMemo(() => {

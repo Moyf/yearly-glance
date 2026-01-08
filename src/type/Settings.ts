@@ -106,6 +106,7 @@ export interface YearlyGlanceSettings {
 	showHolidays: boolean; // 是否显示节假日
 	showBirthdays: boolean; // 是否显示生日
 	showCustomEvents: boolean; // 是否显示自定义事件
+	showBasesEvents: boolean; // 是否显示笔记事件
 	mondayFirst: boolean; // 是否以周一为一周的第一天
 	title: string; // 年历标题
 	showEmojiBeforeTabName: IconDisplayOption; // 标签图标显示方式
@@ -142,6 +143,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	showHolidays: true,
 	showBirthdays: true,
 	showCustomEvents: true,
+	showBasesEvents: true, // 默认显示笔记事件
 	mondayFirst: true,
 	title: "",
 	showEmojiBeforeTabName: "emoji",

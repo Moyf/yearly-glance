@@ -64,6 +64,10 @@ const translations: BaseMessage = {
 				name: "Show custom events",
 				desc: "Show custom events in view",
 			},
+			showBasesEvents: {
+				name: "Show note events",
+				desc: "Show events from note frontmatter in view",
+			},
 			mondayFirst: {
 				name: "Start week on Monday",
 				desc: "Use Monday as the first day of the week",
@@ -211,6 +215,7 @@ const translations: BaseMessage = {
 				holiday: "Holiday",
 				birthday: "Birthday",
 				customEvent: "Custom event",
+				basesEvent: "Note event",
 			},
 			viewPreset: {
 				yearOverview: "Year overview",

@@ -14,6 +14,8 @@ import {
 	EVENT_SEARCH_REQUESTED,
 	EventManagerBus,
 } from "@/src/hooks/useEventBus";
+import { CalendarEvent } from "@/src/type/CalendarEvent";
+import { NoteEventService } from "@/src/service/NoteEventService";
 import "./style/EventManagerView.css";
 
 interface EventManagerViewProps {
@@ -35,7 +37,26 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 	const [sortDirection, setSortDirection] =
 		React.useState<SortDirection>("asc");
 
+	// 笔记事件状态
+	const [basesEvents, setBasesEvents] = React.useState<CalendarEvent[]>([]);
+
 	const gregorianDisplayFormat = plugin.getConfig().gregorianDisplayFormat;
+
+	// 加载笔记事件
+	React.useEffect(() => {
+		const config = plugin.getConfig();
+		if (config.showBasesEvents && config.defaultBasesEventPath) {
+			const noteEventService = new NoteEventService(plugin.app, config);
+			noteEventService.loadEventsFromPath(config.defaultBasesEventPath, config.year)
+				.then(setBasesEvents)
+				.catch((error) => {
+					console.error("[YearlyGlance] Failed to load note events:", error);
+					setBasesEvents([]);
+				});
+		} else {
+			setBasesEvents([]);
+		}
+	}, [plugin, plugin.app, plugin.getConfig()]);
 
 	// 订阅事件总线，处理搜索请求
 	React.useEffect(() => {
@@ -74,7 +95,13 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 	};
 
 	// 编辑事件
-	const handleEditEvent = (event: Holiday | Birthday | CustomEvent) => {
+	const handleEditEvent = (event: Holiday | Birthday | CustomEvent | CalendarEvent) => {
+		// 检查是否为笔记事件
+		if ((event as CalendarEvent).id?.startsWith("bases-")) {
+			plugin.openEventForm("basesEvent", event, true, false);
+			return;
+		}
+
 		// 在搜索模式下，需要根据事件类型确定要打开的编辑表单类型
 		let eventType = activeTab;
 
@@ -132,7 +159,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 			if (idMatch) {
 				const idTerm = idMatch[1].trim();
 				// 在所有事件类型中搜索指定ID - 使用精确匹配
-				const results: Array<Holiday | Birthday | CustomEvent> = [
+				const results: Array<Holiday | Birthday | CustomEvent | CalendarEvent> = [
 					...events.holidays.filter(
 						(event) => event.id?.toString() === idTerm
 					),
@@ -142,12 +169,15 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 					...events.customEvents.filter(
 						(event) => event.id?.toString() === idTerm
 					),
+					...basesEvents.filter(
+						(event) => event.id?.toString() === idTerm
+					),
 				];
 				return results;
 			}
 
 			// 常规搜索 - 从所有事件类型中搜索
-			const results: Array<Holiday | Birthday | CustomEvent> = [
+			const results: Array<Holiday | Birthday | CustomEvent | CalendarEvent> = [
 				...events.holidays.filter(
 					(event) =>
 						event.text.toLowerCase().includes(term) ||
@@ -169,6 +199,13 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 							event.remark.toLowerCase().includes(term)) ||
 						event.eventDate?.isoDate?.includes(term)
 				),
+				...basesEvents.filter(
+					(event) =>
+						event.text.toLowerCase().includes(term) ||
+						(event.remark &&
+							event.remark.toLowerCase().includes(term)) ||
+						event.eventDate?.isoDate?.includes(term)
+				),
 			];
 			return results;
 		}
@@ -181,6 +218,8 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 				return events.birthdays;
 			case "customEvent":
 				return events.customEvents;
+			case "basesEvent":
+				return basesEvents;
 			default:
 				return [];
 		}
@@ -223,6 +262,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 			holiday: events.holidays.length,
 			birthday: events.birthdays.length,
 			customEvent: events.customEvents.length,
+			basesEvent: basesEvents.length,
 		};
 	};
 

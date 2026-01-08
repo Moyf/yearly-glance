@@ -64,6 +64,10 @@ const translations: BaseMessage = {
 				name: "顯示自訂事件",
 				desc: "在視圖中顯示自訂事件",
 			},
+			showBasesEvents: {
+				name: "顯示筆記事件",
+				desc: "在視圖中顯示來自筆記 frontmatter 的事件",
+			},
 			mondayFirst: {
 				name: "週一作為一週的第一天",
 				desc: "設定週一（而不是週日）作為一週的第一天",
@@ -211,6 +215,7 @@ const translations: BaseMessage = {
 				holiday: "節日",
 				birthday: "生日",
 				customEvent: "自訂事件",
+				basesEvent: "筆記事件",
 			},
 			viewPreset: {
 				yearOverview: "全年一覽",

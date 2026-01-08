@@ -44,6 +44,7 @@ export type BaseMessage = {
 			showHolidays: IBaseSettingsItem;
 			showBirthdays: IBaseSettingsItem;
 			showCustomEvents: IBaseSettingsItem;
+			showBasesEvents: IBaseSettingsItem;
 			mondayFirst: IBaseSettingsItem;
 			showTooltips: IBaseSettingsItem;
 			colorful: IBaseSettingsItem;
@@ -121,6 +122,7 @@ export type BaseMessage = {
 				holiday: string;
 				birthday: string;
 				customEvent: string;
+				basesEvent: string;
 			};
 			viewPreset: {
 				yearOverview: string;

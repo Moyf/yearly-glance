@@ -168,8 +168,9 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 			}
 		};
 
-		// 如果有外部事件（Bases 事件），先扩展它们
-		if (externalEvents && externalEvents.length > 0) {
+		// 如果有外部事件（Bases 事件），只使用外部事件
+		// 即使 externalEvents 是空数组，也不应该 fallback 到插件数据
+		if (externalEvents) {
 			externalEvents.forEach((event) => {
 				// 扩展 Bases 事件
 				expandEventByDuration(event, event.eventType);

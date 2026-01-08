@@ -5,6 +5,7 @@
 	"main": "main.js",
 	"scripts": {
 		"dev": "node scripts/esbuild.config.mjs",
+		"dev:local": "node scripts/esbuild.config.mjs copy-to-vault",
 		"build": "tsc -noEmit -skipLibCheck && node scripts/esbuild.config.mjs production",
 		"build:local": "tsc -noEmit -skipLibCheck && node scripts/esbuild.config.mjs production keep-console && node scripts/copy-to-vault.mjs",
 		"version": "node scripts/version-bump.mjs",

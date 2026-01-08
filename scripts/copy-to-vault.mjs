@@ -83,3 +83,6 @@ copyToVault().then(() => {
 }).catch(err => {
 	console.error("脚本执行失败:", err);
 });
+
+// 导出函数供其他模块使用
+export { copyToVault };

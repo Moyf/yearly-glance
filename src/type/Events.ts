@@ -78,7 +78,7 @@ export const EVENT_TYPE_DEFAULT: Record<
 	customEvent: { emoji: "📌", color: "#73d13d" },
 	birthday: { emoji: "🎂", color: "#fa8c16" },
 	holiday: { emoji: "🎉", color: "#ff7875" },
-	basesEvent: { emoji: "📄", color: "#ddc32d" }, // 笔记事件
+	basesEvent: { emoji: "📄", color: "#3fabd9" }, // 笔记事件
 };
 
 export const DEFAULT_EVENTS: Events = {

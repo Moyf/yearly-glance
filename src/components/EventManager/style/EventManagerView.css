@@ -301,6 +301,32 @@
 		margin-top: 2px;
 	}
 
+	/* 事件来源信息 */
+	.event-source-info {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		margin-bottom: 8px;
+		font-size: 13px;
+		color: var(--text-muted);
+	}
+
+	.source-icon {
+		font-size: 14px;
+	}
+
+	.note-link {
+		color: var(--text-accent);
+		cursor: pointer;
+		text-decoration: underline;
+		text-underline-offset: 2px;
+		transition: opacity 0.2s ease;
+
+		&:hover {
+			opacity: 0.8;
+		}
+	}
+
 	.event-specific-info {
 		display: flex;
 		flex-direction: column;

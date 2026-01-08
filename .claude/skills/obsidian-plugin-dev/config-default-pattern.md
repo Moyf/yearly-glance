@@ -193,7 +193,7 @@ export default class YearlyGlanceSettingsTab extends PluginSettingTab {
     display(): void {
         new Setting(this.containerEl)
             .setName('笔记事件属性名')
-            .setDesc('配置从笔记 frontmatter 读取事件时使用的属性名')
+            .setDesc('配置从笔记属性读取事件时使用的属性名')
             .addText(text => text
                 .setPlaceholder('title')
                 .setValue(this.plugin.settings.config.basesEventTitleProp)

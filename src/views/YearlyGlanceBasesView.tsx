@@ -169,7 +169,7 @@ export class YearlyGlanceBasesView extends BasesView {
             if (!this.yearlyCalendar) {
                 this.yearlyCalendar = new YearlyCalendar(this.glanceEl, this.plugin);
             }
-            this.yearlyCalendar.renderWithEvents(mixedEvents);
+            this.yearlyCalendar.renderWithEvents(mixedEvents, config.inheritPluginData);
 
             // 9. 保存当前快照
             this.lastConfigSnapshot = configSnapshot;

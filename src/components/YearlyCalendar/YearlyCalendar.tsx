@@ -22,6 +22,7 @@ import { IsoUtils } from "@/src/utils/isoUtils";
 interface YearlyCalendarViewProps {
 	plugin: YearlyGlancePlugin;
 	externalEvents?: CalendarEvent[];
+	inheritPluginData?: boolean;
 }
 
 // 定义视图预设选项
@@ -43,7 +44,7 @@ const presetConfigs = {
 	classicCalendar: { layout: "4x3", viewType: "calendar" },
 };
 
-const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externalEvents }) => {
+const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externalEvents, inheritPluginData }) => {
 	const { config, updateConfig } = useYearlyGlanceConfig(plugin);
 	const [hidePreviousMonths, setHidePreviousMonths] = React.useState(false);
 	const [hideFutureMonths, setHideFutureMonths] = React.useState(false);
@@ -546,23 +547,31 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 				<div className="yg-buttons">
 					<div className="yg-buttons-left">
 						{/* 图例 */}
-						{showLegend && (
+						{showLegend && !(externalEvents && !inheritPluginData) && (
 							<div className="event-legend">
 								{EVENT_TYPE_LIST.filter(
-									(eventType) =>
-										(eventType === "holiday" &&
-											showHolidays) ||
-										(eventType === "birthday" &&
-											showBirthdays) ||
-										(eventType === "customEvent" &&
-											showCustomEvents) ||
-										(eventType === "basesEvent" &&
-											showBasesEvents) ||
-										// 包含禁用的事件类型，以便可以重新启用它们
-										eventType === "holiday" ||
-										eventType === "birthday" ||
-										eventType === "customEvent" ||
-										eventType === "basesEvent"
+									(eventType) => {
+										// 在 BasesView 模式且启用继承插件数据时，隐藏笔记事件
+										if (externalEvents && inheritPluginData && eventType === "basesEvent") {
+											return false;
+										}
+
+										return (
+											(eventType === "holiday" &&
+												showHolidays) ||
+											(eventType === "birthday" &&
+												showBirthdays) ||
+											(eventType === "customEvent" &&
+												showCustomEvents) ||
+											(eventType === "basesEvent" &&
+												showBasesEvents) ||
+											// 包含禁用的事件类型，以便可以重新启用它们
+											eventType === "holiday" ||
+											eventType === "birthday" ||
+											eventType === "customEvent" ||
+											eventType === "basesEvent"
+										);
+									}
 								).map((eventType) => {
 									// 确定当前事件类型是否启用
 									const isEnabled =
@@ -900,6 +909,7 @@ export class YearlyCalendar {
 	private root: Root | null = null;
 	private plugin: YearlyGlancePlugin;
 	private externalEvents?: CalendarEvent[];
+	private inheritPluginData?: boolean;
 
 	constructor(container: HTMLElement, plugin: YearlyGlancePlugin) {
 		this.container = container;
@@ -907,8 +917,9 @@ export class YearlyCalendar {
 	}
 
 	// 新增：支持外部数据渲染
-	renderWithEvents(events: CalendarEvent[]) {
+	renderWithEvents(events: CalendarEvent[], inheritPluginData?: boolean) {
 		this.externalEvents = events;
+		this.inheritPluginData = inheritPluginData;
 
 		// 复用现有的 root，避免闪烁
 		if (!this.root) {
@@ -934,7 +945,7 @@ export class YearlyCalendar {
 		if (this.root) {
 			this.root.render(
 				<React.StrictMode>
-					<YearlyCalendarView plugin={this.plugin} externalEvents={this.externalEvents} />
+					<YearlyCalendarView plugin={this.plugin} externalEvents={this.externalEvents} inheritPluginData={this.inheritPluginData} />
 				</React.StrictMode>
 			);
 		}

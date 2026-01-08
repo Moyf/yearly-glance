@@ -1,6 +1,6 @@
 ---
 name: obsidian-plugin-dev
-description: Obsidian 插件开发最佳实践，包含 BasesView 集成、配置管理、状态管理、React 集成、错误处理和性能优化。在开发 Obsidian 插件、实现 BasesView、处理插件配置或集成 React 时使用此技能。
+description: Obsidian 插件开发最佳实践，包含 BasesView 集成、配置管理、状态管理、React 集成、错误处理和性能优化。在开发 Obsidian 插件、实现 BasesView、处理插件配置或集成 React 时使用此技能。在开发当前插件时，请务必参考这个技能，以获取需要的信息。
 author: Moy
 version: 1.0.0
 category: development

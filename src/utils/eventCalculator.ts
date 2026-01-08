@@ -120,6 +120,12 @@ export class EventCalculator {
 		let isoDate: string = holiday.eventDate.isoDate;
 		const calendar = holiday.eventDate.calendar;
 
+		// 空值检查
+		if (!isoDate) {
+			console.warn("[YearlyGlance] Holiday isoDate is undefined, skipping update:", holiday);
+			return holiday;
+		}
+
 		// TODO: 完善节气节日的处理
 		if (id === "holi-wblqm") {
 			// 清明节
@@ -175,6 +181,13 @@ export class EventCalculator {
 	) {
 		const isoDate = customEvent.eventDate.isoDate;
 		const calendar = customEvent.eventDate.calendar;
+
+		// 空值检查
+		if (!isoDate) {
+			console.warn("[YearlyGlance] CustomEvent isoDate is undefined, skipping update:", customEvent);
+			return customEvent;
+		}
+
 		const dateArr = this.calculateDateArr(
 			"customEvent",
 			isoDate,
@@ -214,6 +227,13 @@ export class EventCalculator {
 	static updateBirthdayInfo(birthday: Birthday, yearSelected: number) {
 		const isoDate = birthday.eventDate.isoDate;
 		const calendar = birthday.eventDate.calendar;
+
+		// 空值检查
+		if (!isoDate) {
+			console.warn("[YearlyGlance] Birthday isoDate is undefined, skipping update:", birthday);
+			return birthday;
+		}
+
 		const dateArr = this.calculateDateArr(
 			"birthday",
 			isoDate,

@@ -193,10 +193,14 @@ export type BaseMessage = {
 				eventColor: string;
 				eventRemark: string;
 				save: string;
+				saving: string;
 				cancel: string;
 				submit: string;
 				reset: string;
 				selectPresetColor: string;
+				eventCreated: string;
+				eventUpdated: string;
+				saveFailed: string;
 			};
 			dateError: {
 				emptyDate: string;

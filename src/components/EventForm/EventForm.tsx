@@ -76,6 +76,7 @@ interface EventFormProps {
 		date?: string; // 可选的日期属性
 	};
 	isBasesEvent?: boolean;
+	isSaving?: boolean; // 是否正在保存
 }
 
 export const EventForm: React.FC<EventFormProps> = ({
@@ -88,6 +89,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 	onCancel,
 	props = {},
 	isBasesEvent = false,
+	isSaving = false,
 }) => {
 	const today = IsoUtils.getTodayLocalDateString(); // 获取今天的日期字符串（时区安全）
 	const todayString = props.date || today; // 如果传入了特定日期，则使用它，否则使用今天的日期
@@ -495,12 +497,17 @@ export const EventForm: React.FC<EventFormProps> = ({
 
 				{/* 操作按钮 */}
 				<div className="form-actions">
-					<button type="submit" className="save-button">
-						{t("view.eventManager.form.save")}
+					<button
+						type="submit"
+						className={`save-button ${isSaving ? "is-saving" : ""}`}
+						disabled={isSaving}
+					>
+						{isSaving ? t("view.eventManager.form.saving") : t("view.eventManager.form.save")}
 					</button>
 					<button
 						type="button"
 						className="cancel-button"
+						disabled={isSaving}
 						onClick={onCancel}
 					>
 						{t("view.eventManager.form.cancel")}

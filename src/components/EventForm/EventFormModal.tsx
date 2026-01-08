@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
-import { Modal } from "obsidian";
+import { Modal, Notice } from "obsidian";
 import YearlyGlancePlugin from "@/src/main";
 import { YearlyGlanceConfig } from "@/src/type/Config";
 import {
@@ -15,6 +15,7 @@ import { EventForm } from "./EventForm";
 import { EventCalculator } from "@/src/utils/eventCalculator";
 import "./style/EventFormModal.css";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
+import { t } from "@/src/i18n/i18n";
 
 export interface EventFormModalProps {
 	date?: string; // 可选的日期属性
@@ -30,6 +31,7 @@ export class EventFormModal extends Modal {
 	settings: YearlyGlanceConfig;
 	props: EventFormModalProps;
 	isBasesEvent: boolean;
+	isSaving: boolean = false; // 添加 isSaving 状态
 
 	constructor(
 		plugin: YearlyGlancePlugin,
@@ -59,6 +61,12 @@ export class EventFormModal extends Modal {
 		this.root = createRoot(contentEl);
 
 		// 渲染 EventForm 组件
+		this.renderForm();
+	}
+
+	private renderForm() {
+		if (!this.root) return;
+
 		this.root.render(
 			<React.StrictMode>
 				<EventForm
@@ -71,9 +79,10 @@ export class EventFormModal extends Modal {
 					onCancel={() => this.close()}
 					props={this.props}
 					isBasesEvent={this.isBasesEvent}
+					isSaving={this.isSaving}
 				/>
 			</React.StrictMode>
-		);
+	);
 	}
 
 	onClose(): void {
@@ -88,113 +97,135 @@ export class EventFormModal extends Modal {
 		event: CustomEvent | Birthday | Holiday,
 		eventType: EventType
 	) {
-		const events: Events = this.plugin.getData();
-		const newEvents = { ...events };
-		const currentYear = this.plugin.getConfig().year;
+		// 开始保存
+		this.isSaving = true;
+		this.renderForm();
 
-		// 确保数组存在
-		if (!newEvents.customEvents) newEvents.customEvents = [];
-		if (!newEvents.birthdays) newEvents.birthdays = [];
-		if (!newEvents.holidays) newEvents.holidays = [];
+		try {
+			const events: Events = this.plugin.getData();
+			const newEvents = { ...events };
+			const currentYear = this.plugin.getConfig().year;
 
-		// 根据事件类型进行不同的处理
-		switch (eventType) {
-			case "customEvent": {
-				// 计算并更新自定义事件的完整信息
-				event = EventCalculator.updateCustomEventInfo(
-					event as CustomEvent,
-					currentYear
-				);
-				// 编辑模式,更新现有事件; 新增模式,添加新事件
-				if (this.isEditing) {
-					newEvents.customEvents = newEvents.customEvents.map((c) =>
-						c.id === event.id ? (event as CustomEvent) : c
+			// 确保数组存在
+			if (!newEvents.customEvents) newEvents.customEvents = [];
+			if (!newEvents.birthdays) newEvents.birthdays = [];
+			if (!newEvents.holidays) newEvents.holidays = [];
+
+			// 根据事件类型进行不同的处理
+			switch (eventType) {
+				case "customEvent": {
+					// 计算并更新自定义事件的完整信息
+					event = EventCalculator.updateCustomEventInfo(
+						event as CustomEvent,
+						currentYear
 					);
-				} else {
-					// 新增事件时添加 eventSource
-					(event as CustomEvent).eventSource = EventSource.CONFIG;
-					newEvents.customEvents.push(event as CustomEvent);
+					// 编辑模式,更新现有事件; 新增模式,添加新事件
+					if (this.isEditing) {
+						newEvents.customEvents = newEvents.customEvents.map((c) =>
+							c.id === event.id ? (event as CustomEvent) : c
+						);
+					} else {
+						// 新增事件时添加 eventSource
+						(event as CustomEvent).eventSource = EventSource.CONFIG;
+						newEvents.customEvents.push(event as CustomEvent);
+					}
+					break;
 				}
-				break;
-			}
-			case "basesEvent": {
-				// 计算并更新事件信息（使用 CustomEvent 的计算逻辑）
-				event = EventCalculator.updateCustomEventInfo(
-					event as CustomEvent,
-					currentYear
-				);
-
-				// 如果是新增事件，创建笔记文件
-				if (!this.isEditing) {
-					const filePath = await this.plugin.createBasesEventNote(event as CustomEvent);
-					// 更新 event.id 为 bases-{filePath}-{isoDate}
-					const idWithoutDate = filePath.replace(/\.md$/, "");
-					event.id = `bases-${idWithoutDate}-${event.eventDate.isoDate}`;
-				}
-
-				// 标记事件来源为 BASES
-				(event as CustomEvent).eventSource = EventSource.BASES;
-
-				// 同步到 frontmatter（编辑模式下）
-				if (this.isEditing) {
-					const calendarEvent: CalendarEvent = {
-						id: event.id,
-						text: event.text,
-						eventDate: event.eventDate,
-						dateArr: event.dateArr,
-						duration: (event as CustomEvent).duration,
-						emoji: event.emoji,
-						color: event.color,
-						isHidden: event.isHidden,
-						remark: event.remark,
-						eventType: eventType,
-						isRepeat: (event as CustomEvent).isRepeat
-					};
-					await this.plugin.syncBasesEventToFrontmatter(calendarEvent);
-				}
-				break;
-			}
-			case "birthday": {
-				// 计算并更新生日的完整信息
-				event = EventCalculator.updateBirthdayInfo(
-					event as Birthday,
-					currentYear
-				);
-				if (this.isEditing) {
-					newEvents.birthdays = newEvents.birthdays.map((b) =>
-						b.id === event.id ? (event as Birthday) : b
+				case "basesEvent": {
+					// 计算并更新事件信息（使用 CustomEvent 的计算逻辑）
+					event = EventCalculator.updateCustomEventInfo(
+						event as CustomEvent,
+						currentYear
 					);
-				} else {
-					// 新增事件时添加 eventSource
-					(event as Birthday).eventSource = EventSource.CONFIG;
-					newEvents.birthdays.push(event as Birthday);
+
+					// 如果是新增事件，创建笔记文件
+					if (!this.isEditing) {
+						const filePath = await this.plugin.createBasesEventNote(event as CustomEvent);
+						// 更新 event.id 为 bases-{filePath}-{isoDate}
+						const idWithoutDate = filePath.replace(/\.md$/, "");
+						event.id = `bases-${idWithoutDate}-${event.eventDate.isoDate}`;
+					}
+
+					// 标记事件来源为 BASES
+					(event as CustomEvent).eventSource = EventSource.BASES;
+
+					// 同步到 frontmatter（编辑模式下）
+					if (this.isEditing) {
+						const calendarEvent: CalendarEvent = {
+							id: event.id,
+							text: event.text,
+							eventDate: event.eventDate,
+							dateArr: event.dateArr,
+							duration: (event as CustomEvent).duration,
+							emoji: event.emoji,
+							color: event.color,
+							isHidden: event.isHidden,
+							remark: event.remark,
+							eventType: eventType,
+							isRepeat: (event as CustomEvent).isRepeat
+						};
+						await this.plugin.syncBasesEventToFrontmatter(calendarEvent);
+					}
+					break;
 				}
-				break;
-			}
-			case "holiday": {
-				// 计算并更新节日的完整信息
-				event = EventCalculator.updateHolidayInfo(
-					event as Holiday,
-					currentYear
-				);
-				if (this.isEditing) {
-					newEvents.holidays = newEvents.holidays.map((h) =>
-						h.id === event.id ? (event as Holiday) : h
+				case "birthday": {
+					// 计算并更新生日的完整信息
+					event = EventCalculator.updateBirthdayInfo(
+						event as Birthday,
+						currentYear
 					);
-				} else {
-					// 新增事件时添加 eventSource
-					(event as Holiday).eventSource = EventSource.CONFIG;
-					newEvents.holidays.push(event as Holiday);
+					if (this.isEditing) {
+						newEvents.birthdays = newEvents.birthdays.map((b) =>
+							b.id === event.id ? (event as Birthday) : b
+						);
+					} else {
+						// 新增事件时添加 eventSource
+						(event as Birthday).eventSource = EventSource.CONFIG;
+						newEvents.birthdays.push(event as Birthday);
+					}
+					break;
 				}
-				break;
+				case "holiday": {
+					// 计算并更新节日的完整信息
+					event = EventCalculator.updateHolidayInfo(
+						event as Holiday,
+						currentYear
+					);
+					if (this.isEditing) {
+						newEvents.holidays = newEvents.holidays.map((h) =>
+							h.id === event.id ? (event as Holiday) : h
+						);
+					} else {
+						// 新增事件时添加 eventSource
+						(event as Holiday).eventSource = EventSource.CONFIG;
+						newEvents.holidays.push(event as Holiday);
+					}
+					break;
+				}
+				default: {
+					throw new Error(`Unsupported event type: ${eventType}`);
+				}
 			}
-			default: {
-				throw new Error(`Unsupported event type: ${eventType}`);
-			}
+
+			await this.plugin.updateData(newEvents);
+
+			// 成功提示
+			new Notice(
+				this.isEditing
+					? t("view.eventManager.form.eventUpdated")
+					: t("view.eventManager.form.eventCreated")
+			);
+
+			this.close();
+		} catch (error) {
+			// 错误提示
+			const errorMessage = error instanceof Error ? error.message : String(error);
+			new Notice(t("view.eventManager.form.saveFailed", { error: errorMessage }));
+			console.error(`保存失败：${errorMessage}`, error);
+
+			// 结束保存状态，让用户可以重试
+			this.isSaving = false;
+			this.renderForm();
 		}
-
-		await this.plugin.updateData(newEvents);
-
-		this.close();
 	}
 }

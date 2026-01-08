@@ -538,7 +538,7 @@ async loadSettings() {
         const loadedData = await this.loadData();
         return this.validateSettings(loadedData);
     } catch (error) {
-        console.error("数据加载失败，使用默认配置", error);
+        console.error("[YearlyGlance] Loading settings failed, using default settings", error);
         return DEFAULT_SETTINGS;
     }
 }

@@ -92,7 +92,7 @@ export default class YearlyGlancePlugin extends Plugin {
 				}
 			}
 		} catch (error) {
-			console.error("数据验证失败，使用默认配置", error);
+			console.error("[YearlyGlance] Failed to validate settings, using default settings", error);
 		}
 
 		return validatedSettings;
@@ -439,9 +439,9 @@ export default class YearlyGlancePlugin extends Plugin {
 					delete fm[descriptionProp];
 				}
 			});
-			console.log('Frontmatter sync completed for:', filePath);
+			console.log('[YearlyGlance] Frontmatter sync completed for:', filePath);
 		} catch (error) {
-			console.error('Failed to sync frontmatter:', error);
+			console.error('[YearlyGlance] Failed to sync frontmatter:', error);
 		}
 	}
 
@@ -517,9 +517,9 @@ export default class YearlyGlancePlugin extends Plugin {
 			await this.app.plugins.disablePluginAndSave("yearly-glance");
 			// @ts-ignore
 			await this.app.plugins.enablePluginAndSave("yearly-glance");
-			new Notice("[yearly-glance] Reloaded 插件已重载");
+			new Notice("[Yearly Glance] Reloaded successfully");
 		} catch (error) {
-			console.error("[yearly-glance] Fail to reload 插件重载失败", error);
+			console.error("[Yearly Glance] Fail to reload", error);
 		}
 	}
 

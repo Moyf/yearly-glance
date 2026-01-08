@@ -221,7 +221,7 @@ export class EventFormModal extends Modal {
 			// 错误提示
 			const errorMessage = error instanceof Error ? error.message : String(error);
 			new Notice(t("view.eventManager.form.saveFailed", { error: errorMessage }));
-			console.error(`保存失败：${errorMessage}`, error);
+			console.error(`[YearlyGlance] Failed to save: ${errorMessage}`, error);
 
 			// 结束保存状态，让用户可以重试
 			this.isSaving = false;

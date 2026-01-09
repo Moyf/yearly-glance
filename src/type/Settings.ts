@@ -2,7 +2,7 @@ import { SelectOption } from "@/src/components/Base/Select";
 import { t } from "@/src/i18n/i18n";
 import { IsoUtils } from "@/src/utils/isoUtils";
 
-export const LAYOUT_OPTIONS = ["12x1", "1x12", "6x2", "2x6", "3x4", "4x3"];
+export const LAYOUT_OPTIONS = ["12x1", "1x12", "6x2", "2x6", "3x4", "4x3", "12x31"];
 export const VIEW_TYPE_OPTIONS = ["calendar", "list"];
 export const EVENT_FONT_SIZE_OPTIONS = ["small", "medium", "large"];
 
@@ -128,6 +128,11 @@ export interface YearlyGlanceSettings {
 	basesEventColorProp?: string; // 笔记事件颜色属性名
 	basesEventDescriptionProp?: string; // 笔记事件描述属性名
 	dataVersion?: number; // 数据版本号，用于强制刷新笔记事件
+	// 极简视图事件阈值配置
+	minimalViewThreshold?: {
+		low: number; // 低阈值（默认1）
+		medium: number; // 中阈值（默认3）
+	};
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -164,4 +169,8 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	basesEventColorProp: "color", // 默认颜色属性名
 	basesEventDescriptionProp: "description", // 默认描述属性名
 	dataVersion: 0, // 初始版本号为 0
+	minimalViewThreshold: {
+		low: 1, // 低阈值
+		medium: 3, // 中阈值
+	},
 };

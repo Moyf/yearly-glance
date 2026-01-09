@@ -220,6 +220,7 @@ const translations: BaseMessage = {
 			viewPreset: {
 				yearOverview: "Year overview",
 				classicCalendar: "Classic calendar",
+				minimalMode: "Minimal mode",
 				custom: "Custom layout",
 			},
 			actions: {
@@ -238,6 +239,7 @@ const translations: BaseMessage = {
 				hideFutureMonths: "Hide future months",
 				showFutureMonths: "Show future months",
 				futureMonths: "Future",
+				noEvents: "No events",
 			},
 		},
 		eventManager: {

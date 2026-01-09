@@ -127,6 +127,7 @@ export type BaseMessage = {
 			viewPreset: {
 				yearOverview: string;
 				classicCalendar: string;
+				minimalMode: string;
 				custom: string;
 			};
 			actions: {
@@ -145,6 +146,7 @@ export type BaseMessage = {
 				hideFutureMonths: string;
 				showFutureMonths: string;
 				futureMonths: string;
+				noEvents: string;
 			};
 		};
 		eventManager: {

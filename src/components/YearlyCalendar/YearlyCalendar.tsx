@@ -12,6 +12,7 @@ import {
 import { useYearlyCalendar } from "@/src/hooks/useYearlyCalendar";
 import { CalendarDay, CalendarEvent } from "@/src/type/CalendarEvent";
 import { EventTooltip } from "./EventTooltip";
+import { MinimalMonthView } from "./MinimalMonthView";
 import { Select } from "@/src/components/Base/Select";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
@@ -35,6 +36,10 @@ const viewPresetOptions = [
 		value: "classicCalendar",
 		label: t("view.yearlyGlance.viewPreset.classicCalendar"),
 	},
+	{
+		value: "minimalMode",
+		label: t("view.yearlyGlance.viewPreset.minimalMode"),
+	},
 	{ value: "custom", label: t("view.yearlyGlance.viewPreset.custom") },
 ];
 
@@ -42,6 +47,7 @@ const viewPresetOptions = [
 const presetConfigs = {
 	yearOverview: { layout: "2x6", viewType: "list" },
 	classicCalendar: { layout: "4x3", viewType: "calendar" },
+	minimalMode: { layout: "12x31", viewType: "list" },
 };
 
 const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externalEvents, inheritPluginData }) => {
@@ -325,6 +331,20 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 			return false;
 		}
 
+		// 当 hideEmptyDates 开启时，隐藏没有任何事件的月份
+		if (hideEmptyDates) {
+			const monthData = monthsData[monthIndex];
+			const hasEvents = monthData.days.some(
+				(day: CalendarDay) => day.events.length > 0
+			);
+			const isCurrentMonth = monthData.isCurrentMonth;
+
+			// 如果月份中没有任何事件，且不是当前月份，则隐藏
+			if (!hasEvents && !isCurrentMonth) {
+				return false;
+			}
+		}
+
 		return true;
 	};
 
@@ -355,7 +375,15 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 					{monthData.name}
 				</div>
 
-				{viewType === "calendar" && (
+				{layout === "12x31" ? (
+					<MinimalMonthView
+						monthData={monthData}
+						year={year}
+						monthIndex={monthIndex}
+						settings={config}
+						onDayClick={handleAddEventInDay}
+					/>
+				) : viewType === "calendar" ? (
 					<div className="month-days-calendar">
 						{/* 星期几标题 */}
 						{showWeekdays && (
@@ -424,9 +452,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 							))}
 						</div>
 					</div>
-				)}
-
-				{viewType === "list" && (
+				) : (
 					<div
 						className={`month-days-list${
 							!limitListHeight ? " no-height-limit" : ""

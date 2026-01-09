@@ -220,6 +220,7 @@ const translations: BaseMessage = {
 			viewPreset: {
 				yearOverview: "全年一览",
 				classicCalendar: "经典年历",
+				minimalMode: "极简模式",
 				custom: "自定义布局",
 			},
 			actions: {
@@ -238,6 +239,7 @@ const translations: BaseMessage = {
 				hideFutureMonths: "隐藏当月之后的月份",
 				showFutureMonths: "显示当月之后的月份",
 				futureMonths: "未来",
+				noEvents: "无事件",
 			},
 		},
 		eventManager: {

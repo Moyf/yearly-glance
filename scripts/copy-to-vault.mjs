@@ -18,9 +18,9 @@ const VAULT_PATH = process.env.VAULT_PATH;
 console.log(`Obsidian 库路径: ${VAULT_PATH}`);
 
 if (!VAULT_PATH) {
-	throw new Error(
-		"VAULT_PATH is not defined. Please create a .env file in the project root and add the line: VAULT_PATH=/path/to/your/vault"
-	);
+	// CI 环境中没有 VAULT_PATH 是正常的，跳过复制步骤
+	console.log("VAULT_PATH 未定义，跳过复制到 Obsidian 库的步骤（CI 环境正常行为）");
+	process.exit(0);
 }
 const manifestPath = join(rootDir, "manifest.json");
 console.log(`manifest 文件路径: ${manifestPath}`);
@@ -58,12 +58,12 @@ async function copyToVault() {
 		for (const file of filesToCopy) {
 			const sourcePath = join(rootDir, file);
 			const destPath = join(pluginDir, file);
-			
+
 			if (!existsSync(sourcePath)) {
 				console.error(`源文件不存在: ${sourcePath}`);
 				continue;
 			}
-			
+
 			await copyFile(sourcePath, destPath);
 			console.log(`复制文件: ${file} -> ${destPath}`);
 		}

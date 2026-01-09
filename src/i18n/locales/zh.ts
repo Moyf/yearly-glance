@@ -64,6 +64,10 @@ const translations: BaseMessage = {
 				name: "显示自定义事件",
 				desc: "在视图中显示自定义事件",
 			},
+			showBasesEvents: {
+				name: "显示笔记事件",
+				desc: "在视图中显示来自笔记属性的事件",
+			},
 			mondayFirst: {
 				name: "周一作为一周的第一天",
 				desc: "设置周一（而不是周日）作为一周的第一天",
@@ -81,8 +85,13 @@ const translations: BaseMessage = {
 				desc: "在日期下方显示农历日期",
 			},
 			showEmojiBeforeTabName: {
-				name: "标签名称前显示emoji",
-				desc: "在标签页名称前显示对应的emoji图标",
+				name: "标签图标显示方式",
+				desc: "选择标签页图标的显示方式",
+				options: {
+					none: "不显示图标",
+					lucide: "Lucide 矢量图标",
+					emoji: "Emoji 图标",
+				},
 			},
 			showDebugInfo: {
 				name: "显示调试信息",
@@ -111,6 +120,41 @@ const translations: BaseMessage = {
 					enFullDmy: "完整英文日月年格式(1 October 1949)",
 				},
 			},
+			defaultBasesEventPath: {
+				name: "默认笔记事件路径",
+				desc: "创建笔记事件时，新笔记将保存到此文件夹",
+				placeholder: "留空则保存到库根目录",
+			},
+			basesEventTitleProp: {
+				name: "标题属性名",
+				desc: "笔记属性中用于存储事件标题的属性名",
+				placeholder: "默认: title",
+			},
+			basesEventDateProp: {
+				name: "日期属性名",
+				desc: "笔记属性中用于存储事件日期的属性名",
+				placeholder: "默认: event_date",
+			},
+			basesEventDurationProp: {
+				name: "持续天数属性名",
+				desc: "笔记属性中用于存储事件持续天数的属性名",
+				placeholder: "默认: duration_days",
+			},
+			basesEventIconProp: {
+				name: "图标属性名",
+				desc: "笔记属性中用于存储事件图标的属性名",
+				placeholder: "默认: icon",
+			},
+			basesEventColorProp: {
+				name: "颜色属性名",
+				desc: "笔记属性中用于存储事件颜色的属性名",
+				placeholder: "默认: color",
+			},
+			basesEventDescriptionProp: {
+				name: "描述属性名",
+				desc: "笔记属性中用于存储事件描述的属性名",
+				placeholder: "默认: description",
+			},
 		},
 		events: {
 			name: "事件",
@@ -120,6 +164,10 @@ const translations: BaseMessage = {
 			basic: {
 				name: "基本设置",
 				desc: "年历的基础信息配置",
+			},
+			basesEvent: {
+				name: "笔记事件",
+				desc: "使用特定的笔记作为事件来源，用于配合 Bases 视图使用",
 			},
 			layout: {
 				name: "布局相关",
@@ -139,7 +187,21 @@ const translations: BaseMessage = {
 			},
 		},
 	},
-	view: {
+		view: {
+		basesView: {
+			name: "年度概览",
+			options: {
+				embeddedHeight: "嵌入高度",
+				limitHeight: "限制高度",
+				maxHeight: "最大高度",
+				properties: "属性",
+				display: "显示",
+				propTitle: "标题属性",
+				propDate: "日期属性",
+				propDuration: "持续天数属性",
+				inheritPluginData: "继承插件数据",
+			},
+		},
 		glanceManager: {
 			name: "概览管理",
 			events: "事件管理",
@@ -153,6 +215,7 @@ const translations: BaseMessage = {
 				holiday: "节日",
 				birthday: "生日",
 				customEvent: "自定义事件",
+				basesEvent: "笔记事件",
 			},
 			viewPreset: {
 				yearOverview: "全年一览",
@@ -196,6 +259,7 @@ const translations: BaseMessage = {
 				yearlyCalendar: "打开年度概览",
 				deleteConfirm: "确认删除事件",
 				location: "在事件管理中打开",
+				openOriginalNote: "打开原始笔记",
 				toggleBuiltinEventHidden: "切换内置节日显示状态",
 				sort: {
 					name: "事件名称",
@@ -211,9 +275,12 @@ const translations: BaseMessage = {
 			form: {
 				edit: "编辑",
 				add: "添加",
+				editBasesEvent: "编辑笔记事件",
+				addBasesEvent: "添加笔记事件",
 				eventType: "事件类型",
 				eventName: "事件名称",
 				eventDate: "事件日期",
+				eventDuration: "事件天数",
 				eventDateType: "日期类型",
 				optional: "可选",
 				eventHidden: "隐藏",
@@ -221,10 +288,14 @@ const translations: BaseMessage = {
 				eventColor: "颜色",
 				eventRemark: "备注",
 				save: "保存",
+				saving: "保存中...",
 				cancel: "取消",
 				reset: "重置",
 				submit: "提交",
 				selectPresetColor: "选择预设",
+				eventCreated: "事件已创建",
+				eventUpdated: "事件已更新",
+				saveFailed: "保存失败：{{error}}",
 			},
 			dateError: {
 				emptyDate: "日期不能为空，请输入日期",
@@ -255,6 +326,10 @@ const translations: BaseMessage = {
 					"标准格式：2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01<br>" +
 					"旧格式：2025,6,1  2025,-6,1  6,1  -6,1<br>" +
 					"中文格式：2025年正月初一, 正月初一, 闰二月初一, 二〇二五年闰六月初一",
+				eventDuration:
+					"设置事件持续的天数<br>" +
+					"默认为1天（单日事件）<br>" +
+					"设置为大于1的数字时，事件会在多个日期中显示，例如设置为3会在连续3天中显示该事件",
 				eventDateType:
 					"事件日期类型，自动推断或手动选择<br>" +
 					"<b>自动推断</b>：根据输入日期自动判断是公历，农历或者农历闰月<br>" +
@@ -272,6 +347,17 @@ const translations: BaseMessage = {
 					"对事件的额外说明，点击事件时（或在管理事件中）可查看备注内容",
 				customEventRepeat: "选中时，将会在每年的该日期都重复显示事件",
 				holidayFoundDate: "节日起源日期，后续计划会用于计算节庆周年",
+				frontmatterSync: "同步到笔记元数据（frontmatter）",
+				basesEventCreate: {
+					label: "创建新笔记",
+					text: "保存后将在 {{path}} 文件夹中创建新笔记，可在插件设置中配置默认路径。",
+					textWithName: "将保存为新笔记：",
+				},
+				basesEventEdit: {
+					label: "事件来源",
+					notePrefix: "此事件来自笔记",
+					syncText: "保存时会将修改同步到原始笔记的属性中。",
+				},
 			},
 			holiday: {
 				name: "节日",
@@ -288,6 +374,13 @@ const translations: BaseMessage = {
 			customEvent: {
 				name: "自定义事件",
 				repeat: "重复",
+			},
+			basesEvent: {
+				name: "笔记事件",
+				sourceNote: "来自笔记",
+			},
+			source: {
+				bases: "来自笔记",
 			},
 		},
 		dataPortView: {

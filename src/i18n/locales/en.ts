@@ -64,6 +64,10 @@ const translations: BaseMessage = {
 				name: "Show custom events",
 				desc: "Show custom events in view",
 			},
+			showBasesEvents: {
+				name: "Show note events",
+				desc: "Show events from notes' properties in view",
+			},
 			mondayFirst: {
 				name: "Start week on Monday",
 				desc: "Use Monday as the first day of the week",
@@ -81,8 +85,13 @@ const translations: BaseMessage = {
 				desc: "Show lunar date in view",
 			},
 			showEmojiBeforeTabName: {
-				name: "Show emoji before tab name",
-				desc: "Show emoji before tab names in the UI",
+				name: "Tab icon display",
+				desc: "Choose how to display tab icons",
+				options: {
+					none: "No icon",
+					lucide: "Lucide icon",
+					emoji: "Emoji icon",
+				},
 			},
 			showDebugInfo: {
 				name: "Debug information",
@@ -111,6 +120,41 @@ const translations: BaseMessage = {
 					enFullDmy: "Full English Day-Month-Year (1 October 1949)",
 				},
 			},
+			defaultBasesEventPath: {
+				name: "Default note event path",
+				desc: "When creating note events, new notes will be saved to this folder",
+				placeholder: "Leave empty to save to vault root",
+			},
+			basesEventTitleProp: {
+				name: "Title property name",
+				desc: "Property name in note properties for storing event title",
+				placeholder: "Default: title",
+			},
+			basesEventDateProp: {
+				name: "Date property name",
+				desc: "Property name in note properties for storing event date",
+				placeholder: "Default: event_date",
+			},
+			basesEventDurationProp: {
+				name: "Duration property name",
+				desc: "Property name in note properties for storing event duration",
+				placeholder: "Default: duration_days",
+			},
+			basesEventIconProp: {
+				name: "Icon property name",
+				desc: "Property name in note properties for storing event icon",
+				placeholder: "Default: icon",
+			},
+			basesEventColorProp: {
+				name: "Color property name",
+				desc: "Property name in note properties for storing event color",
+				placeholder: "Default: color",
+			},
+			basesEventDescriptionProp: {
+				name: "Description property name",
+				desc: "Property name in note properties for storing event description",
+				placeholder: "Default: description",
+			},
 		},
 		events: {
 			name: "Events",
@@ -120,6 +164,10 @@ const translations: BaseMessage = {
 			basic: {
 				name: "Basic",
 				desc: "Configure the basic information of the calendar.",
+			},
+			basesEvent: {
+				name: "Note Events",
+				desc: "Use specific notes as event sources, for use with Bases view",
 			},
 			layout: {
 				name: "Layout",
@@ -140,6 +188,20 @@ const translations: BaseMessage = {
 		},
 	},
 	view: {
+		basesView: {
+			name: "Yearly Glance",
+			options: {
+				embeddedHeight: "Embedded height",
+				limitHeight: "Limit height",
+				maxHeight: "Maximum height",
+				properties: "Properties",
+				display: "Display",
+				propTitle: "Title property",
+				propDate: "Date property",
+				propDuration: "Duration property",
+				inheritPluginData: "Inherit plugin data",
+			},
+		},
 		glanceManager: {
 			name: "Glance manager",
 			events: "Events",
@@ -153,6 +215,7 @@ const translations: BaseMessage = {
 				holiday: "Holiday",
 				birthday: "Birthday",
 				customEvent: "Custom event",
+				basesEvent: "Note event",
 			},
 			viewPreset: {
 				yearOverview: "Year overview",
@@ -196,6 +259,7 @@ const translations: BaseMessage = {
 				yearlyCalendar: "Open yearly calendar",
 				deleteConfirm: "Are you sure you want to delete this event?",
 				location: "Open in event manager",
+				openOriginalNote: "Open original note",
 				toggleBuiltinEventHidden: "Toggle built-in events hidden",
 				sort: {
 					name: "Event name",
@@ -211,9 +275,12 @@ const translations: BaseMessage = {
 			form: {
 				edit: "Edit",
 				add: "Add",
+				editBasesEvent: "Edit note event",
+				addBasesEvent: "Add note event",
 				eventType: "Event type",
 				eventName: "Event name",
 				eventDate: "Event date",
+				eventDuration: "Event duration",
 				eventDateType: "Date type",
 				optional: "Optional",
 				eventHidden: "Hidden",
@@ -221,10 +288,14 @@ const translations: BaseMessage = {
 				eventColor: "Color",
 				eventRemark: "Remark",
 				save: "Save",
+				saving: "Saving...",
 				cancel: "Cancel",
 				reset: "Reset",
 				submit: "Submit",
 				selectPresetColor: "Select preset",
+				eventCreated: "Event created",
+				eventUpdated: "Event updated",
+				saveFailed: "Failed to save: {{error}}",
 			},
 			dateError: {
 				emptyDate: "Date cannot be empty, please enter a date",
@@ -255,6 +326,10 @@ const translations: BaseMessage = {
 					"Standard format: 2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01<br>" +
 					"Legacy format: 2025,6,1  2025,-6,1  6,1  -6,1<br>" +
 					"Chinese format: 2025年正月初一, 正月初一, 闰二月初一, 二〇二五年闰六月初一",
+				eventDuration:
+					"Set the duration of the event in days<br>" +
+					"Default is 1 day (single-day event)<br>" +
+					"When set to a number greater than 1, the event will be displayed across multiple consecutive days. For example, setting it to 3 will display the event for 3 consecutive days",
 				eventDateType:
 					"Event date type, auto-detect or manually select<br>" +
 					"<b>Auto detect</b>: Automatically determine if the input date is Gregorian, lunar, or lunar leap month<br>" +
@@ -274,6 +349,17 @@ const translations: BaseMessage = {
 					"When selected, the event will repeat every year on the same date",
 				holidayFoundDate:
 					"Holiday founding date, will be used to calculate holiday anniversaries in future plans",
+				frontmatterSync: "Sync to note's properties (frontmatter)",
+				basesEventCreate: {
+					label: "Create new note",
+					text: "A new note will be created in the {{path}} folder after saving. Configure default path in plugin settings.",
+					textWithName: "Will be saved as:",
+				},
+				basesEventEdit: {
+					label: "Event Source",
+					notePrefix: "This event is from note",
+					syncText: "Changes will be synced to the original note's properties.",
+				},
 			},
 			holiday: {
 				name: "Holiday",
@@ -290,6 +376,13 @@ const translations: BaseMessage = {
 			customEvent: {
 				name: "Custom event",
 				repeat: "Repeat",
+			},
+			basesEvent: {
+				name: "Note event",
+				sourceNote: "From note",
+			},
+			source: {
+				bases: "From note",
 			},
 		},
 		dataPortView: {

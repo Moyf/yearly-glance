@@ -45,6 +45,7 @@ interface EventFormData {
 	text: string;
 	userInputDate: string;
 	userInputCalendar?: string;
+	duration?: number; // 事件持续天数
 	emoji?: string;
 	color?: string;
 	remark?: string;
@@ -74,6 +75,8 @@ interface EventFormProps {
 	props?: {
 		date?: string; // 可选的日期属性
 	};
+	isBasesEvent?: boolean;
+	isSaving?: boolean; // 是否正在保存
 }
 
 export const EventForm: React.FC<EventFormProps> = ({
@@ -85,6 +88,8 @@ export const EventForm: React.FC<EventFormProps> = ({
 	onSave,
 	onCancel,
 	props = {},
+	isBasesEvent = false,
+	isSaving = false,
 }) => {
 	const today = IsoUtils.getTodayLocalDateString(); // 获取今天的日期字符串（时区安全）
 	const todayString = props.date || today; // 如果传入了特定日期，则使用它，否则使用今天的日期
@@ -107,6 +112,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 			text: event.text || "",
 			userInputDate: event.eventDate?.userInput?.input || todayString,
 			userInputCalendar: event.eventDate?.userInput?.calendar,
+			duration: event.duration || 1, // 默认为1天
 			emoji: event.emoji,
 			color: event.color,
 			remark: event.remark,
@@ -206,6 +212,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 						| undefined,
 				},
 			},
+			duration: formData.duration || 1, // 添加 duration 字段
 			emoji: formData.emoji,
 			color: formData.color,
 			remark: formData.remark,
@@ -245,12 +252,19 @@ export const EventForm: React.FC<EventFormProps> = ({
 			>
 				{/* 表单标题 */}
 				<h3 className="yg-event-form-title">
-					{isEditing
-						? t("view.eventManager.form.edit")
-						: t("view.eventManager.form.add")}
-					{t(
-						`view.eventManager.${currentEventType}.name` as TranslationKeys
-					)}
+					{isBasesEvent
+						? isEditing
+							? t("view.eventManager.form.editBasesEvent")
+							: t("view.eventManager.form.addBasesEvent")
+						: isEditing
+						? t("view.eventManager.form.edit") +
+						  t(
+								`view.eventManager.${currentEventType}.name` as TranslationKeys
+						  )
+						: t("view.eventManager.form.add") +
+						  t(
+								`view.eventManager.${currentEventType}.name` as TranslationKeys
+						  )}
 				</h3>
 
 				{/* 基础字段 */}
@@ -289,6 +303,21 @@ export const EventForm: React.FC<EventFormProps> = ({
 							settings.config.gregorianDisplayFormat
 						}
 						required
+					/>
+				</div>
+				<div className="form-group">
+					<label>
+						{t("view.eventManager.form.eventDuration")}
+						<Tooltip text={t("view.eventManager.help.eventDuration")} />
+					</label>
+					<input
+						type="number"
+						min="1"
+						max="365"
+						value={formData.duration || 1}
+						onChange={(e) =>
+							handleFieldChange("duration", parseInt(e.target.value) || 1)
+						}
 					/>
 				</div>
 				<div className="form-group">
@@ -428,16 +457,57 @@ export const EventForm: React.FC<EventFormProps> = ({
 							rows={3}
 						/>
 					</div>
+					{currentEventType === 'basesEvent' && (
+						<div className="form-group bases-event-hint">
+							<div className="yg-bases-event-hint-content">
+								{isEditing ? (
+									// 编辑模式：显示来源笔记
+									<>
+										<b>{t("view.eventManager.help.basesEventEdit.label")}：</b>
+										{t("view.eventManager.help.basesEventEdit.notePrefix")} <i>{
+											event.id?.replace(/^bases-/, "")?.replace(/-\d{4}-\d{2}-\d{2}$/, "") || ""
+										}</i>
+										<br />
+										{t("view.eventManager.help.basesEventEdit.syncText")}
+									</>
+								) : (
+									// 新增模式
+									<>
+										<b>{t("view.eventManager.help.basesEventCreate.label")}：</b>
+										{formData.text ? (
+											// 有事件名：显示完整路径
+											<>
+												{t("view.eventManager.help.basesEventCreate.textWithName")}<br />
+												<i>{
+													`${settings.config.defaultBasesEventPath || ''}/${formData.text}.md`
+												}</i>
+											</>
+										) : (
+											// 无事件名：显示文件夹
+											t("view.eventManager.help.basesEventCreate.text", {
+												path: settings.config.defaultBasesEventPath || '/'
+											})
+										)}
+									</>
+								)}
+							</div>
+						</div>
+					)}
 				</div>
 
 				{/* 操作按钮 */}
 				<div className="form-actions">
-					<button type="submit" className="save-button">
-						{t("view.eventManager.form.save")}
+					<button
+						type="submit"
+						className={`save-button ${isSaving ? "is-saving" : ""}`}
+						disabled={isSaving}
+					>
+						{isSaving ? t("view.eventManager.form.saving") : t("view.eventManager.form.save")}
 					</button>
 					<button
 						type="button"
 						className="cancel-button"
+						disabled={isSaving}
 						onClick={onCancel}
 					>
 						{t("view.eventManager.form.cancel")}

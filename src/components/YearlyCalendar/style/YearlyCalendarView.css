@@ -595,6 +595,46 @@
 		max-width: 100%;
 	}
 
+	/* ------- 多日事件样式 ------- */
+
+	/* 多日事件的天数指示器样式 */
+	.event-day-label {
+		color: var(--text-muted);
+		font-size: 0.85em;
+		font-weight: normal;
+		margin-left: 2px;
+	}
+
+	/* 日历视图：多日事件基础样式 */
+	.multi-day-event {
+		position: relative;
+	}
+
+	/* 中间日：无边框，简化样式 */
+	.multi-day-middle {
+		border-left: none;
+		border-right: none;
+		opacity: 0.85;
+	}
+
+	/* 列表视图：多日事件样式 */
+	.events-list .multi-day-event {
+		border-radius: 0;
+		margin: 0;
+	}
+
+	.events-list .multi-day-first {
+		border-radius: 4px 4px 0 0;
+	}
+
+	.events-list .multi-day-last {
+		border-radius: 0 0 4px 4px;
+	}
+
+	.events-list .multi-day-middle {
+		border-radius: 0;
+	}
+
 	/* ------- 列表视图样式 ------- */
 
 	.month-days-list {

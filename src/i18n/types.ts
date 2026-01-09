@@ -44,11 +44,18 @@ export type BaseMessage = {
 			showHolidays: IBaseSettingsItem;
 			showBirthdays: IBaseSettingsItem;
 			showCustomEvents: IBaseSettingsItem;
+			showBasesEvents: IBaseSettingsItem;
 			mondayFirst: IBaseSettingsItem;
 			showTooltips: IBaseSettingsItem;
 			colorful: IBaseSettingsItem;
 			showLunarDay: IBaseSettingsItem;
-			showEmojiBeforeTabName: IBaseSettingsItem;
+			showEmojiBeforeTabName: SettingsItem<{
+				options: {
+					none: string;
+					lucide: string;
+					emoji: string;
+				};
+			}>;
 			showDebugInfo: IBaseSettingsItem;
 			presetColors: SettingsItem<{
 				newColor: string;
@@ -69,10 +76,32 @@ export type BaseMessage = {
 					enFullDmy: string;
 				};
 			}>;
+			defaultBasesEventPath: SettingsItem<{
+				placeholder: string;
+			}>;
+			basesEventTitleProp: SettingsItem<{
+				placeholder: string;
+			}>;
+			basesEventDateProp: SettingsItem<{
+				placeholder: string;
+			}>;
+			basesEventDurationProp: SettingsItem<{
+				placeholder: string;
+			}>;
+			basesEventIconProp: SettingsItem<{
+				placeholder: string;
+			}>;
+			basesEventColorProp: SettingsItem<{
+				placeholder: string;
+			}>;
+			basesEventDescriptionProp: SettingsItem<{
+				placeholder: string;
+			}>;
 		}>;
 		events: IBaseSettingsItem;
 		group: {
 			basic: IBaseSettingsItem;
+			basesEvent: IBaseSettingsItem;
 			layout: IBaseSettingsItem;
 			displayContent: IBaseSettingsItem;
 			eventDisplay: IBaseSettingsItem;
@@ -93,6 +122,7 @@ export type BaseMessage = {
 				holiday: string;
 				birthday: string;
 				customEvent: string;
+				basesEvent: string;
 			};
 			viewPreset: {
 				yearOverview: string;
@@ -136,6 +166,7 @@ export type BaseMessage = {
 				yearlyCalendar: string;
 				deleteConfirm: string;
 				location: string;
+				openOriginalNote: string;
 				toggleBuiltinEventHidden: string;
 				sort: {
 					name: string;
@@ -151,9 +182,12 @@ export type BaseMessage = {
 			form: {
 				edit: string;
 				add: string;
+				editBasesEvent: string;
+				addBasesEvent: string;
 				eventType: string;
 				eventName: string;
 				eventDate: string;
+				eventDuration: string;
 				eventDateType: string;
 				optional: string;
 				eventHidden: string;
@@ -161,10 +195,14 @@ export type BaseMessage = {
 				eventColor: string;
 				eventRemark: string;
 				save: string;
+				saving: string;
 				cancel: string;
 				submit: string;
 				reset: string;
 				selectPresetColor: string;
+				eventCreated: string;
+				eventUpdated: string;
+				saveFailed: string;
 			};
 			dateError: {
 				emptyDate: string;
@@ -179,6 +217,7 @@ export type BaseMessage = {
 			help: {
 				eventName: string;
 				eventDate: string;
+				eventDuration: string;
 				eventDateType: string;
 				eventEmoji: string;
 				eventColor: string;
@@ -186,6 +225,17 @@ export type BaseMessage = {
 				eventRemark: string;
 				customEventRepeat: string;
 				holidayFoundDate: string;
+				frontmatterSync: string;
+				basesEventCreate: {
+					label: string;
+					text: string;
+					textWithName: string;
+				};
+				basesEventEdit: {
+					label: string;
+					notePrefix: string;
+					syncText: string;
+				};
 			};
 			holiday: {
 				name: string;
@@ -202,6 +252,13 @@ export type BaseMessage = {
 			customEvent: {
 				name: string;
 				repeat: string;
+			};
+			basesEvent: {
+				name: string;
+				sourceNote: string;
+			};
+			source: {
+				bases: string;
 			};
 		};
 		dataPortView: {
@@ -283,6 +340,20 @@ export type BaseMessage = {
 				};
 			};
 		};
+		basesView: {
+			name: string;
+			options: {
+				display: string;
+				embeddedHeight: string;
+				limitHeight: string;
+				maxHeight: string;
+				properties: string;
+				propTitle: string;
+				propDate: string;
+				propDuration: string;
+				inheritPluginData: string;
+			}
+		}
 	};
 	command: {
 		openYearlyGlance: string;

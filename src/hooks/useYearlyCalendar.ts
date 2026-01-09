@@ -5,6 +5,7 @@ import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
 import { LunarLibrary } from "@/src/utils/lunarLibrary";
 import { IsoUtils } from "@/src/utils/isoUtils";
 import { t } from "@/src/i18n/i18n";
+import { NoteEventService } from "@/src/service/NoteEventService";
 
 export const MonthMap: Array<{ name: string; color: string }> = [
 	{
@@ -91,7 +92,7 @@ function hexToRgb(hex: string): string {
 }
 
 // 主要 Hook
-export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
+export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: CalendarEvent[]) {
 	const { config, events } = useYearlyGlanceConfig(plugin);
 
 	const {
@@ -102,6 +103,9 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 		showHolidays,
 		showBirthdays,
 		showCustomEvents,
+		showBasesEvents,
+		defaultBasesEventPath,
+		dataVersion,
 	} = config;
 
 	const { holidays, birthdays, customEvents } = events;
@@ -109,18 +113,76 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 	// 当前日期 - 使用时区安全的方法
 	const today = React.useMemo(() => new Date(), []);
 
+	// 笔记事件状态
+	const [basesEvents, setBasesEvents] = React.useState<CalendarEvent[]>([]);
+
+	// 异步加载笔记事件
+	React.useEffect(() => {
+		if (!showBasesEvents || !defaultBasesEventPath) {
+			setBasesEvents([]);
+			return;
+		}
+		const noteEventService = new NoteEventService(plugin.app, config);
+		noteEventService.loadEventsFromPath(defaultBasesEventPath, year).then((loadedEvents) => {
+			setBasesEvents(loadedEvents);
+		}).catch((error) => {
+			console.error("[YearlyGlance] Failed to load note events:", error);
+			setBasesEvents([]);
+		});
+	}, [showBasesEvents, defaultBasesEventPath, year, plugin.app, dataVersion]);
+
 	// 处理所有事件
 	const allEvents = React.useMemo(() => {
 		const events: CalendarEvent[] = [];
+
+		// 根据 duration 扩展事件到多天的辅助函数
+		const expandEventByDuration = (
+			event: any,
+			eventType: any
+		) => {
+			const duration = event.duration || 1;
+			const baseDate = event.eventDate?.isoDate;
+			if (!baseDate) return;
+
+			for (let dayIndex = 0; dayIndex < duration; dayIndex++) {
+				const currentDate = new Date(baseDate);
+				currentDate.setDate(currentDate.getDate() + dayIndex);
+				const currentDateISO = IsoUtils.toLocalDateString(currentDate);
+
+				events.push({
+					...event,
+					eventType,
+					// 添加天数标记信息（用于渲染时显示）
+					_dayIndex: dayIndex,
+					_totalDays: duration,
+					_isFirstDay: dayIndex === 0,
+					_isLastDay: dayIndex === duration - 1,
+					// 更新当前日期的 ISO 日期
+					eventDate: {
+						...event.eventDate,
+						isoDate: currentDateISO
+					},
+					// 移除 dateArr，避免扩展后的事件通过 dateArr 重复匹配到原始日期
+					dateArr: undefined
+				});
+			}
+		};
+
+		// 如果有外部事件（Bases 事件），只使用外部事件
+		// 即使 externalEvents 是空数组，也不应该 fallback 到插件数据
+		if (externalEvents) {
+			externalEvents.forEach((event) => {
+				// 扩展 Bases 事件
+				expandEventByDuration(event, event.eventType);
+			});
+			return events;
+		}
 
 		// 处理节假日
 		if (showHolidays) {
 			holidays.forEach((holiday) => {
 				if (!holiday.isHidden) {
-					events.push({
-						...holiday,
-						eventType: "holiday",
-					});
+					expandEventByDuration(holiday, "holiday");
 				}
 			});
 		}
@@ -129,10 +191,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 		if (showBirthdays) {
 			birthdays.forEach((birthday) => {
 				if (!birthday.isHidden) {
-					events.push({
-						...birthday,
-						eventType: "birthday",
-					});
+					expandEventByDuration(birthday, "birthday");
 				}
 			});
 		}
@@ -141,16 +200,22 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 		if (showCustomEvents) {
 			customEvents.forEach((customEvent) => {
 				if (!customEvent.isHidden) {
-					events.push({
-						...customEvent,
-						eventType: "customEvent",
-					});
+					expandEventByDuration(customEvent, "customEvent");
+				}
+			});
+		}
+
+		// 处理笔记事件
+		if (showBasesEvents && basesEvents.length > 0) {
+			basesEvents.forEach((basesEvent) => {
+				if (!basesEvent.isHidden) {
+					expandEventByDuration(basesEvent, "basesEvent");
 				}
 			});
 		}
 
 		return events;
-	}, [config, events]);
+	}, [externalEvents, config, events, basesEvents, showBasesEvents]);
 
 	// 月份数据
 	const monthsData = React.useMemo(() => {
@@ -186,13 +251,17 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 				// 使用 IsoUtils.toLocalDateString 生成当前日期的 ISO 字符串用于比较，避免时区问题
 				const currentDateISO = IsoUtils.toLocalDateString(date);
 
-				// 查找当天的事件
-				const dayEvents = allEvents.filter((event) =>
-					event.dateArr?.some((dateStr: string) => {
-						// 直接比较 ISO 日期字符串，避免时区转换问题
+				// 查找当天的事件（包括多日事件的每一天）
+				const dayEvents = allEvents.filter((event) => {
+					// 优先检查扩展后的 eventDate.isoDate（用于多日事件）
+					if (event.eventDate?.isoDate === currentDateISO) {
+						return true;
+					}
+					// 兼容旧的 dateArr 匹配方式
+					return event.dateArr?.some((dateStr: string) => {
 						return dateStr === currentDateISO;
-					})
-				);
+					});
+				});
 
 				days.push({
 					date,
@@ -216,7 +285,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 				firstDayPosition: firstDayWeekday,
 			};
 		});
-	}, [config, events]);
+	}, [allEvents, config, year, today, mondayFirst, highlightWeekends, highlightToday]);
 
 	// 获取星期几标题
 	const weekdays = React.useMemo(() => {

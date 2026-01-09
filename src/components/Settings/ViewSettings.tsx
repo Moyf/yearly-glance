@@ -5,6 +5,7 @@ import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
 import {
 	EVENT_FONT_SIZE_OPTIONS,
 	GREGORIAN_DISPLAY_FORMAT_OPTIONS,
+	ICON_DISPLAY_OPTIONS,
 	LAYOUT_OPTIONS,
 	VIEW_TYPE_OPTIONS,
 } from "@/src/type/Settings";
@@ -15,6 +16,7 @@ import { SettingsItem } from "@/src/components/Settings/SettingsItem";
 import { Toggle } from "@/src/components/Base/Toggle";
 import { Select } from "@/src/components/Base/Select";
 import { Input } from "@/src/components/Base/Input";
+import { FolderAutoComplete } from "@/src/components/Base/FolderAutoComplete";
 import { PresetColorSettings } from "./PresetColorSettings";
 
 interface ViewSettingsProps {
@@ -45,6 +47,13 @@ export const eventFontSizeOptions = EVENT_FONT_SIZE_OPTIONS.map(
 		),
 	})
 );
+
+export const iconDisplayOptions = ICON_DISPLAY_OPTIONS.map((option) => ({
+	value: option,
+	label: t(
+		`setting.general.showEmojiBeforeTabName.options.${option}` as TranslationKeys
+	),
+}));
 
 export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 	const { config, updateConfig } = useYearlyGlanceConfig(plugin);
@@ -89,14 +98,15 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						}
 					/>
 				</SettingsItem>
-				{/* 标签名称前显示emoji */}
+				{/* 标签图标显示方式 */}
 				<SettingsItem
 					name={t("setting.general.showEmojiBeforeTabName.name")}
 					desc={t("setting.general.showEmojiBeforeTabName.desc")}
 				>
-					<Toggle
-						checked={config.showEmojiBeforeTabName}
-						onChange={(value) =>
+					<Select
+						options={iconDisplayOptions}
+						value={config.showEmojiBeforeTabName}
+						onValueChange={(value) =>
 							handleUpdateConfig({
 								showEmojiBeforeTabName: value,
 							})
@@ -128,6 +138,113 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 								gregorianDisplayFormat: value,
 							})
 						}
+					/>
+				</SettingsItem>
+			</SettingsBlock>
+
+			{/* 笔记事件设置 */}
+			<SettingsBlock
+				name={t("setting.group.basesEvent.name")}
+				desc={t("setting.group.basesEvent.desc")}
+				collapsible
+				defaultCollapsed={false}
+			>
+				{/* 默认笔记事件路径 */}
+				<SettingsItem
+					name={t("setting.general.defaultBasesEventPath.name")}
+					desc={t("setting.general.defaultBasesEventPath.desc")}
+				>
+					<FolderAutoComplete
+						value={config.defaultBasesEventPath || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ defaultBasesEventPath: value })
+						}
+						placeholder={t("setting.general.defaultBasesEventPath.placeholder")}
+						app={plugin.app}
+					/>
+				</SettingsItem>
+				{/* 标题属性名 */}
+				<SettingsItem
+					name={t("setting.general.basesEventTitleProp.name")}
+					desc={t("setting.general.basesEventTitleProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.basesEventTitleProp || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ basesEventTitleProp: value })
+						}
+						placeholder={t("setting.general.basesEventTitleProp.placeholder")}
+					/>
+				</SettingsItem>
+				{/* 日期属性名 */}
+				<SettingsItem
+					name={t("setting.general.basesEventDateProp.name")}
+					desc={t("setting.general.basesEventDateProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.basesEventDateProp || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ basesEventDateProp: value })
+						}
+						placeholder={t("setting.general.basesEventDateProp.placeholder")}
+					/>
+				</SettingsItem>
+				{/* 持续天数属性名 */}
+				<SettingsItem
+					name={t("setting.general.basesEventDurationProp.name")}
+					desc={t("setting.general.basesEventDurationProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.basesEventDurationProp || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ basesEventDurationProp: value })
+						}
+						placeholder={t("setting.general.basesEventDurationProp.placeholder")}
+					/>
+				</SettingsItem>
+				{/* 图标属性名 */}
+				<SettingsItem
+					name={t("setting.general.basesEventIconProp.name")}
+					desc={t("setting.general.basesEventIconProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.basesEventIconProp || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ basesEventIconProp: value })
+						}
+						placeholder={t("setting.general.basesEventIconProp.placeholder")}
+					/>
+				</SettingsItem>
+				{/* 颜色属性名 */}
+				<SettingsItem
+					name={t("setting.general.basesEventColorProp.name")}
+					desc={t("setting.general.basesEventColorProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.basesEventColorProp || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ basesEventColorProp: value })
+						}
+						placeholder={t("setting.general.basesEventColorProp.placeholder")}
+					/>
+				</SettingsItem>
+				{/* 描述属性名 */}
+				<SettingsItem
+					name={t("setting.general.basesEventDescriptionProp.name")}
+					desc={t("setting.general.basesEventDescriptionProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.basesEventDescriptionProp || ""}
+						onChange={(value) =>
+							handleUpdateConfig({ basesEventDescriptionProp: value })
+						}
+						placeholder={t("setting.general.basesEventDescriptionProp.placeholder")}
 					/>
 				</SettingsItem>
 			</SettingsBlock>

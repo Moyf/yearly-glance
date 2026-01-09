@@ -21,6 +21,8 @@ import { IsoUtils } from "@/src/utils/isoUtils";
 
 interface YearlyCalendarViewProps {
 	plugin: YearlyGlancePlugin;
+	externalEvents?: CalendarEvent[];
+	inheritPluginData?: boolean;
 }
 
 // 定义视图预设选项
@@ -42,7 +44,7 @@ const presetConfigs = {
 	classicCalendar: { layout: "4x3", viewType: "calendar" },
 };
 
-const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
+const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externalEvents, inheritPluginData }) => {
 	const { config, updateConfig } = useYearlyGlanceConfig(plugin);
 	const [hidePreviousMonths, setHidePreviousMonths] = React.useState(false);
 	const [hideFutureMonths, setHideFutureMonths] = React.useState(false);
@@ -61,6 +63,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		showHolidays,
 		showBirthdays,
 		showCustomEvents,
+		showBasesEvents,
 		mondayFirst,
 		hideEmptyDates,
 		showLunarDay,
@@ -148,7 +151,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 		};
 	}, [title, year]);
 
-	const { monthsData, weekdays } = useYearlyCalendar(plugin);
+	const { monthsData, weekdays } = useYearlyCalendar(plugin, externalEvents);
 
 	// 预设更改处理函数
 	const handlePresetChange = (preset: string) => {
@@ -198,6 +201,9 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 			case "customEvent":
 				configUpdate.showCustomEvents = !showCustomEvents;
 				break;
+			case "basesEvent":
+				configUpdate.showBasesEvents = !showBasesEvents;
+				break;
 		}
 
 		updateConfig(configUpdate);
@@ -210,27 +216,78 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 			`font-${eventFontSize}`,
 			emojiOnTop ? "emoji-top" : "",
 			config.wrapEventText ? "wrap-text" : "",
-		]
-			.filter(Boolean)
-			.join(" ");
+		];
+
+		// 添加多日事件的样式类
+		if (event._totalDays && event._totalDays > 1) {
+			eventClasses.push("multi-day-event");
+			if (event._isFirstDay) {
+				eventClasses.push("multi-day-first");
+			} else if (event._isLastDay) {
+				eventClasses.push("multi-day-last");
+			} else {
+				eventClasses.push("multi-day-middle");
+			}
+		}
+
+		// 获取事件颜色
+		const eventColor = event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color;
+
+		// 构建样式对象
+		const eventStyle: React.CSSProperties = {
+			backgroundColor: `${eventColor}20`,
+			borderLeft: `3px solid ${eventColor}`,
+		};
+
+		// 为多日事件添加特殊边框
+		if (event._totalDays && event._totalDays > 1) {
+			if (dayView) {
+				// 日历视图边框规则：
+				// - 第一天：仅 border-left（默认已有），无其他边框
+				// - 最后一天：仅 border-right，无 border-left
+				// - 中间日：无边框
+				if (event._isLastDay) {
+					// 最后一天：移除 border-left，添加 border-right
+					eventStyle.borderLeft = undefined;
+					eventStyle.borderRight = `3px solid ${eventColor}`;
+				} else if (event._isFirstDay) {
+					// 第一天：保持默认的 border-left，不添加其他边框
+					//（默认已有 border-left，无需额外操作）
+				} else {
+					// 中间日：移除所有边框
+					eventStyle.borderLeft = undefined;
+				}
+			} else {
+				// 列表视图：第一天添加顶部边框，最后一天添加底部边框
+				if (event._isFirstDay) {
+					eventStyle.borderTop = `3px solid ${eventColor}`;
+				}
+				if (event._isLastDay) {
+					eventStyle.borderBottom = `3px solid ${eventColor}`;
+				}
+			}
+		}
 
 		const eventProps: React.HTMLAttributes<HTMLDivElement> = {
-			className: eventClasses,
-			style: {
-				backgroundColor: `${
-					event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color
-				}20`,
-				borderLeft: `3px solid ${
-					event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color
-				}`,
-			},
+			className: eventClasses.filter(Boolean).join(" "),
+			style: eventStyle,
 			onClick: (e) => handleEventTooltip(event),
 		};
+
+		// 构建天数标记文本
+		const dayLabel = event._totalDays && event._totalDays > 1
+			? <span className="event-day-label"> ({event._dayIndex! + 1}/{event._totalDays})</span>
+			: null;
+
+		// 使用原始 event.id 或 event.id + dayIndex 作为 key
+		const eventKey = event._totalDays && event._totalDays > 1
+			? `${event.id}-${event._dayIndex}`
+			: `${event.text}-${event.eventDate.isoDate}`;
 
 		return (
 			<Tooltip text={event.text} disabled={!showTooltips}>
 				<div
-					key={`${event.text}-${event.eventDate.isoDate}`}
+					key={eventKey}
 					{...eventProps}
 				>
 					<span className="event-emoji">
@@ -238,7 +295,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 							? EVENT_TYPE_DEFAULT[event.eventType].emoji
 							: event.emoji}
 					</span>
-					<span className="event-text">{event.text}</span>
+					<span className="event-text">{event.text}{dayLabel}</span>
 				</div>
 			</Tooltip>
 		);
@@ -490,20 +547,31 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 				<div className="yg-buttons">
 					<div className="yg-buttons-left">
 						{/* 图例 */}
-						{showLegend && (
+						{showLegend && !(externalEvents && !inheritPluginData) && (
 							<div className="event-legend">
 								{EVENT_TYPE_LIST.filter(
-									(eventType) =>
-										(eventType === "holiday" &&
-											showHolidays) ||
-										(eventType === "birthday" &&
-											showBirthdays) ||
-										(eventType === "customEvent" &&
-											showCustomEvents) ||
-										// 包含禁用的事件类型，以便可以重新启用它们
-										eventType === "holiday" ||
-										eventType === "birthday" ||
-										eventType === "customEvent"
+									(eventType) => {
+										// 在 BasesView 模式且启用继承插件数据时，隐藏笔记事件
+										if (externalEvents && inheritPluginData && eventType === "basesEvent") {
+											return false;
+										}
+
+										return (
+											(eventType === "holiday" &&
+												showHolidays) ||
+											(eventType === "birthday" &&
+												showBirthdays) ||
+											(eventType === "customEvent" &&
+												showCustomEvents) ||
+											(eventType === "basesEvent" &&
+												showBasesEvents) ||
+											// 包含禁用的事件类型，以便可以重新启用它们
+											eventType === "holiday" ||
+											eventType === "birthday" ||
+											eventType === "customEvent" ||
+											eventType === "basesEvent"
+										);
+									}
 								).map((eventType) => {
 									// 确定当前事件类型是否启用
 									const isEnabled =
@@ -512,7 +580,9 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin }) => {
 										(eventType === "birthday" &&
 											showBirthdays) ||
 										(eventType === "customEvent" &&
-											showCustomEvents);
+											showCustomEvents) ||
+										(eventType === "basesEvent" &&
+											showBasesEvents);
 
 									return (
 										<Tooltip
@@ -838,16 +908,36 @@ export class YearlyCalendar {
 	private container: HTMLElement;
 	private root: Root | null = null;
 	private plugin: YearlyGlancePlugin;
+	private externalEvents?: CalendarEvent[];
+	private inheritPluginData?: boolean;
 
 	constructor(container: HTMLElement, plugin: YearlyGlancePlugin) {
 		this.container = container;
 		this.plugin = plugin;
 	}
 
+	// 新增：支持外部数据渲染
+	renderWithEvents(events: CalendarEvent[], inheritPluginData?: boolean) {
+		this.externalEvents = events;
+		this.inheritPluginData = inheritPluginData;
+
+		// 复用现有的 root，避免闪烁
+		if (!this.root) {
+			this.container.empty();
+			this.root = createRoot(this.container);
+		}
+		this.render();
+	}
+
 	async initialize(plugin: YearlyGlancePlugin) {
 		this.plugin = plugin;
-		this.container.empty();
-		this.root = createRoot(this.container);
+		this.externalEvents = undefined;
+
+		// 复用现有的 root，避免闪烁
+		if (!this.root) {
+			this.container.empty();
+			this.root = createRoot(this.container);
+		}
 		this.render();
 	}
 
@@ -855,21 +945,21 @@ export class YearlyCalendar {
 		if (this.root) {
 			this.root.render(
 				<React.StrictMode>
-					<YearlyCalendarView plugin={this.plugin} />
+					<YearlyCalendarView plugin={this.plugin} externalEvents={this.externalEvents} inheritPluginData={this.inheritPluginData} />
 				</React.StrictMode>
 			);
 		}
 	}
 
 	destroy() {
-		// Reset the year configuration to current year when view is closed
-		// 使用时区安全的方法获取当前年份
-		const currentYear = IsoUtils.getCurrentYear();
-		this.plugin.updateConfig({ year: currentYear });
+		// 注意：不在 destroy() 中更新配置，以避免触发 YearlyGlanceBus
+		// 导致 YearlyGlanceBasesView 无限循环
+		// 配置重置应该由调用者负责处理
 
 		if (this.root) {
 			this.root.unmount();
 			this.root = null;
 		}
+		this.externalEvents = undefined;
 	}
 }

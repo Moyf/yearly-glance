@@ -119,12 +119,49 @@
 		.save-button {
 			background-color: var(--interactive-accent);
 			color: var(--text-on-accent);
+
+			&:disabled {
+				opacity: 0.6;
+				cursor: not-allowed;
+			}
+
+			&.is-saving {
+				opacity: 0.8;
+				cursor: wait;
+				position: relative;
+
+				&::after {
+					content: "";
+					position: absolute;
+					right: 12px;
+					top: 50%;
+					transform: translateY(-50%);
+					width: 12px;
+					height: 12px;
+					border: 2px solid var(--text-on-accent);
+					border-top-color: transparent;
+					border-radius: 50%;
+					animation: spin 0.6s linear infinite;
+				}
+
+				/* 为文本添加右边距，为 loading 图标腾出空间 */
+				padding-right: 36px;
+			}
 		}
 
-		.yg-event-form .cancel-button {
-			background-color: var(--background-modifier-border);
-			color: var(--text-normal);
+		.cancel-button {
+			&:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
 		}
+	}
+}
+
+/* Loading 动画 */
+@keyframes spin {
+	to {
+		transform: translateY(-50%) rotate(360deg);
 	}
 }
 
@@ -163,5 +200,26 @@
 		margin: 0;
 		padding: 0;
 		pointer-events: none;
+	}
+}
+
+.bases-event-hint {
+	padding: 0.75em;
+	border-radius: 4px;
+	color: var(--text-warning);
+	border: 1px solid currentColor;
+
+	.yg-bases-event-hint-content {
+		/* Markdown 内容容器 */
+		p {
+			margin: 0;
+		}
+
+		code {
+			background-color: var(--background-secondary);
+			padding: 0.2em 0.4em;
+			border-radius: 3px;
+			font-family: var(--font-monospace);
+		}
 	}
 }

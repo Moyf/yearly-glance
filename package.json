@@ -28,6 +28,9 @@
 	"engines": {
 		"node": ">=18.x"
 	},
+	"overrides": {
+		"@conventional-changelog/git-client": "^2.0.0"
+	},
 	"devDependencies": {
 		"@types/jest": "^30.0.0",
 		"@types/node": "^18.0.0",

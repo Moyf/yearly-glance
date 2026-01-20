@@ -160,25 +160,25 @@ export default class YearlyGlancePlugin extends Plugin {
 					},
 					{
 						type: 'group',
-						displayName: '拓展属性',
+						displayName: t("view.basesView.options.extendedProperties"),
 						items: [
 							{
 								type: 'property',
-								displayName: '图标属性',
+								displayName: t("view.basesView.options.propIcon"),
 								key: 'propIcon',
 								filter: prop => !prop.startsWith('file.'),
 								placeholder: 'Property',
 							},
 							{
 								type: 'property',
-								displayName: '颜色属性',
+								displayName: t("view.basesView.options.propColor"),
 								key: 'propColor',
 								filter: prop => !prop.startsWith('file.'),
 								placeholder: 'Property',
 							},
 							{
 								type: 'property',
-								displayName: '描述属性',
+								displayName: t("view.basesView.options.propDescription"),
 								key: 'propDescription',
 								filter: prop => !prop.startsWith('file.'),
 								placeholder: 'Property',
@@ -509,7 +509,7 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 6. 如果路径有问题，显示 Notice
 		if (pathWarning) {
-			new Notice("提示：请在插件设置中选择默认笔记事件路径");
+			new Notice(t("notice.setDefaultBasesEventPath"));
 		}
 
 		return filePath;

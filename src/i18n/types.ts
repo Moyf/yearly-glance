@@ -348,9 +348,13 @@ export type BaseMessage = {
 				limitHeight: string;
 				maxHeight: string;
 				properties: string;
+				extendedProperties: string;
 				propTitle: string;
 				propDate: string;
 				propDuration: string;
+				propIcon: string;
+				propColor: string;
+				propDescription: string;
 				inheritPluginData: string;
 			}
 		}
@@ -364,6 +368,9 @@ export type BaseMessage = {
 	common: {
 		confirm: string;
 		cancel: string;
+	};
+	notice: {
+		setDefaultBasesEventPath: string;
 	};
 	data: {
 		sampleEvent: {

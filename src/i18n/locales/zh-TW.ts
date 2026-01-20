@@ -195,10 +195,14 @@ const translations: BaseMessage = {
 				limitHeight: "限制高度",
 				maxHeight: "最大高度",
 				properties: "屬性",
+				extendedProperties: "拓展屬性",
 				display: "顯示",
 				propTitle: "標題屬性",
 				propDate: "日期屬性",
 				propDuration: "持續天數屬性",
+				propIcon: "圖示屬性",
+				propColor: "顏色屬性",
+				propDescription: "描述屬性",
 				inheritPluginData: "繼承插件資料",
 			},
 		},
@@ -478,6 +482,9 @@ const translations: BaseMessage = {
 	common: {
 		confirm: "確認",
 		cancel: "取消",
+	},
+	notice: {
+		setDefaultBasesEventPath: "提示：請在外掛設定中選擇預設筆記事件路徑",
 	},
 	data: {
 		sampleEvent: {

@@ -195,10 +195,14 @@ const translations: BaseMessage = {
 				limitHeight: "限制高度",
 				maxHeight: "最大高度",
 				properties: "属性",
+				extendedProperties: "拓展属性",
 				display: "显示",
 				propTitle: "标题属性",
 				propDate: "日期属性",
 				propDuration: "持续天数属性",
+				propIcon: "图标属性",
+				propColor: "颜色属性",
+				propDescription: "描述属性",
 				inheritPluginData: "继承插件数据",
 			},
 		},
@@ -478,6 +482,9 @@ const translations: BaseMessage = {
 	common: {
 		confirm: "确认",
 		cancel: "取消",
+	},
+	notice: {
+		setDefaultBasesEventPath: "提示：请在插件设置中选择默认笔记事件路径",
 	},
 	data: {
 		sampleEvent: {

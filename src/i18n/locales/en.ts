@@ -195,10 +195,14 @@ const translations: BaseMessage = {
 				limitHeight: "Limit height",
 				maxHeight: "Maximum height",
 				properties: "Properties",
+				extendedProperties: "Extended properties",
 				display: "Display",
 				propTitle: "Title property",
 				propDate: "Date property",
 				propDuration: "Duration property",
+				propIcon: "Icon property",
+				propColor: "Color property",
+				propDescription: "Description property",
 				inheritPluginData: "Inherit plugin data",
 			},
 		},
@@ -482,6 +486,9 @@ const translations: BaseMessage = {
 	common: {
 		confirm: "Confirm",
 		cancel: "Cancel",
+	},
+	notice: {
+		setDefaultBasesEventPath: "Tip: Please select the default note event path in plugin settings",
 	},
 	data: {
 		sampleEvent: {

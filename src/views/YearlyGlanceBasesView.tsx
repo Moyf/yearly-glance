@@ -489,34 +489,47 @@ export class YearlyGlanceBasesView extends BasesView {
             return;
         }
 
+        // 获取配置的属性名（优先使用 Bases 视图配置，回退到插件全局设置）
+        const pluginConfig = this.plugin.getConfig();
+        const titleProp = this.config.getAsPropertyId('propTitle') || pluginConfig.basesEventTitleProp || "title";
+        const dateProp = this.config.getAsPropertyId('propDate') || pluginConfig.basesEventDateProp || "event_date";
+        const durationProp = this.config.getAsPropertyId('propDuration') || pluginConfig.basesEventDurationProp || "duration";
+        const iconProp = this.config.getAsPropertyId('propIcon') || pluginConfig.basesEventIconProp || "icon";
+        const colorProp = this.config.getAsPropertyId('propColor') || pluginConfig.basesEventColorProp || "color";
+        const descriptionProp = this.config.getAsPropertyId('propDescription') || pluginConfig.basesEventDescriptionProp || "description";
+
         try {
             await this.app.fileManager.processFrontMatter(file, (fm) => {
-                // 更新 frontmatter 字段
-                fm.title = event.text;
-                fm.event_date = eventDate;
+                // 更新 frontmatter 字段（使用配置的属性名）
+                fm[titleProp] = event.text;
+                fm[dateProp] = eventDate;
 
-                // 同步 duration_days 字段（笔记事件使用 duration_days）
+                // 同步持续天数字段
                 if (event.duration && event.duration > 1) {
-                    fm.duration_days = event.duration;
-                } else if (fm.duration_days) {
-                    delete fm.duration_days;
+                    fm[durationProp] = event.duration;
+                } else if (fm[durationProp]) {
+                    delete fm[durationProp];
                 }
 
-                // 只有当事件有自定义图标时才更新
+                // 同步图标：如果有自定义值则设置，否则删除
                 if (event.emoji && event.emoji !== EVENT_TYPE_DEFAULT.basesEvent.emoji) {
-                    fm.icon = event.emoji;
+                    fm[iconProp] = event.emoji;
+                } else if (fm[iconProp]) {
+                    delete fm[iconProp];
                 }
 
-                // 只有当事件有自定义颜色时才更新
+                // 同步颜色：如果有自定义值则设置，否则删除
                 if (event.color && event.color !== EVENT_TYPE_DEFAULT.basesEvent.color) {
-                    fm.color = event.color;
+                    fm[colorProp] = event.color;
+                } else if (fm[colorProp]) {
+                    delete fm[colorProp];
                 }
 
-                // 同步描述字段
+                // 同步描述：如果有值则设置，否则删除
                 if (event.remark && typeof event.remark === 'string') {
-                    fm.description = event.remark;
-                } else if (fm.description) {
-                    delete fm.description;
+                    fm[descriptionProp] = event.remark;
+                } else if (fm[descriptionProp]) {
+                    delete fm[descriptionProp];
                 }
             });
             console.log('Frontmatter updated successfully for:', filePath);

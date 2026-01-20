@@ -138,7 +138,7 @@ const translations: BaseMessage = {
 			basesEventDurationProp: {
 				name: "持續天數屬性名",
 				desc: "筆記屬性中用於儲存事件持續天數的屬性名",
-				placeholder: "預設: duration_days",
+				placeholder: "預設: duration",
 			},
 			basesEventIconProp: {
 				name: "圖示屬性名",

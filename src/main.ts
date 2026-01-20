@@ -378,7 +378,7 @@ export default class YearlyGlancePlugin extends Plugin {
 		const config = this.settings.config;
 		const titleProp = config.basesEventTitleProp || "title";
 		const dateProp = config.basesEventDateProp || "event_date";
-		const durationProp = config.basesEventDurationProp || "duration_days";
+		const durationProp = config.basesEventDurationProp || "duration";
 		const iconProp = config.basesEventIconProp || "icon";
 		const colorProp = config.basesEventColorProp || "color";
 		const descriptionProp = config.basesEventDescriptionProp || "description";

@@ -138,7 +138,7 @@ const translations: BaseMessage = {
 			basesEventDurationProp: {
 				name: "Duration property name",
 				desc: "Property name in note properties for storing event duration",
-				placeholder: "Default: duration_days",
+				placeholder: "Default: duration",
 			},
 			basesEventIconProp: {
 				name: "Icon property name",

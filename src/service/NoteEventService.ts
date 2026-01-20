@@ -87,7 +87,7 @@ export class NoteEventService {
 		const dateProp =
 			this.config.basesEventDateProp || "event_date";
 		const durationProp =
-			this.config.basesEventDurationProp || "duration_days";
+			this.config.basesEventDurationProp || "duration";
 		const iconProp =
 			this.config.basesEventIconProp || "icon";
 		const colorProp =

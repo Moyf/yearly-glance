@@ -159,7 +159,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	defaultBasesEventPath: "", // 默认笔记事件路径为空（根目录）
 	basesEventTitleProp: "title", // 默认标题属性名
 	basesEventDateProp: "event_date", // 默认日期属性名
-	basesEventDurationProp: "duration_days", // 默认持续天数属性名
+	basesEventDurationProp: "duration", // 默认持续天数属性名
 	basesEventIconProp: "icon", // 默认图标属性名
 	basesEventColorProp: "color", // 默认颜色属性名
 	basesEventDescriptionProp: "description", // 默认描述属性名

@@ -138,7 +138,7 @@ const translations: BaseMessage = {
 			basesEventDurationProp: {
 				name: "持续天数属性名",
 				desc: "笔记属性中用于存储事件持续天数的属性名",
-				placeholder: "默认: duration_days",
+				placeholder: "默认: duration",
 			},
 			basesEventIconProp: {
 				name: "图标属性名",

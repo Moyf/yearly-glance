@@ -3,7 +3,6 @@ import { Birthday, CustomEvent, EventType, Holiday } from "@/src/type/Events";
 import { getBirthdayTranslation } from "@/src/i18n/birthday";
 import { IsoUtils } from "./isoUtils";
 import { LunarLibrary } from "./lunarLibrary";
-import { SpecialHoliday } from "./specialHoliday";
 import { CalendarType } from "@/src/type/Date";
 
 export class EventCalculator {
@@ -15,7 +14,7 @@ export class EventCalculator {
 	 * @param yearSelected 当前选择的年份
 	 * @param isRepeat 是否为重复事件，针对customEvent
 	 * @returns 日期数组
-	 *
+	 * 
 	 * 优化逻辑：
 	 * 1. 对于不重复的自定义事件且有年份：不随yearSelected变动，直接计算出公历日期
 	 * 2. 对于生日：当yearSelected小于出生日期公历的年份时不计算
@@ -111,40 +110,20 @@ export class EventCalculator {
 
 	/**
 	 * 更新单个节假日信息
+	 * 
+	 * 节假日直接使用原始 isoDate 作为 dateArr，因为：
+	 * - 系统节假日由 HolidayService 根据年份动态生成，已经是正确日期
+	 * - 用户节假日是用户输入的特定日期，直接使用原始 isoDate
+	 * 
 	 * @param holiday 节假日对象
-	 * @param yearSelected 当前选择的年份
-	 * @returns 更新后的节假日对象
+	 * @param yearSelected 当前选择的年份（未使用，保持接口一致）
+	 * @returns 更新后的节假日对象（添加 dateArr 字段）
 	 */
 	static updateHolidayInfo(holiday: Holiday, yearSelected: number) {
-		const { id } = holiday;
-		let isoDate: string = holiday.eventDate.isoDate;
-		const calendar = holiday.eventDate.calendar;
-
-		// TODO: 完善节气节日的处理
-		if (id === "holi-wblqm") {
-			// 清明节
-			const qingMing = SpecialHoliday.solarTerm(yearSelected, "清明");
-			isoDate = qingMing;
-		} else if (id === "holi-wbldz") {
-			// 冬至
-			const dongZhi = SpecialHoliday.solarTerm(yearSelected, "冬至");
-			isoDate = dongZhi;
-		}
-
-		const dateArr = this.calculateDateArr(
-			"holiday",
-			isoDate,
-			calendar,
-			yearSelected
-		);
-
+		const isoDate = holiday.eventDate.isoDate;
 		return {
 			...holiday,
-			dateArr,
-			eventDate: {
-				...holiday.eventDate,
-				isoDate,
-			},
+			dateArr: [isoDate],
 		};
 	}
 

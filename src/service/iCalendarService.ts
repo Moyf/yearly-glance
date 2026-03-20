@@ -17,6 +17,10 @@ export class iCalendarService {
 				type: "holiday",
 				event: h,
 			})),
+			...eventsData.systemHolidays.map((h) => ({
+				type: "holiday",
+				event: h,
+			})),
 			...eventsData.birthdays.map((b) => ({
 				type: "birthday",
 				event: b,

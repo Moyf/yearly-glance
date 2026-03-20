@@ -50,6 +50,14 @@ export type BaseMessage = {
 			showLunarDay: IBaseSettingsItem;
 			showEmojiBeforeTabName: IBaseSettingsItem;
 			showDebugInfo: IBaseSettingsItem;
+			holidayFixData: {
+				name: string;
+				desc: string;
+				link: string;
+				placeholder: string;
+				import: string;
+				success: string;
+			};
 			presetColors: SettingsItem<{
 				newColor: string;
 			}>;
@@ -190,6 +198,8 @@ export type BaseMessage = {
 			holiday: {
 				name: string;
 				foundDate: string;
+				systemHolidays: string;
+				userHolidays: string;
 			};
 			birthday: {
 				name: string;

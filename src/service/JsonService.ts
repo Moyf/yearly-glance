@@ -45,6 +45,9 @@ export class JsonService {
 			holidays: eventsData.holidays?.map((h) =>
 				this.converterToJsonEvent(h)
 			),
+			systemHolidays: eventsData.systemHolidays?.map((h) =>
+				this.converterToJsonEvent(h)
+			),
 			birthdays: eventsData.birthdays?.map((b) =>
 				this.converterToJsonEvent(b)
 			),
@@ -134,6 +137,7 @@ export class JsonService {
 		}
 
 		if (importData.holidays) {
+			// 导入JSON中的节假日（都是用户节假日，系统节假日通过代码生成）
 			this.parseEventsProcess(
 				importData.holidays,
 				"holiday",

@@ -130,6 +130,7 @@ export class EventFormModal extends Modal {
 					event as Holiday,
 					currentYear
 				);
+				// 用户添加的节假日保存在 holidays 数组中
 				if (this.isEditing) {
 					newEvents.holidays = newEvents.holidays.map((h) =>
 						h.id === event.id ? (event as Holiday) : h

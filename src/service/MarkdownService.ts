@@ -40,10 +40,11 @@ export class MarkdownService {
 			errors: [] as string[],
 		};
 
-		// 导出节假日
-		if (eventsData.holidays.length > 0) {
+		// 导出节假日（用户 + 系统）
+		const allHolidays = [...eventsData.holidays, ...eventsData.systemHolidays];
+		if (allHolidays.length > 0) {
 			const holidayResult = await this.exportEventType(
-				eventsData.holidays,
+				allHolidays,
 				"holiday",
 				config.holidayFolder,
 				config.holidayFields

@@ -3,7 +3,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 
 interface SettingsItemProps {
 	name: string;
-	desc?: string;
+	desc?: string | React.ReactNode;
 	icon?: React.ReactNode;
 	children?: React.ReactNode;
 	collapsible?: boolean;

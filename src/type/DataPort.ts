@@ -20,7 +20,10 @@ export interface JsonEvent {
 }
 
 export interface ImportJsonEvents {
+	/** 用户节假日 */
 	holidays?: JsonEvent[];
+	/** 系统节假日（仅供查看，导入时忽略） */
+	systemHolidays?: JsonEvent[];
 	birthdays?: JsonEvent[];
 	customEvents?: JsonEvent[];
 }

@@ -88,6 +88,14 @@ const translations: BaseMessage = {
 				name: "顯示偵錯資訊",
 				desc: "在主控台中顯示偵錯資訊",
 			},
+			holidayFixData: {
+				name: "法定節假日補充",
+				desc: "補充庫中缺失的法定節假日",
+				link: "修正資料參考",
+				placeholder: "例如: 202601010020260101xxx",
+				import: "匯入",
+				success: "節假日資料匯入成功",
+			},
 			presetColors: {
 				name: "預設顏色",
 				desc: "各事件的配色預設選項",
@@ -276,6 +284,8 @@ const translations: BaseMessage = {
 			holiday: {
 				name: "節日",
 				foundDate: "節日起源時間",
+				systemHolidays: "系統節假日",
+				userHolidays: "使用者節假日",
 			},
 			birthday: {
 				name: "生日",

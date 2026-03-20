@@ -1,4 +1,5 @@
 import { Notice, Plugin } from "obsidian";
+import { HolidayUtil } from "lunar-typescript";
 import { DEFAULT_CONFIG, YearlyGlanceConfig } from "./type/Config";
 import YearlyGlanceSettingsTab from "./components/Settings/SettingsTab";
 import {
@@ -19,6 +20,7 @@ import { YearlyGlanceBus } from "./hooks/useYearlyGlanceConfig";
 import { t } from "./i18n/i18n";
 import { MigrateData } from "./utils/migrateData";
 import { EventCalculator } from "./utils/eventCalculator";
+import { generateSystemHolidays, updateUserHolidays } from "./utils/holidayUtils";
 import { IsoUtils } from "./utils/isoUtils";
 import { generateEventId } from "./utils/uniqueEventId";
 
@@ -53,16 +55,20 @@ export default class YearlyGlancePlugin extends Plugin {
 		// 检查是否为第一次安装，如果是则添加示例事件
 		await this.addSampleEventOnFirstInstall(savedData);
 
+		// 应用保存的节假日补充数据（如果存在）
+		if (this.settings.config.holidayFixData) {
+			HolidayUtil.fix(this.settings.config.holidayFixData);
+		}
+
 		// 更新所有事件的dateArr字段
 		await this.updateAllEventsDateObj();
-		// 保存设置，并通知其他组件
-		await this.saveSettings();
+		// updateAllEventsDateObj 内部会保存用户节假日
 	}
 
 	// 确保数据结构符合预期格式，移除未定义的配置
 	private validateAndMergeSettings(savedData: unknown): YearlyGlanceConfig {
 		// 创建默认配置的深拷贝
-		const validatedSettings = structuredClone(DEFAULT_CONFIG);
+		const validatedSettings = JSON.parse(JSON.stringify(DEFAULT_CONFIG)) as YearlyGlanceConfig;
 
 		try {
 			// 如果savedData存在且是对象
@@ -79,9 +85,12 @@ export default class YearlyGlancePlugin extends Plugin {
 
 				// 验证并合并data部分
 				if (data.data && typeof data.data === "object") {
+					const savedDataObj = data.data as Record<string, unknown>;
 					validatedSettings.data = {
 						...validatedSettings.data,
-						...(data.data as Record<string, unknown>),
+						holidays: (savedDataObj.holidays as Holiday[] | undefined) || [],
+						birthdays: (savedDataObj.birthdays as Birthday[] | undefined) || [],
+						customEvents: (savedDataObj.customEvents as CustomEvent[] | undefined) || [],
 					};
 				}
 			}
@@ -93,7 +102,17 @@ export default class YearlyGlancePlugin extends Plugin {
 	}
 
 	async saveSettings() {
-		await this.saveData(this.settings);
+		// 只保存需要持久化的数据（用户节假日、生日、自定义事件）
+		const dataToSave = {
+			...this.settings,
+			data: {
+				holidays: this.settings.data.holidays,
+				birthdays: this.settings.data.birthdays,
+				customEvents: this.settings.data.customEvents,
+			},
+		};
+		await this.saveData(dataToSave);
+		// 通知所有订阅组件刷新数据
 		YearlyGlanceBus.publish();
 	}
 
@@ -153,22 +172,49 @@ export default class YearlyGlancePlugin extends Plugin {
 		newConfig: Partial<YearlyGlanceConfig["config"]>
 	) {
 		const oldYear = this.settings.config.year;
+		const oldShowHolidays = this.settings.config.showHolidays;
 
 		this.settings.config = {
 			...this.settings.config,
 			...newConfig,
 		};
 
-		// 检查年份是否变化，如果变化则更新所有事件的dateArr
-		if (newConfig.year && newConfig.year !== oldYear) {
+		// 检查是否需要重新加载节假日
+		const yearChanged = newConfig.year && newConfig.year !== oldYear;
+		const showHolidaysChanged = newConfig.showHolidays !== undefined && newConfig.showHolidays !== oldShowHolidays;
+
+		if (yearChanged || showHolidaysChanged) {
 			await this.updateAllEventsDateObj();
 		}
 
 		await this.saveSettings();
 	}
 
+	// 导入节假日补充数据（用于修正法定节假日）
+	public async importHolidayFixData(fixData: string) {
+		if (!fixData) {
+			return;
+		}
+
+		// 调用 lunar-typescript 库的 fix 方法修正节假日
+		HolidayUtil.fix(fixData);
+		// 保存到配置中（持久化）
+		// lunar 组件没有开放对比方法，所以，无法和组件内部配置对比去重
+		this.settings.config.holidayFixData = fixData;
+		// 重新生成节假日（使用修正后的数据）
+		await this.updateAllEventsDateObj();
+		await this.saveSettings();
+		new Notice(t("setting.general.holidayFixData.success"));
+	}
+
+	// 返回运行时数据（包含 systemHolidays），供 UI 组件使用
 	public getData(): YearlyGlanceConfig["data"] {
-		return this.settings.data;
+		return {
+			holidays: [...this.settings.data.holidays],
+			systemHolidays: [...this.settings.data.systemHolidays],
+			birthdays: [...this.settings.data.birthdays],
+			customEvents: [...this.settings.data.customEvents],
+		};
 	}
 
 	public async updateData(newData: Partial<YearlyGlanceConfig["data"]>) {
@@ -180,6 +226,10 @@ export default class YearlyGlancePlugin extends Plugin {
 		// 确保所有事件都有id
 		await this.ensureEventsHaveIds();
 
+		// 重新生成系统节假日
+		await this.updateAllEventsDateObj();
+
+		// 持久化数据到 data.json
 		await this.saveSettings();
 	}
 
@@ -294,35 +344,32 @@ export default class YearlyGlancePlugin extends Plugin {
 				customEvent.id = generateEventId("customEvent");
 			}
 		});
-
-		await this.saveData(this.settings);
 	}
 
 	/**
-	 * 更新所有事件的dateArr字段
+	 * 更新所有事件的 dateArr 字段
+	 * 触发时机：插件加载、切换年份、开关节假日显示、导入节假日数据、增删改事件
 	 */
 	public async updateAllEventsDateObj() {
 		const year = this.settings.config.year;
+		const { showHolidays } = this.settings.config;
 		const events = this.settings.data;
 
-		// 更新节日和自定义事件的dateArr
-		events.holidays = EventCalculator.updateHolidaysInfo(
-			events.holidays,
-			year
-		);
-		events.customEvents = EventCalculator.updateCustomEventsInfo(
-			events.customEvents,
-			year
-		);
+		// 更新用户节假日 dateArr
+		events.holidays = updateUserHolidays(events.holidays, year);
 
-		// 更新生日的完整信息（包含dateArr、nextBirthday、age、animal、zodiac等）
-		events.birthdays = EventCalculator.updateBirthdaysInfo(
-			events.birthdays,
-			year
-		);
+		// 更新自定义事件和生日的 dateArr
+		events.customEvents = EventCalculator.updateCustomEventsInfo(events.customEvents, year);
+		events.birthdays = EventCalculator.updateBirthdaysInfo(events.birthdays, year);
 
-		// 不触发保存的通知，因为这是内部计算，不需要通知用户
-		await this.saveData(this.settings);
+		// 生成系统节假日
+		if (showHolidays) {
+			events.systemHolidays = generateSystemHolidays(year);
+		} else {
+			events.systemHolidays = [];
+		}
+
+		YearlyGlanceBus.publish();
 	}
 
 	/**

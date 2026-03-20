@@ -7,6 +7,7 @@ import {
 import {
 	BaseEvent,
 	EVENT_TYPE_DEFAULT,
+	EVENT_TYPE_LIST,
 	Events,
 	EventType,
 } from "@/src/type/Events";
@@ -60,6 +61,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 	const allEventIds = React.useMemo(() => {
 		const allIds: string[] = [];
 		allIds.push(...currentData.holidays.map((event) => event.id));
+		allIds.push(...currentData.systemHolidays.map((event) => event.id));
 		allIds.push(...currentData.birthdays.map((event) => event.id));
 		allIds.push(...currentData.customEvents.map((event) => event.id));
 		return allIds;
@@ -134,9 +136,15 @@ export const DataExport: React.FC<DataExportProps> = ({
 			});
 		};
 
-		const groups: Record<EventType, EventWithType[]> = {
+		const groups: Record<EventType | "systemHoliday", EventWithType[]> = {
 			holiday: sortEventsByDate(
 				currentData.holidays.map((event) => ({
+					...event,
+					type: "holiday" as EventType,
+				}))
+			),
+			systemHoliday: sortEventsByDate(
+				currentData.systemHolidays.map((event) => ({
 					...event,
 					type: "holiday" as EventType,
 				}))
@@ -155,7 +163,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 			),
 		};
 		return groups;
-	}, [currentData, config]);
+	}, [currentData]);
 
 	// 当数据变化时更新选中状态，保持全选
 	React.useEffect(() => {
@@ -176,7 +184,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 	};
 
 	// 选择/取消选择某个分组的所有事件
-	const handleGroupSelection = (type: EventType) => {
+	const handleGroupSelection = (type: EventType | "systemHoliday") => {
 		const groupEventIds = eventGroups[type].map((event) => event.id);
 		const newSelected = new Set(selectedEvents);
 
@@ -208,7 +216,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 	};
 
 	// 检查某个分组是否全选
-	const isGroupSelected = (type: EventType) => {
+	const isGroupSelected = (type: EventType | "systemHoliday") => {
 		const groupEventIds = eventGroups[type].map((event) => event.id);
 		return (
 			groupEventIds.length > 0 &&
@@ -235,6 +243,9 @@ export const DataExport: React.FC<DataExportProps> = ({
 			holidays: currentData.holidays.filter((event) =>
 				selectedEvents.has(event.id)
 			),
+			systemHolidays: currentData.systemHolidays.filter((event) =>
+				selectedEvents.has(event.id)
+			),
 			birthdays: currentData.birthdays.filter((event) =>
 				selectedEvents.has(event.id)
 			),
@@ -255,28 +266,17 @@ export const DataExport: React.FC<DataExportProps> = ({
 			const selectedData = getSelectedData();
 
 			switch (activeExportFormat) {
-				case "json": {
-					const content = JsonService.createJsonEvents(selectedData);
-					const filename = `${exportFileName}.json`;
-					const mimeType = "application/json";
-
-					// 创建下载链接
-					const blob = new Blob([content], { type: mimeType });
-					const url = URL.createObjectURL(blob);
-					const link = document.createElement("a");
-					link.href = url;
-					link.download = filename;
-					document.body.appendChild(link);
-					link.click();
-					document.body.removeChild(link);
-					URL.revokeObjectURL(url);
-					break;
-				}
+				case "json":
 				case "ics": {
 					const content =
-						iCalendarService.createICalEvents(selectedData);
-					const filename = `${exportFileName}.ics`;
-					const mimeType = "text/calendar";
+						activeExportFormat === "json"
+							? JsonService.createJsonEvents(selectedData)
+							: iCalendarService.createICalEvents(selectedData);
+					const filename = `${exportFileName}.${activeExportFormat}`;
+					const mimeType =
+						activeExportFormat === "json"
+							? "application/json"
+							: "text/calendar";
 
 					// 创建下载链接
 					const blob = new Blob([content], { type: mimeType });
@@ -288,6 +288,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 					link.click();
 					document.body.removeChild(link);
 					URL.revokeObjectURL(url);
+					// 不添加导出成功数量提示，因为会和导出路径选择有冲突
 					break;
 				}
 				case "md": {
@@ -332,10 +333,14 @@ export const DataExport: React.FC<DataExportProps> = ({
 	};
 
 	// 获取分组显示信息
-	const getGroupInfo = (type: EventType) => {
-		const config = {
+	const getGroupInfo = (type: EventType | "systemHoliday") => {
+		const config: Record<EventType | "systemHoliday", { title: string; icon: React.ReactNode }> = {
 			holiday: {
 				title: t("view.yearlyGlance.legend.holiday"),
+				icon: <Sparkles className="group-icon" />,
+			},
+			systemHoliday: {
+				title: t("view.eventManager.holiday.systemHolidays"),
 				icon: <Sparkles className="group-icon" />,
 			},
 			birthday: {
@@ -663,7 +668,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 					</Button>
 
 					{/* 分类选择控制 */}
-					{(Object.keys(eventGroups) as EventType[]).map((type) => {
+					{[...EVENT_TYPE_LIST, "systemHoliday" as const].map((type) => {
 						const events = eventGroups[type];
 						if (events.length === 0) return null;
 
@@ -706,11 +711,14 @@ export const DataExport: React.FC<DataExportProps> = ({
 
 			{/* 事件分组列表 */}
 			<div className="export-event-groups">
-				{(Object.keys(eventGroups) as EventType[]).map((type) => {
+				{[...EVENT_TYPE_LIST, "systemHoliday" as const].map((type) => {
 					const events = eventGroups[type];
 					if (events.length === 0) return null;
 
 					const groupInfo = getGroupInfo(type);
+					const defaultEmoji = type === "systemHoliday" 
+						? EVENT_TYPE_DEFAULT.holiday.emoji 
+						: EVENT_TYPE_DEFAULT[type].emoji;
 
 					return (
 						<div key={type} className="export-event-group">
@@ -733,9 +741,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 												<Square size={16} />
 											)
 										}
-										onClick={() =>
-											handleGroupSelection(type)
-										}
+										onClick={() => handleGroupSelection(type)}
 									>
 										{isGroupSelected(type)
 											? t(
@@ -769,11 +775,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 											/>
 											<div className="event-info">
 												<div className="event-title">
-													{!event.emoji
-														? EVENT_TYPE_DEFAULT[
-																type
-														  ].emoji
-														: event.emoji}{" "}
+													{event.emoji || defaultEmoji}{" "}
 													{event.text}
 												</div>
 												<div className="event-details">

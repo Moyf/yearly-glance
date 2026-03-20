@@ -17,6 +17,7 @@ interface EventItemProps {
 	onDelete: () => void;
 	eventType: EventType;
 	gregorianDisplayFormat: string; // 公历显示格式
+	readonly?: boolean; // 只读模式，不显示编辑/删除按钮
 }
 
 // 事件列表项组件
@@ -26,6 +27,7 @@ export const EventItem: React.FC<EventItemProps> = ({
 	onDelete,
 	eventType,
 	gregorianDisplayFormat,
+	readonly = false,
 }) => {
 	// 获取事件特定信息
 	const getEventSpecificInfo = () => {
@@ -233,20 +235,26 @@ export const EventItem: React.FC<EventItemProps> = ({
 			</div>
 
 			<div className="event-actions">
-				<button
-					className="edit-button"
-					onClick={onEdit}
-					title={t("view.eventManager.actions.edit")}
-				>
-					✏️
-				</button>
-				<button
-					className="delete-button"
-					onClick={onDelete}
-					title={t("view.eventManager.actions.delete")}
-				>
-					🗑️
-				</button>
+				{readonly ? (
+					<span className="readonly-icon" title="系统节假日，不可编辑">🔒</span>
+				) : (
+					<>
+						<button
+							className="edit-button"
+							onClick={onEdit}
+							title={t("view.eventManager.actions.edit")}
+						>
+							✏️
+						</button>
+						<button
+							className="delete-button"
+							onClick={onDelete}
+							title={t("view.eventManager.actions.delete")}
+						>
+							🗑️
+						</button>
+					</>
+				)}
 			</div>
 		</div>
 	);

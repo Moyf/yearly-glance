@@ -57,7 +57,7 @@
 		"dotenv": "^16.4.7",
 		"html-react-parser": "^5.2.5",
 		"lucide-react": "^0.487.0",
-		"lunar-typescript": "^1.7.8",
+		"lunar-typescript": "^1.8.6",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
 		"uuid": "^11.1.0"

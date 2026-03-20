@@ -104,7 +104,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 		showCustomEvents,
 	} = config;
 
-	const { holidays, birthdays, customEvents } = events;
+	const { holidays, systemHolidays, birthdays, customEvents } = events;
 
 	// 当前日期 - 使用时区安全的方法
 	const today = React.useMemo(() => new Date(), []);
@@ -115,6 +115,16 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin) {
 
 		// 处理节假日
 		if (showHolidays) {
+			// 系统节假日
+			systemHolidays.forEach((holiday) => {
+				if (!holiday.isHidden) {
+					events.push({
+						...holiday,
+						eventType: "holiday",
+					});
+				}
+			});
+			// 用户节假日
 			holidays.forEach((holiday) => {
 				if (!holiday.isHidden) {
 					events.push({

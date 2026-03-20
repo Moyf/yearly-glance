@@ -292,6 +292,40 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						}
 					/>
 				</SettingsItem>
+				{/* 节假日补充数据 */}
+				<SettingsItem
+					name={t("setting.general.holidayFixData.name")}
+					desc={
+						<span>
+							{t("setting.general.holidayFixData.desc")}
+							<a
+								href="https://6tail.cn/calendar/api.html#holiday-util.fix.html"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								{t("setting.general.holidayFixData.link")}
+							</a>
+						</span>
+					}
+				>
+					<div style={{ display: "flex", gap: "8px" }}>
+						<Input
+							type="text"
+							value={config.holidayFixData || ""}
+							onChange={(value) =>
+								handleUpdateConfig({ holidayFixData: value })
+							}
+							placeholder={t("setting.general.holidayFixData.placeholder")}
+							style={{ flex: 1 }}
+						/>
+						<button
+							onClick={() => plugin.importHolidayFixData(config.holidayFixData || "")}
+							disabled={!config.holidayFixData}
+						>
+							{t("setting.general.holidayFixData.import")}
+						</button>
+					</div>
+				</SettingsItem>
 				{/* 显示生日 */}
 				<SettingsItem
 					name={t("setting.general.showBirthdays.name")}

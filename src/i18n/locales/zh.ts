@@ -88,6 +88,14 @@ const translations: BaseMessage = {
 				name: "显示调试信息",
 				desc: "在控制台中显示调试信息",
 			},
+			holidayFixData: {
+				name: "法定节假日补充",
+				desc: "补充库中缺失的法定节假日",
+				link: "修正数据参考",
+				placeholder: "例如: 202601010020260101xxx",
+				import: "导入",
+				success: "节假日数据导入成功",
+			},
 			presetColors: {
 				name: "预设颜色",
 				desc: "各事件的配色预设选项",
@@ -276,6 +284,8 @@ const translations: BaseMessage = {
 			holiday: {
 				name: "节日",
 				foundDate: "节日起源时间",
+				systemHolidays: "系统节假日",
+				userHolidays: "用户节假日",
 			},
 			birthday: {
 				name: "生日",
@@ -372,7 +382,7 @@ const translations: BaseMessage = {
 					nullText: "缺少事件名称",
 					nullDate: "缺少用户输入的日期",
 					duplicateEvent: "该事件可能已存在",
-				},
+								},
 			},
 		},
 	},

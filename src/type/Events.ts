@@ -1,7 +1,10 @@
 import { EventDate } from "./Date";
 
 export interface Events {
+	/** 节假日（持久化） */
 	holidays: Holiday[];
+	/** 系统节假日（内存生成，不持久化） */
+	systemHolidays: Holiday[];
 	birthdays: Birthday[];
 	customEvents: CustomEvent[];
 }
@@ -23,12 +26,26 @@ export interface BaseEvent {
 }
 
 /**
+ * 节假日类型
+ * - public: 法定节假日（放假）
+ * - public-work: 法定节假日（调休上班）
+ * - solar-term: 节气
+ * - festival: 节日（公历节日、农历节日、纪念日等）
+ */
+export type HolidayDisplayType =
+	| "public"
+	| "public-work"
+	| "solar-term"
+	| "festival";
+
+/**
  * 节日接口
- * type: 节日类型, 内置节日或自定义添加的节日
  * foundDate?: 节日起源日期, 年月日，年月，年，一般用于计算周年
+ * holidayType?: 节假日显示类型，用于区分颜色和图标
  */
 export interface Holiday extends BaseEvent {
 	foundDate?: string;
+	holidayType?: HolidayDisplayType;
 }
 
 /**
@@ -70,7 +87,8 @@ export const EVENT_TYPE_DEFAULT: Record<
 };
 
 export const DEFAULT_EVENTS: Events = {
-	holidays: [], // 内置节日将通过验证和合并机制添加
+	holidays: [],
+	systemHolidays: [],
 	birthdays: [],
 	customEvents: [],
 };

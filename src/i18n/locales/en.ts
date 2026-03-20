@@ -88,6 +88,14 @@ const translations: BaseMessage = {
 				name: "Debug information",
 				desc: "Show debug information for development",
 			},
+			holidayFixData: {
+				name: "Holiday supplementary data",
+				desc: "Supplement missing public holidays in the library",
+				link: "Correction data reference",
+				placeholder: "e.g.: 202601010020260101xxx",
+				import: "Import",
+				success: "Holiday data imported successfully",
+			},
 			presetColors: {
 				name: "Preset colors",
 				desc: "Color presets for different events",
@@ -278,6 +286,8 @@ const translations: BaseMessage = {
 			holiday: {
 				name: "Holiday",
 				foundDate: "Found date",
+				systemHolidays: "System Holidays",
+				userHolidays: "User Holidays",
 			},
 			birthday: {
 				name: "Birthday",

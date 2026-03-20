@@ -165,6 +165,7 @@ export const EventList: React.FC<EventListProps> = ({
 		);
 	}
 
+	// 普通模式：直接渲染排序后的事件列表
 	return (
 		<div className="event-list" data-type={eventType}>
 			<div className="event-items-grid">

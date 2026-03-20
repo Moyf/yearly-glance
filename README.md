@@ -30,7 +30,7 @@ English | [中文文档](https://github.com/Moyf/yearly-glance/blob/master/READM
 - 🔍 **Event Filtering**: Filter by event type and hide empty dates for a cleaner view.
 - 🌙 **Lunar Calendar Support**: Natively supports the traditional Chinese lunar calendar.
 - 🌏 **Multi-language Support**: English and Chinese (Both simplified and traditional) available.
-
+- 🎊 **Holiday Support**: Built-in system holidays (statutory, solar terms, traditional), plus persistent user-defined holidays.
 
 ## Screenshots
 
@@ -84,6 +84,17 @@ English | [中文文档](https://github.com/Moyf/yearly-glance/blob/master/READM
 
 ![Event Management](./doc/manager.png)
 *Centralized event management interface.*
+
+### 5. Supplement Holiday Data
+
+Public holidays are determined by governments a year in advance, so built-in data may be incomplete. You can supplement missing holidays yourself.
+
+How to import:
+1. Find "Holiday supplementary data" in plugin settings
+2. Input holiday data
+3. Click "Import" button
+
+Imported data will be persisted and won't be lost even after plugin updates.
 
 ## Customization Settings
 

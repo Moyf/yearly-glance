@@ -114,6 +114,8 @@ export interface YearlyGlanceSettings {
 	emojiOnTop: boolean; // 是否在事件上方显示emoji（仅日历视图）
 	wrapEventText: boolean; // 是否换行显示事件文本
 	gregorianDisplayFormat: (typeof GREGORIAN_DISPLAY_FORMAT_OPTIONS)[number]["value"]; // 公历显示格式
+	// 节假日补充数据（用户手动输入的节假日数据，用于补充库中缺失的节假日）
+	holidayFixData?: string;
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -141,4 +143,5 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	emojiOnTop: false, // 默认在左侧显示emoji
 	wrapEventText: false,
 	gregorianDisplayFormat: "YYYY-MM-DD", // 默认使用ISO格式
+	holidayFixData: "", // 节假日补充数据
 };

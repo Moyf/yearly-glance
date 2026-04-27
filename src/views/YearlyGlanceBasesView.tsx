@@ -448,7 +448,7 @@ export class YearlyGlanceBasesView extends BasesView {
 
         try {
             await syncEventToFrontmatter(this.app, file, event, propConfig);
-            console.log('Frontmatter updated successfully for:', filePath);
+            console.debug('[YearlyGlance] Frontmatter updated for:', filePath);
             YearlyGlanceBus.publish();
         } catch (error) {
             console.error('Failed to update frontmatter:', error);

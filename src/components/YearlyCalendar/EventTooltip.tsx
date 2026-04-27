@@ -233,8 +233,20 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 					</div>
 				)}
 
-				{/* 备注信息（所有事件类型共有） */}
-				{event.remark && (
+				{/* dailyNoteEvent 特有信息 - 来自日记 */}
+				{eventType === "dailyNoteEvent" && event.remark?.startsWith("dailynote:") && (
+					<div className="tooltip-row">
+						<span className="tooltip-label">
+							{t("view.eventManager.source.dailynote")}:
+						</span>
+						<span className="tooltip-value">
+							{event.remark.replace(/^dailynote:/, "")}
+						</span>
+					</div>
+				)}
+
+				{/* 备注信息（所有事件类型共有，排除 dailyNoteEvent 的内部 remark） */}
+				{event.remark && !(eventType === "dailyNoteEvent" && event.remark.startsWith("dailynote:")) && (
 					<div className="tooltip-row tooltip-remark">
 						<span className="tooltip-value">{event.remark}</span>
 					</div>

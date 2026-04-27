@@ -262,7 +262,11 @@ export const EventForm: React.FC<EventFormProps> = ({
 			>
 				{/* 表单标题 */}
 				<h3 className="yg-event-form-title">
-					{isBasesEvent
+					{isDailyNoteEvent
+						? isEditing
+							? t("view.eventManager.form.editDailyNoteEvent")
+							: t("view.eventManager.form.addDailyNoteEvent")
+						: isBasesEvent
 						? isEditing
 							? t("view.eventManager.form.editBasesEvent")
 							: t("view.eventManager.form.addBasesEvent")

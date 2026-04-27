@@ -459,7 +459,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 							/>
 						</div>
 					)}
-					<div className="form-group">
+					<div className={`form-group ${isDailyNoteEvent ? "yg-field-disabled" : ""}`}>
 						<label>
 							{t("view.eventManager.form.eventRemark")}
 							<Tooltip
@@ -472,6 +472,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 								handleFieldChange("remark", e.target.value)
 							}
 							rows={3}
+							disabled={isDailyNoteEvent}
 						/>
 					</div>
 					{currentEventType === 'basesEvent' && (
@@ -505,6 +506,23 @@ export const EventForm: React.FC<EventFormProps> = ({
 												path: settings.config.defaultBasesEventPath || '/'
 											})
 										)}
+									</>
+								)}
+							</div>
+						</div>
+					)}
+					{currentEventType === 'dailyNoteEvent' && (
+						<div className="form-group bases-event-hint">
+							<div className="yg-bases-event-hint-content">
+								{isEditing ? (
+									<>
+										<b>{t("view.eventManager.help.dailyNoteEventEdit.label")}：</b>
+										{t("view.eventManager.help.dailyNoteEventEdit.text")}
+									</>
+								) : (
+									<>
+										<b>{t("view.eventManager.help.dailyNoteEventCreate.label")}：</b>
+										{t("view.eventManager.help.dailyNoteEventCreate.text")}
 									</>
 								)}
 							</div>

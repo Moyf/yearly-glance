@@ -22,6 +22,7 @@ import {
 import { YearlyGlanceBus } from "./hooks/useYearlyGlanceConfig";
 import { t } from "./i18n/i18n";
 import { buildPropConfig, syncEventToFrontmatter } from "./service/BasesEventFrontmatterService";
+import { DailyNoteService } from "./service/DailyNoteService";
 import { MigrateData } from "./utils/migrateData";
 import { EventCalculator } from "./utils/eventCalculator";
 import { IsoUtils } from "./utils/isoUtils";
@@ -401,6 +402,74 @@ export default class YearlyGlancePlugin extends Plugin {
 		} catch (error) {
 			console.error('[YearlyGlance] Failed to sync frontmatter:', error);
 		}
+	}
+
+	async createDailyNoteEvent(event: CalendarEvent): Promise<void> {
+		const settings = DailyNoteService.getDailyNoteSettings(
+			this.app,
+			this.settings.config.dailyNoteSource
+		);
+		if (!settings) {
+			new Notice("Daily note plugin is not available");
+			return;
+		}
+
+		const isoDate = event.eventDate.isoDate;
+		if (!isoDate) return;
+
+		const momentFn = (window as typeof window & {
+			moment?: (input: string, format: string) => { format(pattern: string): string };
+		}).moment;
+		if (!momentFn) return;
+
+		const formattedName = momentFn(isoDate, "YYYY-MM-DD").format(settings.format);
+		const folder = settings.folder.replace(/\/+$/, "");
+		const filePath = normalizePath(
+			folder ? `${folder}/${formattedName}.md` : `${formattedName}.md`
+		);
+
+		let file = this.app.vault.getAbstractFileByPath(filePath);
+		if (!file) {
+			if (folder) {
+				const folderExists = this.app.vault.getAbstractFileByPath(folder);
+				if (!folderExists) {
+					await this.app.vault.createFolder(folder);
+				}
+			}
+
+			await this.app.vault.create(filePath, "");
+			file = this.app.vault.getAbstractFileByPath(filePath);
+		}
+
+		if (!file) {
+			new Notice("Failed to create daily note");
+			return;
+		}
+
+		const eventProp = this.settings.config.dailyNoteEventProp;
+		await DailyNoteService.addEventToDaily(this.app, filePath, eventProp, event.text);
+
+		YearlyGlanceBus.publish();
+		new Notice(`Event added to ${formattedName}`);
+	}
+
+	async syncDailyNoteEvent(event: CalendarEvent, oldTitle?: string): Promise<void> {
+		const filePath = DailyNoteService.getFilePathFromEvent(event);
+		if (!filePath) return;
+
+		const eventProp = this.settings.config.dailyNoteEventProp;
+
+		if (oldTitle && oldTitle !== event.text) {
+			await DailyNoteService.updateEventTitle(
+				this.app,
+				filePath,
+				eventProp,
+				oldTitle,
+				event.text
+			);
+		}
+
+		YearlyGlanceBus.publish();
 	}
 
 	/**

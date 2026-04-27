@@ -249,6 +249,65 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 				</SettingsItem>
 			</SettingsBlock>
 
+			{/* DailyNote 事件设置 */}
+			<SettingsBlock
+				name={t("setting.group.dailyNoteEvent.name")}
+				desc={t("setting.group.dailyNoteEvent.desc")}
+				collapsible
+				defaultCollapsed={false}
+			>
+				{/* 启用/禁用开关 */}
+				<SettingsItem
+					name={t("setting.general.showDailyNoteEvents.name")}
+					desc={t("setting.general.showDailyNoteEvents.desc")}
+				>
+					<Toggle
+						checked={config.showDailyNoteEvents}
+						onChange={(value) =>
+							handleUpdateConfig({ showDailyNoteEvents: value })
+						}
+					/>
+				</SettingsItem>
+				{/* 来源选择 */}
+				<SettingsItem
+					name={t("setting.general.dailyNoteSource.name")}
+					desc={t("setting.general.dailyNoteSource.desc")}
+				>
+					<Select
+						value={config.dailyNoteSource}
+						options={[
+							{
+								label: t("setting.general.dailyNoteSource.options.dailyNotes"),
+								value: "daily-notes",
+							},
+							{
+								label: t("setting.general.dailyNoteSource.options.periodicNotes"),
+								value: "periodic-notes",
+							},
+						]}
+						onValueChange={(value) =>
+							handleUpdateConfig({
+								dailyNoteSource: value as "daily-notes" | "periodic-notes",
+							})
+						}
+					/>
+				</SettingsItem>
+				{/* 事件属性名 */}
+				<SettingsItem
+					name={t("setting.general.dailyNoteEventProp.name")}
+					desc={t("setting.general.dailyNoteEventProp.desc")}
+				>
+					<Input
+						type="text"
+						value={config.dailyNoteEventProp}
+						placeholder={t("setting.general.dailyNoteEventProp.placeholder")}
+						onChange={(value) =>
+							handleUpdateConfig({ dailyNoteEventProp: value })
+						}
+					/>
+				</SettingsItem>
+			</SettingsBlock>
+
 			{/* 布局相关设置 */}
 			<SettingsBlock
 				name={t("setting.group.layout.name") as TranslationKeys}

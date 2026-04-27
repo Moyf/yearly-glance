@@ -129,6 +129,10 @@ export interface YearlyGlanceSettings {
 	basesEventIconProp?: string; // 笔记事件图标属性名
 	basesEventColorProp?: string; // 笔记事件颜色属性名
 	basesEventDescriptionProp?: string; // 笔记事件描述属性名
+	// 日记事件设置
+	showDailyNoteEvents: boolean; // 是否显示日记事件
+	dailyNoteSource: "daily-notes" | "periodic-notes"; // 日记来源插件
+	dailyNoteEventProp: string; // 日记事件属性名
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -166,4 +170,8 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	basesEventIconProp: "icon", // 默认图标属性名
 	basesEventColorProp: "color", // 默认颜色属性名
 	basesEventDescriptionProp: "description", // 默认描述属性名
+	// 日记事件设置
+	showDailyNoteEvents: false, // 默认不显示日记事件（需要用户手动启用）
+	dailyNoteSource: "daily-notes", // 默认使用核心日记插件
+	dailyNoteEventProp: "events", // 默认事件属性名
 };

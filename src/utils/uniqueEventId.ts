@@ -6,6 +6,7 @@ export const prefixMap: Record<EventType, string> = {
 	holiday: "holi",
 	customEvent: "event",
 	basesEvent: "bases",
+	dailyNoteEvent: "dailynote",
 };
 
 export function generateEventId(eventType?: EventType): string {

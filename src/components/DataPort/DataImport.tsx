@@ -240,7 +240,7 @@ export const DataImport: React.FC<DataImportProps> = ({
 
 	// 按事件类型分组
 	const eventGroups = React.useMemo(() => {
-		if (!parseResult) return { holiday: [], birthday: [], customEvent: [], basesEvent: [] };
+		if (!parseResult) return { holiday: [], birthday: [], customEvent: [], basesEvent: [], dailyNoteEvent: [] };
 
 		const groups: Record<EventType, JsonEventParse[]> = {
 			holiday: [],
@@ -248,6 +248,8 @@ export const DataImport: React.FC<DataImportProps> = ({
 			customEvent: [],
 			// bases events are tied to notes and don't need to be imported through data port
 			basesEvent: [],
+			// daily note events are tied to daily notes and don't need to be imported through data port
+			dailyNoteEvent: [],
 		};
 
 		parseResult.validEvents.forEach((event) => {

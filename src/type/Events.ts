@@ -10,6 +10,7 @@ export interface Events {
 export enum EventSource {
 	CONFIG = "config",    // 插件配置数据
 	BASES = "bases",      // 笔记 frontmatter
+	DAILYNOTE = "dailynote", // 日记笔记 frontmatter 列表
 	CODEBLOCK = "codeblock" // 代码块（未来支持）
 }
 
@@ -68,7 +69,7 @@ export type EventData = Holiday | Birthday | CustomEvent;
 
 // 事件类型
 export type EventType = (typeof EVENT_TYPE_LIST)[number];
-export const EVENT_TYPE_LIST = ["customEvent", "birthday", "holiday", "basesEvent"] as const;
+export const EVENT_TYPE_LIST = ["customEvent", "birthday", "holiday", "basesEvent", "dailyNoteEvent"] as const;
 
 // 事件类型默认图标
 export const EVENT_TYPE_DEFAULT: Record<
@@ -79,6 +80,7 @@ export const EVENT_TYPE_DEFAULT: Record<
 	birthday: { emoji: "🎂", color: "#fa8c16" },
 	holiday: { emoji: "🎉", color: "#ff7875" },
 	basesEvent: { emoji: "📄", color: "#3fabd9" }, // 笔记事件
+	dailyNoteEvent: { emoji: "📅", color: "#597ef7" }, // 日记事件
 };
 
 export const DEFAULT_EVENTS: Events = {

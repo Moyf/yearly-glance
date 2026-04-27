@@ -154,6 +154,8 @@ export const DataExport: React.FC<DataExportProps> = ({
 			),
 			// bases events are tied to notes and don't need to be exported through data port
 			basesEvent: [],
+			// daily note events are tied to daily notes and don't need to be exported through data port
+			dailyNoteEvent: [],
 		};
 		return groups;
 	}, [currentData, config]);

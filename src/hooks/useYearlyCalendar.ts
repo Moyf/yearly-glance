@@ -4,7 +4,7 @@ import { CalendarDay, CalendarEvent } from "@/src/type/CalendarEvent";
 import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
 import { LunarLibrary } from "@/src/utils/lunarLibrary";
 import { IsoUtils } from "@/src/utils/isoUtils";
-import { expandEventByDuration, DurationWarning } from "@/src/utils/expandEventByDuration";
+import { DurationWarning, expandEventByDuration } from "@/src/utils/expandEventByDuration";
 import { t } from "@/src/i18n/i18n";
 import { NoteEventService } from "@/src/service/NoteEventService";
 import { DailyNoteService } from "@/src/service/DailyNoteService";

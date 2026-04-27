@@ -7,7 +7,6 @@ import {
 	EVENT_TYPE_DEFAULT,
 	EventType,
 	Holiday,
-	EventSource,
 } from "@/src/type/Events";
 import {
 	EVENT_SEARCH_REQUESTED,

@@ -182,53 +182,46 @@ export class YearlyGlanceBasesView extends BasesView {
     }
 
     /**
+     * Reads a raw BasesValue for change detection (hashData). Returns null on failure.
+     * Uses console.debug (not warn) — this is a high-frequency path for change detection.
+     */
+    private readRawProp(entry: BasesEntry, propKey: string | null): BasesValue | null {
+        if (!propKey) return null;
+        try {
+            return entry.getValue(propKey);
+        } catch (error) {
+            console.debug('[YearlyGlance] hashData: failed to read prop for', entry.file?.name, ':', error);
+            return null;
+        }
+    }
+
+    /**
+     * Reads an optional Bases property value, returns null if missing, empty, or read fails.
+     * Uses console.warn for failures (suitable for buildMixedEvents where we want to know about issues).
+     */
+    private readOptionalProp(entry: BasesEntry, propKey: string | null, label: string): string | null {
+        if (!propKey) return null;
+        try {
+            const raw = entry.getValue(propKey);
+            return raw?.isTruthy() ? raw.toString() : null;
+        } catch (error) {
+            console.warn(`[YearlyGlance] Failed to read ${label} for ${entry.file.name}:`, error);
+            return null;
+        }
+    }
+
+    /**
      * 计算数据的哈希值，用于检测变化
      */
     private hashData(entries: BasesEntry[], config: BasesViewConfig): string {
         // 只计算影响渲染的关键字段
         const simplifiedEntries = entries.map(entry => {
-            let dateValue: BasesValue | null = null;
-            let titleValue: BasesValue | null = null;
-            let durationValue: BasesValue | null = null;
-            let iconValue: BasesValue | null = null;
-            let colorValue: BasesValue | null = null;
-            let descriptionValue: BasesValue | null = null;
-
-            try {
-                dateValue = config.propDate ? entry.getValue(config.propDate) : null;
-            } catch (error) {
-                // 忽略错误，使用 null
-            }
-
-            try {
-                titleValue = config.propTitle ? entry.getValue(config.propTitle) : null;
-            } catch (error) {
-                // 忽略错误，使用 null
-            }
-
-            try {
-                durationValue = config.propDuration ? entry.getValue(config.propDuration) : null;
-            } catch (error) {
-                // 忽略错误，使用 null
-            }
-
-            try {
-                iconValue = config.propIcon ? entry.getValue(config.propIcon) : null;
-            } catch (error) {
-                // 忽略错误，使用 null
-            }
-
-            try {
-                colorValue = config.propColor ? entry.getValue(config.propColor) : null;
-            } catch (error) {
-                // 忽略错误，使用 null
-            }
-
-            try {
-                descriptionValue = config.propDescription ? entry.getValue(config.propDescription) : null;
-            } catch (error) {
-                // 忽略错误，使用 null
-            }
+            const dateValue = this.readRawProp(entry, config.propDate);
+            const titleValue = this.readRawProp(entry, config.propTitle);
+            const durationValue = this.readRawProp(entry, config.propDuration);
+            const iconValue = this.readRawProp(entry, config.propIcon);
+            const colorValue = this.readRawProp(entry, config.propColor);
+            const descriptionValue = this.readRawProp(entry, config.propDescription);
 
             return {
                 path: entry.file.path,
@@ -302,72 +295,24 @@ export class YearlyGlanceBasesView extends BasesView {
 
                 if (!dateValue || !dateValue.isTruthy()) continue;
 
-                // 读取标题（可选字段）
-                let titleValue = entry.file.name.replace(/\.md$/, '');
-                if (config.propTitle) {
-                    try {
-                        const rawTitle = entry.getValue(config.propTitle);
-                        if (rawTitle && rawTitle.isTruthy()) {
-                            titleValue = rawTitle.toString();
-                        }
-                    } catch (error) {
-                        console.warn(`Failed to read title for ${entry.file.name}, using filename:`, error);
-                    }
-                }
+                // 读取标题（可选字段，回退到文件名）
+                const titleFromProp = this.readOptionalProp(entry, config.propTitle, 'title');
+                const titleValue = titleFromProp ?? entry.file.name.replace(/\.md$/, '');
 
                 // 读取 duration（可选字段）
+                const durationStr = this.readOptionalProp(entry, config.propDuration, 'duration');
                 let durationNum = 1;
-                if (config.propDuration) {
-                    try {
-                        const durationValue = entry.getValue(config.propDuration);
-                        if (durationValue && durationValue.isTruthy()) {
-                            const durationStr = durationValue.toString();
-                            const parsed = parseInt(durationStr, 10);
-                            if (!isNaN(parsed) && parsed > 0) {
-                                durationNum = parsed;
-                            }
-                        }
-                    } catch (error) {
-                        console.warn(`Failed to read duration for ${entry.file.name}, using default (1):`, error);
+                if (durationStr) {
+                    const parsed = parseInt(durationStr, 10);
+                    if (!isNaN(parsed) && parsed > 0) {
+                        durationNum = parsed;
                     }
                 }
 
                 // 读取拓展属性（图标、颜色、描述）
-                let iconValue: string | null = null;
-                if (config.propIcon) {
-                    try {
-                        const rawIcon = entry.getValue(config.propIcon);
-                        if (rawIcon && rawIcon.isTruthy()) {
-                            iconValue = rawIcon.toString();
-                        }
-                    } catch (error) {
-                        console.warn(`Failed to read icon for ${entry.file.name}:`, error);
-                    }
-                }
-
-                let colorValue: string | null = null;
-                if (config.propColor) {
-                    try {
-                        const rawColor = entry.getValue(config.propColor);
-                        if (rawColor && rawColor.isTruthy()) {
-                            colorValue = rawColor.toString();
-                        }
-                    } catch (error) {
-                        console.warn(`Failed to read color for ${entry.file.name}:`, error);
-                    }
-                }
-
-                let descriptionValue: string | null = null;
-                if (config.propDescription) {
-                    try {
-                        const rawDescription = entry.getValue(config.propDescription);
-                        if (rawDescription && rawDescription.isTruthy()) {
-                            descriptionValue = rawDescription.toString();
-                        }
-                    } catch (error) {
-                        console.warn(`Failed to read description for ${entry.file.name}:`, error);
-                    }
-                }
+                const iconValue = this.readOptionalProp(entry, config.propIcon, 'icon');
+                const colorValue = this.readOptionalProp(entry, config.propColor, 'color');
+                const descriptionValue = this.readOptionalProp(entry, config.propDescription, 'description');
 
                 const event = this.convertBasesEvent(
                     entry,
@@ -526,28 +471,6 @@ export class YearlyGlanceBasesView extends BasesView {
         if (min !== undefined) result = Math.max(min, result);
         if (max !== undefined) result = Math.min(max, result);
         return result;
-    }
-
-    /**
-     * 获取数组类型配置，自动过滤空值
-     * @param key 配置键
-     * @returns 字符串数组
-     */
-    private getArrayConfig(key: string): string[] {
-        const value = this.config.get(key);
-        if (!value) return [];
-
-        // 处理数组类型
-        if (Array.isArray(value)) {
-            return value.filter(item => typeof item === 'string' && item.trim().length > 0);
-        }
-
-        // 处理单个字符串类型
-        if (typeof value === 'string' && value.trim().length > 0) {
-            return [value.trim()];
-        }
-
-        return [];
     }
 
     /**

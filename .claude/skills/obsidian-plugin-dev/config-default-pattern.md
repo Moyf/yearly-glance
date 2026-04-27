@@ -146,7 +146,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
     // ... 其他配置
     basesEventTitleProp: 'title',      // ← 全局默认值
     basesEventDateProp: 'event_date',
-    basesEventDurationProp: 'duration_days',
+    basesEventDurationProp: 'duration',
 };
 ```
 
@@ -178,7 +178,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
     // 提供合理的默认值
     basesEventTitleProp: 'title',
     basesEventDateProp: 'event_date',
-    basesEventDurationProp: 'duration_days',
+    basesEventDurationProp: 'duration',
     basesEventIconProp: 'icon',
     basesEventColorProp: 'color',
     basesEventDescriptionProp: 'description',

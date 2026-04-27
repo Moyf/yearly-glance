@@ -14,13 +14,14 @@ import {
 	VIEW_TYPE_YEARLY_GLANCE_BASES,
 	YearlyGlanceBasesView,
 } from "./views/YearlyGlanceBasesView";
-import { Birthday, CustomEvent, EVENT_TYPE_DEFAULT, EventSource, EventType, Holiday } from "@/src/type/Events";
+import { Birthday, CustomEvent, EventSource, EventType, Holiday } from "@/src/type/Events";
 import {
 	EventFormModal,
 	EventFormModalProps,
 } from "./components/EventForm/EventFormModal";
 import { YearlyGlanceBus } from "./hooks/useYearlyGlanceConfig";
 import { t } from "./i18n/i18n";
+import { buildPropConfig, syncEventToFrontmatter } from "./service/BasesEventFrontmatterService";
 import { MigrateData } from "./utils/migrateData";
 import { EventCalculator } from "./utils/eventCalculator";
 import { IsoUtils } from "./utils/isoUtils";
@@ -367,82 +368,35 @@ export default class YearlyGlancePlugin extends Plugin {
 
 	// 同步 Bases 事件到 frontmatter
 	async syncBasesEventToFrontmatter(event: CalendarEvent): Promise<void> {
-		// 检查是否是 Bases 事件
 		if (!event.id.startsWith('bases-')) {
 			console.log('Event is not from Bases, skipping frontmatter sync');
 			return;
 		}
 
-		// 获取自定义属性名
-		const config = this.settings.config;
-		const titleProp = config.basesEventTitleProp || "title";
-		const dateProp = config.basesEventDateProp || "event_date";
-		const durationProp = config.basesEventDurationProp || "duration";
-		const iconProp = config.basesEventIconProp || "icon";
-		const colorProp = config.basesEventColorProp || "color";
-		const descriptionProp = config.basesEventDescriptionProp || "description";
-
-		// 从事件 ID 中提取文件路径
-		// 事件 ID 格式: bases-{filePath}-{isoDate}
-		// 例如: bases-Events/event-samples/测试事件.md-2026-01-10
 		const idWithoutPrefix = event.id.replace('bases-', '');
-
-		// 从 .md 开始截断，获取文件路径
 		const mdIndex = idWithoutPrefix.indexOf('.md');
 		const filePath = mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
 
-		// 获取文件
 		const file = this.app.vault.getAbstractFileByPath(filePath);
 		if (!file || !(file instanceof TFile)) {
-			console.warn('File not found or not a TFile:', filePath);
+			console.warn('[YearlyGlance] syncBasesEventToFrontmatter: file not found:', filePath);
 			return;
 		}
 
-		// 检查事件是否有日期
-		const eventDate = event.eventDate?.isoDate;
-		if (!eventDate) {
-			console.warn('Event has no date:', event.id);
-			return;
+		const eventToSync = { ...event };
+		if (
+			eventToSync.remark &&
+			typeof eventToSync.remark === 'string' &&
+			eventToSync.remark.startsWith('From Bases:')
+		) {
+			eventToSync.remark = '';
 		}
+
+		const propConfig = buildPropConfig(this.settings.config);
 
 		try {
-			// 使用 fileManager.processFrontMatter 直接更新 frontmatter
-			await this.app.fileManager.processFrontMatter(file, (fm) => {
-				// 更新 frontmatter 字段（使用自定义属性名）
-				fm[titleProp] = event.text;
-				fm[dateProp] = eventDate;
-
-				// 同步持续天数字段
-				if (event.duration && event.duration > 1) {
-					fm[durationProp] = event.duration;
-				} else if (fm[durationProp]) {
-					delete fm[durationProp];
-				}
-
-				// 同步图标：如果有自定义值则设置，否则删除
-				if (event.emoji && event.emoji !== EVENT_TYPE_DEFAULT.basesEvent.emoji) {
-					fm[iconProp] = event.emoji;
-				} else if (fm[iconProp]) {
-					delete fm[iconProp];
-				}
-
-				// 同步颜色：如果有自定义值则设置，否则删除
-				if (event.color && event.color !== EVENT_TYPE_DEFAULT.basesEvent.color) {
-					fm[colorProp] = event.color;
-				} else if (fm[colorProp]) {
-					delete fm[colorProp];
-				}
-
-				// 同步描述：如果有值则设置，否则删除
-				if (event.remark && typeof event.remark === 'string' && !event.remark.startsWith('From Bases:')) {
-					fm[descriptionProp] = event.remark;
-				} else if (fm[descriptionProp]) {
-					delete fm[descriptionProp];
-				}
-			});
+			await syncEventToFrontmatter(this.app, file, eventToSync, propConfig);
 			console.log('[YearlyGlance] Frontmatter sync completed for:', filePath);
-
-			// 同步成功后触发刷新，通知所有订阅者更新视图
 			YearlyGlanceBus.publish();
 		} catch (error) {
 			console.error('[YearlyGlance] Failed to sync frontmatter:', error);
@@ -455,17 +409,9 @@ export default class YearlyGlancePlugin extends Plugin {
 	 * @returns 创建的文件路径
 	 */
 	async createBasesEventNote(event: CustomEvent): Promise<string> {
-		// 1. 获取配置的默认路径和属性名
 		const config = this.settings.config;
 		const defaultPath = config.defaultBasesEventPath?.trim();
-
-		// 获取自定义属性名，如果未设置则使用默认值
-		const titleProp = config.basesEventTitleProp || "title";
-		const dateProp = config.basesEventDateProp || "event_date";
-		const durationProp = config.basesEventDurationProp || "duration";
-		const iconProp = config.basesEventIconProp || "icon";
-		const colorProp = config.basesEventColorProp || "color";
-		const descriptionProp = config.basesEventDescriptionProp || "description";
+		const propConfig = buildPropConfig(config);
 
 		// 2. 确定文件夹路径
 		let folderPath = "";
@@ -490,19 +436,19 @@ export default class YearlyGlancePlugin extends Plugin {
 		// 5. 写入 frontmatter（使用自定义属性名）
 		const file = this.app.vault.getAbstractFileByPath(filePath) as TFile;
 		await this.app.fileManager.processFrontMatter(file, (fm) => {
-			fm[titleProp] = event.text;
-			fm[dateProp] = event.eventDate.isoDate;
+			fm[propConfig.titleProp] = event.text;
+			fm[propConfig.dateProp] = event.eventDate.isoDate;
 			if (event.duration && event.duration > 1) {
-				fm[durationProp] = event.duration;
+				fm[propConfig.durationProp] = event.duration;
 			}
 			if (event.emoji) {
-				fm[iconProp] = event.emoji;
+				fm[propConfig.iconProp] = event.emoji;
 			}
 			if (event.color) {
-				fm[colorProp] = event.color;
+				fm[propConfig.colorProp] = event.color;
 			}
 			if (event.remark) {
-				fm[descriptionProp] = event.remark;
+				fm[propConfig.descriptionProp] = event.remark;
 			}
 		});
 

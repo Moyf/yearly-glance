@@ -6,9 +6,10 @@ import {
 import type YearlyGlancePlugin from "@/src/main";
 import { YearlyCalendar } from "@/src/components/YearlyCalendar/YearlyCalendar";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
-import { BasesEntry, BasesValue, BasesViewConfig } from "@/src/type/BasesTypes";
+import { BasesEntry, BasesEventPropertyConfig, BasesValue, BasesViewConfig } from "@/src/type/BasesTypes";
 import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 import { EVENT_TYPE_DEFAULT, EventSource } from "@/src/type/Events";
+import { syncEventToFrontmatter } from "@/src/service/BasesEventFrontmatterService";
 
 // 定义视图类型
 export const VIEW_TYPE_YEARLY_GLANCE_BASES = "yearly-glance-bases-view";
@@ -484,59 +485,25 @@ export class YearlyGlanceBasesView extends BasesView {
             return;
         }
 
-        // 使用 eventDate.isoDate 而不是 dateArr（Bases events 可能没有 dateArr）
         const eventDate = event.eventDate?.isoDate;
         if (!eventDate) {
             console.warn('Event has no date:', event.id);
             return;
         }
 
-        // 获取配置的属性名（优先使用 Bases 视图配置，回退到插件全局设置）
         const pluginConfig = this.plugin.getConfig();
-        const titleProp = this.config.getAsPropertyId('propTitle') || pluginConfig.basesEventTitleProp || "title";
-        const dateProp = this.config.getAsPropertyId('propDate') || pluginConfig.basesEventDateProp || "event_date";
-        const durationProp = this.config.getAsPropertyId('propDuration') || pluginConfig.basesEventDurationProp || "duration";
-        const iconProp = this.config.getAsPropertyId('propIcon') || pluginConfig.basesEventIconProp || "icon";
-        const colorProp = this.config.getAsPropertyId('propColor') || pluginConfig.basesEventColorProp || "color";
-        const descriptionProp = this.config.getAsPropertyId('propDescription') || pluginConfig.basesEventDescriptionProp || "description";
+        const propConfig: BasesEventPropertyConfig = {
+            titleProp: this.config.getAsPropertyId('propTitle') || pluginConfig.basesEventTitleProp || "title",
+            dateProp: this.config.getAsPropertyId('propDate') || pluginConfig.basesEventDateProp || "event_date",
+            durationProp: this.config.getAsPropertyId('propDuration') || pluginConfig.basesEventDurationProp || "duration",
+            iconProp: this.config.getAsPropertyId('propIcon') || pluginConfig.basesEventIconProp || "icon",
+            colorProp: this.config.getAsPropertyId('propColor') || pluginConfig.basesEventColorProp || "color",
+            descriptionProp: this.config.getAsPropertyId('propDescription') || pluginConfig.basesEventDescriptionProp || "description",
+        };
 
         try {
-            await this.app.fileManager.processFrontMatter(file, (fm) => {
-                // 更新 frontmatter 字段（使用配置的属性名）
-                fm[titleProp] = event.text;
-                fm[dateProp] = eventDate;
-
-                // 同步持续天数字段
-                if (event.duration && event.duration > 1) {
-                    fm[durationProp] = event.duration;
-                } else if (fm[durationProp]) {
-                    delete fm[durationProp];
-                }
-
-                // 同步图标：如果有自定义值则设置，否则删除
-                if (event.emoji && event.emoji !== EVENT_TYPE_DEFAULT.basesEvent.emoji) {
-                    fm[iconProp] = event.emoji;
-                } else if (fm[iconProp]) {
-                    delete fm[iconProp];
-                }
-
-                // 同步颜色：如果有自定义值则设置，否则删除
-                if (event.color && event.color !== EVENT_TYPE_DEFAULT.basesEvent.color) {
-                    fm[colorProp] = event.color;
-                } else if (fm[colorProp]) {
-                    delete fm[colorProp];
-                }
-
-                // 同步描述：如果有值则设置，否则删除
-                if (event.remark && typeof event.remark === 'string') {
-                    fm[descriptionProp] = event.remark;
-                } else if (fm[descriptionProp]) {
-                    delete fm[descriptionProp];
-                }
-            });
+            await syncEventToFrontmatter(this.app, file, event, propConfig);
             console.log('Frontmatter updated successfully for:', filePath);
-
-            // 同步成功后触发刷新，通知所有订阅者更新视图
             YearlyGlanceBus.publish();
         } catch (error) {
             console.error('Failed to update frontmatter:', error);
@@ -632,4 +599,3 @@ export class YearlyGlanceBasesView extends BasesView {
         this.basesEventMap.clear();
     }
 }
-

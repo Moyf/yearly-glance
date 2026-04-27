@@ -131,7 +131,7 @@ export class NoteEventService {
 	/**
 	 * 解析日期值
 	 */
-	private parseDateValue(dateValue: any): string | null {
+	private parseDateValue(dateValue: unknown): string | null {
 		try {
 			if (typeof dateValue === "string") {
 				const date = new Date(dateValue);

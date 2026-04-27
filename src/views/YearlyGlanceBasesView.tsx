@@ -6,6 +6,7 @@ import {
 import type YearlyGlancePlugin from "@/src/main";
 import { YearlyCalendar } from "@/src/components/YearlyCalendar/YearlyCalendar";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
+import { BasesEntry, BasesValue, BasesViewConfig } from "@/src/type/BasesTypes";
 import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 import { EVENT_TYPE_DEFAULT, EventSource } from "@/src/type/Events";
 
@@ -182,15 +183,15 @@ export class YearlyGlanceBasesView extends BasesView {
     /**
      * 计算数据的哈希值，用于检测变化
      */
-    private hashData(entries: any[], config: any): string {
+    private hashData(entries: BasesEntry[], config: BasesViewConfig): string {
         // 只计算影响渲染的关键字段
         const simplifiedEntries = entries.map(entry => {
-            let dateValue = null;
-            let titleValue = null;
-            let durationValue = null;
-            let iconValue = null;
-            let colorValue = null;
-            let descriptionValue = null;
+            let dateValue: BasesValue | null = null;
+            let titleValue: BasesValue | null = null;
+            let durationValue: BasesValue | null = null;
+            let iconValue: BasesValue | null = null;
+            let colorValue: BasesValue | null = null;
+            let descriptionValue: BasesValue | null = null;
 
             try {
                 dateValue = config.propDate ? entry.getValue(config.propDate) : null;
@@ -248,7 +249,7 @@ export class YearlyGlanceBasesView extends BasesView {
     /**
      * 构建混合事件数据：插件数据 + Bases 数据
      */
-    private buildMixedEvents(config: any): CalendarEvent[] {
+    private buildMixedEvents(config: BasesViewConfig): CalendarEvent[] {
         const events: CalendarEvent[] = [];
 
         // 1. 插件数据（如果启用继承）
@@ -287,9 +288,10 @@ export class YearlyGlanceBasesView extends BasesView {
             : this.data?.data || [];
 
         if (entriesToProcess.length > 0) {
-            for (const entry of entriesToProcess) {
+            for (const rawEntry of entriesToProcess) {
+                const entry = rawEntry as unknown as BasesEntry;
                 // 读取日期（必需字段）
-                let dateValue: any = null;
+                let dateValue: BasesValue | null = null;
                 try {
                     dateValue = config.propDate ? entry.getValue(config.propDate) : null;
                 } catch (error) {
@@ -391,9 +393,9 @@ export class YearlyGlanceBasesView extends BasesView {
      * 将 Bases 事件转换为 CalendarEvent 格式
      */
     private convertBasesEvent(
-        entry: any,
-        dateValue: any,
-        text: any,
+        entry: BasesEntry,
+        dateValue: BasesValue | string | Date,
+        text: string,
         duration: number,
         icon: string | null,
         color: string | null,

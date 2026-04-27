@@ -49,6 +49,10 @@ function getMomentFromWindow(): MomentLike | null {
 	return typeof momentValue === 'function' ? (momentValue as MomentLike) : null;
 }
 
+function isFileLike(value: unknown): value is TFile {
+	return isRecord(value) && typeof value.path === 'string';
+}
+
 export class DailyNoteService {
 	static getDailyNoteSettings(app: App, source: string): DailyNoteSettings | null {
 		const extendedApp = app as AppWithDailyPlugins;
@@ -173,6 +177,95 @@ export class DailyNoteService {
 			isRepeat: false,
 			remark: `dailynote:${filePath}`,
 		};
+	}
+
+	static getFilePathFromEvent(event: CalendarEvent): string | null {
+		if (typeof event.remark !== 'string' || !event.remark.startsWith('dailynote:')) {
+			return null;
+		}
+
+		return event.remark.slice('dailynote:'.length) || null;
+	}
+
+	static async updateEventTitle(
+		app: App,
+		filePath: string,
+		eventProp: string,
+		oldTitle: string,
+		newTitle: string
+	): Promise<boolean> {
+		const file = app.vault.getAbstractFileByPath(filePath);
+		if (!isFileLike(file)) {
+			return false;
+		}
+
+		await app.fileManager.processFrontMatter(file, (fm) => {
+			const rawEvents = fm[eventProp];
+			if (!Array.isArray(rawEvents)) {
+				return;
+			}
+
+			const targetIndex = rawEvents.findIndex(
+				(item) => typeof item === 'string' && item.trim() === oldTitle.trim()
+			);
+
+			if (targetIndex >= 0) {
+				rawEvents[targetIndex] = newTitle;
+			}
+		});
+
+		return true;
+	}
+
+	static async addEventToDaily(
+		app: App,
+		filePath: string,
+		eventProp: string,
+		title: string
+	): Promise<boolean> {
+		const file = app.vault.getAbstractFileByPath(filePath);
+		if (!isFileLike(file)) {
+			return false;
+		}
+
+		await app.fileManager.processFrontMatter(file, (fm) => {
+			if (!Array.isArray(fm[eventProp])) {
+				fm[eventProp] = [];
+			}
+
+			(fm[eventProp] as unknown[]).push(title);
+		});
+
+		return true;
+	}
+
+	static async removeEventFromDaily(
+		app: App,
+		filePath: string,
+		eventProp: string,
+		title: string
+	): Promise<boolean> {
+		const file = app.vault.getAbstractFileByPath(filePath);
+		if (!isFileLike(file)) {
+			return false;
+		}
+
+		await app.fileManager.processFrontMatter(file, (fm) => {
+			const rawEvents = fm[eventProp];
+			if (!Array.isArray(rawEvents)) {
+				return;
+			}
+
+			const targetIndex = rawEvents.findIndex(
+				(item) => typeof item === 'string' && item.trim() === title.trim()
+			);
+
+			if (targetIndex >= 0) {
+				rawEvents.splice(targetIndex, 1);
+			}
+		});
+
+		return true;
 	}
 
 	static async loadEventsForYear(

@@ -1,6 +1,7 @@
 import { App, TFile } from 'obsidian';
 import { DailyNoteService } from '../DailyNoteService';
 import { EVENT_TYPE_DEFAULT, EventSource } from '../../type/Events';
+import { CalendarEvent } from '../../type/CalendarEvent';
 
 type MockMomentResult = {
 	isValid: () => boolean;
@@ -112,6 +113,20 @@ function createAppMock(options: {
 					},
 			  }
 			: undefined,
+	} as unknown as App;
+}
+
+function createWritableAppMock(mockFm: Record<string, unknown>, file: unknown = { path: 'test.md' }): App {
+	return {
+		vault: {
+			getAbstractFileByPath: jest.fn().mockReturnValue(file),
+		},
+		fileManager: {
+			processFrontMatter: jest.fn().mockImplementation((_file, callback) => {
+				callback(mockFm);
+				return Promise.resolve();
+			}),
+		},
 	} as unknown as App;
 }
 
@@ -278,6 +293,104 @@ describe('DailyNoteService', () => {
 					},
 				},
 			});
+		});
+	});
+
+	describe('getFilePathFromEvent', () => {
+		test('returns file path from dailynote remark', () => {
+			const event = {
+				remark: 'dailynote:Journal/2026-04-27.md',
+			} as CalendarEvent;
+
+			expect(DailyNoteService.getFilePathFromEvent(event)).toBe('Journal/2026-04-27.md');
+		});
+
+		test('returns null for non-dailynote remark', () => {
+			const event = {
+				remark: 'other remark',
+			} as CalendarEvent;
+
+			expect(DailyNoteService.getFilePathFromEvent(event)).toBeNull();
+		});
+
+		test('returns null for missing or empty remark', () => {
+			expect(DailyNoteService.getFilePathFromEvent({} as CalendarEvent)).toBeNull();
+			expect(DailyNoteService.getFilePathFromEvent({ remark: '' } as CalendarEvent)).toBeNull();
+		});
+	});
+
+	describe('updateEventTitle', () => {
+		test('replaces matching title in array', async () => {
+			const mockFm: Record<string, unknown> = { events: ['A', 'B', 'C'] };
+			const app = createWritableAppMock(mockFm);
+
+			await expect(
+				DailyNoteService.updateEventTitle(app, 'test.md', 'events', 'B', 'B2')
+			).resolves.toBe(true);
+
+			expect(mockFm.events).toEqual(['A', 'B2', 'C']);
+		});
+
+		test('does not modify when title is not found', async () => {
+			const mockFm: Record<string, unknown> = { events: ['A', 'B', 'C'] };
+			const app = createWritableAppMock(mockFm);
+
+			await DailyNoteService.updateEventTitle(app, 'test.md', 'events', 'X', 'X2');
+
+			expect(mockFm.events).toEqual(['A', 'B', 'C']);
+		});
+
+		test('does not modify when property is not an array', async () => {
+			const mockFm: Record<string, unknown> = { events: 'A' };
+			const app = createWritableAppMock(mockFm);
+
+			await DailyNoteService.updateEventTitle(app, 'test.md', 'events', 'A', 'A2');
+
+			expect(mockFm.events).toBe('A');
+		});
+	});
+
+	describe('addEventToDaily', () => {
+		test('appends to existing list', async () => {
+			const mockFm: Record<string, unknown> = { events: ['A'] };
+			const app = createWritableAppMock(mockFm);
+
+			await expect(
+				DailyNoteService.addEventToDaily(app, 'test.md', 'events', 'B')
+			).resolves.toBe(true);
+
+			expect(mockFm.events).toEqual(['A', 'B']);
+		});
+
+		test('creates a new list when property does not exist', async () => {
+			const mockFm: Record<string, unknown> = {};
+			const app = createWritableAppMock(mockFm);
+
+			await DailyNoteService.addEventToDaily(app, 'test.md', 'events', 'B');
+
+			expect(mockFm.events).toEqual(['B']);
+		});
+	});
+
+	describe('removeEventFromDaily', () => {
+		test('removes matching title from array', async () => {
+			const mockFm: Record<string, unknown> = { events: ['A', 'B', 'C'] };
+			const app = createWritableAppMock(mockFm);
+
+			await expect(
+				DailyNoteService.removeEventFromDaily(app, 'test.md', 'events', 'B')
+			).resolves.toBe(true);
+
+			expect(mockFm.events).toEqual(['A', 'C']);
+		});
+
+		test('does not modify when title is not found', async () => {
+			const mockFm: Record<string, unknown> = { events: ['A', 'B', 'C'] };
+			const app = createWritableAppMock(mockFm);
+
+			await DailyNoteService.removeEventFromDaily(app, 'test.md', 'events', 'X');
+
+			expect(mockFm.events).toEqual(['A', 'B', 'C']);
 		});
 	});
 

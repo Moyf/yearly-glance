@@ -7,6 +7,7 @@ import { IsoUtils } from "@/src/utils/isoUtils";
 import { expandEventByDuration, DurationWarning } from "@/src/utils/expandEventByDuration";
 import { t } from "@/src/i18n/i18n";
 import { NoteEventService } from "@/src/service/NoteEventService";
+import { DailyNoteService } from "@/src/service/DailyNoteService";
 
 export const MonthMap: Array<{ name: string; color: string }> = [
 	{
@@ -105,6 +106,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		showBirthdays,
 		showCustomEvents,
 		showBasesEvents,
+		showDailyNoteEvents,
 		defaultBasesEventPath,
 	} = config;
 
@@ -115,6 +117,9 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 
 	// 笔记事件状态
 	const [basesEvents, setBasesEvents] = React.useState<CalendarEvent[]>([]);
+
+	// 日记事件状态
+	const [dailyNoteEvents, setDailyNoteEvents] = React.useState<CalendarEvent[]>([]);
 
 	// 异步加载笔记事件
 	React.useEffect(() => {
@@ -130,6 +135,32 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 			setBasesEvents([]);
 		});
 	}, [showBasesEvents, defaultBasesEventPath, year, plugin.app]);
+
+	// 异步加载日记事件
+	React.useEffect(() => {
+		if (externalEvents) return;
+		if (!config.showDailyNoteEvents) {
+			setDailyNoteEvents([]);
+			return;
+		}
+
+		const loadDailyNoteEvents = async () => {
+			try {
+				const events = await DailyNoteService.loadEventsForYear(
+					plugin.app,
+					year,
+					config.dailyNoteSource,
+					config.dailyNoteEventProp
+				);
+				setDailyNoteEvents(events);
+			} catch (error) {
+				console.error("[YearlyGlance] Failed to load daily note events:", error);
+				setDailyNoteEvents([]);
+			}
+		};
+
+		loadDailyNoteEvents();
+	}, [externalEvents, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, year, plugin.app]);
 
 	// 处理所有事件
 	const allEvents = React.useMemo(() => {
@@ -185,6 +216,13 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 					}
 				});
 			}
+
+			// 处理日记事件
+			if (showDailyNoteEvents && dailyNoteEvents.length > 0) {
+				dailyNoteEvents.forEach((event) => {
+					pushExpanded(event, "dailyNoteEvent");
+				});
+			}
 		}
 
 		// Log warnings to console
@@ -193,7 +231,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		}
 
 		return { events, durationWarnings };
-	}, [externalEvents, config, events, basesEvents, showBasesEvents]);
+	}, [externalEvents, config, events, basesEvents, dailyNoteEvents, showBasesEvents, showDailyNoteEvents]);
 
 	// 月份数据
 	const monthsData = React.useMemo(() => {

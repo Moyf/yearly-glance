@@ -31,7 +31,6 @@ export class EventFormModal extends Modal {
 	settings: YearlyGlanceConfig;
 	props: EventFormModalProps;
 	isBasesEvent: boolean;
-	isSaving: boolean = false; // 添加 isSaving 状态
 
 	constructor(
 		plugin: YearlyGlancePlugin,
@@ -75,11 +74,10 @@ export class EventFormModal extends Modal {
 					isEditing={this.isEditing}
 					allowTypeChange={this.allowTypeChange}
 					settings={this.settings}
-					onSave={this.onSave.bind(this)}
-					onCancel={() => this.close()}
-					props={this.props}
-					isBasesEvent={this.isBasesEvent}
-					isSaving={this.isSaving}
+				onSave={this.onSave.bind(this)}
+				onCancel={() => this.close()}
+				props={this.props}
+				isBasesEvent={this.isBasesEvent}
 				/>
 			</React.StrictMode>
 	);
@@ -96,11 +94,7 @@ export class EventFormModal extends Modal {
 	async onSave(
 		event: CustomEvent | Birthday | Holiday,
 		eventType: EventType
-	) {
-		// 开始保存
-		this.isSaving = true;
-		this.renderForm();
-
+	): Promise<void> {
 		try {
 			const events: Events = this.plugin.getData();
 			const newEvents = { ...events };
@@ -223,9 +217,8 @@ export class EventFormModal extends Modal {
 			new Notice(t("view.eventManager.form.saveFailed", { error: errorMessage }));
 			console.error(`[YearlyGlance] Failed to save: ${errorMessage}`, error);
 
-			// 结束保存状态，让用户可以重试
-			this.isSaving = false;
-			this.renderForm();
+			// 重新抛出错误，让 EventForm 可以捕获并重新启用保存按钮
+			throw error;
 		}
 	}
 }

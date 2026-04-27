@@ -70,13 +70,12 @@ interface EventFormProps {
 	onSave: (
 		event: CustomEvent | Birthday | Holiday,
 		eventType: EventType
-	) => void;
+	) => Promise<void>;
 	onCancel: () => void;
 	props?: {
 		date?: string; // 可选的日期属性
 	};
 	isBasesEvent?: boolean;
-	isSaving?: boolean; // 是否正在保存
 }
 
 export const EventForm: React.FC<EventFormProps> = ({
@@ -89,7 +88,6 @@ export const EventForm: React.FC<EventFormProps> = ({
 	onCancel,
 	props = {},
 	isBasesEvent = false,
-	isSaving = false,
 }) => {
 	const today = IsoUtils.getTodayLocalDateString(); // 获取今天的日期字符串（时区安全）
 	const todayString = props.date || today; // 如果传入了特定日期，则使用它，否则使用今天的日期
@@ -146,6 +144,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 	};
 
 	const [optionalCollapsed, setOptionalCollapsed] = React.useState(false);
+	const [isSaving, setIsSaving] = React.useState(false);
 
 	// 组件挂载时自动聚焦到第一个输入框
 	React.useEffect(() => {
@@ -194,7 +193,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 	};
 
 	// 处理表单提交
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		const completeEvent: CustomEvent | Birthday | Holiday = {
@@ -228,7 +227,14 @@ export const EventForm: React.FC<EventFormProps> = ({
 				: {}),
 		};
 
-		onSave(completeEvent, currentEventType);
+		setIsSaving(true);
+		try {
+			await onSave(completeEvent, currentEventType);
+			// 成功：Modal 会调用 this.close()，isSaving 状态无需重置
+		} catch (error) {
+			// 失败：Modal 已显示错误通知，这里只需重新启用按钮
+			setIsSaving(false);
+		}
 	};
 
 	return (

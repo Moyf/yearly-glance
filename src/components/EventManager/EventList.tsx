@@ -84,6 +84,9 @@ export const EventList: React.FC<EventListProps> = ({
 		const basesEvents = sortEvents(
 			events.filter((event) => event.id.startsWith("bases-"))
 		);
+		const dailyNoteEvents = sortEvents(
+			events.filter((event) => event.id.startsWith("dailynote-"))
+		);
 
 		return (
 			<div className="event-list search-results">
@@ -193,6 +196,36 @@ export const EventList: React.FC<EventListProps> = ({
 									onEdit={() => onEdit(event)}
 									onDelete={() => onDelete(event)}
 									eventType="basesEvent"
+									gregorianDisplayFormat={
+										gregorianDisplayFormat
+									}
+									plugin={plugin}
+								/>
+							))}
+						</div>
+					</div>
+				)}
+
+				{dailyNoteEvents.length > 0 && (
+					<div className="event-group">
+						<div className="event-group-header">
+							<div className="header-left">
+								<h4>
+									{t("view.eventManager.dailyNoteEvent.name")}
+								</h4>
+							</div>
+							<span className="event-count">
+								{dailyNoteEvents.length}
+							</span>
+						</div>
+						<div className="event-items-grid">
+							{dailyNoteEvents.map((event, index) => (
+								<EventItem
+									key={`dailynote-${index}`}
+									event={event}
+									onEdit={() => onEdit(event)}
+									onDelete={() => onDelete(event)}
+									eventType="dailyNoteEvent"
 									gregorianDisplayFormat={
 										gregorianDisplayFormat
 									}

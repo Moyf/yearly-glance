@@ -16,6 +16,7 @@ import { EventCalculator } from "@/src/utils/eventCalculator";
 import "./style/EventFormModal.css";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
 import { t } from "@/src/i18n/i18n";
+import { DailyNoteService } from "@/src/service/DailyNoteService";
 
 export interface EventFormModalProps {
 	date?: string; // 可选的日期属性
@@ -31,6 +32,8 @@ export class EventFormModal extends Modal {
 	settings: YearlyGlanceConfig;
 	props: EventFormModalProps;
 	isBasesEvent: boolean;
+	isDailyNoteEvent: boolean;
+	editingEvent: Partial<CustomEvent | Birthday | Holiday> | null;
 
 	constructor(
 		plugin: YearlyGlancePlugin,
@@ -50,6 +53,10 @@ export class EventFormModal extends Modal {
 		this.props = props;
 		// 检查是否是 Bases 事件（通过 id 判断或事件类型判断）
 		this.isBasesEvent = event.id ? event.id.startsWith('bases-') : eventType === 'basesEvent';
+		// 检查是否是日记事件
+		this.isDailyNoteEvent = event.id ? event.id.startsWith('dailynote-') : eventType === 'dailyNoteEvent';
+		// 保存编辑前的事件引用，用于比较标题变化
+		this.editingEvent = isEditing ? event : null;
 	}
 
 	onOpen(): void {
@@ -78,6 +85,7 @@ export class EventFormModal extends Modal {
 				onCancel={() => this.close()}
 				props={this.props}
 				isBasesEvent={this.isBasesEvent}
+				isDailyNoteEvent={this.isDailyNoteEvent}
 				/>
 			</React.StrictMode>
 	);
@@ -194,6 +202,43 @@ export class EventFormModal extends Modal {
 						(event as Holiday).eventSource = EventSource.CONFIG;
 						newEvents.holidays.push(event as Holiday);
 					}
+					break;
+				}
+				case "dailyNoteEvent": {
+					// 计算并更新事件信息（使用 CustomEvent 的计算逻辑）
+					event = EventCalculator.updateCustomEventInfo(
+						event as CustomEvent,
+						currentYear
+					);
+					(event as CustomEvent).eventSource = EventSource.DAILYNOTE;
+
+					// 编辑模式：写回日记笔记的 frontmatter
+					if (this.isEditing && this.editingEvent) {
+						const calendarEvent: CalendarEvent = {
+							id: event.id,
+							text: event.text,
+							eventDate: event.eventDate,
+							dateArr: event.dateArr,
+							eventType: eventType,
+							eventSource: EventSource.DAILYNOTE,
+							remark: event.remark,
+						};
+						const filePath = DailyNoteService.getFilePathFromEvent(calendarEvent);
+						if (filePath) {
+							const oldTitle = this.editingEvent.text || "";
+							const newTitle = event.text;
+							if (oldTitle !== newTitle) {
+								await DailyNoteService.updateEventTitle(
+									this.app,
+									filePath,
+									this.plugin.getSettings().config.dailyNoteEventProp,
+									oldTitle,
+									newTitle
+								);
+							}
+						}
+					}
+					// 日记事件不存入插件配置数据，关闭 modal 并刷新即可
 					break;
 				}
 				default: {

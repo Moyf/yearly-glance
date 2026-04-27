@@ -16,6 +16,7 @@ import {
 } from "@/src/hooks/useEventBus";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
 import { NoteEventService } from "@/src/service/NoteEventService";
+import { DailyNoteService } from "@/src/service/DailyNoteService";
 import "./style/EventManagerView.css";
 
 interface EventManagerViewProps {
@@ -39,6 +40,8 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 
 	// 笔记事件状态
 	const [basesEvents, setBasesEvents] = React.useState<CalendarEvent[]>([]);
+	// 日记事件状态
+	const [dailyNoteEvents, setDailyNoteEvents] = React.useState<CalendarEvent[]>([]);
 	const { config } = useYearlyGlanceConfig(plugin);
 
 	const gregorianDisplayFormat = config.gregorianDisplayFormat;
@@ -67,6 +70,32 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 
 		return unsubscribe;
 	}, [plugin, plugin.app, config.showBasesEvents, config.defaultBasesEventPath, config.year]);
+
+	// 加载日记事件
+	React.useEffect(() => {
+		const loadDailyNoteEvents = () => {
+			if (config.showDailyNoteEvents) {
+				DailyNoteService.loadEventsForYear(
+					plugin.app,
+					config.year,
+					config.dailyNoteSource,
+					config.dailyNoteEventProp
+				)
+					.then(setDailyNoteEvents)
+					.catch((error) => {
+						console.error("[YearlyGlance] Failed to load daily note events:", error);
+						setDailyNoteEvents([]);
+					});
+			} else {
+				setDailyNoteEvents([]);
+			}
+		};
+
+		loadDailyNoteEvents();
+
+		const unsubscribe = YearlyGlanceBus.subscribe(loadDailyNoteEvents);
+		return unsubscribe;
+	}, [plugin, plugin.app, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, config.year]);
 
 	// 订阅事件总线，处理搜索请求
 	React.useEffect(() => {
@@ -109,6 +138,12 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 		// 检查是否为笔记事件
 		if ((event as CalendarEvent).id?.startsWith("bases-")) {
 			plugin.openEventForm("basesEvent", event, true, false);
+			return;
+		}
+
+		// 检查是否为日记事件
+		if ((event as CalendarEvent).id?.startsWith("dailynote-")) {
+			plugin.openEventForm("dailyNoteEvent", event, true, false);
 			return;
 		}
 
@@ -182,6 +217,9 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 					...basesEvents.filter(
 						(event) => event.id?.toString() === idTerm
 					),
+					...dailyNoteEvents.filter(
+						(event) => event.id?.toString() === idTerm
+					),
 				];
 				return results;
 			}
@@ -210,6 +248,13 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 						event.eventDate?.isoDate?.includes(term)
 				),
 				...basesEvents.filter(
+					(event) =>
+						event.text.toLowerCase().includes(term) ||
+						(event.remark &&
+							event.remark.toLowerCase().includes(term)) ||
+						event.eventDate?.isoDate?.includes(term)
+				),
+				...dailyNoteEvents.filter(
 					(event) =>
 						event.text.toLowerCase().includes(term) ||
 						(event.remark &&

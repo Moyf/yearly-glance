@@ -13,6 +13,7 @@ import { CalendarType } from "@/src/type/Date";
 import { IsoUtils } from "@/src/utils/isoUtils";
 import YearlyGlancePlugin from "@/src/main";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
+import { DailyNoteService } from "@/src/service/DailyNoteService";
 
 interface EventItemProps {
 	event: Holiday | Birthday | CustomEvent | CalendarEvent;
@@ -50,10 +51,29 @@ export const EventItem: React.FC<EventItemProps> = ({
 		return { filePath, fileName };
 	};
 
+	// 从日记事件中提取笔记路径和名称
+	const extractDailyNoteInfo = (calendarEvent: CalendarEvent) => {
+		const filePath = DailyNoteService.getFilePathFromEvent(calendarEvent);
+		if (!filePath) {
+			return null;
+		}
+		const fileName = filePath.split('/').pop()?.replace('.md', '') || filePath;
+		return { filePath, fileName };
+	};
+
 	// 打开笔记事件源文件
 	const openBasesEventNote = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		const noteInfo = extractNoteInfo(event.id);
+		if (noteInfo) {
+			plugin.app.workspace.openLinkText(noteInfo.filePath, '', true);
+		}
+	};
+
+	// 打开日记事件源文件
+	const openDailyNoteEventNote = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		const noteInfo = extractDailyNoteInfo(event as CalendarEvent);
 		if (noteInfo) {
 			plugin.app.workspace.openLinkText(noteInfo.filePath, '', true);
 		}
@@ -177,6 +197,10 @@ export const EventItem: React.FC<EventItemProps> = ({
 					</div>
 				</>
 			);
+		} else if (eventType === "basesEvent" || eventType === "dailyNoteEvent") {
+			// 笔记事件和日记事件不显示额外的特定信息
+			// 来源信息已在 event-source-info 区域显示
+			return null;
 		} else {
 			const customEvent = event as CustomEvent;
 			return (
@@ -271,6 +295,19 @@ export const EventItem: React.FC<EventItemProps> = ({
 					</div>
 				)}
 
+				{event.eventSource === EventSource.DAILYNOTE && (
+					<div className="event-source-info">
+						<span className="source-icon">📅</span>
+						<span>{t("view.eventManager.source.dailynote")}: </span>
+						<span
+							className="note-link"
+							onClick={openDailyNoteEventNote}
+						>
+							{extractDailyNoteInfo(event as CalendarEvent)?.fileName || event.id}
+						</span>
+					</div>
+				)}
+
 				<div className="event-specific-info">
 					{getEventSpecificInfo()}
 				</div>
@@ -284,13 +321,15 @@ export const EventItem: React.FC<EventItemProps> = ({
 				>
 					✏️
 				</button>
-				<button
-					className="delete-button"
-					onClick={onDelete}
-					title={t("view.eventManager.actions.delete")}
-				>
-					🗑️
-				</button>
+				{eventType !== "basesEvent" && eventType !== "dailyNoteEvent" && (
+					<button
+						className="delete-button"
+						onClick={onDelete}
+						title={t("view.eventManager.actions.delete")}
+					>
+						🗑️
+					</button>
+				)}
 			</div>
 		</div>
 	);

@@ -63,6 +63,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 		showBirthdays,
 		showCustomEvents,
 		showBasesEvents,
+		showDailyNoteEvents,
 		mondayFirst,
 		hideEmptyDates,
 		hidePreviousMonths,
@@ -216,6 +217,9 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 				break;
 			case "basesEvent":
 				configUpdate.showBasesEvents = !showBasesEvents;
+				break;
+			case "dailyNoteEvent":
+				configUpdate.showDailyNoteEvents = !showDailyNoteEvents;
 				break;
 		}
 
@@ -576,13 +580,16 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 												showBirthdays) ||
 											(eventType === "customEvent" &&
 												showCustomEvents) ||
-											(eventType === "basesEvent" &&
-												showBasesEvents) ||
-											// 包含禁用的事件类型，以便可以重新启用它们
-											eventType === "holiday" ||
-											eventType === "birthday" ||
-											eventType === "customEvent" ||
-											eventType === "basesEvent"
+									(eventType === "basesEvent" &&
+											showBasesEvents) ||
+										(eventType === "dailyNoteEvent" &&
+											showDailyNoteEvents) ||
+										// 包含禁用的事件类型，以便可以重新启用它们
+										eventType === "holiday" ||
+										eventType === "birthday" ||
+										eventType === "customEvent" ||
+										eventType === "basesEvent" ||
+										eventType === "dailyNoteEvent"
 										);
 									}
 								).map((eventType) => {
@@ -594,8 +601,10 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 											showBirthdays) ||
 										(eventType === "customEvent" &&
 											showCustomEvents) ||
-										(eventType === "basesEvent" &&
-											showBasesEvents);
+								(eventType === "basesEvent" &&
+										showBasesEvents) ||
+									(eventType === "dailyNoteEvent" &&
+										showDailyNoteEvents);
 
 									return (
 										<Tooltip

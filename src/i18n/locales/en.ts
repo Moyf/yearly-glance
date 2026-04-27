@@ -150,10 +150,34 @@ const translations: BaseMessage = {
 				desc: "Property name in note properties for storing event color",
 				placeholder: "Default: color",
 			},
-			basesEventDescriptionProp: {
-				name: "Description property name",
-				desc: "Property name in note properties for storing event description",
-				placeholder: "Default: description",
+		basesEventDescriptionProp: {
+			name: "Description property name",
+			desc: "Property name in note properties for storing event description",
+			placeholder: "Default: description",
+		},
+			showDailyNoteEvents: {
+				name: "Show daily note events",
+				desc: "Display events from daily notes on the calendar",
+			},
+			dailyNoteSource: {
+				name: "Daily note source",
+				desc: "Select which plugin to use for daily notes",
+				options: {
+					dailyNotes: "Core Daily Notes",
+					periodicNotes: "Periodic Notes",
+				},
+			},
+			dailyNoteEventProp: {
+				name: "Events property name",
+				desc: "The frontmatter property name that contains events list in daily notes",
+				placeholder: "Default: events",
+			},
+			dailyNoteWarning: {
+				name: "",
+				desc: "",
+				noPlugin: "Neither Daily Notes nor Periodic Notes plugin is enabled",
+				noDailyNotes: "Core Daily Notes plugin is not enabled",
+				noPeriodicNotes: "Periodic Notes plugin is not installed",
 			},
 		},
 		events: {
@@ -168,6 +192,10 @@ const translations: BaseMessage = {
 			basesEvent: {
 				name: "Note Events",
 				desc: "Use specific notes as event sources, for use with Bases view",
+			},
+			dailyNoteEvent: {
+				name: "Daily Note Events",
+				desc: "Read events from daily note frontmatter list properties",
 			},
 			layout: {
 				name: "Layout",
@@ -220,6 +248,7 @@ const translations: BaseMessage = {
 				birthday: "Birthday",
 				customEvent: "Custom event",
 				basesEvent: "Note event",
+				dailyNoteEvent: "Daily note event",
 			},
 			viewPreset: {
 				yearOverview: "Year overview",
@@ -281,6 +310,9 @@ const translations: BaseMessage = {
 				add: "Add",
 				editBasesEvent: "Edit note event",
 				addBasesEvent: "Add note event",
+				editDailyNoteEvent: "Edit daily note event",
+				addDailyNoteEvent: "Add daily note event",
+				dailyNoteDisabledField: "Not supported for daily note events",
 				eventType: "Event type",
 				eventName: "Event name",
 				eventDate: "Event date",
@@ -364,6 +396,14 @@ const translations: BaseMessage = {
 					notePrefix: "This event is from note",
 					syncText: "Changes will be synced to the original note's properties.",
 				},
+				dailyNoteEventCreate: {
+					label: "Daily note event",
+					text: "The event will be added to the daily note's frontmatter list",
+				},
+				dailyNoteEventEdit: {
+					label: "Daily note event",
+					text: "Changes will be written back to the daily note's frontmatter",
+				},
 			},
 			holiday: {
 				name: "Holiday",
@@ -385,8 +425,13 @@ const translations: BaseMessage = {
 				name: "Note event",
 				sourceNote: "From note",
 			},
+			dailyNoteEvent: {
+				name: "Daily note event",
+				sourceNote: "From daily note",
+			},
 			source: {
 				bases: "From note",
+				dailynote: "From daily note",
 			},
 		},
 		dataPortView: {

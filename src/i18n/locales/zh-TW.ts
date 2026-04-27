@@ -150,10 +150,34 @@ const translations: BaseMessage = {
 				desc: "筆記屬性中用於儲存事件顏色的屬性名",
 				placeholder: "預設: color",
 			},
-			basesEventDescriptionProp: {
-				name: "描述屬性名",
-				desc: "筆記屬性中用於儲存事件描述的屬性名",
-				placeholder: "預設: description",
+		basesEventDescriptionProp: {
+			name: "描述屬性名",
+			desc: "筆記屬性中用於儲存事件描述的屬性名",
+			placeholder: "預設: description",
+		},
+			showDailyNoteEvents: {
+				name: "顯示日記事件",
+				desc: "在日曆上顯示來自日記筆記的事件",
+			},
+			dailyNoteSource: {
+				name: "日記來源",
+				desc: "選擇用於日記筆記的外掛",
+				options: {
+					dailyNotes: "核心日記外掛",
+					periodicNotes: "Periodic Notes",
+				},
+			},
+			dailyNoteEventProp: {
+				name: "事件屬性名",
+				desc: "日記筆記 frontmatter 中包含事件列表的屬性名",
+				placeholder: "預設：events",
+			},
+			dailyNoteWarning: {
+				name: "",
+				desc: "",
+				noPlugin: "日記外掛和 Periodic Notes 外掛均未啟用",
+				noDailyNotes: "核心日記外掛未啟用",
+				noPeriodicNotes: "Periodic Notes 外掛未安裝",
 			},
 		},
 		events: {
@@ -168,6 +192,10 @@ const translations: BaseMessage = {
 			basesEvent: {
 				name: "筆記事件",
 				desc: "使用特定的筆記作為事件來源，用於配合 Bases 視圖使用",
+			},
+			dailyNoteEvent: {
+				name: "日記事件",
+				desc: "從日記筆記的 frontmatter 列表屬性中讀取事件",
 			},
 			layout: {
 				name: "佈局相關",
@@ -220,6 +248,7 @@ const translations: BaseMessage = {
 				birthday: "生日",
 				customEvent: "自訂事件",
 				basesEvent: "筆記事件",
+				dailyNoteEvent: "日記事件",
 			},
 			viewPreset: {
 				yearOverview: "全年一覽",
@@ -281,6 +310,9 @@ const translations: BaseMessage = {
 				add: "新增",
 				editBasesEvent: "編輯筆記事件",
 				addBasesEvent: "新增筆記事件",
+				editDailyNoteEvent: "編輯日記事件",
+				addDailyNoteEvent: "新增日記事件",
+				dailyNoteDisabledField: "日記事件不支援此屬性",
 				eventType: "事件類型",
 				eventName: "事件名稱",
 				eventDate: "事件日期",
@@ -362,6 +394,14 @@ const translations: BaseMessage = {
 					notePrefix: "此事件來自筆記",
 					syncText: "保存時會將修改同步到原始筆記的 frontmatter 元數據。",
 				},
+				dailyNoteEventCreate: {
+					label: "日記事件",
+					text: "事件將新增到日記筆記的 frontmatter 列表中",
+				},
+				dailyNoteEventEdit: {
+					label: "日記事件",
+					text: "修改將寫回日記筆記的 frontmatter",
+				},
 			},
 			holiday: {
 				name: "節日",
@@ -383,8 +423,13 @@ const translations: BaseMessage = {
 				name: "筆記事件",
 				sourceNote: "來自筆記",
 			},
+			dailyNoteEvent: {
+				name: "日記事件",
+				sourceNote: "來自日記",
+			},
 			source: {
 				bases: "來自筆記",
+				dailynote: "來自日記",
 			},
 		},
 		dataPortView: {

@@ -94,14 +94,30 @@ export type BaseMessage = {
 			basesEventColorProp: SettingsItem<{
 				placeholder: string;
 			}>;
-			basesEventDescriptionProp: SettingsItem<{
+		basesEventDescriptionProp: SettingsItem<{
+			placeholder: string;
+		}>;
+			showDailyNoteEvents: IBaseSettingsItem;
+			dailyNoteSource: SettingsItem<{
+				options: {
+					dailyNotes: string;
+					periodicNotes: string;
+				};
+			}>;
+			dailyNoteEventProp: SettingsItem<{
 				placeholder: string;
+			}>;
+			dailyNoteWarning: SettingsItem<{
+				noPlugin: string;
+				noDailyNotes: string;
+				noPeriodicNotes: string;
 			}>;
 		}>;
 		events: IBaseSettingsItem;
 		group: {
 			basic: IBaseSettingsItem;
 			basesEvent: IBaseSettingsItem;
+			dailyNoteEvent: IBaseSettingsItem;
 			layout: IBaseSettingsItem;
 			displayContent: IBaseSettingsItem;
 			eventDisplay: IBaseSettingsItem;
@@ -123,6 +139,7 @@ export type BaseMessage = {
 				birthday: string;
 				customEvent: string;
 				basesEvent: string;
+				dailyNoteEvent: string;
 			};
 			viewPreset: {
 				yearOverview: string;
@@ -184,6 +201,9 @@ export type BaseMessage = {
 				add: string;
 				editBasesEvent: string;
 				addBasesEvent: string;
+				editDailyNoteEvent: string;
+				addDailyNoteEvent: string;
+				dailyNoteDisabledField: string;
 				eventType: string;
 				eventName: string;
 				eventDate: string;
@@ -236,6 +256,14 @@ export type BaseMessage = {
 					notePrefix: string;
 					syncText: string;
 				};
+				dailyNoteEventCreate: {
+					label: string;
+					text: string;
+				};
+				dailyNoteEventEdit: {
+					label: string;
+					text: string;
+				};
 			};
 			holiday: {
 				name: string;
@@ -257,8 +285,13 @@ export type BaseMessage = {
 				name: string;
 				sourceNote: string;
 			};
+			dailyNoteEvent: {
+				name: string;
+				sourceNote: string;
+			};
 			source: {
 				bases: string;
+				dailynote: string;
 			};
 		};
 		dataPortView: {

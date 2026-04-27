@@ -1,0 +1,22 @@
+
+> yearly-glance@3.2.0 test
+> node scripts/jest-compat.mjs --testPathPattern=expandEventByDuration
+
+ts-jest[config] (WARN) message TS151001: If you have issues related to imports, you should consider setting `esModuleInterop` to `true` in your TypeScript configuration file (usually `tsconfig.json`). See https://blogs.msdn.microsoft.com/typescript/2018/01/31/announcing-typescript-2-7/#easier-ecmascript-module-interoperability for more information.
+PASS src/utils/expandEventByDuration.test.ts
+  expandEventByDuration
+    √ Normal expansion: duration=3, date=2025-06-10, year=2025 → 3 events (Jun 10, 11, 12), all year=2025 (3 ms)
+    √ Year overflow: date=2025-12-29, duration=5, year=2025 → 3 events (Dec 29, 30, 31 only)
+    √ Year underflow: date=2024-12-31, duration=5, year=2025 → 4 events (Jan 1, 2, 3, 4 of 2025)
+    √ duration=1: → 1 event, _isFirstDay=true, _isLastDay=true
+    √ duration=0: → treated as 1, returns 1 event
+    √ duration=-3: → treated as 1, returns 1 event (1 ms)
+    √ duration=NaN: → treated as 1, returns 1 event
+    √ missing isoDate: eventDate: { isoDate: '', ... } or eventDate: undefined → returns []
+    √ Metadata fields: duration=3, verify _dayIndex=0/1/2, _totalDays=3, _isFirstDay on first, _isLastDay on last (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       9 passed, 9 total
+Snapshots:   0 total
+Time:        0.393 s
+Ran all test suites matching expandEventByDuration.

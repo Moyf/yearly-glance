@@ -18,7 +18,7 @@
 		"release:tag": "node scripts/release-tag.mjs",
 		"lint": "eslint . --ext .ts,.tsx",
 		"lint:fix": "eslint . --ext .ts,.tsx --fix",
-		"test": "jest",
+		"test": "node scripts/jest-compat.mjs",
 		"test:watch": "jest --watch"
 	},
 	"keywords": [

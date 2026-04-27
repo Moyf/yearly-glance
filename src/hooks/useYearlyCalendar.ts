@@ -4,6 +4,7 @@ import { CalendarDay, CalendarEvent } from "@/src/type/CalendarEvent";
 import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
 import { LunarLibrary } from "@/src/utils/lunarLibrary";
 import { IsoUtils } from "@/src/utils/isoUtils";
+import { expandEventByDuration } from "@/src/utils/expandEventByDuration";
 import { t } from "@/src/i18n/i18n";
 import { NoteEventService } from "@/src/service/NoteEventService";
 
@@ -134,45 +135,12 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 	const allEvents = React.useMemo(() => {
 		const events: CalendarEvent[] = [];
 
-		// 根据 duration 扩展事件到多天的辅助函数
-		const expandEventByDuration = (
-			event: any,
-			eventType: any
-		) => {
-			const duration = event.duration || 1;
-			const baseDate = event.eventDate?.isoDate;
-			if (!baseDate) return;
-
-			for (let dayIndex = 0; dayIndex < duration; dayIndex++) {
-				const currentDate = new Date(baseDate);
-				currentDate.setDate(currentDate.getDate() + dayIndex);
-				const currentDateISO = IsoUtils.toLocalDateString(currentDate);
-
-				events.push({
-					...event,
-					eventType,
-					// 添加天数标记信息（用于渲染时显示）
-					_dayIndex: dayIndex,
-					_totalDays: duration,
-					_isFirstDay: dayIndex === 0,
-					_isLastDay: dayIndex === duration - 1,
-					// 更新当前日期的 ISO 日期
-					eventDate: {
-						...event.eventDate,
-						isoDate: currentDateISO
-					},
-					// 移除 dateArr，避免扩展后的事件通过 dateArr 重复匹配到原始日期
-					dateArr: undefined
-				});
-			}
-		};
-
 		// 如果有外部事件（Bases 事件），只使用外部事件
 		// 即使 externalEvents 是空数组，也不应该 fallback 到插件数据
 		if (externalEvents) {
 			externalEvents.forEach((event) => {
 				// 扩展 Bases 事件
-				expandEventByDuration(event, event.eventType);
+				expandEventByDuration(event, event.eventType, year).forEach((expandedEvent) => events.push(expandedEvent));
 			});
 			return events;
 		}
@@ -181,7 +149,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		if (showHolidays) {
 			holidays.forEach((holiday) => {
 				if (!holiday.isHidden) {
-					expandEventByDuration(holiday, "holiday");
+					expandEventByDuration(holiday, "holiday", year).forEach((expandedEvent) => events.push(expandedEvent));
 				}
 			});
 		}
@@ -190,7 +158,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		if (showBirthdays) {
 			birthdays.forEach((birthday) => {
 				if (!birthday.isHidden) {
-					expandEventByDuration(birthday, "birthday");
+					expandEventByDuration(birthday, "birthday", year).forEach((expandedEvent) => events.push(expandedEvent));
 				}
 			});
 		}
@@ -199,7 +167,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		if (showCustomEvents) {
 			customEvents.forEach((customEvent) => {
 				if (!customEvent.isHidden) {
-					expandEventByDuration(customEvent, "customEvent");
+					expandEventByDuration(customEvent, "customEvent", year).forEach((expandedEvent) => events.push(expandedEvent));
 				}
 			});
 		}
@@ -208,7 +176,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		if (showBasesEvents && basesEvents.length > 0) {
 			basesEvents.forEach((basesEvent) => {
 				if (!basesEvent.isHidden) {
-					expandEventByDuration(basesEvent, "basesEvent");
+					expandEventByDuration(basesEvent, "basesEvent", year).forEach((expandedEvent) => events.push(expandedEvent));
 				}
 			});
 		}

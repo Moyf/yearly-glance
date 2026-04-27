@@ -1,0 +1,61 @@
+node_modules/@types/node/stream/web.d.ts(471,13): error TS2502: 'ReadableByteStreamController' is referenced directly or indirectly in its own type annotation.
+node_modules/@types/node/stream/web.d.ts(480,13): error TS2502: 'ReadableStreamBYOBReader' is referenced directly or indirectly in its own type annotation.
+node_modules/@types/node/stream/web.d.ts(485,13): error TS2502: 'ReadableStreamBYOBRequest' is referenced directly or indirectly in its own type annotation.
+node_modules/jest-mock/build/index.d.ts(8,21): error TS2726: Cannot find lib definition for 'esnext.disposable'.
+node_modules/uuid/dist/index.d.ts(1,1): error TS1383: Only named exports may use 'export type'.
+
+> yearly-glance@3.2.0 build:local
+> tsc -noEmit -skipLibCheck && node scripts/esbuild.config.mjs production keep-console local
+
+[dotenv@17.2.3] injecting env (2) from .env -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+正在读取 manifest.json...
+插件 ID: yearly-glance
+插件目录: H:\Docs\Obsinote\.obsidian\plugins\yearly-glance
+插件目录已存在
+要复制的文件: main.js, manifest.json, styles.css
+复制文件: main.js -> H:\Docs\Obsinote\.obsidian\plugins\yearly-glance\main.js
+复制文件: manifest.json -> H:\Docs\Obsinote\.obsidian\plugins\yearly-glance\manifest.json
+复制文件: styles.css -> H:\Docs\Obsinote\.obsidian\plugins\yearly-glance\styles.css
+所有文件已成功复制到 Obsidian 库的 yearly-glance 插件目录！
+
+> yearly-glance@3.2.0 build:local
+> tsc -noEmit -skipLibCheck && node scripts/esbuild.config.mjs production keep-console local
+
+[dotenv@17.2.3] injecting env (2) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+正在读取 manifest.json...
+插件 ID: yearly-glance
+插件目录: H:\Docs\Obsinote\.obsidian\plugins\yearly-glance
+插件目录已存在
+要复制的文件: main.js, manifest.json, styles.css
+复制文件: main.js -> H:\Docs\Obsinote\.obsidian\plugins\yearly-glance\main.js
+复制文件: manifest.json -> H:\Docs\Obsinote\.obsidian\plugins\yearly-glance\manifest.json
+复制文件: styles.css -> H:\Docs\Obsinote\.obsidian\plugins\yearly-glance\styles.css
+所有文件已成功复制到 Obsidian 库的 yearly-glance 插件目录！
+
+> yearly-glance@3.2.0 build:local
+> tsc -noEmit -skipLibCheck && node scripts/esbuild.config.mjs production keep-console local
+
+[dotenv@17.2.3] injecting env (2) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+正在读取 manifest.json...
+插件 ID: yearly-glance
+插件目录: H:\Docs\Obsinote\.obsidian\plugins\yearly-glance
+插件目录已存在
+要复制的文件: main.js, manifest.json, styles.css
+复制文件: main.js -> H:\Docs\Obsinote\.obsidian\plugins\yearly-glance\main.js
+复制文件: manifest.json -> H:\Docs\Obsinote\.obsidian\plugins\yearly-glance\manifest.json
+复制文件: styles.css -> H:\Docs\Obsinote\.obsidian\plugins\yearly-glance\styles.css
+所有文件已成功复制到 Obsidian 库的 yearly-glance 插件目录！
+
+> yearly-glance@3.2.0 build:local
+> tsc -noEmit -skipLibCheck && node scripts/esbuild.config.mjs production keep-console local
+
+[dotenv@17.2.3] injecting env (2) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+正在读取 manifest.json...
+插件 ID: yearly-glance
+插件目录: H:\Docs\Obsinote\.obsidian\plugins\yearly-glance
+插件目录已存在
+要复制的文件: main.js, manifest.json, styles.css
+复制文件: main.js -> H:\Docs\Obsinote\.obsidian\plugins\yearly-glance\main.js
+复制文件: manifest.json -> H:\Docs\Obsinote\.obsidian\plugins\yearly-glance\manifest.json
+复制文件: styles.css -> H:\Docs\Obsinote\.obsidian\plugins\yearly-glance\styles.css
+所有文件已成功复制到 Obsidian 库的 yearly-glance 插件目录！

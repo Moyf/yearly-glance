@@ -11,7 +11,6 @@ import { YearlyGlanceSettings } from "@/src/type/Settings";
 export class NoteEventService {
 	private app: App;
 	private config: YearlyGlanceSettings;
-	private cache: Map<string, CalendarEvent[]> = new Map();
 
 	constructor(app: App, config: YearlyGlanceSettings) {
 		this.app = app;
@@ -28,12 +27,6 @@ export class NoteEventService {
 		folderPath: string,
 		year?: number
 	): Promise<CalendarEvent[]> {
-		// 检查缓存
-		const cacheKey = this.getCacheKey(folderPath, year);
-		if (this.cache.has(cacheKey)) {
-			return this.cache.get(cacheKey)!;
-		}
-
 		// 获取文件夹中的所有 markdown 文件
 		const files = this.app.vault.getMarkdownFiles();
 		const filteredFiles = folderPath
@@ -44,7 +37,7 @@ export class NoteEventService {
 
 		for (const file of filteredFiles) {
 			try {
-				const event = await this.parseEventFromFile(file);
+				const event = this.parseEventFromFile(file);
 				if (event) {
 					// 如果指定了年份，只返回该年份的事件
 					if (year) {
@@ -67,19 +60,16 @@ export class NoteEventService {
 			}
 		}
 
-		// 缓存结果
-		this.cache.set(cacheKey, events);
-
 		return events;
 	}
 
 	/**
 	 * 从单个笔记文件解析事件
 	 */
-	private async parseEventFromFile(
+	private parseEventFromFile(
 		file: TFile
-	): Promise<CalendarEvent | null> {
-		const frontmatter = await this.getFrontmatter(file);
+	): CalendarEvent | null {
+		const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter ?? {};
 
 		// 获取配置的属性名
 		const titleProp =
@@ -139,17 +129,6 @@ export class NoteEventService {
 	}
 
 	/**
-	 * 获取文件的 frontmatter
-	 */
-	private async getFrontmatter(file: TFile): Promise<any> {
-		return new Promise((resolve) => {
-			this.app.fileManager.processFrontMatter(file, (fm) => {
-				resolve(fm);
-			});
-		});
-	}
-
-	/**
 	 * 解析日期值
 	 */
 	private parseDateValue(dateValue: any): string | null {
@@ -185,19 +164,5 @@ export class NoteEventService {
 	private extractYearFromIsoDate(isoDate: string): number | null {
 		const match = isoDate.match(/^(\d{4})-/);
 		return match ? parseInt(match[1], 10) : null;
-	}
-
-	/**
-	 * 获取缓存键
-	 */
-	private getCacheKey(folderPath: string, year?: number): string {
-		return `${folderPath}-${year || "all"}`;
-	}
-
-	/**
-	 * 使缓存失效
-	 */
-	invalidateCache(): void {
-		this.cache.clear();
 	}
 }

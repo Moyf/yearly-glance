@@ -222,7 +222,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 			isHidden: formData.isHidden,
 
 			// 根据当前事件类型添加特有字段
-			...(currentEventType === "customEvent"
+			...(currentEventType === "customEvent" || currentEventType === "basesEvent" || currentEventType === "dailyNoteEvent"
 				? { isRepeat: formData.isRepeat }
 				: {}),
 

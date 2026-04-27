@@ -275,6 +275,8 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 				return events.customEvents;
 			case "basesEvent":
 				return basesEvents;
+			case "dailyNoteEvent":
+				return dailyNoteEvents;
 			default:
 				return [];
 		}
@@ -318,6 +320,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 			birthday: events.birthdays.length,
 			customEvent: events.customEvents.length,
 			basesEvent: basesEvents.length,
+			dailyNoteEvent: dailyNoteEvents.length,
 		};
 	};
 

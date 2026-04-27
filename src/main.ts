@@ -99,9 +99,8 @@ export default class YearlyGlancePlugin extends Plugin {
 	}
 
 	async saveSettings() {
-		// 更新数据版本号，触发笔记事件重新加载
-		this.settings.config.dataVersion = Date.now();
 		await this.saveData(this.settings);
+		// 发布事件，通知所有订阅者配置已更新
 		YearlyGlanceBus.publish();
 	}
 
@@ -463,7 +462,7 @@ export default class YearlyGlancePlugin extends Plugin {
 		// 获取自定义属性名，如果未设置则使用默认值
 		const titleProp = config.basesEventTitleProp || "title";
 		const dateProp = config.basesEventDateProp || "event_date";
-		const durationProp = config.basesEventDurationProp || "duration_days";
+		const durationProp = config.basesEventDurationProp || "duration";
 		const iconProp = config.basesEventIconProp || "icon";
 		const colorProp = config.basesEventColorProp || "color";
 		const descriptionProp = config.basesEventDescriptionProp || "description";

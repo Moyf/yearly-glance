@@ -105,7 +105,6 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		showCustomEvents,
 		showBasesEvents,
 		defaultBasesEventPath,
-		dataVersion,
 	} = config;
 
 	const { holidays, birthdays, customEvents } = events;
@@ -129,7 +128,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 			console.error("[YearlyGlance] Failed to load note events:", error);
 			setBasesEvents([]);
 		});
-	}, [showBasesEvents, defaultBasesEventPath, year, plugin.app, dataVersion]);
+	}, [showBasesEvents, defaultBasesEventPath, year, plugin.app]);
 
 	// 处理所有事件
 	const allEvents = React.useMemo(() => {

@@ -220,6 +220,15 @@
 		box-shadow: 0 3px 8px var(--yg-shadow-color);
 	}
 
+	/* 过往/未来月份切换按钮激活样式 - 变暗效果 */
+	.hide-previous-months-button.active,
+	.hide-future-months-button.active {
+		background-color: var(--yg-border-bottom-color);
+		border-color: var(--yg-border-bottom-color);
+		color: var(--text-faint);
+		opacity: 0.7;
+	}
+
 	/* ------- 图例样式 ------- */
 
 	.event-legend {
@@ -302,44 +311,6 @@
 
 	.theme-dark .legend-item.disabled:hover {
 		background-color: rgba(255, 255, 255, 0.05);
-	}
-
-	/* ! 月份可见性切换按钮 */
-	.month-visibility-controls {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		margin-left: 12px;
-	}
-
-	.month-visibility-toggle {
-		padding: 6px;
-		border-radius: 6px;
-		border: 1px solid var(--yg-border-color);
-		background-color: var(--yg-button-bg-color);
-		border-color: var(--yg-button-hover-border-color);
-		color: var(--yg-button-text-color);
-		cursor: pointer;
-		transition: all 0.3s ease;
-
-		.legend-icon {
-			margin-right: 0px;
-		}
-	}
-
-	.month-visibility-toggle:hover {
-		background-color: var(--yg-button-hover-bg-color);
-		border-color: var(--yg-button-hover-border-color);
-		transform: translateY(-2px);
-		box-shadow: 0 3px 8px var(--yg-shadow-color);
-	}
-
-	/* Active 说明是“隐藏状态” */
-	.month-visibility-toggle.active {
-		background-color: var(--yg-button-active-bg-color);
-		border-color: var(--yg-day-bg-color);
-		color: var(--text-faint);
-		box-shadow: 0 2px 4px var(--yg-shadow-color);
 	}
 
 	/* ------- 日历网格样式 ------- */
@@ -1082,8 +1053,7 @@
 		}
 
 		/* 最小的情况下 隐藏事件过滤器的文本 */
-		.event-legend .legend-text,
-		.month-visibility-toggle .legend-text {
+		.event-legend .legend-text {
 			display: none;
 		}
 	}

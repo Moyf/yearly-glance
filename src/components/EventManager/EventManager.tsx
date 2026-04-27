@@ -66,7 +66,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 		const unsubscribe = YearlyGlanceBus.subscribe(loadBasesEvents);
 
 		return unsubscribe;
-	}, [plugin, plugin.app, config.showBasesEvents, config.defaultBasesEventPath, config.year, config.dataVersion]);
+	}, [plugin, plugin.app, config.showBasesEvents, config.defaultBasesEventPath, config.year]);
 
 	// 订阅事件总线，处理搜索请求
 	React.useEffect(() => {

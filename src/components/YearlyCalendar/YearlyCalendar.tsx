@@ -46,8 +46,6 @@ const presetConfigs = {
 
 const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externalEvents, inheritPluginData }) => {
 	const { config, updateConfig } = useYearlyGlanceConfig(plugin);
-	const [hidePreviousMonths, setHidePreviousMonths] = React.useState(false);
-	const [hideFutureMonths, setHideFutureMonths] = React.useState(false);
 
 	const {
 		year,
@@ -66,6 +64,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 		showBasesEvents,
 		mondayFirst,
 		hideEmptyDates,
+		hidePreviousMonths,
+		hideFutureMonths,
 		showLunarDay,
 		emojiOnTop,
 	} = config;
@@ -639,71 +639,6 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 								})}
 							</div>
 						)}
-
-						{/* 月份可见性切换按钮 */}
-						<div className="month-visibility-controls">
-							<Tooltip
-								text={
-									hidePreviousMonths
-										? t(
-												"view.yearlyGlance.actions.showPreviousMonths"
-										  )
-										: t(
-												"view.yearlyGlance.actions.hidePreviousMonths"
-										  )
-								}
-							>
-								<button
-									className={`month-visibility-toggle ${
-										hidePreviousMonths ? "active" : ""
-									}`}
-									onClick={() =>
-										setHidePreviousMonths((prev) => !prev)
-									}
-									aria-label={t(
-										"view.yearlyGlance.actions.previousMonths"
-									)}
-								>
-									<span className="legend-icon">⏪</span>
-									<span className="legend-text">
-										{t(
-											"view.yearlyGlance.actions.previousMonths"
-										)}
-									</span>
-								</button>
-							</Tooltip>
-
-							<Tooltip
-								text={
-									hideFutureMonths
-										? t(
-												"view.yearlyGlance.actions.showFutureMonths"
-										  )
-										: t(
-												"view.yearlyGlance.actions.hideFutureMonths"
-										  )
-								}
-							>
-								<button
-									className={`month-visibility-toggle ${
-										hideFutureMonths ? "active" : ""
-									}`}
-									onClick={() =>
-										setHideFutureMonths(!hideFutureMonths)
-									}
-									aria-label={t(
-										"view.yearlyGlance.actions.futureMonths"
-									)}
-								>
-									<span className="legend-icon">⏩</span>
-									<span className="legend-text">
-										{t(
-											"view.yearlyGlance.actions.futureMonths"
-										)}
-									</span>
-								</button>
-							</Tooltip>
-						</div>
 					</div>
 
 					<div className="yg-buttons-right">
@@ -745,6 +680,60 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 						</div>
 
 						<div className="yg-action-buttons">
+							{/* 过往/未来月份切换按钮 - 所有视图显示 */}
+							<Tooltip
+								text={
+									hidePreviousMonths
+										? t(
+												"view.yearlyGlance.actions.showPreviousMonths"
+										  )
+										: t(
+												"view.yearlyGlance.actions.hidePreviousMonths"
+										  )
+								}
+							>
+								<button
+									className={`actions-button hide-previous-months-button ${
+										hidePreviousMonths ? "active" : ""
+									}`}
+									onClick={() =>
+										updateConfig({
+											...config,
+											hidePreviousMonths:
+												!hidePreviousMonths,
+										})
+									}
+								>
+									<span className="button-icon">⏪</span>
+								</button>
+							</Tooltip>
+							<Tooltip
+								text={
+									hideFutureMonths
+										? t(
+												"view.yearlyGlance.actions.showFutureMonths"
+										  )
+										: t(
+												"view.yearlyGlance.actions.hideFutureMonths"
+										  )
+								}
+							>
+								<button
+									className={`actions-button hide-future-months-button ${
+										hideFutureMonths ? "active" : ""
+									}`}
+									onClick={() =>
+										updateConfig({
+											...config,
+											hideFutureMonths:
+												!hideFutureMonths,
+										})
+									}
+								>
+									<span className="button-icon">⏩</span>
+								</button>
+							</Tooltip>
+
 							{/* 日历视图专用按钮 */}
 							{viewType === "calendar" && (
 								<>

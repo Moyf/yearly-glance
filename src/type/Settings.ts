@@ -102,6 +102,8 @@ export interface YearlyGlanceSettings {
 	showLegend: boolean; // 是否显示图例
 	limitListHeight: boolean; // 是否限制列表高度
 	hideEmptyDates: boolean; // 是否隐藏空日期
+	hidePreviousMonths: boolean; // 是否隐藏过往月份
+	hideFutureMonths: boolean; // 是否隐藏未来月份
 	eventFontSize: (typeof EVENT_FONT_SIZE_OPTIONS)[number]; // 事件字体大小
 	showHolidays: boolean; // 是否显示节假日
 	showBirthdays: boolean; // 是否显示生日
@@ -127,7 +129,6 @@ export interface YearlyGlanceSettings {
 	basesEventIconProp?: string; // 笔记事件图标属性名
 	basesEventColorProp?: string; // 笔记事件颜色属性名
 	basesEventDescriptionProp?: string; // 笔记事件描述属性名
-	dataVersion?: number; // 数据版本号，用于强制刷新笔记事件
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -140,6 +141,8 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	showLegend: true,
 	limitListHeight: false,
 	hideEmptyDates: false,
+	hidePreviousMonths: false,
+	hideFutureMonths: false,
 	eventFontSize: "medium",
 	showHolidays: true,
 	showBirthdays: true,
@@ -163,5 +166,4 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	basesEventIconProp: "icon", // 默认图标属性名
 	basesEventColorProp: "color", // 默认颜色属性名
 	basesEventDescriptionProp: "description", // 默认描述属性名
-	dataVersion: 0, // 初始版本号为 0
 };

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
+import { Notice } from "obsidian";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import YearlyGlancePlugin from "@/src/main";
 import { VIEW_TYPE_GLANCE_MANAGER } from "@/src/views/GlanceManagerView";
@@ -151,7 +152,19 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 		};
 	}, [title, year]);
 
-	const { monthsData, weekdays } = useYearlyCalendar(plugin, externalEvents);
+	const { monthsData, weekdays, durationWarnings } = useYearlyCalendar(plugin, externalEvents);
+
+	// Show aggregated Notice when invalid durations are found
+	const warningShownRef = React.useRef<string>('');
+	React.useEffect(() => {
+		if (durationWarnings.length > 0) {
+			const warningKey = durationWarnings.map((w) => w.eventId).join(',');
+			if (warningKey !== warningShownRef.current) {
+				warningShownRef.current = warningKey;
+				new Notice(t('warning.invalidDuration', { count: String(durationWarnings.length) }));
+			}
+		}
+	}, [durationWarnings]);
 
 	// 预设更改处理函数
 	const handlePresetChange = (preset: string) => {

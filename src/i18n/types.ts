@@ -372,6 +372,9 @@ export type BaseMessage = {
 	notice: {
 		setDefaultBasesEventPath: string;
 	};
+	warning: {
+		invalidDuration: string;
+	};
 	data: {
 		sampleEvent: {
 			text: string;

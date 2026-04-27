@@ -490,6 +490,9 @@ const translations: BaseMessage = {
 	notice: {
 		setDefaultBasesEventPath: "Tip: Please select the default note event path in plugin settings",
 	},
+	warning: {
+		invalidDuration: "{{count}} event(s) have invalid duration values and will be treated as 1 day. Check the console for details.",
+	},
 	data: {
 		sampleEvent: {
 			text: "Install YG plugin",

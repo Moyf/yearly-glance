@@ -486,6 +486,9 @@ const translations: BaseMessage = {
 	notice: {
 		setDefaultBasesEventPath: "提示：请在插件设置中选择默认笔记事件路径",
 	},
+	warning: {
+		invalidDuration: "有 {{count}} 条事件的持续天数不规范，已按 1 天处理。详情请查看控制台。",
+	},
 	data: {
 		sampleEvent: {
 			text: "安装 YG 插件",

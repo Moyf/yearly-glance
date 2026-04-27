@@ -4,7 +4,7 @@ import { CalendarDay, CalendarEvent } from "@/src/type/CalendarEvent";
 import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
 import { LunarLibrary } from "@/src/utils/lunarLibrary";
 import { IsoUtils } from "@/src/utils/isoUtils";
-import { expandEventByDuration } from "@/src/utils/expandEventByDuration";
+import { expandEventByDuration, DurationWarning } from "@/src/utils/expandEventByDuration";
 import { t } from "@/src/i18n/i18n";
 import { NoteEventService } from "@/src/service/NoteEventService";
 
@@ -134,54 +134,65 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 	// 处理所有事件
 	const allEvents = React.useMemo(() => {
 		const events: CalendarEvent[] = [];
+		const durationWarnings: DurationWarning[] = [];
+
+		const pushExpanded = (event: CalendarEvent | Parameters<typeof expandEventByDuration>[0], type: Parameters<typeof expandEventByDuration>[1]) => {
+			const { events: expanded, warning } = expandEventByDuration(event as Parameters<typeof expandEventByDuration>[0], type, year);
+			expanded.forEach((e) => events.push(e));
+			if (warning) durationWarnings.push(warning);
+		};
 
 		// 如果有外部事件（Bases 事件），只使用外部事件
 		// 即使 externalEvents 是空数组，也不应该 fallback 到插件数据
 		if (externalEvents) {
 			externalEvents.forEach((event) => {
 				// 扩展 Bases 事件
-				expandEventByDuration(event, event.eventType, year).forEach((expandedEvent) => events.push(expandedEvent));
+				pushExpanded(event, event.eventType);
 			});
-			return events;
+		} else {
+			// 处理节假日
+			if (showHolidays) {
+				holidays.forEach((holiday) => {
+					if (!holiday.isHidden) {
+						pushExpanded(holiday, "holiday");
+					}
+				});
+			}
+
+			// 处理生日
+			if (showBirthdays) {
+				birthdays.forEach((birthday) => {
+					if (!birthday.isHidden) {
+						pushExpanded(birthday, "birthday");
+					}
+				});
+			}
+
+			// 处理自定义事件
+			if (showCustomEvents) {
+				customEvents.forEach((customEvent) => {
+					if (!customEvent.isHidden) {
+						pushExpanded(customEvent, "customEvent");
+					}
+				});
+			}
+
+			// 处理笔记事件
+			if (showBasesEvents && basesEvents.length > 0) {
+				basesEvents.forEach((basesEvent) => {
+					if (!basesEvent.isHidden) {
+						pushExpanded(basesEvent, "basesEvent");
+					}
+				});
+			}
 		}
 
-		// 处理节假日
-		if (showHolidays) {
-			holidays.forEach((holiday) => {
-				if (!holiday.isHidden) {
-					expandEventByDuration(holiday, "holiday", year).forEach((expandedEvent) => events.push(expandedEvent));
-				}
-			});
+		// Log warnings to console
+		if (durationWarnings.length > 0) {
+			console.warn("[YearlyGlance] Invalid duration values found:", durationWarnings);
 		}
 
-		// 处理生日
-		if (showBirthdays) {
-			birthdays.forEach((birthday) => {
-				if (!birthday.isHidden) {
-					expandEventByDuration(birthday, "birthday", year).forEach((expandedEvent) => events.push(expandedEvent));
-				}
-			});
-		}
-
-		// 处理自定义事件
-		if (showCustomEvents) {
-			customEvents.forEach((customEvent) => {
-				if (!customEvent.isHidden) {
-					expandEventByDuration(customEvent, "customEvent", year).forEach((expandedEvent) => events.push(expandedEvent));
-				}
-			});
-		}
-
-		// 处理笔记事件
-		if (showBasesEvents && basesEvents.length > 0) {
-			basesEvents.forEach((basesEvent) => {
-				if (!basesEvent.isHidden) {
-					expandEventByDuration(basesEvent, "basesEvent", year).forEach((expandedEvent) => events.push(expandedEvent));
-				}
-			});
-		}
-
-		return events;
+		return { events, durationWarnings };
 	}, [externalEvents, config, events, basesEvents, showBasesEvents]);
 
 	// 月份数据
@@ -219,7 +230,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 				const currentDateISO = IsoUtils.toLocalDateString(date);
 
 				// 查找当天的事件（包括多日事件的每一天）
-				const dayEvents = allEvents.filter((event) => {
+				const dayEvents = allEvents.events.filter((event) => {
 					// 优先检查扩展后的 eventDate.isoDate（用于多日事件）
 					if (event.eventDate?.isoDate === currentDateISO) {
 						return true;
@@ -263,5 +274,6 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		monthsData,
 		weekdays,
 		today,
+		durationWarnings: allEvents.durationWarnings,
 	};
 }

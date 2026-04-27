@@ -486,6 +486,9 @@ const translations: BaseMessage = {
 	notice: {
 		setDefaultBasesEventPath: "提示：請在外掛設定中選擇預設筆記事件路徑",
 	},
+	warning: {
+		invalidDuration: "有 {{count}} 筆事件的持續天數不規範，已按 1 天處理。詳情請查看控制台。",
+	},
 	data: {
 		sampleEvent: {
 			text: "安裝 YG 外掛程式",

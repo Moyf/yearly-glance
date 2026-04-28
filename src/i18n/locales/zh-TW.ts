@@ -122,8 +122,8 @@ const translations: BaseMessage = {
 			},
 			defaultBasesEventPath: {
 				name: "預設筆記事件路徑",
-				desc: "建立筆記事件時，新筆記將儲存到此資料夾",
-				placeholder: "留空則儲存到庫根目錄",
+				desc: "此資料夾中帶有事件屬性的筆記會顯示在日曆中。你也可以透過 Bases 視圖實現更靈活的篩選。",
+				placeholder: "留空則使用庫根目錄",
 			},
 			basesEventTitleProp: {
 				name: "標題屬性名",
@@ -167,7 +167,7 @@ const translations: BaseMessage = {
 			},
 			basesEvent: {
 				name: "筆記事件",
-				desc: "使用特定的筆記作為事件來源，用於配合 Bases 視圖使用",
+				desc: "使用帶有特定屬性的筆記作為事件來源。預設路徑中的筆記會顯示在年曆視圖中。你也可以新增 Yearly Glance Bases 視圖，定義不同的篩選條件來顯示不同的筆記事件。",
 			},
 			layout: {
 				name: "佈局相關",

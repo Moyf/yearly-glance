@@ -30,6 +30,7 @@ English | [中文文档](https://github.com/Moyf/yearly-glance/blob/master/READM
 - 🔍 **Event Filtering**: Filter by event type and hide empty dates for a cleaner view.
 - 🌙 **Lunar Calendar Support**: Natively supports the traditional Chinese lunar calendar.
 - 🌏 **Multi-language Support**: English and Chinese (Both simplified and traditional) available.
+- 📄 **Note Events**: Use notes with frontmatter properties as event sources, with [Bases](https://help.obsidian.md/bases) integration for advanced filtering. [Learn more](./doc/note-events.md)
 
 
 ## Screenshots

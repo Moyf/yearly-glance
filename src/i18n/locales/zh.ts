@@ -122,8 +122,8 @@ const translations: BaseMessage = {
 			},
 			defaultBasesEventPath: {
 				name: "默认笔记事件路径",
-				desc: "创建笔记事件时，新笔记将保存到此文件夹",
-				placeholder: "留空则保存到库根目录",
+				desc: "此文件夹中带有事件属性的笔记会显示在日历中。你也可以通过 Bases 视图实现更灵活的筛选。",
+				placeholder: "留空则使用库根目录",
 			},
 			basesEventTitleProp: {
 				name: "标题属性名",
@@ -167,7 +167,7 @@ const translations: BaseMessage = {
 			},
 			basesEvent: {
 				name: "笔记事件",
-				desc: "使用特定的笔记作为事件来源，用于配合 Bases 视图使用",
+				desc: "使用带有特定属性的笔记作为事件来源。默认路径中的笔记会显示在年历视图中。你也可以添加 Yearly Glance Bases 视图，定义不同的筛选条件来显示不同的笔记事件。",
 			},
 			layout: {
 				name: "布局相关",

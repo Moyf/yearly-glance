@@ -5,9 +5,9 @@ import YearlyGlancePlugin from "@/src/main";
 import {
 	Birthday,
 	EVENT_TYPE_DEFAULT,
+	EventSource,
 	EventType,
 	Holiday,
-	EventSource,
 } from "@/src/type/Events";
 import {
 	EVENT_SEARCH_REQUESTED,

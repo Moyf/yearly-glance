@@ -122,8 +122,8 @@ const translations: BaseMessage = {
 			},
 			defaultBasesEventPath: {
 				name: "Default note event path",
-				desc: "When creating note events, new notes will be saved to this folder",
-				placeholder: "Leave empty to save to vault root",
+				desc: "Notes with event properties in this folder will appear in the calendar. You can also use Bases view for more flexible filtering.",
+				placeholder: "Leave empty to use vault root",
 			},
 			basesEventTitleProp: {
 				name: "Title property name",
@@ -195,7 +195,7 @@ const translations: BaseMessage = {
 			},
 			basesEvent: {
 				name: "Note Events",
-				desc: "Use specific notes as event sources, for use with Bases view",
+				desc: "Use notes with specific properties as event sources. Notes in the default path will appear in the Year Calendar view. You can also add a Yearly Glance Bases view for advanced filtering. See docs for details.",
 			},
 			dailyNoteEvent: {
 				name: "Daily Note Events",

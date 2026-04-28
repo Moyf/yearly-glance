@@ -45,29 +45,24 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
 		return typeof items === "function" ? items() : items;
 	}, [items]);
 
-	// 过滤选项
-	React.useEffect(() => {
+	// 过滤选项（同步计算，避免闪烁）
+	const computeFiltered = React.useCallback((term: string) => {
 		const itemList = getItemList();
-		if (!searchTerm) {
-			setFilteredItems(itemList);
-		} else {
-			const filtered = itemList.filter(
-				(item) =>
-					item.label
-						.toLowerCase()
-						.includes(searchTerm.toLowerCase()) ||
-					item.value
-						.toLowerCase()
-						.includes(searchTerm.toLowerCase()) ||
-					(item.description &&
-						item.description
-							.toLowerCase()
-							.includes(searchTerm.toLowerCase()))
-			);
-			setFilteredItems(filtered);
-		}
-		setHighlightedIndex(-1);
-	}, [searchTerm, getItemList]);
+		if (!term) return itemList;
+		return itemList.filter(
+			(item) =>
+				item.label.toLowerCase().includes(term.toLowerCase()) ||
+				item.value.toLowerCase().includes(term.toLowerCase()) ||
+				(item.description &&
+					item.description.toLowerCase().includes(term.toLowerCase()))
+		);
+	}, [getItemList]);
+
+	React.useEffect(() => {
+		const filtered = computeFiltered(searchTerm);
+		setFilteredItems(filtered);
+		setHighlightedIndex(filtered.length > 0 ? 0 : -1);
+	}, [searchTerm, computeFiltered]);
 
 	// 处理点击外部关闭
 	React.useEffect(() => {
@@ -152,6 +147,10 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
 	};
 
 	const handleInputFocus = () => {
+		// 先计算过滤结果，再打开下拉（避免闪烁）
+		const filtered = computeFiltered(value);
+		setFilteredItems(filtered);
+		setHighlightedIndex(filtered.length > 0 ? 0 : -1);
 		setSearchTerm(value);
 		setIsOpen(true);
 	};

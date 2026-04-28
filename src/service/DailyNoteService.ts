@@ -273,7 +273,8 @@ export class DailyNoteService {
 		return true;
 	}
 
-	private static readonly EMOJI_PREFIX_REGEX = /^([\p{Emoji_Presentation}\p{Extended_Pictographic}]+)\s*/u;
+	// 匹配开头连续的 emoji 字符，包括变体选择符(VS16)、ZWJ序列、肤色修饰符
+	private static readonly EMOJI_PREFIX_REGEX = /^((?:[\p{Emoji_Presentation}\p{Extended_Pictographic}][\uFE0F\u200D\u{1F3FB}-\u{1F3FF}]*)+)\s*/u;
 
 	/**
 	 * 从文本中提取 emoji 前缀和剩余文本

@@ -219,23 +219,19 @@ export class EventFormModal extends Modal {
 						// 编辑模式：写回日记笔记的 frontmatter
 						const filePath = (this.editingEvent as CalendarEvent).sourceFilePath || DailyNoteService.getFilePathFromEvent(this.editingEvent as CalendarEvent);
 						if (filePath) {
-							// 用统一的 assembleTitle 构建旧标题和新标题，避免手工拼接
-							const oldTitle = DailyNoteService.assembleTitle(
-								this.editingEvent.emoji,
-								this.editingEvent.text || '',
-								defaultDailyEmoji
-							);
 							const newTitle = DailyNoteService.assembleTitle(
 								event.emoji,
 								event.text || '',
 								defaultDailyEmoji
 							);
-							if (oldTitle !== newTitle) {
+							// 从 event ID 提取 index（格式: dailynote-{date}-{index}）用于精确定位
+							const eventIndex = Number((this.editingEvent.id || '').split('-').pop());
+							if (!Number.isNaN(eventIndex)) {
 								await DailyNoteService.updateEventTitle(
 									this.app,
 									filePath,
 									this.plugin.getSettings().config.dailyNoteEventProp,
-									oldTitle,
+									eventIndex,
 									newTitle
 								);
 							}

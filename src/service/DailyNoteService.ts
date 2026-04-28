@@ -200,7 +200,7 @@ export class DailyNoteService {
 		app: App,
 		filePath: string,
 		eventProp: string,
-		oldTitle: string,
+		oldTitleOrIndex: string | number,
 		newTitle: string
 	): Promise<boolean> {
 		const file = app.vault.getAbstractFileByPath(filePath);
@@ -214,11 +214,14 @@ export class DailyNoteService {
 				return;
 			}
 
-			const targetIndex = rawEvents.findIndex(
-				(item) => typeof item === 'string' && item.trim() === oldTitle.trim()
-			);
+			// 支持按 index 直接定位（更稳定）或按标题匹配（兼容）
+			const targetIndex = typeof oldTitleOrIndex === 'number'
+				? oldTitleOrIndex
+				: rawEvents.findIndex(
+					(item) => typeof item === 'string' && item.trim() === oldTitleOrIndex.trim()
+				);
 
-			if (targetIndex >= 0) {
+			if (targetIndex >= 0 && targetIndex < rawEvents.length) {
 				rawEvents[targetIndex] = newTitle;
 			}
 		});

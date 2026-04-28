@@ -828,6 +828,23 @@ export class MigrateData {
 3. **实施指南**：如何识别和修复所有事件更新方法
 4. **测试验证**：单元测试和手动测试的完整流程
 
+### 6. 文件夹选择器模式
+
+**适用场景**：
+
+- 实现文件夹路径选择 UI（设置面板、表单等）
+- 需要 AutoComplete 带搜索过滤的下拉框
+- React 组件或原生 Obsidian Setting 场景
+
+**详细文档**：参见 [文件夹选择器模式](./folder-picker-patterns.md)
+
+**核心内容**：
+
+1. **React AutoComplete 方案**：FolderAutoComplete 组件，聚焦保留当前值，路径不换行
+2. **TextInputSuggest 方案**：原生 Obsidian 风格，参考 obsidian-rapid-notes 实现
+3. **选型指南**：React 设置面板用 AutoComplete，原生 SettingTab 用 TextInputSuggest
+4. **通用最佳实践**：`getAllLoadedFiles` + TFolder 过滤、键盘导航、样式规范
+
 ---
 
 ## 相关资源

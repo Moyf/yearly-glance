@@ -111,6 +111,7 @@ export class NoteEventService {
 		return {
 			id: eventId,
 			text: title,
+			sourceFilePath: file.path,
 			eventDate: {
 				isoDate,
 				calendar: "GREGORIAN",

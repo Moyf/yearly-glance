@@ -289,11 +289,11 @@ describe('DailyNoteService', () => {
 				text: 'Pay rent',
 				eventType: 'dailyNoteEvent',
 				eventSource: EventSource.DAILYNOTE,
+				sourceFilePath: 'Daily/2026-04-27.md',
 				dateArr: ['2026-04-27'],
 				emoji: EVENT_TYPE_DEFAULT.dailyNoteEvent.emoji,
 				color: EVENT_TYPE_DEFAULT.dailyNoteEvent.color,
 				isRepeat: false,
-				remark: 'dailynote:Daily/2026-04-27.md',
 				eventDate: {
 					isoDate: '2026-04-27',
 					calendar: 'GREGORIAN',
@@ -306,6 +306,14 @@ describe('DailyNoteService', () => {
 	});
 
 	describe('getFilePathFromEvent', () => {
+		test('returns sourceFilePath when present', () => {
+			const event = {
+				sourceFilePath: 'Journal/2026-04-27.md',
+			} as CalendarEvent;
+
+			expect(DailyNoteService.getFilePathFromEvent(event)).toBe('Journal/2026-04-27.md');
+		});
+
 		test('returns file path from dailynote remark', () => {
 			const event = {
 				remark: 'dailynote:Journal/2026-04-27.md',
@@ -325,6 +333,20 @@ describe('DailyNoteService', () => {
 		test('returns null for missing or empty remark', () => {
 			expect(DailyNoteService.getFilePathFromEvent({} as CalendarEvent)).toBeNull();
 			expect(DailyNoteService.getFilePathFromEvent({ remark: '' } as CalendarEvent)).toBeNull();
+		});
+	});
+
+	describe('assembleTitle', () => {
+		test('assembles custom emoji + text', () => {
+			expect(DailyNoteService.assembleTitle('🧩', 'Dev work', '📅')).toBe('🧩 Dev work');
+		});
+
+		test('does not include default emoji', () => {
+			expect(DailyNoteService.assembleTitle('📅', 'No emoji', '📅')).toBe('No emoji');
+		});
+
+		test('handles empty emoji', () => {
+			expect(DailyNoteService.assembleTitle('', 'Plain text', '📅')).toBe('Plain text');
 		});
 	});
 
@@ -467,7 +489,7 @@ describe('DailyNoteService', () => {
 
 			expect(events).toHaveLength(1);
 			expect(events[0].text).toBe('Keep me');
-			expect(events[0].remark).toBe('dailynote:Daily/2026-04-28.md');
+			expect(events[0].sourceFilePath).toBe('Daily/2026-04-28.md');
 		});
 
 		test('supports format with subdirectory (YYYY-MM/YYYY-MM-DD)', async () => {

@@ -213,39 +213,23 @@ export class EventFormModal extends Modal {
 					);
 					(event as CustomEvent).eventSource = EventSource.DAILYNOTE;
 
-					// 拼合 emoji + text 作为写入 frontmatter 的完整文本
 					const defaultDailyEmoji = EVENT_TYPE_DEFAULT.dailyNoteEvent.emoji;
-					const newEmoji = event.emoji || "";
-					const newText = event.text || "";
-					// 默认 emoji（📅）不写入 frontmatter，只有用户自定义的 emoji 才拼合
-					const effectiveEmoji = (newEmoji && newEmoji !== defaultDailyEmoji) ? newEmoji : "";
-					const fullTitle = effectiveEmoji ? `${effectiveEmoji} ${newText}` : newText;
 
 					if (this.isEditing && this.editingEvent) {
 						// 编辑模式：写回日记笔记的 frontmatter
-						// 使用原始事件的 remark 提取文件路径（表单可能未保留 remark）
-						const filePath = DailyNoteService.getFilePathFromEvent(this.editingEvent as CalendarEvent);
-						console.log("[YearlyGlance][DailyNote] Edit save:", {
-							filePath,
-							editingEventRemark: this.editingEvent.remark,
-							eventRemark: event.remark,
-							oldEmoji: this.editingEvent.emoji,
-							oldText: this.editingEvent.text,
-							newEmoji,
-							newText,
-							fullTitle,
-						});
+						const filePath = (this.editingEvent as CalendarEvent).sourceFilePath || DailyNoteService.getFilePathFromEvent(this.editingEvent as CalendarEvent);
 						if (filePath) {
-							const defaultEmoji = EVENT_TYPE_DEFAULT.dailyNoteEvent.emoji;
-							const oldEmoji = this.editingEvent.emoji || "";
-							const oldText = this.editingEvent.text || "";
-							// 只有非默认 emoji 才是从原文提取的，需要拼回去
-							const oldTitle = (oldEmoji && oldEmoji !== defaultEmoji) ? `${oldEmoji} ${oldText}` : oldText;
-
-							// 新 emoji 如果是默认值或空，不拼入标题
-							const effectiveNewEmoji = (newEmoji && newEmoji !== defaultEmoji) ? newEmoji : "";
-							const newTitle = effectiveNewEmoji ? `${effectiveNewEmoji} ${newText}` : newText;
-
+							// 用统一的 assembleTitle 构建旧标题和新标题，避免手工拼接
+							const oldTitle = DailyNoteService.assembleTitle(
+								this.editingEvent.emoji,
+								this.editingEvent.text || '',
+								defaultDailyEmoji
+							);
+							const newTitle = DailyNoteService.assembleTitle(
+								event.emoji,
+								event.text || '',
+								defaultDailyEmoji
+							);
 							if (oldTitle !== newTitle) {
 								await DailyNoteService.updateEventTitle(
 									this.app,
@@ -257,9 +241,14 @@ export class EventFormModal extends Modal {
 							}
 						}
 					} else {
-						// 创建模式：创建/追加到对应的 DailyNote
+						// 创建模式：将 emoji 拼回标题后创建/追加到对应的 DailyNote
+						const fullTitle = DailyNoteService.assembleTitle(
+							event.emoji,
+							event.text || '',
+							defaultDailyEmoji
+						);
 						const createEvent: CalendarEvent = {
-							id: "",
+							id: '',
 							text: fullTitle,
 							eventDate: event.eventDate,
 							dateArr: event.dateArr,

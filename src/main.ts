@@ -24,6 +24,7 @@ import { t } from "./i18n/i18n";
 import { buildPropConfig, syncEventToFrontmatter } from "./service/BasesEventFrontmatterService";
 import { DailyNoteService } from "./service/DailyNoteService";
 import { MigrateData } from "./utils/migrateData";
+import { setDebugLoggerEnabled } from "./utils/logger";
 import { EventCalculator } from "./utils/eventCalculator";
 import { IsoUtils } from "./utils/isoUtils";
 import { generateEventId } from "./utils/uniqueEventId";
@@ -63,6 +64,7 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 更新所有事件的dateArr字段
 		await this.updateAllEventsDateObj();
+		setDebugLoggerEnabled(() => this.settings.config.showDebugInfo);
 		// 保存设置，并通知其他组件
 		await this.saveSettings();
 	}
@@ -103,7 +105,7 @@ export default class YearlyGlancePlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 		// 发布事件，通知所有订阅者配置已更新
-		YearlyGlanceBus.publish();
+		YearlyGlanceBus.publish('all');
 	}
 
 	private registerLeafViews() {
@@ -270,6 +272,8 @@ export default class YearlyGlancePlugin extends Plugin {
 			await this.updateAllEventsDateObj();
 		}
 
+		setDebugLoggerEnabled(() => this.settings.config.showDebugInfo);
+
 		await this.saveSettings();
 	}
 
@@ -370,13 +374,14 @@ export default class YearlyGlancePlugin extends Plugin {
 	// 同步 Bases 事件到 frontmatter
 	async syncBasesEventToFrontmatter(event: CalendarEvent): Promise<void> {
 		if (!event.id.startsWith('bases-')) {
-			console.log('Event is not from Bases, skipping frontmatter sync');
 			return;
 		}
 
-		const idWithoutPrefix = event.id.replace('bases-', '');
-		const mdIndex = idWithoutPrefix.indexOf('.md');
-		const filePath = mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
+		const filePath = event.sourceFilePath || (() => {
+			const idWithoutPrefix = event.id.replace('bases-', '');
+			const mdIndex = idWithoutPrefix.indexOf('.md');
+			return mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
+		})();
 
 		const file = this.app.vault.getAbstractFileByPath(filePath);
 		if (!file || !(file instanceof TFile)) {
@@ -397,8 +402,7 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		try {
 			await syncEventToFrontmatter(this.app, file, eventToSync, propConfig);
-			console.log('[YearlyGlance] Frontmatter sync completed for:', filePath);
-			YearlyGlanceBus.publish();
+			YearlyGlanceBus.publish('bases-data');
 		} catch (error) {
 			console.error('[YearlyGlance] Failed to sync frontmatter:', error);
 		}
@@ -449,12 +453,12 @@ export default class YearlyGlancePlugin extends Plugin {
 		const eventProp = this.settings.config.dailyNoteEventProp;
 		await DailyNoteService.addEventToDaily(this.app, filePath, eventProp, event.text);
 
-		YearlyGlanceBus.publish();
+		YearlyGlanceBus.publish('dailynote-data');
 		new Notice(`Event added to ${formattedName}`);
 	}
 
 	async syncDailyNoteEvent(event: CalendarEvent, oldTitle?: string): Promise<void> {
-		const filePath = DailyNoteService.getFilePathFromEvent(event);
+		const filePath = event.sourceFilePath || DailyNoteService.getFilePathFromEvent(event);
 		if (!filePath) return;
 
 		const eventProp = this.settings.config.dailyNoteEventProp;
@@ -469,7 +473,7 @@ export default class YearlyGlancePlugin extends Plugin {
 			);
 		}
 
-		YearlyGlanceBus.publish();
+		YearlyGlanceBus.publish('dailynote-data');
 	}
 
 	/**

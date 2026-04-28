@@ -53,10 +53,13 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 
 		// 检查是否是 Bases 事件
 		const isBasesEvent = event.id.startsWith('bases-');
+		const isDailyNoteEvent = event.eventType === 'dailyNoteEvent';
 
 		if (isBasesEvent) {
 			// 对于 Bases 事件，打开原始笔记
 			openOriginalNoteForBasesEvent();
+		} else if (isDailyNoteEvent && event.sourceFilePath) {
+			plugin.app.workspace.openLinkText(event.sourceFilePath, '', true);
 		} else {
 			// 对于 Config 事件，打开事件管理器
 			setTimeout(() => {
@@ -77,14 +80,11 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 
 	// 打开 Bases 事件的原始笔记
 	const openOriginalNoteForBasesEvent = () => {
-		// 从事件ID中提取文件路径
-		// bases-{filePath}-{isoDate} -> {filePath}
-		// 例如: bases-Events/event-samples/测试事件.md-2026-01-10 -> Events/event-samples/测试事件.md
-		const idWithoutPrefix = event.id.replace('bases-', '');
-
-		// 从 .md 开始截断，获取文件路径
-		const mdIndex = idWithoutPrefix.indexOf('.md');
-		const filePath = mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
+		const filePath = event.sourceFilePath || (() => {
+			const idWithoutPrefix = event.id.replace('bases-', '');
+			const mdIndex = idWithoutPrefix.indexOf('.md');
+			return mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
+		})();
 
 		// 在应用中查找文件
 		const file = plugin.app.vault.getAbstractFileByPath(filePath);
@@ -101,7 +101,14 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 	// 获取位置按钮的显示属性
 	const getLocationButtonProps = () => {
 		const isBasesEvent = event.id.startsWith('bases-');
+		const isDailyNoteEvent = event.eventType === 'dailyNoteEvent';
 		if (isBasesEvent) {
+			return {
+				icon: "📄",
+				title: t("view.eventManager.actions.openOriginalNote"),
+			};
+		}
+		if (isDailyNoteEvent) {
 			return {
 				icon: "📄",
 				title: t("view.eventManager.actions.openOriginalNote"),
@@ -227,25 +234,25 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 							{t("view.eventManager.basesEvent.sourceNote")}:
 						</span>
 						<span className="tooltip-value">
-							{event.id.replace(/^bases-/, "").replace(/-\d{4}-\d{2}-\d{2}$/, "")}
+							{event.sourceFilePath || event.id.replace(/^bases-/, "").replace(/-\d{4}-\d{2}-\d{2}$/, "")}
 						</span>
 					</div>
 				)}
 
 				{/* dailyNoteEvent 特有信息 - 来自日记 */}
-				{eventType === "dailyNoteEvent" && event.remark?.startsWith("dailynote:") && (
+				{eventType === "dailyNoteEvent" && event.sourceFilePath && (
 					<div className="tooltip-row">
 						<span className="tooltip-label">
 							{t("view.eventManager.source.dailynote")}:
 						</span>
 						<span className="tooltip-value">
-							{event.remark.replace(/^dailynote:/, "")}
+							{event.sourceFilePath}
 						</span>
 					</div>
 				)}
 
-				{/* 备注信息（所有事件类型共有，排除 dailyNoteEvent 的内部 remark） */}
-				{event.remark && !(eventType === "dailyNoteEvent" && event.remark.startsWith("dailynote:")) && (
+				{/* 备注信息（所有事件类型共有） */}
+				{event.remark && (
 					<div className="tooltip-row tooltip-remark">
 						<span className="tooltip-value">{event.remark}</span>
 					</div>

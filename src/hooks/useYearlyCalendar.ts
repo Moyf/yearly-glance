@@ -8,6 +8,7 @@ import { DurationWarning, expandEventByDuration } from "@/src/utils/expandEventB
 import { t } from "@/src/i18n/i18n";
 import { NoteEventService } from "@/src/service/NoteEventService";
 import { DailyNoteService } from "@/src/service/DailyNoteService";
+import { logger } from "@/src/utils/logger";
 
 export const MonthMap: Array<{ name: string; color: string }> = [
 	{
@@ -120,15 +121,22 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 
 	// 日记事件状态
 	const [dailyNoteEvents, setDailyNoteEvents] = React.useState<CalendarEvent[]>([]);
-	// Bus 触发时递增，用于强制重载日记事件
-	// Bus 触发时递增，用于强制重载外部事件（笔记事件、日记事件）
-	const [externalRefreshKey, setExternalRefreshKey] = React.useState(0);
+	const [basesRefreshKey, setBasesRefreshKey] = React.useState(0);
+	const [dailyNoteRefreshKey, setDailyNoteRefreshKey] = React.useState(0);
 
 	React.useEffect(() => {
-		const unsubscribe = YearlyGlanceBus.subscribe(() => {
-			setExternalRefreshKey((k) => k + 1);
-		});
-		return unsubscribe;
+		const unsubscribeBases = YearlyGlanceBus.subscribeTopics(
+			['bases-data', 'all'],
+			() => setBasesRefreshKey((k) => k + 1)
+		);
+		const unsubscribeDaily = YearlyGlanceBus.subscribeTopics(
+			['dailynote-data', 'all'],
+			() => setDailyNoteRefreshKey((k) => k + 1)
+		);
+		return () => {
+			unsubscribeBases();
+			unsubscribeDaily();
+		};
 	}, []);
 
 	// 异步加载笔记事件
@@ -141,10 +149,10 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		noteEventService.loadEventsFromPath(defaultBasesEventPath, year).then((loadedEvents) => {
 			setBasesEvents(loadedEvents);
 		}).catch((error) => {
-			console.error("[YearlyGlance] Failed to load note events:", error);
+			logger.error("Failed to load note events", error);
 			setBasesEvents([]);
 		});
-	}, [showBasesEvents, defaultBasesEventPath, year, plugin.app, externalRefreshKey]);
+	}, [showBasesEvents, defaultBasesEventPath, year, plugin.app, basesRefreshKey]);
 
 	// 异步加载日记事件
 	React.useEffect(() => {
@@ -157,7 +165,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		const loadDailyNoteEvents = async () => {
 			try {
 				const settings = DailyNoteService.getDailyNoteSettings(plugin.app, config.dailyNoteSource);
-				console.log("[YearlyGlance][DailyNote] Loading events...", {
+				logger.debug("DailyNote loading events", {
 					source: config.dailyNoteSource,
 					eventProp: config.dailyNoteEventProp,
 					year,
@@ -171,20 +179,20 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 					config.dailyNoteEventProp
 				);
 
-				console.log("[YearlyGlance][DailyNote] Loaded events:", {
+				logger.debug("DailyNote loaded events", {
 					count: events.length,
 					events: events.map(e => ({ id: e.id, text: e.text, date: e.eventDate.isoDate })),
 				});
 
 				setDailyNoteEvents(events);
 			} catch (error) {
-				console.error("[YearlyGlance][DailyNote] Failed to load:", error);
+				logger.error("DailyNote failed to load", error);
 				setDailyNoteEvents([]);
 			}
 		};
 
 		loadDailyNoteEvents();
-	}, [externalEvents, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, year, plugin.app, externalRefreshKey]);
+	}, [externalEvents, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, year, plugin.app, dailyNoteRefreshKey]);
 
 	// 处理所有事件
 	const allEvents = React.useMemo(() => {

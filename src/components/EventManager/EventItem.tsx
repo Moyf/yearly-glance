@@ -53,7 +53,7 @@ export const EventItem: React.FC<EventItemProps> = ({
 
 	// 从日记事件中提取笔记路径和名称
 	const extractDailyNoteInfo = (calendarEvent: CalendarEvent) => {
-		const filePath = DailyNoteService.getFilePathFromEvent(calendarEvent);
+		const filePath = calendarEvent.sourceFilePath || DailyNoteService.getFilePathFromEvent(calendarEvent);
 		if (!filePath) {
 			return null;
 		}

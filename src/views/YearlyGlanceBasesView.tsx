@@ -10,6 +10,7 @@ import { BasesEntry, BasesEventPropertyConfig, BasesValue, BasesViewConfig } fro
 import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 import { EVENT_TYPE_DEFAULT, EventSource } from "@/src/type/Events";
 import { syncEventToFrontmatter } from "@/src/service/BasesEventFrontmatterService";
+import { logger } from "@/src/utils/logger";
 
 // 定义视图类型
 export const VIEW_TYPE_YEARLY_GLANCE_BASES = "yearly-glance-bases-view";
@@ -38,8 +39,8 @@ export class YearlyGlanceBasesView extends BasesView {
         // 初始化 YearlyCalendar
         this.yearlyCalendar = new YearlyCalendar(this.glanceEl, this.plugin);
 
-        // 订阅插件数据更新，实现自动刷新
-        this.unsubscribeBus = YearlyGlanceBus.subscribe(() => {
+        // 仅订阅会影响 Bases 视图的更新
+        this.unsubscribeBus = YearlyGlanceBus.subscribeTopics(['bases-data', 'config', 'plugin-data'], () => {
             this.onDataUpdated();
         });
     }
@@ -190,7 +191,7 @@ export class YearlyGlanceBasesView extends BasesView {
         try {
             return entry.getValue(propKey);
         } catch (error) {
-            console.debug('[YearlyGlance] hashData: failed to read prop for', entry.file?.name, ':', error);
+                    logger.debug(`hashData: failed to read prop for ${entry.file?.name}`, error);
             return null;
         }
     }
@@ -379,6 +380,7 @@ export class YearlyGlanceBasesView extends BasesView {
             return {
                 id: `bases-${filePath}-${isoDate}`,
                 text: title,
+                sourceFilePath: filePath,
                 eventDate: {
                     isoDate,
                     calendar: 'GREGORIAN',
@@ -446,10 +448,9 @@ export class YearlyGlanceBasesView extends BasesView {
             descriptionProp: this.config.getAsPropertyId('propDescription') || pluginConfig.basesEventDescriptionProp || "description",
         };
 
-        try {
+		try {
             await syncEventToFrontmatter(this.app, file, event, propConfig);
-            console.log('Frontmatter updated successfully for:', filePath);
-            YearlyGlanceBus.publish();
+            YearlyGlanceBus.publish('bases-data');
         } catch (error) {
             console.error('Failed to update frontmatter:', error);
         }

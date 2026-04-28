@@ -65,8 +65,8 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 		// 初始加载
 		loadBasesEvents();
 
-		// 订阅 YearlyGlanceBus，当笔记事件更新时重新加载
-		const unsubscribe = YearlyGlanceBus.subscribe(loadBasesEvents);
+		// 仅订阅 Bases 事件更新
+		const unsubscribe = YearlyGlanceBus.subscribeTopics(['bases-data'], loadBasesEvents);
 
 		return unsubscribe;
 	}, [plugin, plugin.app, config.showBasesEvents, config.defaultBasesEventPath, config.year]);
@@ -93,7 +93,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 
 		loadDailyNoteEvents();
 
-		const unsubscribe = YearlyGlanceBus.subscribe(loadDailyNoteEvents);
+		const unsubscribe = YearlyGlanceBus.subscribeTopics(['dailynote-data'], loadDailyNoteEvents);
 		return unsubscribe;
 	}, [plugin, plugin.app, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, config.year]);
 

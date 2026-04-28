@@ -171,6 +171,7 @@ export class DailyNoteService {
 			text: title,
 			eventType,
 			eventSource: EventSource.DAILYNOTE,
+			sourceFilePath: filePath, // 运行时字段，不持久化
 			eventDate: {
 				isoDate,
 				calendar,
@@ -180,16 +181,19 @@ export class DailyNoteService {
 			emoji: EVENT_TYPE_DEFAULT.dailyNoteEvent.emoji,
 			color: EVENT_TYPE_DEFAULT.dailyNoteEvent.color,
 			isRepeat: false,
-			remark: `dailynote:${filePath}`,
 		};
 	}
 
 	static getFilePathFromEvent(event: CalendarEvent): string | null {
-		if (typeof event.remark !== 'string' || !event.remark.startsWith('dailynote:')) {
-			return null;
+		// 优先使用 sourceFilePath（运行时字段）
+		if (event.sourceFilePath) {
+			return event.sourceFilePath;
 		}
-
-		return event.remark.slice('dailynote:'.length) || null;
+		// 兼容旧格式：从 remark 解析（向后兼容）
+		if (typeof event.remark === 'string' && event.remark.startsWith('dailynote:')) {
+			return event.remark.slice('dailynote:'.length) || null;
+		}
+		return null;
 	}
 
 	static async updateEventTitle(
@@ -289,6 +293,28 @@ export class DailyNoteService {
 			return { emoji, text };
 		}
 		return { emoji: null, text: title };
+	}
+
+	/**
+	 * 将 emoji 和文本组装成 frontmatter 存储格式
+	 * - 默认 emoji（如 📅）不写入，避免冗余
+	 * - 有效的自定义 emoji 才拼合到文本前面
+	 *
+	 * assembleTitle("🧩", "Dev work", "📅") → "🧩 Dev work"
+	 * assembleTitle("📅", "No emoji", "📅") → "No emoji"   （默认 emoji，不拼合）
+	 * assembleTitle("", "No emoji", "📅")   → "No emoji"
+	 */
+	static assembleTitle(emoji: string | null | undefined, text: string, defaultEmoji: string): string {
+		const effectiveEmoji = emoji && emoji !== defaultEmoji ? emoji : '';
+		return effectiveEmoji ? `${effectiveEmoji} ${text}` : text;
+	}
+
+	/**
+	 * 从 CalendarEvent 中读取 emoji，过滤掉默认图标（默认图标表示原文无 emoji）
+	 */
+	static getEffectiveEmoji(event: CalendarEvent, defaultEmoji: string): string {
+		const emoji = event.emoji || '';
+		return emoji !== defaultEmoji ? emoji : '';
 	}
 
 	static async loadEventsForYear(

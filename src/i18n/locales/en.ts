@@ -310,8 +310,8 @@ const translations: BaseMessage = {
 				subtext: "Click 'Add new event' to get started",
 			},
 			form: {
-				edit: "Edit",
-				add: "Add",
+				edit: "Edit ",
+				add: "Add ",
 				editBasesEvent: "Edit note event",
 				addBasesEvent: "Add note event",
 				editDailyNoteEvent: "Edit daily note event",

@@ -275,12 +275,10 @@ export const EventForm: React.FC<EventFormProps> = ({
 							: t("view.eventManager.form.addBasesEvent")
 						: isEditing
 						? t("view.eventManager.form.edit") +
-						  " " +
 						  t(
 								`view.eventManager.${currentEventType}.name` as TranslationKeys
 						  )
 						: t("view.eventManager.form.add") +
-						  " " +
 						  t(
 								`view.eventManager.${currentEventType}.name` as TranslationKeys
 						  )}
@@ -301,6 +299,24 @@ export const EventForm: React.FC<EventFormProps> = ({
 							handleFieldChange("text", e.target.value)
 						}
 						required
+					/>
+				</div>
+				<div className="form-group">
+					<label>
+						{t("view.eventManager.form.eventEmoji")}
+						<Tooltip
+							text={t("view.eventManager.help.eventEmoji")}
+						/>
+					</label>
+					<input
+						type="text"
+						value={formData.emoji || ""}
+						onChange={(e) =>
+							handleFieldChange("emoji", e.target.value)
+						}
+						placeholder={
+							EVENT_TYPE_DEFAULT[currentEventType].emoji
+						}
 					/>
 				</div>
 				<div className={`form-group ${isDailyNoteEvent ? "yg-field-disabled" : ""}`}>
@@ -369,24 +385,6 @@ export const EventForm: React.FC<EventFormProps> = ({
 						/>
 					</div>
 
-					<div className="form-group">
-						<label>
-							{t("view.eventManager.form.eventEmoji")}
-							<Tooltip
-								text={t("view.eventManager.help.eventEmoji")}
-							/>
-						</label>
-						<input
-							type="text"
-							value={formData.emoji || ""}
-							onChange={(e) =>
-								handleFieldChange("emoji", e.target.value)
-							}
-							placeholder={
-								EVENT_TYPE_DEFAULT[currentEventType].emoji
-							}
-						/>
-					</div>
 					<div className="form-group">
 						<label>
 							{t("view.eventManager.form.eventColor")}

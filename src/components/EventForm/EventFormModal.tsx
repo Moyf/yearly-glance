@@ -225,8 +225,15 @@ export class EventFormModal extends Modal {
 						};
 						const filePath = DailyNoteService.getFilePathFromEvent(calendarEvent);
 						if (filePath) {
-							const oldTitle = this.editingEvent.text || "";
-							const newTitle = event.text;
+							// 拼合原始格式：emoji + 空格 + text（写回 frontmatter）
+							const oldEmoji = this.editingEvent.emoji || "";
+							const oldText = this.editingEvent.text || "";
+							const oldTitle = oldEmoji ? `${oldEmoji} ${oldText}` : oldText;
+
+							const newEmoji = event.emoji || "";
+							const newText = event.text || "";
+							const newTitle = newEmoji ? `${newEmoji} ${newText}` : newText;
+
 							if (oldTitle !== newTitle) {
 								await DailyNoteService.updateEventTitle(
 									this.app,

@@ -89,7 +89,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 	onCancel,
 	props = {},
 	isBasesEvent = false,
-	isDailyNoteEvent = false,
+	isDailyNoteEvent: isDailyNoteEventProp = false,
 }) => {
 	const today = IsoUtils.getTodayLocalDateString(); // 获取今天的日期字符串（时区安全）
 	const todayString = props.date || today; // 如果传入了特定日期，则使用它，否则使用今天的日期
@@ -104,6 +104,9 @@ export const EventForm: React.FC<EventFormProps> = ({
 	// 当前选择的事件类型
 	const [currentEventType, setCurrentEventType] =
 		React.useState<EventType>(eventType);
+
+	// isDailyNoteEvent 动态跟随 tab 切换，而非只依赖编辑时的 prop
+	const isDailyNoteEvent = currentEventType === "dailyNoteEvent" || isDailyNoteEventProp;
 
 	// 表单数据状态
 	const [formData, setFormData] = React.useState<EventFormData>(() => {
@@ -272,10 +275,12 @@ export const EventForm: React.FC<EventFormProps> = ({
 							: t("view.eventManager.form.addBasesEvent")
 						: isEditing
 						? t("view.eventManager.form.edit") +
+						  " " +
 						  t(
 								`view.eventManager.${currentEventType}.name` as TranslationKeys
 						  )
 						: t("view.eventManager.form.add") +
+						  " " +
 						  t(
 								`view.eventManager.${currentEventType}.name` as TranslationKeys
 						  )}
@@ -321,22 +326,6 @@ export const EventForm: React.FC<EventFormProps> = ({
 				</div>
 				<div className={`form-group ${isDailyNoteEvent ? "yg-field-disabled" : ""}`}>
 					<label>
-						{t("view.eventManager.form.eventDuration")}
-						<Tooltip text={isDailyNoteEvent ? t("view.eventManager.form.dailyNoteDisabledField") : t("view.eventManager.help.eventDuration")} />
-					</label>
-					<input
-						type="number"
-						min="1"
-						max="365"
-						value={formData.duration || 1}
-						onChange={(e) =>
-							handleFieldChange("duration", parseInt(e.target.value) || 1)
-						}
-						disabled={isDailyNoteEvent}
-					/>
-				</div>
-				<div className={`form-group ${isDailyNoteEvent ? "yg-field-disabled" : ""}`}>
-					<label>
 						{t("view.eventManager.form.eventDateType")}
 						<Tooltip
 							text={isDailyNoteEvent ? t("view.eventManager.form.dailyNoteDisabledField") : t("view.eventManager.help.eventDateType")}
@@ -355,7 +344,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 				<div
 					className={`yg-event-form-optional ${
 						optionalCollapsed ? "collapsed" : ""
-					}`}
+					} ${isDailyNoteEvent ? "yg-field-disabled" : ""}`}
 				>
 					<h5
 						onClick={() => setOptionalCollapsed(!optionalCollapsed)}
@@ -364,11 +353,27 @@ export const EventForm: React.FC<EventFormProps> = ({
 						{optionalCollapsed ? <ChevronRight /> : <ChevronDown />}
 					</h5>
 
-					<div className={`form-group ${isDailyNoteEvent ? "yg-field-disabled" : ""}`}>
+					<div className="form-group">
+						<label>
+							{t("view.eventManager.form.eventDuration")}
+							<Tooltip text={t("view.eventManager.help.eventDuration")} />
+						</label>
+						<input
+							type="number"
+							min="1"
+							max="365"
+							value={formData.duration || 1}
+							onChange={(e) =>
+								handleFieldChange("duration", parseInt(e.target.value) || 1)
+							}
+						/>
+					</div>
+
+					<div className="form-group">
 						<label>
 							{t("view.eventManager.form.eventEmoji")}
 							<Tooltip
-								text={isDailyNoteEvent ? t("view.eventManager.form.dailyNoteDisabledField") : t("view.eventManager.help.eventEmoji")}
+								text={t("view.eventManager.help.eventEmoji")}
 							/>
 						</label>
 						<input
@@ -380,14 +385,13 @@ export const EventForm: React.FC<EventFormProps> = ({
 							placeholder={
 								EVENT_TYPE_DEFAULT[currentEventType].emoji
 							}
-							disabled={isDailyNoteEvent}
 						/>
 					</div>
-					<div className={`form-group ${isDailyNoteEvent ? "yg-field-disabled" : ""}`}>
+					<div className="form-group">
 						<label>
 							{t("view.eventManager.form.eventColor")}
 							<Tooltip
-								text={isDailyNoteEvent ? t("view.eventManager.form.dailyNoteDisabledField") : t("view.eventManager.help.eventColor")}
+								text={t("view.eventManager.help.eventColor")}
 							/>
 						</label>
 						<ColorSelector
@@ -401,14 +405,13 @@ export const EventForm: React.FC<EventFormProps> = ({
 							}
 							resetTitle={t("view.eventManager.form.reset")}
 							submitDefaultAsValue={false}
-							disabled={isDailyNoteEvent}
 						/>
 					</div>
-					<div className={`form-group checkbox ${isDailyNoteEvent ? "yg-field-disabled" : ""}`}>
+					<div className="form-group checkbox">
 						<label>
 							{t("view.eventManager.form.eventHidden")}
 							<Tooltip
-								text={isDailyNoteEvent ? t("view.eventManager.form.dailyNoteDisabledField") : t("view.eventManager.help.eventHidden")}
+								text={t("view.eventManager.help.eventHidden")}
 							/>
 						</label>
 						<Toggle
@@ -459,7 +462,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 							/>
 						</div>
 					)}
-					<div className={`form-group ${isDailyNoteEvent ? "yg-field-disabled" : ""}`}>
+					<div className="form-group">
 						<label>
 							{t("view.eventManager.form.eventRemark")}
 							<Tooltip
@@ -472,7 +475,6 @@ export const EventForm: React.FC<EventFormProps> = ({
 								handleFieldChange("remark", e.target.value)
 							}
 							rows={3}
-							disabled={isDailyNoteEvent}
 						/>
 					</div>
 					{currentEventType === 'basesEvent' && (

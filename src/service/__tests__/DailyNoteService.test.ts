@@ -492,13 +492,13 @@ describe('DailyNoteService', () => {
 			expect(events[0].text).toBe('Subdir event');
 		});
 
-		test('hides default emoji when event text starts with emoji', async () => {
+		test('extracts emoji from text as event icon, keeps plain text for non-emoji events', async () => {
 			const app = createAppMock({
 				files: [
 					createFile('Daily/2026-04-27.md'),
 				],
 				frontmatterByPath: {
-					'Daily/2026-04-27.md': { events: ['🧩 Dev work', 'No emoji'] },
+					'Daily/2026-04-27.md': { events: ['🧩 Dev work', 'No emoji', '🎮 Gaming'] },
 				},
 				dailyNotesOptions: {
 					format: 'YYYY-MM-DD',
@@ -510,13 +510,16 @@ describe('DailyNoteService', () => {
 				app, 2026, 'daily-notes', 'events', realMoment
 			);
 
-			expect(events).toHaveLength(2);
-			// 文本有 emoji → 隐藏默认图标
-			expect(events[0].text).toBe('🧩 Dev work'); // 文本保持不变
-			expect(events[0].emoji).toBe(''); // 默认 📅 被隐藏
-			// 文本无 emoji → 保留默认图标
-			expect(events[1].text).toBe('No emoji');
+			expect(events).toHaveLength(3);
+			// 有 emoji → 提取为图标，文本只保留剩余部分
+			expect(events[0].emoji).toBe('🧩');
+			expect(events[0].text).toBe('Dev work');
+			// 无 emoji → 保留默认 📅
 			expect(events[1].emoji).toBe('📅');
+			expect(events[1].text).toBe('No emoji');
+			// 另一个有 emoji 的
+			expect(events[2].emoji).toBe('🎮');
+			expect(events[2].text).toBe('Gaming');
 		});
 	});
 });

@@ -273,7 +273,22 @@ export class DailyNoteService {
 		return true;
 	}
 
-	private static readonly EMOJI_PREFIX_REGEX = /^[\p{Emoji_Presentation}\p{Extended_Pictographic}]/u;
+	private static readonly EMOJI_PREFIX_REGEX = /^([\p{Emoji_Presentation}\p{Extended_Pictographic}]+)\s*/u;
+
+	/**
+	 * 从文本中提取 emoji 前缀和剩余文本
+	 * "🧩 开发插件" → { emoji: "🧩", text: "开发插件" }
+	 * "无emoji文本" → { emoji: null, text: "无emoji文本" }
+	 */
+	static extractEmojiFromText(title: string): { emoji: string | null; text: string } {
+		const match = title.match(DailyNoteService.EMOJI_PREFIX_REGEX);
+		if (match) {
+			const emoji = match[1];
+			const text = title.slice(match[0].length).trim() || title; // 如果去掉后为空则保留原文
+			return { emoji, text };
+		}
+		return { emoji: null, text: title };
+	}
 
 	static async loadEventsForYear(
 		app: App,
@@ -323,9 +338,11 @@ export class DailyNoteService {
 
 			titles.forEach((title, index) => {
 				const event = DailyNoteService.buildCalendarEvent(title, isoDate, index, filePath);
-				// 如果文本本身以 emoji 开头，隐藏默认的 📅 图标避免重复
-				if (DailyNoteService.EMOJI_PREFIX_REGEX.test(title)) {
-					event.emoji = '';
+				// 提取文本中的 emoji 作为事件图标显示，剩余部分作为事件文本
+				const { emoji, text } = DailyNoteService.extractEmojiFromText(title);
+				if (emoji) {
+					event.emoji = emoji;
+					event.text = text;
 				}
 				events.push(event);
 			});

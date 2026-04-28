@@ -41,3 +41,7 @@ dist
 
 /.claude/skills/references/obsidian-maps
 /.claude/skills/references/obsidian-developer-docs/Assets
+
+# agent state
+.claude/settings.local.json
+.sisyphus/

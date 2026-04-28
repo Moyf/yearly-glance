@@ -1,1 +1,0 @@
-Zero matches confirmed - getArrayConfig removed in previous commit

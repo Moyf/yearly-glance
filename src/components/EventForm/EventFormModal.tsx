@@ -219,16 +219,18 @@ export class EventFormModal extends Modal {
 
 					if (this.isEditing && this.editingEvent) {
 						// 编辑模式：写回日记笔记的 frontmatter
-						const calendarEvent: CalendarEvent = {
-							id: event.id,
-							text: event.text,
-							eventDate: event.eventDate,
-							dateArr: event.dateArr,
-							eventType: eventType,
-							eventSource: EventSource.DAILYNOTE,
-							remark: event.remark,
-						};
-						const filePath = DailyNoteService.getFilePathFromEvent(calendarEvent);
+						// 使用原始事件的 remark 提取文件路径（表单可能未保留 remark）
+						const filePath = DailyNoteService.getFilePathFromEvent(this.editingEvent as CalendarEvent);
+						console.log("[YearlyGlance][DailyNote] Edit save:", {
+							filePath,
+							editingEventRemark: this.editingEvent.remark,
+							eventRemark: event.remark,
+							oldEmoji: this.editingEvent.emoji,
+							oldText: this.editingEvent.text,
+							newEmoji,
+							newText,
+							fullTitle,
+						});
 						if (filePath) {
 							const oldEmoji = this.editingEvent.emoji || "";
 							const oldText = this.editingEvent.text || "";

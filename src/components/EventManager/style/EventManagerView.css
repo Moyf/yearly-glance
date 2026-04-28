@@ -256,6 +256,8 @@
 	.event-item-content {
 		padding: 16px;
 		flex: 1;
+		min-width: 0;
+		overflow: hidden;
 	}
 
 	.event-header {
@@ -294,6 +296,8 @@
 		border-radius: 6px;
 		font-size: 14px;
 		color: var(--text-normal);
+		overflow: hidden;
+		word-break: break-word;
 	}
 
 	.remark-icon {

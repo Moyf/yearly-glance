@@ -275,7 +275,7 @@ export const EventItem: React.FC<EventItemProps> = ({
 					</span>
 				</div>
 
-				{event.remark && (
+				{event.remark && event.eventSource !== EventSource.DAILYNOTE && (
 					<div className="event-remark">
 						<span className="remark-icon">💬</span>
 						<span>{event.remark}</span>
@@ -297,7 +297,7 @@ export const EventItem: React.FC<EventItemProps> = ({
 
 				{event.eventSource === EventSource.DAILYNOTE && (
 					<div className="event-source-info">
-						<span className="source-icon">📅</span>
+						<span className="source-icon">📄</span>
 						<span>{t("view.eventManager.source.dailynote")}: </span>
 						<span
 							className="note-link"

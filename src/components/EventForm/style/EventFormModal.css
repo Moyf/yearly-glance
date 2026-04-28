@@ -13,7 +13,6 @@
 	flex-wrap: wrap;
 	gap: 4px;
 	padding: 0px;
-	background-color: var(--background-primary);
 	border-radius: 8px;
 
 	.form-group {

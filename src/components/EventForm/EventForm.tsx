@@ -325,10 +325,10 @@ export const EventForm: React.FC<EventFormProps> = ({
 						}
 					/>
 				</div>
-				<div className={`form-group ${isDailyNoteEvent ? "yg-field-disabled" : ""}`}>
+				<div className="form-group">
 					<label>
 						{t("view.eventManager.form.eventDate")}
-						<Tooltip text={isDailyNoteEvent ? t("view.eventManager.form.dailyNoteDisabledField") : t("view.eventManager.help.eventDate")} />
+						<Tooltip text={t("view.eventManager.help.eventDate")} />
 					</label>
 					<DateInput
 						value={formData.userInputDate || ""}

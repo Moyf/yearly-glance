@@ -338,15 +338,15 @@ describe('DailyNoteService', () => {
 
 	describe('assembleTitle', () => {
 		test('assembles custom emoji + text', () => {
-			expect(DailyNoteService.assembleTitle('🧩', 'Dev work', '📅')).toBe('🧩 Dev work');
+			expect(DailyNoteService.assembleTitle('🧩', 'Dev work', '📰')).toBe('🧩 Dev work');
 		});
 
 		test('does not include default emoji', () => {
-			expect(DailyNoteService.assembleTitle('📅', 'No emoji', '📅')).toBe('No emoji');
+			expect(DailyNoteService.assembleTitle('📰', 'No emoji', '📰')).toBe('No emoji');
 		});
 
 		test('handles empty emoji', () => {
-			expect(DailyNoteService.assembleTitle('', 'Plain text', '📅')).toBe('Plain text');
+			expect(DailyNoteService.assembleTitle('', 'Plain text', '📰')).toBe('Plain text');
 		});
 	});
 
@@ -536,8 +536,8 @@ describe('DailyNoteService', () => {
 			// 有 emoji → 提取为图标，文本只保留剩余部分
 			expect(events[0].emoji).toBe('🧩');
 			expect(events[0].text).toBe('Dev work');
-			// 无 emoji → 保留默认 📅
-			expect(events[1].emoji).toBe('📅');
+			// 无 emoji → 保留默认 📰
+			expect(events[1].emoji).toBe('📰');
 			expect(events[1].text).toBe('No emoji');
 			// 另一个有 emoji 的
 			expect(events[2].emoji).toBe('🎮');

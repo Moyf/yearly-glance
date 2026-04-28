@@ -300,12 +300,12 @@ export class DailyNoteService {
 
 	/**
 	 * 将 emoji 和文本组装成 frontmatter 存储格式
-	 * - 默认 emoji（如 📅）不写入，避免冗余
+	 * - 默认 emoji（如 📰）不写入，避免冗余
 	 * - 有效的自定义 emoji 才拼合到文本前面
 	 *
-	 * assembleTitle("🧩", "Dev work", "📅") → "🧩 Dev work"
-	 * assembleTitle("📅", "No emoji", "📅") → "No emoji"   （默认 emoji，不拼合）
-	 * assembleTitle("", "No emoji", "📅")   → "No emoji"
+	 * assembleTitle("🧩", "Dev work", "📰") → "🧩 Dev work"
+	 * assembleTitle("📰", "No emoji", "📰") → "No emoji"   （默认 emoji，不拼合）
+	 * assembleTitle("", "No emoji", "📰")   → "No emoji"
 	 */
 	static assembleTitle(emoji: string | null | undefined, text: string, defaultEmoji: string): string {
 		const effectiveEmoji = emoji && emoji !== defaultEmoji ? emoji : '';

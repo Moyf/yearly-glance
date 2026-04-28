@@ -111,13 +111,22 @@ export class GlanceManagerView extends ItemView {
 	}
 
 	getIcon(): IconName {
-		return "layout-dashboard";
+		const config = this.plugin.getConfig();
+		return config.showEmojiBeforeTabName === "lucide" ? "layout-dashboard" : ("" as IconName);
 	}
 
 	getDisplayText(): string {
 		const name = t("view.glanceManager.name");
 		const config = this.plugin.getConfig();
-		return config.showEmojiBeforeTabName ? `🗂️ ${name}` : name;
+		switch (config.showEmojiBeforeTabName) {
+			case "lucide":
+				return name;
+			case "emoji":
+				return `🗂️ ${name}`;
+			case "none":
+			default:
+				return name;
+		}
 	}
 
 	async onOpen() {

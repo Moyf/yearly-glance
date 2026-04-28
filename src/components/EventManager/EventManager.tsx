@@ -1,19 +1,23 @@
 import * as React from "react";
 import YearlyGlancePlugin from "@/src/main";
 import { Birthday, CustomEvent, EventType, Holiday } from "@/src/type/Events";
-import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
+import { useYearlyGlanceConfig, YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 import { EVENT_TYPE_OPTIONS } from "@/src/components/EventForm/EventForm";
 import { SortControls, SortDirection, SortField } from "./SortControls";
 import { EventList } from "./EventList";
 import { Input } from "@/src/components/Base/Input";
 import { ConfirmDialog } from "@/src/components/Base/ConfirmDialog";
 import { NavTabs } from "@/src/components/Base/NavTabs";
+import { Tooltip } from "@/src/components/Base/Tooltip";
 import { t } from "@/src/i18n/i18n";
 import { VIEW_TYPE_YEARLY_GLANCE } from "@/src/views/YearlyGlanceView";
 import {
 	EVENT_SEARCH_REQUESTED,
 	EventManagerBus,
 } from "@/src/hooks/useEventBus";
+import { CalendarEvent } from "@/src/type/CalendarEvent";
+import { NoteEventService } from "@/src/service/NoteEventService";
+import { DailyNoteService } from "@/src/service/DailyNoteService";
 import "./style/EventManagerView.css";
 
 interface EventManagerViewProps {
@@ -35,7 +39,58 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 	const [sortDirection, setSortDirection] =
 		React.useState<SortDirection>("asc");
 
-	const gregorianDisplayFormat = plugin.getConfig().gregorianDisplayFormat;
+	// 笔记事件状态
+	const [basesEvents, setBasesEvents] = React.useState<CalendarEvent[]>([]);
+	// 日记事件状态
+	const [dailyNoteEvents, setDailyNoteEvents] = React.useState<CalendarEvent[]>([]);
+	const { config } = useYearlyGlanceConfig(plugin);
+
+	const gregorianDisplayFormat = config.gregorianDisplayFormat;
+
+	// 加载笔记事件（Manager 始终加载，不受日历显示开关影响）
+	React.useEffect(() => {
+		const loadBasesEvents = () => {
+			if (config.defaultBasesEventPath) {
+				const noteEventService = new NoteEventService(plugin.app, config);
+				noteEventService.loadEventsFromPath(config.defaultBasesEventPath, config.year)
+					.then(setBasesEvents)
+					.catch((error) => {
+						console.error("[YearlyGlance] Failed to load note events:", error);
+						setBasesEvents([]);
+					});
+			} else {
+				setBasesEvents([]);
+			}
+		};
+
+		loadBasesEvents();
+
+		const unsubscribe = YearlyGlanceBus.subscribeTopics(['bases-data'], loadBasesEvents);
+
+		return unsubscribe;
+	}, [plugin, plugin.app, config.defaultBasesEventPath, config.year]);
+
+	// 加载日记事件（Manager 始终加载，不受日历显示开关影响）
+	React.useEffect(() => {
+		const loadDailyNoteEvents = () => {
+			DailyNoteService.loadEventsForYear(
+				plugin.app,
+				config.year,
+				config.dailyNoteSource,
+				config.dailyNoteEventProp
+			)
+				.then(setDailyNoteEvents)
+				.catch((error) => {
+					console.error("[YearlyGlance] Failed to load daily note events:", error);
+					setDailyNoteEvents([]);
+				});
+		};
+
+		loadDailyNoteEvents();
+
+		const unsubscribe = YearlyGlanceBus.subscribeTopics(['dailynote-data'], loadDailyNoteEvents);
+		return unsubscribe;
+	}, [plugin, plugin.app, config.dailyNoteSource, config.dailyNoteEventProp, config.year]);
 
 	// 订阅事件总线，处理搜索请求
 	React.useEffect(() => {
@@ -74,7 +129,19 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 	};
 
 	// 编辑事件
-	const handleEditEvent = (event: Holiday | Birthday | CustomEvent) => {
+	const handleEditEvent = (event: Holiday | Birthday | CustomEvent | CalendarEvent) => {
+		// 检查是否为笔记事件
+		if ((event as CalendarEvent).id?.startsWith("bases-")) {
+			plugin.openEventForm("basesEvent", event, true, false);
+			return;
+		}
+
+		// 检查是否为日记事件
+		if ((event as CalendarEvent).id?.startsWith("dailynote-")) {
+			plugin.openEventForm("dailyNoteEvent", event, true, false);
+			return;
+		}
+
 		// 在搜索模式下，需要根据事件类型确定要打开的编辑表单类型
 		let eventType = activeTab;
 
@@ -132,7 +199,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 			if (idMatch) {
 				const idTerm = idMatch[1].trim();
 				// 在所有事件类型中搜索指定ID - 使用精确匹配
-				const results: Array<Holiday | Birthday | CustomEvent> = [
+				const results: Array<Holiday | Birthday | CustomEvent | CalendarEvent> = [
 					...events.holidays.filter(
 						(event) => event.id?.toString() === idTerm
 					),
@@ -142,32 +209,52 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 					...events.customEvents.filter(
 						(event) => event.id?.toString() === idTerm
 					),
+					...basesEvents.filter(
+						(event) => event.id?.toString() === idTerm
+					),
+					...dailyNoteEvents.filter(
+						(event) => event.id?.toString() === idTerm
+					),
 				];
 				return results;
 			}
 
 			// 常规搜索 - 从所有事件类型中搜索
-			const results: Array<Holiday | Birthday | CustomEvent> = [
+			const results: Array<Holiday | Birthday | CustomEvent | CalendarEvent> = [
 				...events.holidays.filter(
 					(event) =>
 						event.text.toLowerCase().includes(term) ||
 						(event.remark &&
 							event.remark.toLowerCase().includes(term)) ||
-						event.eventDate.isoDate.includes(term)
+						event.eventDate?.isoDate?.includes(term)
 				),
 				...events.birthdays.filter(
 					(event) =>
 						event.text.toLowerCase().includes(term) ||
 						(event.remark &&
 							event.remark.toLowerCase().includes(term)) ||
-						event.eventDate.isoDate.includes(term)
+						event.eventDate?.isoDate?.includes(term)
 				),
 				...events.customEvents.filter(
 					(event) =>
 						event.text.toLowerCase().includes(term) ||
 						(event.remark &&
 							event.remark.toLowerCase().includes(term)) ||
-						event.eventDate.isoDate.includes(term)
+						event.eventDate?.isoDate?.includes(term)
+				),
+				...basesEvents.filter(
+					(event) =>
+						event.text.toLowerCase().includes(term) ||
+						(event.remark &&
+							event.remark.toLowerCase().includes(term)) ||
+						event.eventDate?.isoDate?.includes(term)
+				),
+				...dailyNoteEvents.filter(
+					(event) =>
+						event.text.toLowerCase().includes(term) ||
+						(event.remark &&
+							event.remark.toLowerCase().includes(term)) ||
+						event.eventDate?.isoDate?.includes(term)
 				),
 			];
 			return results;
@@ -181,6 +268,10 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 				return events.birthdays;
 			case "customEvent":
 				return events.customEvents;
+			case "basesEvent":
+				return basesEvents;
+			case "dailyNoteEvent":
+				return dailyNoteEvents;
 			default:
 				return [];
 		}
@@ -223,6 +314,8 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 			holiday: events.holidays.length,
 			birthday: events.birthdays.length,
 			customEvent: events.customEvents.length,
+			basesEvent: basesEvents.length,
+			dailyNoteEvent: dailyNoteEvents.length,
 		};
 	};
 
@@ -262,30 +355,29 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 									onChange={(value) => setSearchTerm(value)}
 									onBlur={handleSearchBlur}
 								/>
+								<Tooltip text={t("view.eventManager.actions.clearSearch")}>
 								<button
 									className="clear-search"
 									onClick={() => {
 										setSearchTerm("");
-										// 如果搜索框为空，点击清除按钮会收起搜索框
 										if (searchTerm === "") {
 											toggleSearch();
 										}
 									}}
-									title={t(
-										"view.eventManager.actions.clearSearch"
-									)}
 								>
 									✕
 								</button>
+							</Tooltip>
 							</>
 						) : (
-							<button
-								className="search-toggle"
-								onClick={toggleSearch}
-								title={t("view.eventManager.actions.search")}
-							>
-								🔍
-							</button>
+							<Tooltip text={t("view.eventManager.actions.search")}>
+								<button
+									className="search-toggle"
+									onClick={toggleSearch}
+								>
+									🔍
+								</button>
+							</Tooltip>
 						)}
 					</div>
 
@@ -294,21 +386,24 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 						sortDirectionValue={sortDirection}
 						onSortChange={handleSortChange}
 					/>
-					<button
-						className="yearly-calendar-button"
-						onClick={handleYearlyCalendar}
-						title={t("view.eventManager.actions.yearlyCalendar")}
-					>
-						🔭
-					</button>
+					<Tooltip text={t("view.eventManager.actions.yearlyCalendar")}>
+						<button
+							className="yearly-calendar-button"
+							onClick={handleYearlyCalendar}
+						>
+							🔭
+						</button>
+					</Tooltip>
 
-					<button
-						className="add-event-button"
-						onClick={handleAddEvent}
-					>
-						<span className="add-icon">+</span>
-						<span>{t("view.eventManager.actions.add")}</span>
-					</button>
+					<Tooltip text={t("view.yearlyGlance.actions.form")}>
+						<button
+							className="add-event-button"
+							onClick={handleAddEvent}
+						>
+							<span className="add-icon">+</span>
+							<span>{t("view.eventManager.actions.add")}</span>
+						</button>
+					</Tooltip>
 				</div>
 			</div>
 
@@ -322,6 +417,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 					sortDirection={sortDirection}
 					isSearchMode={isSearching}
 					gregorianDisplayFormat={gregorianDisplayFormat}
+					plugin={plugin}
 				/>
 			</div>
 		</div>

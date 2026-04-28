@@ -6,6 +6,9 @@ module.exports = {
 	transform: {
 		"^.+\\.ts$": "ts-jest",
 	},
+	moduleNameMapper: {
+		"^@/(.*)$": "<rootDir>/$1",
+	},
 	moduleFileExtensions: ["ts", "js", "json"],
 	collectCoverageFrom: [
 		"src/**/*.ts",

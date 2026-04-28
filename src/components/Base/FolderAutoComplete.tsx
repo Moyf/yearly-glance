@@ -1,6 +1,5 @@
 import * as React from "react";
-import { TFolder } from "obsidian";
-import { useObsidianApp } from "@/src/context/obsidianAppContext";
+import { App, TFolder } from "obsidian";
 import { AutoComplete, AutoCompleteItem } from "./Autocomplete";
 
 interface FolderAutoCompleteProps {
@@ -10,6 +9,7 @@ interface FolderAutoCompleteProps {
 	placeholder?: string;
 	disabled?: boolean;
 	className?: string;
+	app: App; // 必须通过 props 传入 app
 }
 
 export const FolderAutoComplete: React.FC<FolderAutoCompleteProps> = ({
@@ -19,8 +19,8 @@ export const FolderAutoComplete: React.FC<FolderAutoCompleteProps> = ({
 	placeholder,
 	disabled = false,
 	className = "",
+	app,
 }) => {
-	const app = useObsidianApp();
 
 	const getItems = React.useCallback((): AutoCompleteItem[] => {
 		const folders = app.vault

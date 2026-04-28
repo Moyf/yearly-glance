@@ -64,6 +64,10 @@ const translations: BaseMessage = {
 				name: "顯示自訂事件",
 				desc: "在視圖中顯示自訂事件",
 			},
+			showBasesEvents: {
+				name: "顯示筆記事件",
+				desc: "在視圖中顯示來自筆記屬性的事件",
+			},
 			mondayFirst: {
 				name: "週一作為一週的第一天",
 				desc: "設定週一（而不是週日）作為一週的第一天",
@@ -81,8 +85,13 @@ const translations: BaseMessage = {
 				desc: "在視圖中顯示農曆日",
 			},
 			showEmojiBeforeTabName: {
-				name: "顯示標籤名稱前的emoji",
-				desc: "在UI中顯示標籤名稱前的emoji",
+				name: "標籤圖示顯示方式",
+				desc: "選擇標籤頁圖示的顯示方式",
+				options: {
+					none: "不顯示圖示",
+					lucide: "Lucide 矢量圖示",
+					emoji: "Emoji 圖示",
+				},
 			},
 			showDebugInfo: {
 				name: "顯示偵錯資訊",
@@ -111,6 +120,69 @@ const translations: BaseMessage = {
 					enFullDmy: "完整英文日月年格式(1 October 1949)",
 				},
 			},
+			defaultBasesEventPath: {
+				name: "預設筆記事件路徑",
+				desc: "此資料夾中帶有事件屬性的筆記會顯示在日曆中。你也可以透過 Bases 視圖實現更靈活的篩選。",
+				placeholder: "留空則使用庫根目錄",
+			},
+			basesEventTitleProp: {
+				name: "標題屬性名",
+				desc: "筆記屬性中用於儲存事件標題的屬性名",
+				placeholder: "預設: title",
+			},
+			basesEventDateProp: {
+				name: "日期屬性名",
+				desc: "筆記屬性中用於儲存事件日期的屬性名",
+				placeholder: "預設: event_date",
+			},
+			basesEventDurationProp: {
+				name: "持續天數屬性名",
+				desc: "筆記屬性中用於儲存事件持續天數的屬性名",
+				placeholder: "預設: duration",
+			},
+			basesEventIconProp: {
+				name: "圖示屬性名",
+				desc: "筆記屬性中用於儲存事件圖示的屬性名",
+				placeholder: "預設: icon",
+			},
+			basesEventColorProp: {
+				name: "顏色屬性名",
+				desc: "筆記屬性中用於儲存事件顏色的屬性名",
+				placeholder: "預設: color",
+			},
+		basesEventDescriptionProp: {
+			name: "描述屬性名",
+			desc: "筆記屬性中用於儲存事件描述的屬性名",
+			placeholder: "預設: description",
+		},
+			showDailyNoteEvents: {
+				name: "顯示日記事件",
+				desc: "在日曆上顯示來自日記筆記的事件",
+			},
+			dailyNoteSource: {
+				name: "日記來源",
+				desc: "選擇用於日記筆記的外掛",
+				options: {
+					dailyNotes: "核心日記外掛",
+					periodicNotes: "Periodic Notes",
+				},
+			},
+			dailyNoteEventProp: {
+				name: "事件屬性名",
+				desc: "日記筆記 frontmatter 中包含事件列表的屬性名",
+				placeholder: "預設：events",
+			},
+			dailyNoteShowEmoji: {
+				name: "顯示 emoji 前綴",
+				desc: "顯示日記事件文字中的 emoji 前綴（如 '🧩 開發外掛' 中的 🧩）",
+			},
+			dailyNoteWarning: {
+				name: "",
+				desc: "",
+				noPlugin: "日記外掛和 Periodic Notes 外掛均未啟用",
+				noDailyNotes: "核心日記外掛未啟用",
+				noPeriodicNotes: "Periodic Notes 外掛未安裝",
+			},
 		},
 		events: {
 			name: "事件",
@@ -120,6 +192,14 @@ const translations: BaseMessage = {
 			basic: {
 				name: "基本設定",
 				desc: "年曆的基礎資訊配置",
+			},
+			basesEvent: {
+				name: "筆記事件",
+				desc: "使用帶有特定屬性的筆記作為事件來源。預設路徑中的筆記會顯示在年曆視圖中。你也可以新增 Yearly Glance Bases 視圖，定義不同的篩選條件來顯示不同的筆記事件。",
+			},
+			dailyNoteEvent: {
+				name: "日記事件",
+				desc: "從日記筆記的 frontmatter 列表屬性中讀取事件",
 			},
 			layout: {
 				name: "佈局相關",
@@ -139,7 +219,25 @@ const translations: BaseMessage = {
 			},
 		},
 	},
-	view: {
+		view: {
+		basesView: {
+			name: "年度概覽",
+			options: {
+				embeddedHeight: "嵌入高度",
+				limitHeight: "限制高度",
+				maxHeight: "最大高度",
+				properties: "屬性",
+				extendedProperties: "拓展屬性",
+				display: "顯示",
+				propTitle: "標題屬性",
+				propDate: "日期屬性",
+				propDuration: "持續天數屬性",
+				propIcon: "圖示屬性",
+				propColor: "顏色屬性",
+				propDescription: "描述屬性",
+				inheritPluginData: "繼承插件資料",
+			},
+		},
 		glanceManager: {
 			name: "概覽管理",
 			events: "事件管理",
@@ -153,6 +251,8 @@ const translations: BaseMessage = {
 				holiday: "節日",
 				birthday: "生日",
 				customEvent: "自訂事件",
+				basesEvent: "筆記事件",
+				dailyNoteEvent: "日記事件",
 			},
 			viewPreset: {
 				yearOverview: "全年一覽",
@@ -196,6 +296,7 @@ const translations: BaseMessage = {
 				yearlyCalendar: "開啟年度概覽",
 				deleteConfirm: "確認刪除事件",
 				location: "在事件管理中開啟",
+				openOriginalNote: "開啟原始筆記",
 				toggleBuiltinEventHidden: "切換內建節日顯示狀態",
 				sort: {
 					name: "事件名稱",
@@ -211,9 +312,15 @@ const translations: BaseMessage = {
 			form: {
 				edit: "編輯",
 				add: "新增",
+				editBasesEvent: "編輯筆記事件",
+				addBasesEvent: "新增筆記事件",
+				editDailyNoteEvent: "編輯日記事件",
+				addDailyNoteEvent: "新增日記事件",
+				dailyNoteDisabledField: "日記事件不支援此屬性",
 				eventType: "事件類型",
 				eventName: "事件名稱",
 				eventDate: "事件日期",
+				eventDuration: "事件天數",
 				eventDateType: "日期類型",
 				optional: "可選",
 				eventHidden: "隱藏",
@@ -221,10 +328,14 @@ const translations: BaseMessage = {
 				eventColor: "顏色",
 				eventRemark: "備註",
 				save: "儲存",
+				saving: "儲存中...",
 				cancel: "取消",
 				reset: "重設",
 				submit: "提交",
 				selectPresetColor: "選擇預設",
+				eventCreated: "事件已建立",
+				eventUpdated: "事件已更新",
+				saveFailed: "儲存失敗：{{error}}",
 			},
 			dateError: {
 				emptyDate: "日期不能為空，請輸入日期",
@@ -255,6 +366,10 @@ const translations: BaseMessage = {
 					"標準格式：2025-01-01, 2025/01/01, 2025.01.01, 01-01, 01/01, 01.01<br>" +
 					"舊格式：2025,6,1  2025,-6,1  6,1  -6,1<br>" +
 					"中文格式：2025年正月初一, 正月初一, 閏二月初一, 二〇二五年閏六月初一",
+				eventDuration:
+					"設置事件持續的天數<br>" +
+					"默認為1天（單日事件）<br>" +
+					"設置為大於1的數字時，事件會在多個日期中顯示，例如設置為3會在連續3天中顯示該事件",
 				eventDateType:
 					"事件日期類型，自動推斷或手動選擇<br>" +
 					"<b>自動推斷</b>：根據輸入日期自動判斷是公曆，農曆或者農曆閏月<br>" +
@@ -272,6 +387,25 @@ const translations: BaseMessage = {
 					"對事件的額外說明，點擊事件時（或在管理事件中）可查看備註內容",
 				customEventRepeat: "選中時，將會在每年的該日期都重複顯示事件",
 				holidayFoundDate: "節日起源日期，後續計劃會用於計算節慶週年",
+				frontmatterSync: "同步到筆記元數據（frontmatter）",
+				basesEventCreate: {
+					label: "創建新筆記",
+					text: "保存後將在 {{path}} 文件夾中創建新筆記，可在插件設置中配置默認路徑。",
+					textWithName: "將保存為新筆記：",
+				},
+				basesEventEdit: {
+					label: "事件來源",
+					notePrefix: "此事件來自筆記",
+					syncText: "保存時會將修改同步到原始筆記的 frontmatter 元數據。",
+				},
+				dailyNoteEventCreate: {
+					label: "日記事件",
+					text: "事件將新增到日記筆記的 frontmatter 列表中",
+				},
+				dailyNoteEventEdit: {
+					label: "日記事件",
+					text: "修改將寫回日記筆記的 frontmatter",
+				},
 			},
 			holiday: {
 				name: "節日",
@@ -288,6 +422,18 @@ const translations: BaseMessage = {
 			customEvent: {
 				name: "自訂事件",
 				repeat: "重複",
+			},
+			basesEvent: {
+				name: "筆記事件",
+				sourceNote: "來自筆記",
+			},
+			dailyNoteEvent: {
+				name: "日記事件",
+				sourceNote: "來自日記",
+			},
+			source: {
+				bases: "來自筆記",
+				dailynote: "來自日記",
 			},
 		},
 		dataPortView: {
@@ -385,6 +531,12 @@ const translations: BaseMessage = {
 	common: {
 		confirm: "確認",
 		cancel: "取消",
+	},
+	notice: {
+		setDefaultBasesEventPath: "提示：請在外掛設定中選擇預設筆記事件路徑",
+	},
+	warning: {
+		invalidDuration: "有 {{count}} 筆事件的持續天數不規範，已按 1 天處理。詳情請查看控制台。",
 	},
 	data: {
 		sampleEvent: {

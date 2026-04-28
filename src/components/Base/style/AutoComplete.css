@@ -55,13 +55,14 @@
 		left: 0;
 		right: 0;
 		z-index: 1000;
-		max-height: 200px;
+		min-width: 300px;
+		max-height: 240px;
 		overflow-y: auto;
 		background: var(--background-primary);
 		border: 1px solid var(--background-modifier-border);
-		border-radius: 6px;
+		border-radius: 4px;
 		margin-top: 2px;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 		animation: dropdown-appear 0.15s ease-out;
 	}
 
@@ -84,14 +85,9 @@
 	}
 
 	.autocomplete-item {
-		padding: 10px 16px;
+		padding: 6px 12px;
 		cursor: pointer;
-		border-bottom: 1px solid var(--background-modifier-border);
 		transition: background-color 0.15s ease;
-	}
-
-	.autocomplete-item:last-child {
-		border-bottom: none;
 	}
 
 	.autocomplete-item:hover,
@@ -104,9 +100,11 @@
 	}
 
 	.autocomplete-item-label {
-		font-size: 14px;
+		font-size: 13px;
 		color: var(--text-normal);
-		margin-bottom: 2px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.autocomplete-item-description {

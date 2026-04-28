@@ -20,6 +20,11 @@ export class MigrateData {
 		// 创建数据的深拷贝，避免修改原始数据
 		const migratedData = structuredClone(data);
 
+		// 迁移 showEmojiBeforeTabName 配置
+		if (typeof migratedData.config.showEmojiBeforeTabName === "boolean") {
+			migratedData.config.showEmojiBeforeTabName = migratedData.config.showEmojiBeforeTabName ? "emoji" : "none";
+		}
+
 		const eventTypes = ["holidays", "birthdays", "customEvents"];
 
 		for (const type of eventTypes) {

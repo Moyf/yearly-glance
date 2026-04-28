@@ -1,10 +1,11 @@
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
-import { Modal } from "obsidian";
+import { Modal, TFile } from "obsidian";
 import YearlyGlancePlugin from "@/src/main";
 import {
 	Birthday,
 	EVENT_TYPE_DEFAULT,
+	EventSource,
 	EventType,
 	Holiday,
 } from "@/src/type/Events";
@@ -46,26 +47,80 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 		}, 100);
 	};
 
-	// 在事件管理中打开
+	// 在事件管理中打开或打开原始笔记
 	const handleLocationEvent = () => {
 		// 关闭当前tooltip
 		onClose();
 
-		// 使用延迟确保tooltip已完全关闭
-		setTimeout(() => {
-			// 打开事件管理器视图
-			plugin.openGlanceManagerWithTab("events");
+		// 检查是否是 Bases 事件
+		const isBasesEvent = event.id.startsWith('bases-');
+		const isDailyNoteEvent = event.eventType === 'dailyNoteEvent';
 
-			// 使用延迟确保事件管理器视图已完全加载
+		if (isBasesEvent) {
+			// 对于 Bases 事件，打开原始笔记
+			openOriginalNoteForBasesEvent();
+		} else if (isDailyNoteEvent && event.sourceFilePath) {
+			plugin.app.workspace.openLinkText(event.sourceFilePath, '', true);
+		} else {
+			// 对于 Config 事件，打开事件管理器
 			setTimeout(() => {
-				// 通过事件总线发送搜索请求
-				EventManagerBus.publish(EVENT_SEARCH_REQUESTED, {
-					searchType: "id",
-					searchValue: event.id,
-				});
-			}, 500);
-		}, 100);
+				// 打开事件管理器视图
+				plugin.openGlanceManagerWithTab("events");
+
+				// 使用延迟确保事件管理器视图已完全加载
+				setTimeout(() => {
+					// 通过事件总线发送搜索请求
+					EventManagerBus.publish(EVENT_SEARCH_REQUESTED, {
+						searchType: "id",
+						searchValue: event.id,
+					});
+				}, 500);
+			}, 100);
+		}
 	};
+
+	// 打开 Bases 事件的原始笔记
+	const openOriginalNoteForBasesEvent = () => {
+		const filePath = event.sourceFilePath || (() => {
+			const idWithoutPrefix = event.id.replace('bases-', '');
+			const mdIndex = idWithoutPrefix.indexOf('.md');
+			return mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
+		})();
+
+		// 在应用中查找文件
+		const file = plugin.app.vault.getAbstractFileByPath(filePath);
+
+		if (file && file instanceof TFile) {
+			// 打开文件
+			plugin.app.workspace.openLinkText(filePath, '', true);
+		} else {
+			// 如果找不到文件，显示通知
+			console.warn(`[Yearly Glance] Could not find file: ${filePath}`);
+		}
+	};
+
+	// 获取位置按钮的显示属性
+	const getLocationButtonProps = () => {
+		const isBasesEvent = event.id.startsWith('bases-');
+		const isDailyNoteEvent = event.eventType === 'dailyNoteEvent';
+		if (isBasesEvent) {
+			return {
+				icon: "📄",
+				title: t("view.eventManager.actions.openOriginalNote"),
+			};
+		}
+		if (isDailyNoteEvent) {
+			return {
+				icon: "📄",
+				title: t("view.eventManager.actions.openOriginalNote"),
+			};
+		}
+		return {
+			icon: "📍",
+			title: t("view.eventManager.actions.location"),
+		};
+	};
+
 	return (
 		<div className="yg-event-tooltip-content">
 			<div
@@ -83,9 +138,9 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 					<button
 						className="location-button"
 						onClick={handleLocationEvent}
-						title={t("view.eventManager.actions.location")}
+						title={getLocationButtonProps().title}
 					>
-						📍
+						{getLocationButtonProps().icon}
 					</button>
 					<button
 						className="edit-button"
@@ -171,6 +226,30 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 							</div>
 						)}
 					</>
+				)}
+
+				{/* basesEvent 特有信息 - 来自笔记 */}
+				{eventType === "basesEvent" && event.id?.startsWith("bases-") && (
+					<div className="tooltip-row">
+						<span className="tooltip-label">
+							{t("view.eventManager.basesEvent.sourceNote")}:
+						</span>
+						<span className="tooltip-value">
+							{event.sourceFilePath || event.id.replace(/^bases-/, "").replace(/-\d{4}-\d{2}-\d{2}$/, "")}
+						</span>
+					</div>
+				)}
+
+				{/* dailyNoteEvent 特有信息 - 来自日记 */}
+				{eventType === "dailyNoteEvent" && event.sourceFilePath && (
+					<div className="tooltip-row">
+						<span className="tooltip-label">
+							{t("view.eventManager.source.dailynote")}:
+						</span>
+						<span className="tooltip-value">
+							{event.sourceFilePath}
+						</span>
+					</div>
 				)}
 
 				{/* 备注信息（所有事件类型共有） */}

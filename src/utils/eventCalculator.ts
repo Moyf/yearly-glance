@@ -120,6 +120,12 @@ export class EventCalculator {
 		let isoDate: string = holiday.eventDate.isoDate;
 		const calendar = holiday.eventDate.calendar;
 
+		// 空值检查
+		if (!isoDate) {
+			console.warn("[YearlyGlance] Holiday isoDate is undefined, skipping update:", holiday);
+			return holiday;
+		}
+
 		// TODO: 完善节气节日的处理
 		if (id === "holi-wblqm") {
 			// 清明节
@@ -138,12 +144,18 @@ export class EventCalculator {
 			yearSelected
 		);
 
+		// 如果 dateArr 为空，返回原始数据，避免覆盖 eventDate.isoDate
+		if (dateArr.length === 0) {
+			console.warn("[YearlyGlance] Holiday dateArr is empty, skipping update:", holiday);
+			return holiday;
+		}
+
 		return {
 			...holiday,
 			dateArr,
 			eventDate: {
 				...holiday.eventDate,
-				isoDate,
+				isoDate: dateArr[0],
 			},
 		};
 	}
@@ -175,6 +187,13 @@ export class EventCalculator {
 	) {
 		const isoDate = customEvent.eventDate.isoDate;
 		const calendar = customEvent.eventDate.calendar;
+
+		// 空值检查
+		if (!isoDate) {
+			console.warn("[YearlyGlance] CustomEvent isoDate is undefined, skipping update:", customEvent);
+			return customEvent;
+		}
+
 		const dateArr = this.calculateDateArr(
 			"customEvent",
 			isoDate,
@@ -183,8 +202,18 @@ export class EventCalculator {
 			customEvent.isRepeat
 		);
 
+		// 如果 dateArr 为空，返回原始数据，避免覆盖 eventDate.isoDate
+		if (dateArr.length === 0) {
+			console.warn("[YearlyGlance] CustomEvent dateArr is empty, skipping update:", customEvent);
+			return customEvent;
+		}
+
 		return {
 			...customEvent,
+			eventDate: {
+				...customEvent.eventDate,
+				isoDate: dateArr[0],
+			},
 			dateArr,
 		};
 	}
@@ -210,6 +239,13 @@ export class EventCalculator {
 	static updateBirthdayInfo(birthday: Birthday, yearSelected: number) {
 		const isoDate = birthday.eventDate.isoDate;
 		const calendar = birthday.eventDate.calendar;
+
+		// 空值检查
+		if (!isoDate) {
+			console.warn("[YearlyGlance] Birthday isoDate is undefined, skipping update:", birthday);
+			return birthday;
+		}
+
 		const dateArr = this.calculateDateArr(
 			"birthday",
 			isoDate,
@@ -217,7 +253,16 @@ export class EventCalculator {
 			yearSelected
 		);
 
-		const { year, month, day } = IsoUtils.parse(isoDate, calendar);
+		// 如果 dateArr 为空（例如 yearSelected < birthYear），返回原始数据，避免覆盖 eventDate.isoDate
+		if (dateArr.length === 0) {
+			console.warn("[YearlyGlance] Birthday dateArr is empty, skipping update:", birthday);
+			return birthday;
+		}
+
+		// 从 userInput.input 解析出生年份，用于年龄和生肖计算
+		// （eventDate.isoDate 可能已经被更新为显示年份）
+		const birthIsoDate = birthday.eventDate.userInput?.input || isoDate;
+		const { year, month, day } = IsoUtils.parse(birthIsoDate, calendar);
 		const todaySolar = Solar.fromDate(new Date());
 
 		// 计算下一次生日，
@@ -327,6 +372,10 @@ export class EventCalculator {
 
 		return {
 			...birthday,
+			eventDate: {
+				...birthday.eventDate,
+				isoDate: dateArr[0],
+			},
 			dateArr,
 			nextBirthday,
 			age,

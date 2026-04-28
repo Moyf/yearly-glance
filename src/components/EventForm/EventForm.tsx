@@ -45,6 +45,7 @@ interface EventFormData {
 	text: string;
 	userInputDate: string;
 	userInputCalendar?: string;
+	duration?: number; // 事件持续天数
 	emoji?: string;
 	color?: string;
 	remark?: string;
@@ -69,11 +70,13 @@ interface EventFormProps {
 	onSave: (
 		event: CustomEvent | Birthday | Holiday,
 		eventType: EventType
-	) => void;
+	) => Promise<void>;
 	onCancel: () => void;
 	props?: {
 		date?: string; // 可选的日期属性
 	};
+	isBasesEvent?: boolean;
+	isDailyNoteEvent?: boolean;
 }
 
 export const EventForm: React.FC<EventFormProps> = ({
@@ -85,6 +88,8 @@ export const EventForm: React.FC<EventFormProps> = ({
 	onSave,
 	onCancel,
 	props = {},
+	isBasesEvent = false,
+	isDailyNoteEvent: isDailyNoteEventProp = false,
 }) => {
 	const today = IsoUtils.getTodayLocalDateString(); // 获取今天的日期字符串（时区安全）
 	const todayString = props.date || today; // 如果传入了特定日期，则使用它，否则使用今天的日期
@@ -100,6 +105,9 @@ export const EventForm: React.FC<EventFormProps> = ({
 	const [currentEventType, setCurrentEventType] =
 		React.useState<EventType>(eventType);
 
+	// isDailyNoteEvent 动态跟随 tab 切换，而非只依赖编辑时的 prop
+	const isDailyNoteEvent = currentEventType === "dailyNoteEvent" || isDailyNoteEventProp;
+
 	// 表单数据状态
 	const [formData, setFormData] = React.useState<EventFormData>(() => {
 		const initialData: EventFormData = {
@@ -107,6 +115,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 			text: event.text || "",
 			userInputDate: event.eventDate?.userInput?.input || todayString,
 			userInputCalendar: event.eventDate?.userInput?.calendar,
+			duration: event.duration || 1, // 默认为1天
 			emoji: event.emoji,
 			color: event.color,
 			remark: event.remark,
@@ -116,7 +125,15 @@ export const EventForm: React.FC<EventFormProps> = ({
 		// 处理不同事件类型的特有属性
 		switch (currentEventType) {
 			case "customEvent":
+			case "basesEvent":
 				initialData.isRepeat = (event as CustomEvent).isRepeat;
+				break;
+			case "dailyNoteEvent":
+				initialData.isRepeat = (event as CustomEvent).isRepeat;
+				// dailyNoteEvent 的默认 emoji 不显示在表单里，只显示从原文提取的
+				if (initialData.emoji === EVENT_TYPE_DEFAULT.dailyNoteEvent.emoji) {
+					initialData.emoji = "";
+				}
 				break;
 			case "holiday":
 				initialData.foundDate = (event as Holiday).foundDate;
@@ -140,6 +157,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 	};
 
 	const [optionalCollapsed, setOptionalCollapsed] = React.useState(false);
+	const [isSaving, setIsSaving] = React.useState(false);
 
 	// 组件挂载时自动聚焦到第一个输入框
 	React.useEffect(() => {
@@ -188,7 +206,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 	};
 
 	// 处理表单提交
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		const completeEvent: CustomEvent | Birthday | Holiday = {
@@ -206,13 +224,14 @@ export const EventForm: React.FC<EventFormProps> = ({
 						| undefined,
 				},
 			},
+			duration: formData.duration || 1, // 添加 duration 字段
 			emoji: formData.emoji,
 			color: formData.color,
 			remark: formData.remark,
 			isHidden: formData.isHidden,
 
 			// 根据当前事件类型添加特有字段
-			...(currentEventType === "customEvent"
+			...(currentEventType === "customEvent" || currentEventType === "basesEvent" || currentEventType === "dailyNoteEvent"
 				? { isRepeat: formData.isRepeat }
 				: {}),
 
@@ -221,7 +240,14 @@ export const EventForm: React.FC<EventFormProps> = ({
 				: {}),
 		};
 
-		onSave(completeEvent, currentEventType);
+		setIsSaving(true);
+		try {
+			await onSave(completeEvent, currentEventType);
+			// 成功：Modal 会调用 this.close()，isSaving 状态无需重置
+		} catch (error) {
+			// 失败：Modal 已显示错误通知，这里只需重新启用按钮
+			setIsSaving(false);
+		}
 	};
 
 	return (
@@ -245,12 +271,23 @@ export const EventForm: React.FC<EventFormProps> = ({
 			>
 				{/* 表单标题 */}
 				<h3 className="yg-event-form-title">
-					{isEditing
-						? t("view.eventManager.form.edit")
-						: t("view.eventManager.form.add")}
-					{t(
-						`view.eventManager.${currentEventType}.name` as TranslationKeys
-					)}
+					{isDailyNoteEvent
+						? isEditing
+							? t("view.eventManager.form.editDailyNoteEvent")
+							: t("view.eventManager.form.addDailyNoteEvent")
+						: isBasesEvent
+						? isEditing
+							? t("view.eventManager.form.editBasesEvent")
+							: t("view.eventManager.form.addBasesEvent")
+						: isEditing
+						? t("view.eventManager.form.edit") +
+						  t(
+								`view.eventManager.${currentEventType}.name` as TranslationKeys
+						  )
+						: t("view.eventManager.form.add") +
+						  t(
+								`view.eventManager.${currentEventType}.name` as TranslationKeys
+						  )}
 				</h3>
 
 				{/* 基础字段 */}
@@ -268,6 +305,24 @@ export const EventForm: React.FC<EventFormProps> = ({
 							handleFieldChange("text", e.target.value)
 						}
 						required
+					/>
+				</div>
+				<div className="form-group">
+					<label>
+						{t("view.eventManager.form.eventEmoji")}
+						<Tooltip
+							text={t("view.eventManager.help.eventEmoji")}
+						/>
+					</label>
+					<input
+						type="text"
+						value={formData.emoji || ""}
+						onChange={(e) =>
+							handleFieldChange("emoji", e.target.value)
+						}
+						placeholder={
+							EVENT_TYPE_DEFAULT[currentEventType].emoji
+						}
 					/>
 				</div>
 				<div className="form-group">
@@ -291,11 +346,11 @@ export const EventForm: React.FC<EventFormProps> = ({
 						required
 					/>
 				</div>
-				<div className="form-group">
+				<div className={`form-group ${isDailyNoteEvent ? "yg-field-disabled" : ""}`}>
 					<label>
 						{t("view.eventManager.form.eventDateType")}
 						<Tooltip
-							text={t("view.eventManager.help.eventDateType")}
+							text={isDailyNoteEvent ? t("view.eventManager.form.dailyNoteDisabledField") : t("view.eventManager.help.eventDateType")}
 						/>
 					</label>
 					<Select
@@ -311,7 +366,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 				<div
 					className={`yg-event-form-optional ${
 						optionalCollapsed ? "collapsed" : ""
-					}`}
+					} ${isDailyNoteEvent ? "yg-field-disabled" : ""}`}
 				>
 					<h5
 						onClick={() => setOptionalCollapsed(!optionalCollapsed)}
@@ -322,22 +377,20 @@ export const EventForm: React.FC<EventFormProps> = ({
 
 					<div className="form-group">
 						<label>
-							{t("view.eventManager.form.eventEmoji")}
-							<Tooltip
-								text={t("view.eventManager.help.eventEmoji")}
-							/>
+							{t("view.eventManager.form.eventDuration")}
+							<Tooltip text={t("view.eventManager.help.eventDuration")} />
 						</label>
 						<input
-							type="text"
-							value={formData.emoji || ""}
+							type="number"
+							min="1"
+							max="365"
+							value={formData.duration || 1}
 							onChange={(e) =>
-								handleFieldChange("emoji", e.target.value)
-							}
-							placeholder={
-								EVENT_TYPE_DEFAULT[currentEventType].emoji
+								handleFieldChange("duration", parseInt(e.target.value) || 1)
 							}
 						/>
 					</div>
+
 					<div className="form-group">
 						<label>
 							{t("view.eventManager.form.eventColor")}
@@ -428,16 +481,74 @@ export const EventForm: React.FC<EventFormProps> = ({
 							rows={3}
 						/>
 					</div>
+					{currentEventType === 'basesEvent' && (
+						<div className="form-group bases-event-hint">
+							<div className="yg-bases-event-hint-content">
+								{isEditing ? (
+									// 编辑模式：显示来源笔记
+									<>
+										<b>{t("view.eventManager.help.basesEventEdit.label")}：</b>
+										{t("view.eventManager.help.basesEventEdit.notePrefix")} <i>{
+											event.id?.replace(/^bases-/, "")?.replace(/-\d{4}-\d{2}-\d{2}$/, "") || ""
+										}</i>
+										<br />
+										{t("view.eventManager.help.basesEventEdit.syncText")}
+									</>
+								) : (
+									// 新增模式
+									<>
+										<b>{t("view.eventManager.help.basesEventCreate.label")}：</b>
+										{formData.text ? (
+											// 有事件名：显示完整路径
+											<>
+												{t("view.eventManager.help.basesEventCreate.textWithName")}<br />
+												<i>{
+													`${settings.config.defaultBasesEventPath || ''}/${formData.text}.md`
+												}</i>
+											</>
+										) : (
+											// 无事件名：显示文件夹
+											t("view.eventManager.help.basesEventCreate.text", {
+												path: settings.config.defaultBasesEventPath || '/'
+											})
+										)}
+									</>
+								)}
+							</div>
+						</div>
+					)}
+					{currentEventType === 'dailyNoteEvent' && (
+						<div className="form-group bases-event-hint">
+							<div className="yg-bases-event-hint-content">
+								{isEditing ? (
+									<>
+										<b>{t("view.eventManager.help.dailyNoteEventEdit.label")}：</b>
+										{t("view.eventManager.help.dailyNoteEventEdit.text")}
+									</>
+								) : (
+									<>
+										<b>{t("view.eventManager.help.dailyNoteEventCreate.label")}：</b>
+										{t("view.eventManager.help.dailyNoteEventCreate.text")}
+									</>
+								)}
+							</div>
+						</div>
+					)}
 				</div>
 
 				{/* 操作按钮 */}
 				<div className="form-actions">
-					<button type="submit" className="save-button">
-						{t("view.eventManager.form.save")}
+					<button
+						type="submit"
+						className={`save-button ${isSaving ? "is-saving" : ""}`}
+						disabled={isSaving}
+					>
+						{isSaving ? t("view.eventManager.form.saving") : t("view.eventManager.form.save")}
 					</button>
 					<button
 						type="button"
 						className="cancel-button"
+						disabled={isSaving}
 						onClick={onCancel}
 					>
 						{t("view.eventManager.form.cancel")}

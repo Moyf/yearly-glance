@@ -1,4 +1,4 @@
-import { Notice, Plugin } from "obsidian";
+import { normalizePath, Notice, Plugin, TFile, TFolder } from "obsidian";
 import { DEFAULT_CONFIG, YearlyGlanceConfig } from "./type/Config";
 import YearlyGlanceSettingsTab from "./components/Settings/SettingsTab";
 import {
@@ -10,17 +10,25 @@ import {
 	GlanceManagerView,
 	VIEW_TYPE_GLANCE_MANAGER,
 } from "./views/GlanceManagerView";
-import { Birthday, CustomEvent, EventType, Holiday } from "@/src/type/Events";
+import {
+	VIEW_TYPE_YEARLY_GLANCE_BASES,
+	YearlyGlanceBasesView,
+} from "./views/YearlyGlanceBasesView";
+import { Birthday, CustomEvent, EventSource, EventType, Holiday } from "@/src/type/Events";
 import {
 	EventFormModal,
 	EventFormModalProps,
 } from "./components/EventForm/EventFormModal";
 import { YearlyGlanceBus } from "./hooks/useYearlyGlanceConfig";
 import { t } from "./i18n/i18n";
+import { buildPropConfig, syncEventToFrontmatter } from "./service/BasesEventFrontmatterService";
+import { DailyNoteService } from "./service/DailyNoteService";
 import { MigrateData } from "./utils/migrateData";
+import { setDebugLoggerEnabled } from "./utils/logger";
 import { EventCalculator } from "./utils/eventCalculator";
 import { IsoUtils } from "./utils/isoUtils";
 import { generateEventId } from "./utils/uniqueEventId";
+import { CalendarEvent } from "./type/CalendarEvent";
 
 export default class YearlyGlancePlugin extends Plugin {
 	settings: YearlyGlanceConfig;
@@ -31,6 +39,7 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 注册视图
 		this.registerLeafViews();
+		this.registerBasesViews();
 
 		// 注册命令
 		this.registerCommands();
@@ -55,6 +64,7 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 更新所有事件的dateArr字段
 		await this.updateAllEventsDateObj();
+		setDebugLoggerEnabled(() => this.settings.config.showDebugInfo);
 		// 保存设置，并通知其他组件
 		await this.saveSettings();
 	}
@@ -86,7 +96,7 @@ export default class YearlyGlancePlugin extends Plugin {
 				}
 			}
 		} catch (error) {
-			console.error("数据验证失败，使用默认配置", error);
+			console.error("[YearlyGlance] Failed to validate settings, using default settings", error);
 		}
 
 		return validatedSettings;
@@ -94,7 +104,8 @@ export default class YearlyGlancePlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-		YearlyGlanceBus.publish();
+		// 发布事件，通知所有订阅者配置已更新
+		YearlyGlanceBus.publish('all');
 	}
 
 	private registerLeafViews() {
@@ -105,6 +116,103 @@ export default class YearlyGlancePlugin extends Plugin {
 		this.registerView(VIEW_TYPE_GLANCE_MANAGER, (leaf) => {
 			return new GlanceManagerView(leaf, this);
 		});
+	}
+
+	private registerBasesViews() {
+
+		this.registerBasesView(VIEW_TYPE_YEARLY_GLANCE_BASES, {
+			name: 'Yearly Glance',
+			icon: 'telescope',
+			factory: (controller, containerEl) => {
+				return new YearlyGlanceBasesView(controller, containerEl, this);
+			},
+			options: () => {
+				return [
+					{
+						type: 'toggle',
+						displayName: t("view.basesView.options.inheritPluginData"),
+						key: 'inheritPluginData',
+						default: false
+					},
+					{
+						type: 'group',
+						displayName: t("view.basesView.options.properties"),
+						items: [
+							{
+								type: 'property',
+								displayName: t("view.basesView.options.propTitle"),
+								key: 'propTitle',
+								filter: prop => !prop.startsWith('file.'),
+								placeholder: 'Property',
+							},
+							{
+								type: 'property',
+								displayName: t("view.basesView.options.propDate"),
+								key: 'propDate',
+								filter: prop => !prop.startsWith('file.'),
+								placeholder: 'Property',
+							},
+							{
+								type: 'property',
+								displayName: t("view.basesView.options.propDuration"),
+								key: 'propDuration',
+								filter: prop => !prop.startsWith('file.'),
+								placeholder: 'Property',
+							},
+						]
+					},
+					{
+						type: 'group',
+						displayName: t("view.basesView.options.extendedProperties"),
+						items: [
+							{
+								type: 'property',
+								displayName: t("view.basesView.options.propIcon"),
+								key: 'propIcon',
+								filter: prop => !prop.startsWith('file.'),
+								placeholder: 'Property',
+							},
+							{
+								type: 'property',
+								displayName: t("view.basesView.options.propColor"),
+								key: 'propColor',
+								filter: prop => !prop.startsWith('file.'),
+								placeholder: 'Property',
+							},
+							{
+								type: 'property',
+								displayName: t("view.basesView.options.propDescription"),
+								key: 'propDescription',
+								filter: prop => !prop.startsWith('file.'),
+								placeholder: 'Property',
+							},
+						]
+					},
+					{
+						type: 'group',
+						displayName: t("view.basesView.options.display"),
+						items: [
+							{
+								type: 'toggle',
+								displayName: t("view.basesView.options.limitHeight"),
+								key: 'limitHeight',
+								default: false,
+							},
+							{
+								type: 'slider',
+								displayName: t("view.basesView.options.embeddedHeight"),
+								key: 'embeddedHeight',
+								min: 400,
+								max: 1200,
+								step: 50,
+								default: 600,
+							},
+						]
+					}
+				];
+			}
+		});
+
 	}
 
 	private registerCommands() {
@@ -163,6 +271,8 @@ export default class YearlyGlancePlugin extends Plugin {
 		if (newConfig.year && newConfig.year !== oldYear) {
 			await this.updateAllEventsDateObj();
 		}
+
+		setDebugLoggerEnabled(() => this.settings.config.showDebugInfo);
 
 		await this.saveSettings();
 	}
@@ -261,6 +371,168 @@ export default class YearlyGlancePlugin extends Plugin {
 		).open();
 	}
 
+	// 同步 Bases 事件到 frontmatter
+	async syncBasesEventToFrontmatter(event: CalendarEvent): Promise<void> {
+		if (!event.id.startsWith('bases-')) {
+			return;
+		}
+
+		const filePath = event.sourceFilePath || (() => {
+			const idWithoutPrefix = event.id.replace('bases-', '');
+			const mdIndex = idWithoutPrefix.indexOf('.md');
+			return mdIndex > 0 ? idWithoutPrefix.substring(0, mdIndex + 3) : idWithoutPrefix;
+		})();
+
+		const file = this.app.vault.getAbstractFileByPath(filePath);
+		if (!file || !(file instanceof TFile)) {
+			console.warn('[YearlyGlance] syncBasesEventToFrontmatter: file not found:', filePath);
+			return;
+		}
+
+		const eventToSync = { ...event };
+		if (
+			eventToSync.remark &&
+			typeof eventToSync.remark === 'string' &&
+			eventToSync.remark.startsWith('From Bases:')
+		) {
+			eventToSync.remark = '';
+		}
+
+		const propConfig = buildPropConfig(this.settings.config);
+
+		try {
+			await syncEventToFrontmatter(this.app, file, eventToSync, propConfig);
+			YearlyGlanceBus.publish('bases-data');
+		} catch (error) {
+			console.error('[YearlyGlance] Failed to sync frontmatter:', error);
+		}
+	}
+
+	async createDailyNoteEvent(event: CalendarEvent): Promise<void> {
+		const settings = DailyNoteService.getDailyNoteSettings(
+			this.app,
+			this.settings.config.dailyNoteSource
+		);
+		if (!settings) {
+			new Notice("Daily note plugin is not available");
+			return;
+		}
+
+		const isoDate = event.eventDate.isoDate;
+		if (!isoDate) return;
+
+		const momentFn = (window as typeof window & {
+			moment?: (input: string, format: string) => { format(pattern: string): string };
+		}).moment;
+		if (!momentFn) return;
+
+		const formattedName = momentFn(isoDate, "YYYY-MM-DD").format(settings.format);
+		const folder = settings.folder.replace(/\/+$/, "");
+		const filePath = normalizePath(
+			folder ? `${folder}/${formattedName}.md` : `${formattedName}.md`
+		);
+
+		let file = this.app.vault.getAbstractFileByPath(filePath);
+		if (!file) {
+			if (folder) {
+				const folderExists = this.app.vault.getAbstractFileByPath(folder);
+				if (!folderExists) {
+					await this.app.vault.createFolder(folder);
+				}
+			}
+
+			await this.app.vault.create(filePath, "");
+			file = this.app.vault.getAbstractFileByPath(filePath);
+		}
+
+		if (!file) {
+			new Notice("Failed to create daily note");
+			return;
+		}
+
+		const eventProp = this.settings.config.dailyNoteEventProp;
+		await DailyNoteService.addEventToDaily(this.app, filePath, eventProp, event.text);
+
+		YearlyGlanceBus.publish('dailynote-data');
+		new Notice(`Event added to ${formattedName}`);
+	}
+
+	async syncDailyNoteEvent(event: CalendarEvent, oldTitle?: string): Promise<void> {
+		const filePath = event.sourceFilePath || DailyNoteService.getFilePathFromEvent(event);
+		if (!filePath) return;
+
+		const eventProp = this.settings.config.dailyNoteEventProp;
+
+		if (oldTitle && oldTitle !== event.text) {
+			await DailyNoteService.updateEventTitle(
+				this.app,
+				filePath,
+				eventProp,
+				oldTitle,
+				event.text
+			);
+		}
+
+		YearlyGlanceBus.publish('dailynote-data');
+	}
+
+	/**
+	 * 为 Bases 事件创建新笔记文件
+	 * @param event 事件对象
+	 * @returns 创建的文件路径
+	 */
+	async createBasesEventNote(event: CustomEvent): Promise<string> {
+		const config = this.settings.config;
+		const defaultPath = config.defaultBasesEventPath?.trim();
+		const propConfig = buildPropConfig(config);
+
+		// 2. 确定文件夹路径
+		let folderPath = "";
+		let pathWarning = false;
+
+		if (defaultPath) {
+			const folder = this.app.vault.getAbstractFileByPath(defaultPath);
+			if (folder instanceof TFolder) {
+				folderPath = defaultPath;
+			} else {
+				pathWarning = true;
+			}
+		}
+
+		// 3. 生成文件名（使用事件标题）
+		const fileName = `${event.text}.md`;
+		const filePath = folderPath ? normalizePath(`${folderPath}/${fileName}`) : fileName;
+
+		// 4. 创建文件
+		await this.app.vault.create(filePath, "");
+
+		// 5. 写入 frontmatter（使用自定义属性名）
+		const file = this.app.vault.getAbstractFileByPath(filePath) as TFile;
+		await this.app.fileManager.processFrontMatter(file, (fm) => {
+			fm[propConfig.titleProp] = event.text;
+			fm[propConfig.dateProp] = event.eventDate.isoDate;
+			if (event.duration && event.duration > 1) {
+				fm[propConfig.durationProp] = event.duration;
+			}
+			if (event.emoji) {
+				fm[propConfig.iconProp] = event.emoji;
+			}
+			if (event.color) {
+				fm[propConfig.colorProp] = event.color;
+			}
+			if (event.remark) {
+				fm[propConfig.descriptionProp] = event.remark;
+			}
+		});
+
+		// 6. 如果路径有问题，显示 Notice
+		if (pathWarning) {
+			new Notice(t("notice.setDefaultBasesEventPath"));
+		}
+
+		return filePath;
+	}
+
 	// 重载插件
 	public async reloadPlugin() {
 		try {
@@ -268,9 +540,9 @@ export default class YearlyGlancePlugin extends Plugin {
 			await this.app.plugins.disablePluginAndSave("yearly-glance");
 			// @ts-ignore
 			await this.app.plugins.enablePluginAndSave("yearly-glance");
-			new Notice("[yearly-glance] Reloaded 插件已重载");
+			new Notice("[Yearly Glance] Reloaded successfully");
 		} catch (error) {
-			console.error("[yearly-glance] Fail to reload 插件重载失败", error);
+			console.error("[Yearly Glance] Fail to reload", error);
 		}
 	}
 
@@ -281,17 +553,29 @@ export default class YearlyGlancePlugin extends Plugin {
 			if (!birthday.id) {
 				birthday.id = generateEventId("birthday");
 			}
+			// 确保 config 事件有 eventSource
+			if (!birthday.eventSource) {
+				birthday.eventSource = EventSource.CONFIG;
+			}
 		});
 
 		events.holidays.forEach((holiday) => {
 			if (!holiday.id) {
 				holiday.id = generateEventId("holiday");
 			}
+			// 确保 config 事件有 eventSource
+			if (!holiday.eventSource) {
+				holiday.eventSource = EventSource.CONFIG;
+			}
 		});
 
 		events.customEvents.forEach((customEvent) => {
 			if (!customEvent.id) {
 				customEvent.id = generateEventId("customEvent");
+			}
+			// 确保 config 事件有 eventSource
+			if (!customEvent.eventSource) {
+				customEvent.eventSource = EventSource.CONFIG;
 			}
 		});
 
@@ -364,6 +648,7 @@ export default class YearlyGlancePlugin extends Plugin {
 				color: "#73d13d",
 				isRepeat: false,
 				remark: t("data.sampleEvent.remark"),
+				eventSource: EventSource.CONFIG,
 			};
 
 			// 添加到自定义事件列表

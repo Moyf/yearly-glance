@@ -172,6 +172,10 @@ const translations: BaseMessage = {
 				desc: "The frontmatter property name that contains events list in daily notes",
 				placeholder: "Default: events",
 			},
+			dailyNoteShowEmoji: {
+				name: "Show emoji prefix",
+				desc: "Display emoji prefix from daily note event text (e.g. 🧩 in '🧩 Dev work')",
+			},
 			dailyNoteWarning: {
 				name: "",
 				desc: "",

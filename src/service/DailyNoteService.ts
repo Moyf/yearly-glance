@@ -11,6 +11,8 @@ type DailyNoteSettings = {
 type MomentLikeResult = {
 	isValid(): boolean;
 	format(pattern: string): string;
+	isLeapYear(): boolean;
+	add(amount: number, unit: string): MomentLikeResult;
 };
 
 type MomentLike = (
@@ -120,12 +122,15 @@ export class DailyNoteService {
 			return null;
 		}
 
+		// format 可能包含目录部分（如 "YYYY-MM/YYYY-MM-DD"），只取最后一段作为文件名 format
+		const filenameFormat = format.includes('/') ? format.split('/').pop()! : format;
+
 		const moment = momentImpl ?? getMomentFromWindow();
 		if (!moment) {
 			return null;
 		}
 
-		const parsedDate = moment(basename, format, true);
+		const parsedDate = moment(basename, filenameFormat, true);
 		if (!parsedDate.isValid()) {
 			return null;
 		}
@@ -272,36 +277,58 @@ export class DailyNoteService {
 		app: App,
 		year: number,
 		source: string,
-		eventProp: string
+		eventProp: string,
+		showEmoji = true,
+		momentImpl?: MomentLike
 	): Promise<CalendarEvent[]> {
 		const settings = DailyNoteService.getDailyNoteSettings(app, source);
 		if (!settings) {
 			return [];
 		}
 
-		const normalizedFolder = settings.folder.replace(/\/+$/, '');
-		const files = app.vault.getMarkdownFiles();
-		const filteredFiles = normalizedFolder
-			? files.filter(
-				(file) => file.path === normalizedFolder || file.path.startsWith(`${normalizedFolder}/`)
-			  )
-			: files;
+		const moment = momentImpl ?? getMomentFromWindow();
+		if (!moment) {
+			return [];
+		}
 
+		const normalizedFolder = settings.folder.replace(/\/+$/, '');
 		const events: CalendarEvent[] = [];
 
-		for (const file of filteredFiles) {
-			const isoDate = DailyNoteService.extractDateFromFilename(file.name, settings.format);
-			if (!isoDate || !isoDate.startsWith(`${year}-`)) {
+		// 直接构造该年份每一天的文件路径，用 getAbstractFileByPath 查找
+		// 365 次 hash lookup 比遍历全量文件列表快得多
+		const startDate = moment(`${year}-01-01`, 'YYYY-MM-DD', true);
+		if (!startDate.isValid()) return [];
+
+		const daysInYear = startDate.isLeapYear() ? 366 : 365;
+
+		for (let dayOffset = 0; dayOffset < daysInYear; dayOffset++) {
+			const currentDate = moment(`${year}-01-01`, 'YYYY-MM-DD', true);
+			// moment 的 add 会修改原对象，所以每次重新创建
+			const date = dayOffset === 0 ? currentDate : currentDate.add(dayOffset, 'days');
+
+			const formattedPath = date.format(settings.format);
+			const filePath = normalizedFolder
+				? `${normalizedFolder}/${formattedPath}.md`
+				: `${formattedPath}.md`;
+
+			const file = app.vault.getAbstractFileByPath(filePath);
+			if (!file || !('basename' in file)) {
 				continue;
 			}
 
-			const frontmatter = DailyNoteService.getFrontmatter(app, file);
+			const isoDate = date.format('YYYY-MM-DD');
+			const frontmatter = DailyNoteService.getFrontmatter(app, file as TFile);
 			const titles = DailyNoteService.parseEventsFromFrontmatter(frontmatter, eventProp);
 
 			titles.forEach((title, index) => {
-				events.push(
-					DailyNoteService.buildCalendarEvent(title, isoDate, index, file.path)
-				);
+				const event = DailyNoteService.buildCalendarEvent(title, isoDate, index, filePath);
+				if (!showEmoji) {
+					// 去掉文本开头的 emoji 及其后的空格
+					const stripped = title.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*/u, '');
+					event.text = stripped || title; // 如果去掉后为空则保留原文
+					event.emoji = ''; // 不显示独立的 emoji
+				}
+				events.push(event);
 			});
 		}
 

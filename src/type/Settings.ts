@@ -133,6 +133,7 @@ export interface YearlyGlanceSettings {
 	showDailyNoteEvents: boolean; // 是否显示日记事件
 	dailyNoteSource: "daily-notes" | "periodic-notes"; // 日记来源插件
 	dailyNoteEventProp: string; // 日记事件属性名
+	dailyNoteShowEmoji: boolean; // 是否显示日记事件的 emoji 前缀
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -174,4 +175,5 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	showDailyNoteEvents: false, // 默认不显示日记事件（需要用户手动启用）
 	dailyNoteSource: "daily-notes", // 默认使用核心日记插件
 	dailyNoteEventProp: "events", // 默认事件属性名
+	dailyNoteShowEmoji: true, // 默认显示 emoji 前缀
 };

@@ -146,21 +146,36 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 
 		const loadDailyNoteEvents = async () => {
 			try {
+				const settings = DailyNoteService.getDailyNoteSettings(plugin.app, config.dailyNoteSource);
+				console.log("[YearlyGlance][DailyNote] Loading events...", {
+					source: config.dailyNoteSource,
+					eventProp: config.dailyNoteEventProp,
+					year,
+					pluginSettings: settings,
+				});
+
 				const events = await DailyNoteService.loadEventsForYear(
 					plugin.app,
 					year,
 					config.dailyNoteSource,
-					config.dailyNoteEventProp
+					config.dailyNoteEventProp,
+					config.dailyNoteShowEmoji
 				);
+
+				console.log("[YearlyGlance][DailyNote] Loaded events:", {
+					count: events.length,
+					events: events.map(e => ({ id: e.id, text: e.text, date: e.eventDate.isoDate })),
+				});
+
 				setDailyNoteEvents(events);
 			} catch (error) {
-				console.error("[YearlyGlance] Failed to load daily note events:", error);
+				console.error("[YearlyGlance][DailyNote] Failed to load:", error);
 				setDailyNoteEvents([]);
 			}
 		};
 
 		loadDailyNoteEvents();
-	}, [externalEvents, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, year, plugin.app]);
+	}, [externalEvents, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, config.dailyNoteShowEmoji, year, plugin.app]);
 
 	// 处理所有事件
 	const allEvents = React.useMemo(() => {

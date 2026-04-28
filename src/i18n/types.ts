@@ -107,6 +107,7 @@ export type BaseMessage = {
 			dailyNoteEventProp: SettingsItem<{
 				placeholder: string;
 			}>;
+			dailyNoteShowEmoji: IBaseSettingsItem;
 			dailyNoteWarning: SettingsItem<{
 				noPlugin: string;
 				noDailyNotes: string;

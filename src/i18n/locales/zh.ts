@@ -172,6 +172,10 @@ const translations: BaseMessage = {
 				desc: "日记笔记 frontmatter 中包含事件列表的属性名",
 				placeholder: "默认：events",
 			},
+			dailyNoteShowEmoji: {
+				name: "显示 emoji 前缀",
+				desc: "显示日记事件文本中的 emoji 前缀（如 '🧩 开发插件' 中的 🧩）",
+			},
 			dailyNoteWarning: {
 				name: "",
 				desc: "",

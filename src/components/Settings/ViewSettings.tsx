@@ -306,6 +306,19 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						}
 					/>
 				</SettingsItem>
+
+				{/* 是否显示 emoji 前缀 */}
+				<SettingsItem
+					name={t("setting.general.dailyNoteShowEmoji.name")}
+					desc={t("setting.general.dailyNoteShowEmoji.desc")}
+				>
+					<Toggle
+						checked={config.dailyNoteShowEmoji}
+						onChange={(value) =>
+							handleUpdateConfig({ dailyNoteShowEmoji: value })
+						}
+					/>
+				</SettingsItem>
 			</SettingsBlock>
 
 			{/* 布局相关设置 */}

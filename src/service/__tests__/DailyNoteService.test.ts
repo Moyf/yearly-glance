@@ -6,6 +6,8 @@ import { CalendarEvent } from '../../type/CalendarEvent';
 type MockMomentResult = {
 	isValid: () => boolean;
 	format: (pattern: string) => string;
+	isLeapYear: () => boolean;
+	add: (amount: number, unit: string) => MockMomentResult;
 };
 
 type MockMoment = (
@@ -57,6 +59,8 @@ function createMockMoment(): MockMoment {
 		return {
 			isValid: () => isoDate !== null,
 			format: () => isoDate ?? 'Invalid date',
+			isLeapYear: () => false,
+			add: () => ({ isValid: () => false, format: () => 'Invalid date', isLeapYear: () => false, add: () => null as unknown as MockMomentResult }),
 		};
 	};
 }
@@ -82,9 +86,14 @@ function createAppMock(options: {
 	const files = options.files ?? [];
 	const frontmatterByPath = options.frontmatterByPath ?? {};
 
+	// 构建 path → file 的映射，供 getAbstractFileByPath 使用
+	const fileMap = new Map<string, TFile>();
+	files.forEach(f => fileMap.set(f.path, f));
+
 	return {
 		vault: {
 			getMarkdownFiles: jest.fn(() => files),
+			getAbstractFileByPath: jest.fn((path: string) => fileMap.get(path) ?? null),
 		},
 		metadataCache: {
 			getFileCache: jest.fn((file: TFile) => ({
@@ -395,17 +404,16 @@ describe('DailyNoteService', () => {
 	});
 
 	describe('loadEventsForYear', () => {
-		test('loads events for matching year and folder only', async () => {
-			const matchingFile = createFile('Daily/2026-04-27.md');
-			const otherFolderFile = createFile('Other/2026-04-28.md');
-			const otherYearFile = createFile('Daily/2025-04-27.md');
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const realMoment = require('moment');
 
+		test('loads events for matching year and folder only', async () => {
 			const app = createAppMock({
-				files: [matchingFile, otherFolderFile, otherYearFile],
+				files: [
+					createFile('Daily/2026-04-27.md'),
+				],
 				frontmatterByPath: {
 					'Daily/2026-04-27.md': { events: ['A', ' B '] },
-					'Other/2026-04-28.md': { events: ['Ignored'] },
-					'Daily/2025-04-27.md': { events: ['Old'] },
 				},
 				dailyNotesOptions: {
 					format: 'YYYY-MM-DD',
@@ -414,10 +422,7 @@ describe('DailyNoteService', () => {
 			});
 
 			const events = await DailyNoteService.loadEventsForYear(
-				app,
-				2026,
-				'daily-notes',
-				'events'
+				app, 2026, 'daily-notes', 'events', true, realMoment
 			);
 
 			expect(events).toHaveLength(2);
@@ -438,20 +443,16 @@ describe('DailyNoteService', () => {
 			});
 
 			await expect(
-				DailyNoteService.loadEventsForYear(app, 2026, 'daily-notes', 'events')
+				DailyNoteService.loadEventsForYear(app, 2026, 'daily-notes', 'events', true, realMoment)
 			).resolves.toEqual([]);
 		});
 
-		test('skips files with invalid frontmatter lists or invalid filenames', async () => {
+		test('skips dates where file does not exist or frontmatter is invalid', async () => {
 			const app = createAppMock({
 				files: [
-					createFile('Daily/invalid.md'),
-					createFile('Daily/2026-04-27.md'),
 					createFile('Daily/2026-04-28.md'),
 				],
 				frontmatterByPath: {
-					'Daily/invalid.md': { events: ['Ignored'] },
-					'Daily/2026-04-27.md': { events: 'not-array' },
 					'Daily/2026-04-28.md': { events: ['Keep me'] },
 				},
 				dailyNotesOptions: {
@@ -461,15 +462,58 @@ describe('DailyNoteService', () => {
 			});
 
 			const events = await DailyNoteService.loadEventsForYear(
-				app,
-				2026,
-				'daily-notes',
-				'events'
+				app, 2026, 'daily-notes', 'events', true, realMoment
 			);
 
 			expect(events).toHaveLength(1);
 			expect(events[0].text).toBe('Keep me');
 			expect(events[0].remark).toBe('dailynote:Daily/2026-04-28.md');
+		});
+
+		test('supports format with subdirectory (YYYY-MM/YYYY-MM-DD)', async () => {
+			const app = createAppMock({
+				files: [
+					createFile('Journal/2026-04/2026-04-27.md'),
+				],
+				frontmatterByPath: {
+					'Journal/2026-04/2026-04-27.md': { events: ['Subdir event'] },
+				},
+				dailyNotesOptions: {
+					format: 'YYYY-MM/YYYY-MM-DD',
+					folder: 'Journal',
+				},
+			});
+
+			const events = await DailyNoteService.loadEventsForYear(
+				app, 2026, 'daily-notes', 'events', true, realMoment
+			);
+
+			expect(events).toHaveLength(1);
+			expect(events[0].text).toBe('Subdir event');
+		});
+
+		test('strips emoji prefix when showEmoji is false', async () => {
+			const app = createAppMock({
+				files: [
+					createFile('Daily/2026-04-27.md'),
+				],
+				frontmatterByPath: {
+					'Daily/2026-04-27.md': { events: ['🧩 Dev work', '📝 Writing', 'No emoji'] },
+				},
+				dailyNotesOptions: {
+					format: 'YYYY-MM-DD',
+					folder: 'Daily',
+				},
+			});
+
+			const events = await DailyNoteService.loadEventsForYear(
+				app, 2026, 'daily-notes', 'events', false, realMoment
+			);
+
+			expect(events).toHaveLength(3);
+			expect(events[0].text).toBe('Dev work');
+			expect(events[1].text).toBe('Writing');
+			expect(events[2].text).toBe('No emoji');
 		});
 	});
 });

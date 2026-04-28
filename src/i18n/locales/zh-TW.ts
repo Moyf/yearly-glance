@@ -172,6 +172,10 @@ const translations: BaseMessage = {
 				desc: "日記筆記 frontmatter 中包含事件列表的屬性名",
 				placeholder: "預設：events",
 			},
+			dailyNoteShowEmoji: {
+				name: "顯示 emoji 前綴",
+				desc: "顯示日記事件文字中的 emoji 前綴（如 '🧩 開發外掛' 中的 🧩）",
+			},
 			dailyNoteWarning: {
 				name: "",
 				desc: "",

@@ -212,8 +212,13 @@ export class EventFormModal extends Modal {
 					);
 					(event as CustomEvent).eventSource = EventSource.DAILYNOTE;
 
-					// 编辑模式：写回日记笔记的 frontmatter
+					// 拼合 emoji + text 作为写入 frontmatter 的完整文本
+					const newEmoji = event.emoji || "";
+					const newText = event.text || "";
+					const fullTitle = newEmoji ? `${newEmoji} ${newText}` : newText;
+
 					if (this.isEditing && this.editingEvent) {
+						// 编辑模式：写回日记笔记的 frontmatter
 						const calendarEvent: CalendarEvent = {
 							id: event.id,
 							text: event.text,
@@ -225,25 +230,31 @@ export class EventFormModal extends Modal {
 						};
 						const filePath = DailyNoteService.getFilePathFromEvent(calendarEvent);
 						if (filePath) {
-							// 拼合原始格式：emoji + 空格 + text（写回 frontmatter）
 							const oldEmoji = this.editingEvent.emoji || "";
 							const oldText = this.editingEvent.text || "";
 							const oldTitle = oldEmoji ? `${oldEmoji} ${oldText}` : oldText;
 
-							const newEmoji = event.emoji || "";
-							const newText = event.text || "";
-							const newTitle = newEmoji ? `${newEmoji} ${newText}` : newText;
-
-							if (oldTitle !== newTitle) {
+							if (oldTitle !== fullTitle) {
 								await DailyNoteService.updateEventTitle(
 									this.app,
 									filePath,
 									this.plugin.getSettings().config.dailyNoteEventProp,
 									oldTitle,
-									newTitle
+									fullTitle
 								);
 							}
 						}
+					} else {
+						// 创建模式：创建/追加到对应的 DailyNote
+						const createEvent: CalendarEvent = {
+							id: "",
+							text: fullTitle,
+							eventDate: event.eventDate,
+							dateArr: event.dateArr,
+							eventType: eventType,
+							eventSource: EventSource.DAILYNOTE,
+						};
+						await this.plugin.createDailyNoteEvent(createEvent);
 					}
 					// 日记事件不存入插件配置数据，关闭 modal 并刷新即可
 					break;

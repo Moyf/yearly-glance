@@ -251,13 +251,6 @@ export const EventItem: React.FC<EventItemProps> = ({
 					</span>
 				</div>
 
-				{event.remark && (
-					<div className="event-remark">
-						<span className="remark-icon">💬</span>
-						<span>{event.remark}</span>
-					</div>
-				)}
-
 				{event.eventSource === EventSource.BASES && (
 					<div className="event-source-info">
 						<span className="source-icon">📄</span>
@@ -268,6 +261,13 @@ export const EventItem: React.FC<EventItemProps> = ({
 						>
 							{extractNoteInfo(event.id)?.fileName || event.id}
 						</span>
+					</div>
+				)}
+
+				{event.remark && (
+					<div className="event-remark">
+						<span className="remark-icon">💬</span>
+						<span>{event.remark}</span>
 					</div>
 				)}
 

@@ -10,6 +10,7 @@ import { BasesEntry, BasesEventPropertyConfig, BasesValue, BasesViewConfig } fro
 import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 import { EVENT_TYPE_DEFAULT, EventSource } from "@/src/type/Events";
 import { syncEventToFrontmatter } from "@/src/service/BasesEventFrontmatterService";
+import { DailyNoteService } from "@/src/service/DailyNoteService";
 import { logger } from "@/src/utils/logger";
 
 // 定义视图类型
@@ -167,6 +168,26 @@ export class YearlyGlanceBasesView extends BasesView {
             // 7. 构建混合数据（同时填充 basesEventMap）
             this.basesEventMap.clear();
             const mixedEvents = this.buildMixedEvents(config);
+
+            // 7.5 如果 inheritPluginData 且 showDailyNoteEvents，异步加载 DailyNote 事件并追加
+            if (config.inheritPluginData) {
+                const pluginConfig = this.plugin.getConfig();
+                if (pluginConfig.showDailyNoteEvents) {
+                    DailyNoteService.loadEventsForYear(
+                        this.plugin.app,
+                        pluginConfig.year,
+                        pluginConfig.dailyNoteSource,
+                        pluginConfig.dailyNoteEventProp
+                    ).then((dailyNoteEvents) => {
+                        if (dailyNoteEvents.length > 0) {
+                            const allEvents = [...mixedEvents, ...dailyNoteEvents];
+                            this.yearlyCalendar?.renderWithEvents(allEvents, config.inheritPluginData);
+                        }
+                    }).catch((error) => {
+                        logger.error("Failed to load daily note events in BasesView", error);
+                    });
+                }
+            }
 
             // 8. 使用 YearlyCalendar 渲染（复用现有实例，避免闪烁）
             if (!this.yearlyCalendar) {

@@ -568,8 +568,11 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 							<div className="event-legend">
 								{EVENT_TYPE_LIST.filter(
 									(eventType) => {
-										// 在 BasesView 模式且启用继承插件数据时，隐藏笔记事件
+										// 在 BasesView 模式且启用继承插件数据时，隐藏笔记事件和日记事件开关
 										if (externalEvents && inheritPluginData && eventType === "basesEvent") {
+											return false;
+										}
+										if (externalEvents && eventType === "dailyNoteEvent") {
 											return false;
 										}
 

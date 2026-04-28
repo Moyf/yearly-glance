@@ -273,12 +273,13 @@ export class DailyNoteService {
 		return true;
 	}
 
+	private static readonly EMOJI_PREFIX_REGEX = /^[\p{Emoji_Presentation}\p{Extended_Pictographic}]/u;
+
 	static async loadEventsForYear(
 		app: App,
 		year: number,
 		source: string,
 		eventProp: string,
-		showEmoji = true,
 		momentImpl?: MomentLike
 	): Promise<CalendarEvent[]> {
 		const settings = DailyNoteService.getDailyNoteSettings(app, source);
@@ -322,11 +323,9 @@ export class DailyNoteService {
 
 			titles.forEach((title, index) => {
 				const event = DailyNoteService.buildCalendarEvent(title, isoDate, index, filePath);
-				if (!showEmoji) {
-					// 去掉文本开头的 emoji 及其后的空格
-					const stripped = title.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*/u, '');
-					event.text = stripped || title; // 如果去掉后为空则保留原文
-					event.emoji = ''; // 不显示独立的 emoji
+				// 如果文本本身以 emoji 开头，隐藏默认的 📅 图标避免重复
+				if (DailyNoteService.EMOJI_PREFIX_REGEX.test(title)) {
+					event.emoji = '';
 				}
 				events.push(event);
 			});

@@ -422,7 +422,7 @@ describe('DailyNoteService', () => {
 			});
 
 			const events = await DailyNoteService.loadEventsForYear(
-				app, 2026, 'daily-notes', 'events', true, realMoment
+				app, 2026, 'daily-notes', 'events', realMoment
 			);
 
 			expect(events).toHaveLength(2);
@@ -443,7 +443,7 @@ describe('DailyNoteService', () => {
 			});
 
 			await expect(
-				DailyNoteService.loadEventsForYear(app, 2026, 'daily-notes', 'events', true, realMoment)
+				DailyNoteService.loadEventsForYear(app, 2026, 'daily-notes', 'events', realMoment)
 			).resolves.toEqual([]);
 		});
 
@@ -462,7 +462,7 @@ describe('DailyNoteService', () => {
 			});
 
 			const events = await DailyNoteService.loadEventsForYear(
-				app, 2026, 'daily-notes', 'events', true, realMoment
+				app, 2026, 'daily-notes', 'events', realMoment
 			);
 
 			expect(events).toHaveLength(1);
@@ -485,20 +485,20 @@ describe('DailyNoteService', () => {
 			});
 
 			const events = await DailyNoteService.loadEventsForYear(
-				app, 2026, 'daily-notes', 'events', true, realMoment
+				app, 2026, 'daily-notes', 'events', realMoment
 			);
 
 			expect(events).toHaveLength(1);
 			expect(events[0].text).toBe('Subdir event');
 		});
 
-		test('strips emoji prefix when showEmoji is false', async () => {
+		test('hides default emoji when event text starts with emoji', async () => {
 			const app = createAppMock({
 				files: [
 					createFile('Daily/2026-04-27.md'),
 				],
 				frontmatterByPath: {
-					'Daily/2026-04-27.md': { events: ['🧩 Dev work', '📝 Writing', 'No emoji'] },
+					'Daily/2026-04-27.md': { events: ['🧩 Dev work', 'No emoji'] },
 				},
 				dailyNotesOptions: {
 					format: 'YYYY-MM-DD',
@@ -507,13 +507,16 @@ describe('DailyNoteService', () => {
 			});
 
 			const events = await DailyNoteService.loadEventsForYear(
-				app, 2026, 'daily-notes', 'events', false, realMoment
+				app, 2026, 'daily-notes', 'events', realMoment
 			);
 
-			expect(events).toHaveLength(3);
-			expect(events[0].text).toBe('Dev work');
-			expect(events[1].text).toBe('Writing');
-			expect(events[2].text).toBe('No emoji');
+			expect(events).toHaveLength(2);
+			// 文本有 emoji → 隐藏默认图标
+			expect(events[0].text).toBe('🧩 Dev work'); // 文本保持不变
+			expect(events[0].emoji).toBe(''); // 默认 📅 被隐藏
+			// 文本无 emoji → 保留默认图标
+			expect(events[1].text).toBe('No emoji');
+			expect(events[1].emoji).toBe('📅');
 		});
 	});
 });

@@ -158,8 +158,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 					plugin.app,
 					year,
 					config.dailyNoteSource,
-					config.dailyNoteEventProp,
-					config.dailyNoteShowEmoji
+					config.dailyNoteEventProp
 				);
 
 				console.log("[YearlyGlance][DailyNote] Loaded events:", {
@@ -175,7 +174,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		};
 
 		loadDailyNoteEvents();
-	}, [externalEvents, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, config.dailyNoteShowEmoji, year, plugin.app]);
+	}, [externalEvents, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, year, plugin.app]);
 
 	// 处理所有事件
 	const allEvents = React.useMemo(() => {

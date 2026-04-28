@@ -8,6 +8,7 @@ import { EventList } from "./EventList";
 import { Input } from "@/src/components/Base/Input";
 import { ConfirmDialog } from "@/src/components/Base/ConfirmDialog";
 import { NavTabs } from "@/src/components/Base/NavTabs";
+import { Tooltip } from "@/src/components/Base/Tooltip";
 import { t } from "@/src/i18n/i18n";
 import { VIEW_TYPE_YEARLY_GLANCE } from "@/src/views/YearlyGlanceView";
 import {
@@ -360,30 +361,29 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 									onChange={(value) => setSearchTerm(value)}
 									onBlur={handleSearchBlur}
 								/>
+								<Tooltip text={t("view.eventManager.actions.clearSearch")}>
 								<button
 									className="clear-search"
 									onClick={() => {
 										setSearchTerm("");
-										// 如果搜索框为空，点击清除按钮会收起搜索框
 										if (searchTerm === "") {
 											toggleSearch();
 										}
 									}}
-									title={t(
-										"view.eventManager.actions.clearSearch"
-									)}
 								>
 									✕
 								</button>
+							</Tooltip>
 							</>
 						) : (
-							<button
-								className="search-toggle"
-								onClick={toggleSearch}
-								title={t("view.eventManager.actions.search")}
-							>
-								🔍
-							</button>
+							<Tooltip text={t("view.eventManager.actions.search")}>
+								<button
+									className="search-toggle"
+									onClick={toggleSearch}
+								>
+									🔍
+								</button>
+							</Tooltip>
 						)}
 					</div>
 
@@ -392,21 +392,24 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 						sortDirectionValue={sortDirection}
 						onSortChange={handleSortChange}
 					/>
-					<button
-						className="yearly-calendar-button"
-						onClick={handleYearlyCalendar}
-						title={t("view.eventManager.actions.yearlyCalendar")}
-					>
-						🔭
-					</button>
+					<Tooltip text={t("view.eventManager.actions.yearlyCalendar")}>
+						<button
+							className="yearly-calendar-button"
+							onClick={handleYearlyCalendar}
+						>
+							🔭
+						</button>
+					</Tooltip>
 
-					<button
-						className="add-event-button"
-						onClick={handleAddEvent}
-					>
-						<span className="add-icon">+</span>
-						<span>{t("view.eventManager.actions.add")}</span>
-					</button>
+					<Tooltip text={t("view.yearlyGlance.actions.form")}>
+						<button
+							className="add-event-button"
+							onClick={handleAddEvent}
+						>
+							<span className="add-icon">+</span>
+							<span>{t("view.eventManager.actions.add")}</span>
+						</button>
+					</Tooltip>
 				</div>
 			</div>
 

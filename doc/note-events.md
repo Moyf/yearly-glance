@@ -2,11 +2,19 @@
 
 Yearly Glance can use notes with specific properties (frontmatter) as event sources. This allows you to manage events directly from your Obsidian notes.
 
+This is useful for creating more *complex* events with additional information and records stored right in the note itself.
+
+Note-based events also integrate naturally with Obsidian's native note ecosystem.
+
 ## Quick Start
 
 ### 1. Configure the Default Path
 
 Go to **Settings → Yearly Glance → Note Events** and set the **Default note event path** to a folder in your vault (e.g., `Events/`).
+
+> [!note]
+> The path configured here determines which note events appear in the **plugin view** (and where new ones are created by default).
+> You can actually create notes with event properties anywhere in your vault and use Bases views to filter and display them.
 
 ### 2. Create a Note with Event Properties
 

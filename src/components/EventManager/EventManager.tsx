@@ -47,10 +47,10 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 
 	const gregorianDisplayFormat = config.gregorianDisplayFormat;
 
-	// 加载笔记事件
+	// 加载笔记事件（Manager 始终加载，不受日历显示开关影响）
 	React.useEffect(() => {
 		const loadBasesEvents = () => {
-			if (config.showBasesEvents && config.defaultBasesEventPath) {
+			if (config.defaultBasesEventPath) {
 				const noteEventService = new NoteEventService(plugin.app, config);
 				noteEventService.loadEventsFromPath(config.defaultBasesEventPath, config.year)
 					.then(setBasesEvents)
@@ -63,40 +63,34 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 			}
 		};
 
-		// 初始加载
 		loadBasesEvents();
 
-		// 仅订阅 Bases 事件更新
 		const unsubscribe = YearlyGlanceBus.subscribeTopics(['bases-data'], loadBasesEvents);
 
 		return unsubscribe;
-	}, [plugin, plugin.app, config.showBasesEvents, config.defaultBasesEventPath, config.year]);
+	}, [plugin, plugin.app, config.defaultBasesEventPath, config.year]);
 
-	// 加载日记事件
+	// 加载日记事件（Manager 始终加载，不受日历显示开关影响）
 	React.useEffect(() => {
 		const loadDailyNoteEvents = () => {
-			if (config.showDailyNoteEvents) {
-				DailyNoteService.loadEventsForYear(
-					plugin.app,
-					config.year,
-					config.dailyNoteSource,
-					config.dailyNoteEventProp
-				)
-					.then(setDailyNoteEvents)
-					.catch((error) => {
-						console.error("[YearlyGlance] Failed to load daily note events:", error);
-						setDailyNoteEvents([]);
-					});
-			} else {
-				setDailyNoteEvents([]);
-			}
+			DailyNoteService.loadEventsForYear(
+				plugin.app,
+				config.year,
+				config.dailyNoteSource,
+				config.dailyNoteEventProp
+			)
+				.then(setDailyNoteEvents)
+				.catch((error) => {
+					console.error("[YearlyGlance] Failed to load daily note events:", error);
+					setDailyNoteEvents([]);
+				});
 		};
 
 		loadDailyNoteEvents();
 
 		const unsubscribe = YearlyGlanceBus.subscribeTopics(['dailynote-data'], loadDailyNoteEvents);
 		return unsubscribe;
-	}, [plugin, plugin.app, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, config.year]);
+	}, [plugin, plugin.app, config.dailyNoteSource, config.dailyNoteEventProp, config.year]);
 
 	// 订阅事件总线，处理搜索请求
 	React.useEffect(() => {

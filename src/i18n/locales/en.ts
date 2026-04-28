@@ -252,7 +252,7 @@ const translations: BaseMessage = {
 				birthday: "Birthday",
 				customEvent: "Custom event",
 				basesEvent: "Note event",
-				dailyNoteEvent: "Daily note event",
+				dailyNoteEvent: "Daily event",
 			},
 			viewPreset: {
 				yearOverview: "Year overview",
@@ -430,7 +430,7 @@ const translations: BaseMessage = {
 				sourceNote: "From note",
 			},
 			dailyNoteEvent: {
-				name: "Daily note event",
+				name: "Daily event",
 				sourceNote: "From daily note",
 			},
 			source: {

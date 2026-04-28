@@ -126,8 +126,14 @@ export const EventForm: React.FC<EventFormProps> = ({
 		switch (currentEventType) {
 			case "customEvent":
 			case "basesEvent":
+				initialData.isRepeat = (event as CustomEvent).isRepeat;
+				break;
 			case "dailyNoteEvent":
 				initialData.isRepeat = (event as CustomEvent).isRepeat;
+				// dailyNoteEvent 的默认 emoji 不显示在表单里，只显示从原文提取的
+				if (initialData.emoji === EVENT_TYPE_DEFAULT.dailyNoteEvent.emoji) {
+					initialData.emoji = "";
+				}
 				break;
 			case "holiday":
 				initialData.foundDate = (event as Holiday).foundDate;

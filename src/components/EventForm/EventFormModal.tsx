@@ -6,6 +6,7 @@ import { YearlyGlanceConfig } from "@/src/type/Config";
 import {
 	Birthday,
 	CustomEvent,
+	EVENT_TYPE_DEFAULT,
 	Events,
 	EventSource,
 	EventType,
@@ -213,9 +214,12 @@ export class EventFormModal extends Modal {
 					(event as CustomEvent).eventSource = EventSource.DAILYNOTE;
 
 					// 拼合 emoji + text 作为写入 frontmatter 的完整文本
+					const defaultDailyEmoji = EVENT_TYPE_DEFAULT.dailyNoteEvent.emoji;
 					const newEmoji = event.emoji || "";
 					const newText = event.text || "";
-					const fullTitle = newEmoji ? `${newEmoji} ${newText}` : newText;
+					// 默认 emoji（📅）不写入 frontmatter，只有用户自定义的 emoji 才拼合
+					const effectiveEmoji = (newEmoji && newEmoji !== defaultDailyEmoji) ? newEmoji : "";
+					const fullTitle = effectiveEmoji ? `${effectiveEmoji} ${newText}` : newText;
 
 					if (this.isEditing && this.editingEvent) {
 						// 编辑模式：写回日记笔记的 frontmatter
@@ -232,17 +236,23 @@ export class EventFormModal extends Modal {
 							fullTitle,
 						});
 						if (filePath) {
+							const defaultEmoji = EVENT_TYPE_DEFAULT.dailyNoteEvent.emoji;
 							const oldEmoji = this.editingEvent.emoji || "";
 							const oldText = this.editingEvent.text || "";
-							const oldTitle = oldEmoji ? `${oldEmoji} ${oldText}` : oldText;
+							// 只有非默认 emoji 才是从原文提取的，需要拼回去
+							const oldTitle = (oldEmoji && oldEmoji !== defaultEmoji) ? `${oldEmoji} ${oldText}` : oldText;
 
-							if (oldTitle !== fullTitle) {
+							// 新 emoji 如果是默认值或空，不拼入标题
+							const effectiveNewEmoji = (newEmoji && newEmoji !== defaultEmoji) ? newEmoji : "";
+							const newTitle = effectiveNewEmoji ? `${effectiveNewEmoji} ${newText}` : newText;
+
+							if (oldTitle !== newTitle) {
 								await DailyNoteService.updateEventTitle(
 									this.app,
 									filePath,
 									this.plugin.getSettings().config.dailyNoteEventProp,
 									oldTitle,
-									fullTitle
+									newTitle
 								);
 							}
 						}

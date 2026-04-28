@@ -152,6 +152,7 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
 	};
 
 	const handleInputFocus = () => {
+		setSearchTerm(value);
 		setIsOpen(true);
 	};
 

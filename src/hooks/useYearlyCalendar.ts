@@ -1,7 +1,7 @@
 import * as React from "react";
 import YearlyGlancePlugin from "@/src/main";
 import { CalendarDay, CalendarEvent } from "@/src/type/CalendarEvent";
-import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
+import { useYearlyGlanceConfig, YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 import { LunarLibrary } from "@/src/utils/lunarLibrary";
 import { IsoUtils } from "@/src/utils/isoUtils";
 import { DurationWarning, expandEventByDuration } from "@/src/utils/expandEventByDuration";
@@ -120,6 +120,15 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 
 	// 日记事件状态
 	const [dailyNoteEvents, setDailyNoteEvents] = React.useState<CalendarEvent[]>([]);
+	// Bus 触发时递增，用于强制重载日记事件
+	const [dailyNoteRefreshKey, setDailyNoteRefreshKey] = React.useState(0);
+
+	React.useEffect(() => {
+		const unsubscribe = YearlyGlanceBus.subscribe(() => {
+			setDailyNoteRefreshKey((k) => k + 1);
+		});
+		return unsubscribe;
+	}, []);
 
 	// 异步加载笔记事件
 	React.useEffect(() => {
@@ -174,7 +183,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		};
 
 		loadDailyNoteEvents();
-	}, [externalEvents, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, year, plugin.app]);
+	}, [externalEvents, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, year, plugin.app, dailyNoteRefreshKey]);
 
 	// 处理所有事件
 	const allEvents = React.useMemo(() => {

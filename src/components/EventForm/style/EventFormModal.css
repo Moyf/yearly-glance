@@ -100,10 +100,38 @@
 
 	.form-actions {
 		display: flex;
-		justify-content: flex-end;
+		justify-content: space-between;
+		align-items: center;
 		gap: 10px;
 		width: 100%;
 		margin-top: 15px;
+
+		.form-actions-left {
+			display: flex;
+			gap: 10px;
+		}
+		.form-actions-right {
+			display: flex;
+			gap: 10px;
+		}
+
+		.delete-button {
+			padding: 8px 16px;
+			border: none;
+			border-radius: 4px;
+			color: var(--text-error);
+			cursor: pointer;
+			font-weight: 500;
+			transition: background-color 0.2s ease, transform 0.1s ease;
+
+			&:hover:not(:disabled) {
+				opacity: 0.85;
+			}
+			&:disabled {
+				opacity: 0.3;
+				cursor: not-allowed;
+			}
+		}
 
 		.save-button,
 		.cancel-button {

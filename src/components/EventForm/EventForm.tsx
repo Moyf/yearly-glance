@@ -1,5 +1,6 @@
 import * as React from "react";
 import { YearlyGlanceConfig } from "@/src/type/Config";
+import type YearlyGlancePlugin from "@/src/main";
 import {
 	Birthday,
 	CustomEvent,
@@ -20,11 +21,13 @@ import { DateInput } from "@/src/components/Base/DateInput";
 import { parseUserDateInput } from "@/src/service/DateParseService";
 import { Tooltip } from "@/src/components/Base/Tooltip";
 import { IsoUtils } from "@/src/utils/isoUtils";
+import { previewNoteEventPath } from "@/src/utils/notePathFormat";
 
 // 事件类型tab
 export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
 	value: type,
 	label: t(`view.eventManager.${type}.name` as TranslationKeys),
+	emoji: EVENT_TYPE_DEFAULT[type].emoji,
 }));
 
 // 日历类型选项
@@ -67,11 +70,15 @@ interface EventFormProps {
 	isEditing: boolean;
 	allowTypeChange: boolean;
 	settings: YearlyGlanceConfig;
+	plugin?: YearlyGlancePlugin;
 	onSave: (
 		event: CustomEvent | Birthday | Holiday,
 		eventType: EventType
 	) => Promise<void>;
 	onCancel: () => void;
+	onDelete?: () => Promise<void>;
+	canDelete?: boolean;
+	onEventTypeChange?: (newType: EventType) => void;
 	props?: {
 		date?: string; // 可选的日期属性
 	};
@@ -85,11 +92,15 @@ export const EventForm: React.FC<EventFormProps> = ({
 	isEditing,
 	allowTypeChange,
 	settings,
+	plugin,
 	onSave,
 	onCancel,
+	onDelete,
+	canDelete = true,
 	props = {},
 	isBasesEvent = false,
 	isDailyNoteEvent: isDailyNoteEventProp = false,
+	onEventTypeChange,
 }) => {
 	const today = IsoUtils.getTodayLocalDateString(); // 获取今天的日期字符串（时区安全）
 	const todayString = props.date || today; // 如果传入了特定日期，则使用它，否则使用今天的日期
@@ -105,8 +116,8 @@ export const EventForm: React.FC<EventFormProps> = ({
 	const [currentEventType, setCurrentEventType] =
 		React.useState<EventType>(eventType);
 
-	// isDailyNoteEvent 动态跟随 tab 切换，而非只依赖编辑时的 prop
-	const isDailyNoteEvent = currentEventType === "dailyNoteEvent" || isDailyNoteEventProp;
+	// isDailyNoteEvent 动态跟随 tab 切换
+	const isDailyNoteEvent = currentEventType === "dailyNoteEvent";
 
 	// 表单数据状态
 	const [formData, setFormData] = React.useState<EventFormData>(() => {
@@ -159,6 +170,66 @@ export const EventForm: React.FC<EventFormProps> = ({
 	const [optionalCollapsed, setOptionalCollapsed] = React.useState(false);
 	const [isSaving, setIsSaving] = React.useState(false);
 
+	// Track original date for dailyNoteEvent editing
+	const originalIsoDate = React.useRef(event.eventDate?.isoDate || '');
+	const hasDateChanged = isEditing && formData.userInputDate !== originalIsoDate.current;
+
+	// Compute daily note filename for hint display
+	const dailyNoteInfo = React.useMemo(() => {
+		if (currentEventType !== 'dailyNoteEvent' || !plugin) return null;
+
+		const { DailyNoteService } = require('@/src/service/DailyNoteService') as { DailyNoteService: typeof import('@/src/service/DailyNoteService').DailyNoteService };
+		const dnSettings = DailyNoteService.getDailyNoteSettings(plugin.app, settings.config.dailyNoteSource);
+		if (!dnSettings) return null;
+
+		const momentFn = (window as any).moment;
+		if (!momentFn || !formData.userInputDate) return null;
+
+		const parsed = momentFn(formData.userInputDate, 'YYYY-MM-DD', true);
+		if (!parsed.isValid()) return null;
+
+		const formattedName = parsed.format(dnSettings.format);
+		const folder = dnSettings.folder.replace(/\/+$/, '');
+		const filePath = folder ? `${folder}/${formattedName}.md` : `${formattedName}.md`;
+		const filename = formattedName.split('/').pop() + '.md';
+		const fileExists = !!plugin.app.vault.getAbstractFileByPath(filePath);
+
+		return { filename, filePath, fileExists };
+	}, [currentEventType, plugin, formData.userInputDate, settings.config.dailyNoteSource]);
+
+	const basesEventPreviewPath = React.useMemo(() => {
+		if (currentEventType !== "basesEvent") {
+			return "";
+		}
+
+		let isoDate = todayString;
+		if (formData.userInputDate) {
+			try {
+				isoDate = parseUserDateInput(
+					formData.userInputDate,
+					formData.userInputCalendar as CalendarType | undefined
+				).isoDate;
+			} catch {
+				isoDate = todayString;
+			}
+		}
+
+		return previewNoteEventPath(
+			settings.config.defaultBasesEventPath || "",
+			settings.config.basesEventFileNameFormat || "{event_name}",
+			formData.text || "EventName",
+			isoDate
+		);
+	}, [
+		currentEventType,
+		formData.text,
+		formData.userInputCalendar,
+		formData.userInputDate,
+		settings.config.basesEventFileNameFormat,
+		settings.config.defaultBasesEventPath,
+		todayString,
+	]);
+
 	// 组件挂载时自动聚焦到第一个输入框
 	React.useEffect(() => {
 		if (firstInputRef.current) {
@@ -192,6 +263,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 	// 处理事件类型切换
 	const handleEventTypeChange = (newEventType: EventType) => {
 		setCurrentEventType(newEventType);
+		onEventTypeChange?.(newEventType);
 
 		// 切换类型时，重置类型特有字段
 		setFormData((prev) => {
@@ -502,9 +574,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 											// 有事件名：显示完整路径
 											<>
 												{t("view.eventManager.help.basesEventCreate.textWithName")}<br />
-												<i>{
-													`${settings.config.defaultBasesEventPath || ''}/${formData.text}.md`
-												}</i>
+												<i>{basesEventPreviewPath}</i>
 											</>
 										) : (
 											// 无事件名：显示文件夹
@@ -517,27 +587,59 @@ export const EventForm: React.FC<EventFormProps> = ({
 							</div>
 						</div>
 					)}
-					{currentEventType === 'dailyNoteEvent' && (
-						<div className="form-group bases-event-hint">
-							<div className="yg-bases-event-hint-content">
-								{isEditing ? (
-									<>
-										<b>{t("view.eventManager.help.dailyNoteEventEdit.label")}：</b>
-										{t("view.eventManager.help.dailyNoteEventEdit.text")}
-									</>
-								) : (
-									<>
-										<b>{t("view.eventManager.help.dailyNoteEventCreate.label")}：</b>
-										{t("view.eventManager.help.dailyNoteEventCreate.text")}
-									</>
-								)}
-							</div>
+			</div>
+				{currentEventType === 'dailyNoteEvent' && (
+					<div className="form-group bases-event-hint">
+						<div className="yg-bases-event-hint-content">
+							{isEditing ? (
+								<>
+									<b>{t("view.eventManager.help.dailyNoteEventEdit.label")}：</b>
+									{t("view.eventManager.help.dailyNoteEventEdit.text")}
+									{hasDateChanged && dailyNoteInfo && (
+										<div style={{ marginTop: '6px', color: 'var(--text-warning)' }}>
+											⚠️ {t("view.eventManager.help.dailyNoteEventEdit.dateChanged", { oldDate: originalIsoDate.current })}
+										</div>
+									)}
+								</>
+							) : (
+								<>
+									<b>{t("view.eventManager.help.dailyNoteEventCreate.label")}：</b>
+									{dailyNoteInfo ? (
+										<>
+											{t("view.eventManager.help.dailyNoteEventCreate.textDetailed", {
+												prop: settings.config.dailyNoteEventProp,
+												filename: dailyNoteInfo.filename,
+											})}
+											{!dailyNoteInfo.fileExists && (
+												<div style={{ marginTop: '6px', color: 'var(--text-warning)' }}>
+													⚠️ {t("view.eventManager.help.dailyNoteEventCreate.fileNotExist")}
+												</div>
+											)}
+										</>
+									) : (
+										t("view.eventManager.help.dailyNoteEventCreate.text")
+									)}
+								</>
+							)}
 						</div>
+					</div>
+				)}
+
+			{/* 操作按钮 */}
+			<div className="form-actions">
+				<div className="form-actions-left">
+					{isEditing && onDelete && (
+						<button
+							type="button"
+							className="delete-button"
+							disabled={!canDelete || isSaving}
+							onClick={async () => { if (canDelete && onDelete) await onDelete(); }}
+						>
+							{t("view.eventManager.actions.delete")}
+						</button>
 					)}
 				</div>
-
-				{/* 操作按钮 */}
-				<div className="form-actions">
+				<div className="form-actions-right">
 					<button
 						type="submit"
 						className={`save-button ${isSaving ? "is-saving" : ""}`}
@@ -554,6 +656,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 						{t("view.eventManager.form.cancel")}
 					</button>
 				</div>
+			</div>
 			</form>
 		</div>
 	);

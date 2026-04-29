@@ -14,6 +14,8 @@
 - **标签页响应式 Emoji 模式**：空间不足时自动切换为仅 emoji
 - **日期校验增强**：非法日期输入正确报错
 
+> [详见文档](https://github.com/Moyf/yearly-glance/blob/master/doc/whats-new-v4-zh.md)
+
 ### ⚡ 变更
 
 - **简化来源笔记显示**：仅显示文件名，hover 显示完整路径

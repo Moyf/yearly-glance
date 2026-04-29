@@ -14,6 +14,8 @@
 - **NavTabs Responsive Emoji Mode**: Collapse to emoji-only when space is insufficient
 - **Date Validation**: Invalid dates like `2026-04-220` are now properly rejected
 
+> [More details](https://github.com/Moyf/yearly-glance/blob/master/doc/whats-new-v4.md)
+
 ### ⚡ Changed
 
 - **Simplified "From Note" Display**: Show only filename, hover for full path

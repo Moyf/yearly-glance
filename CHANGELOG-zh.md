@@ -1,3 +1,11 @@
+## [4.0.0-beta.2](https://github.com/Moyf/yearly-glance/compare/4.0.0-beta.1...4.0.0-beta.2) (2025-04-29) (Pre Release)
+
+### 🐛 修复
+
+- **切换年份导致事件日期损坏**：切换显示年份（如切到 2027 年）会永久覆盖 `eventDate.isoDate` 为显示年份，导致事件"移动"到错误年份并从原年份消失。现在 `isoDate` 保持为用户输入的原始日期不可变，`dateArr` 用于显示年份的日期计算。
+
+---
+
 ## [4.0.0-beta.1](https://github.com/Moyf/yearly-glance/compare/3.2.0...4.0.0-beta.1) (2025-04-29) (Pre Release)
 
 ### 🚀 新增

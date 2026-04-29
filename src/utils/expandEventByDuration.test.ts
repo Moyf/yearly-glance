@@ -17,19 +17,19 @@ describe('expandEventByDuration', () => {
 		const { events } = expandEventByDuration(makeEvent('2025-06-10', 3), eventType, 2025);
 
 		expect(events).toHaveLength(3);
-		expect(events.map((event) => event.eventDate.isoDate)).toEqual([
+		expect(events.map((event) => event.dateArr?.[0])).toEqual([
 			'2025-06-10',
 			'2025-06-11',
 			'2025-06-12',
 		]);
-		expect(events.every((event) => event.eventDate.isoDate.startsWith('2025-'))).toBe(true);
+		expect(events.every((event) => event.dateArr?.[0]?.startsWith('2025-'))).toBe(true);
 	});
 
 	test('Year overflow: date=2025-12-29, duration=5, year=2025 → 3 events (Dec 29, 30, 31 only)', () => {
 		const { events } = expandEventByDuration(makeEvent('2025-12-29', 5), eventType, 2025);
 
 		expect(events).toHaveLength(3);
-		expect(events.map((event) => event.eventDate.isoDate)).toEqual([
+		expect(events.map((event) => event.dateArr?.[0])).toEqual([
 			'2025-12-29',
 			'2025-12-30',
 			'2025-12-31',
@@ -40,7 +40,7 @@ describe('expandEventByDuration', () => {
 		const { events } = expandEventByDuration(makeEvent('2024-12-31', 5), eventType, 2025);
 
 		expect(events).toHaveLength(4);
-		expect(events.map((event) => event.eventDate.isoDate)).toEqual([
+		expect(events.map((event) => event.dateArr?.[0])).toEqual([
 			'2025-01-01',
 			'2025-01-02',
 			'2025-01-03',

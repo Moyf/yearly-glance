@@ -301,11 +301,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 
 				// 查找当天的事件（包括多日事件的每一天）
 				const dayEvents = allEvents.events.filter((event) => {
-					// 优先检查扩展后的 eventDate.isoDate（用于多日事件）
-					if (event.eventDate?.isoDate === currentDateISO) {
-						return true;
-					}
-					// 兼容旧的 dateArr 匹配方式
+					// 优先使用 dateArr 匹配（dateArr 是根据当前年份计算的显示日期）
 					return event.dateArr?.some((dateStr: string) => {
 						return dateStr === currentDateISO;
 					});

@@ -55,9 +55,9 @@ export const EventList: React.FC<EventListProps> = ({
 				const compareResult = a.text.localeCompare(b.text);
 				return sortDirection === "asc" ? compareResult : -compareResult;
 			} else if (sortField === "date") {
-				// 优先使用 eventDate.isoDate，如果没有则使用 dateArr[0]
-				const dateA = a.eventDate?.isoDate || a.dateArr?.[0];
-				const dateB = b.eventDate?.isoDate || b.dateArr?.[0];
+				// 优先使用 dateArr[0]（当前年份的显示日期），如果没有则使用 eventDate.isoDate
+				const dateA = a.dateArr?.[0] || a.eventDate?.isoDate;
+				const dateB = b.dateArr?.[0] || b.eventDate?.isoDate;
 
 				if (dateA && dateB) {
 					return sortDirection === "asc"

@@ -1,3 +1,11 @@
+## [4.0.0-beta.2](https://github.com/Moyf/yearly-glance/compare/4.0.0-beta.1...4.0.0-beta.2) (2025-04-29) (Pre Release)
+
+### 🐛 Fixed
+
+- **Year Switch Corrupts Event Dates**: Switching display year (e.g. to 2027) permanently overwrote `eventDate.isoDate` with the display year, causing events to "move" and disappear from their original year. Now `isoDate` stays immutable as the user-entered date, and `dateArr` is used for display-year calculations.
+
+---
+
 ## [4.0.0-beta.1](https://github.com/Moyf/yearly-glance/compare/3.2.0...4.0.0-beta.1) (2025-04-29) (Pre Release)
 
 ### 🚀 Added

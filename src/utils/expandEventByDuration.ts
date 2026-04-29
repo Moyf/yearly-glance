@@ -20,7 +20,8 @@ export function expandEventByDuration(
 	eventType: EventType,
 	year: number
 ): { events: CalendarEvent[]; warning: DurationWarning | null } {
-	const baseDate = event.eventDate?.isoDate;
+	// 优先使用 dateArr[0]（当前年份计算的显示日期），eventDate.isoDate 是用户录入的原始日期
+	const baseDate = event.dateArr?.[0] ?? event.eventDate?.isoDate;
 	if (!baseDate) return { events: [], warning: null };
 
 	const rawDuration = event.duration ?? 1;
@@ -67,11 +68,7 @@ export function expandEventByDuration(
 			_totalDays: duration,
 			_isFirstDay: dayIndex === 0,
 			_isLastDay: dayIndex === duration - 1,
-			eventDate: {
-				...event.eventDate,
-				isoDate: currentDateISO,
-			},
-			dateArr: undefined,
+			dateArr: [currentDateISO],
 		} as CalendarEvent);
 	}
 

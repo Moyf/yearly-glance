@@ -993,7 +993,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 									className="actions-button event-form-button"
 									onClick={handleEventForm}
 								>
-									<span className="button-icon">➕</span>
+									<span className="button-icon">✏️</span>
 								</button>
 							</Tooltip>
 						</div>

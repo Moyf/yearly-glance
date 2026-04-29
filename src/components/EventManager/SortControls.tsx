@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ArrowDown10, ArrowDownZA, ArrowUp01, ArrowUpAZ } from "lucide-react";
 import { Select } from "@/src/components/Base/Select";
+import { Tooltip } from "@/src/components/Base/Tooltip";
 import { t } from "@/src/i18n/i18n";
 import "./style/SortControls.css";
 import { TranslationKeys } from "@/src/i18n/types";
@@ -82,22 +83,23 @@ export const SortControls: React.FC<SortControlsProps> = ({
 						/>
 					</div>
 					<div className="yg-sort-sortDirection">
-						<button
-							className="clickable-icon"
-							onClick={handleSortDirectionChange}
-							title={t(
-								`view.eventManager.actions.sort.${sortDirection}` as TranslationKeys
-							)}
-						>
-							{sortDirection === "asc" &&
-								sortField === "name" && <ArrowUpAZ />}
-							{sortDirection === "desc" &&
-								sortField === "name" && <ArrowDownZA />}
-							{sortDirection === "asc" &&
-								sortField === "date" && <ArrowUp01 />}
-							{sortDirection === "desc" &&
-								sortField === "date" && <ArrowDown10 />}
-						</button>
+						<Tooltip text={t(
+							`view.eventManager.actions.sort.${sortDirection}` as TranslationKeys
+						)}>
+							<button
+								className="clickable-icon"
+								onClick={handleSortDirectionChange}
+							>
+								{sortDirection === "asc" &&
+									sortField === "name" && <ArrowUpAZ />}
+								{sortDirection === "desc" &&
+									sortField === "name" && <ArrowDownZA />}
+								{sortDirection === "asc" &&
+									sortField === "date" && <ArrowUp01 />}
+								{sortDirection === "desc" &&
+									sortField === "date" && <ArrowDown10 />}
+							</button>
+						</Tooltip>
 					</div>
 				</>
 			) : (

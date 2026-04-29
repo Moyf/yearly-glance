@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Check, Copy } from "lucide-react";
+import { Tooltip } from "./Tooltip";
 import "./style/Pre.css";
 
 interface PreProps {
@@ -45,13 +46,14 @@ export const Pre: React.FC<PreProps> = ({
 		<div className="yg-pre-wrapper">
 			{title && <div className="yg-pre-title">{title}</div>}
 			{showCopyButton && (
-				<button
-					className={`yg-pre-copy-button ${copied ? "copied" : ""}`}
-					onClick={handleCopy}
-					title={copied ? "Copied!" : "Copy to clipboard"}
-				>
-					{copied ? <Check size={16} /> : <Copy size={16} />}
-				</button>
+				<Tooltip text={copied ? "Copied!" : "Copy to clipboard"}>
+					<button
+						className={`yg-pre-copy-button ${copied ? "copied" : ""}`}
+						onClick={handleCopy}
+					>
+						{copied ? <Check size={16} /> : <Copy size={16} />}
+					</button>
+				</Tooltip>
 			)}
 			<pre ref={preRef} className={preClassName}>
 				{children}

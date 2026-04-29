@@ -314,21 +314,23 @@ export const EventItem: React.FC<EventItemProps> = ({
 			</div>
 
 			<div className="event-actions">
-				<button
-					className="edit-button"
-					onClick={onEdit}
-					title={t("view.eventManager.actions.edit")}
-				>
-					✏️
-				</button>
-				{eventType !== "basesEvent" && eventType !== "dailyNoteEvent" && (
+				<Tooltip text={t("view.eventManager.actions.edit")}>
 					<button
-						className="delete-button"
-						onClick={onDelete}
-						title={t("view.eventManager.actions.delete")}
+						className="edit-button"
+						onClick={onEdit}
 					>
-						🗑️
+						✏️
 					</button>
+				</Tooltip>
+				{eventType !== "basesEvent" && eventType !== "dailyNoteEvent" && (
+					<Tooltip text={t("view.eventManager.actions.delete")}>
+						<button
+							className="delete-button"
+							onClick={onDelete}
+						>
+							🗑️
+						</button>
+					</Tooltip>
 				)}
 			</div>
 		</div>

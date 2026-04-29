@@ -1,4 +1,4 @@
-# [4.0.0](https://github.com/Moyf/yearly-glance/compare/3.2.0...4.0.0) (2025-04-29)
+# [4.0.0-beta.1](https://github.com/Moyf/yearly-glance/compare/3.2.0...4.0.0-beta.1) (2025-04-29) (Pre Release)
 
 ## 🎉 Major Release — v4.0
 

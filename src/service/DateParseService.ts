@@ -159,6 +159,26 @@ export class DateParseService {
 
 		GregorianDateValidator.validDate(year, month, day);
 
+		// 额外校验：有年份时做精确日期合法性检查
+		if (year !== undefined) {
+			if (!GregorianDateValidator.validSolarDate(year, month, day)) {
+				throw new Error(
+					t(`view.eventManager.dateError.invalidRangeDate`, {
+						input: input,
+					})
+				);
+			}
+		} else {
+			// 无年份时至少检查 day 上限
+			if (day > 31) {
+				throw new Error(
+					t(`view.eventManager.dateError.invalidRangeDate`, {
+						input: input,
+					})
+				);
+			}
+		}
+
 		// 生成ISO日期字符串
 		const isoDate: string = this.generateISODateString(year, month, day);
 

@@ -81,20 +81,10 @@
 		border-bottom: 2px solid var(--yg-border-color);
 		position: relative;
 		display: flex;
-		align-items: center;
+		align-items: baseline;
 		justify-content: center;
 		white-space: pre-wrap;
-
-		&::after {
-			content: "";
-			position: absolute;
-			bottom: -2px;
-			left: 50%;
-			transform: translateX(-50%);
-			width: 100px;
-			height: 2px;
-			background-color: var(--yg-current-month-color);
-		}
+		gap: 0.5em;
 	}
 
 	/* ------- 年份控制样式 ------- */
@@ -110,12 +100,23 @@
 		padding: 0 4px;
 		margin: 0 4px;
 
-		&:hover {
-			background-color: var(--background-modifier-border);
+		&:hover .year-number {
+			color: var(--interactive-accent);
+			text-decoration-color: var(--interactive-accent);
 		}
 
 		&.expanded {
 			background-color: var(--background-modifier-border);
+		}
+
+		.year-number {
+			font-size: 1.625em;
+			font-family: Georgia, 'Times New Roman', serif;
+			cursor: pointer;
+			text-decoration: underline;
+			text-decoration-thickness: 2px;
+			text-underline-offset: 3px;
+			text-decoration-color: currentColor;
 		}
 
 		.year-control {
@@ -909,10 +910,6 @@
 			padding: 8px 0;
 		}
 
-		.yearly-calendar-title::after {
-			width: 80px;
-		}
-
 		.yearly-calendar-actions-bar {
 			padding: 10px 14px;
 		}
@@ -1202,10 +1199,6 @@
 			padding: 8px 0;
 		}
 
-		.yearly-calendar-title::after {
-			width: 80px;
-		}
-
 		.yearly-calendar-actions-bar {
 			padding: 10px 14px;
 		}
@@ -1276,6 +1269,10 @@
 			width: 100%;
 			flex-wrap: wrap;
 			gap: 8px;
+		}
+
+		.event-legend .legend-text {
+			display: none;
 		}
 
 		.legend-item {

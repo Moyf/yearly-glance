@@ -9,6 +9,7 @@
 	max-width: 100%;
 	border: 1px solid var(--background-modifier-border);
 	position: relative;
+	overflow: hidden;
 
 	.yg-nav-tab {
 		display: flex;
@@ -62,10 +63,10 @@
 		}
 
 		.yg-nav-tab-emoji {
-			display: none;
 			font-size: 16px;
 			line-height: 1;
 			flex-shrink: 0;
+			display: none;
 		}
 
 		.yg-nav-tab-label {
@@ -88,7 +89,7 @@
 	}
 }
 
-/* 窄宽度时只显示 emoji，隐藏文字 label */
+/* 窄宽度时只显示 emoji，隐藏文字 label（所有 NavTabs 通用） */
 @media (max-width: 600px) {
 	.yg-nav-tabs .yg-nav-tab {
 		padding: 10px 12px;
@@ -96,6 +97,22 @@
 		.yg-nav-tab-emoji {
 			display: inline;
 		}
+		.yg-nav-tab-label {
+			display: none;
+		}
+	}
+}
+
+/* EventManager 的 tabs：默认显示 emoji + 文字 */
+.yg-nav-tabs.yg-event-tabs .yg-nav-tab .yg-nav-tab-emoji {
+	display: inline;
+}
+
+/* EventManager 容器窄时只显示 emoji */
+@container yg-manager (max-width: 600px) {
+	.yg-nav-tabs.yg-event-tabs .yg-nav-tab {
+		padding: 10px 12px;
+
 		.yg-nav-tab-label {
 			display: none;
 		}

@@ -46,7 +46,6 @@ export const NavTabs: React.FC<NavTabsProps> = ({
 						active === tab.value && !searchMode ? "active" : ""
 					} ${searchMode ? "search-mode" : ""}`}
 					onClick={() => handleClick(tab.value)}
-					title={tab.label}
 				>
 					{tab.icon && (
 						<span className="yg-nav-tab-icon">{tab.icon}</span>

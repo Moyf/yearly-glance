@@ -3,6 +3,7 @@
 .yg-event-tooltip-modal {
 	padding: 0;
 	border: none;
+	max-width: 360px;
 }
 
 .yg-event-tooltip-content {

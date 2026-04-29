@@ -17,6 +17,7 @@ import { t } from "@/src/i18n/i18n";
 import "./style/EventTooltip.css";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
 import { IsoUtils } from "@/src/utils/isoUtils";
+import { Tooltip } from "@/src/components/Base/Tooltip";
 
 interface EventTooltipContentProps {
 	plugin: YearlyGlancePlugin;
@@ -135,20 +136,22 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 				</span>
 				<span className="tooltip-title">{event.text}</span>
 				<div className="tooltip-actions">
-					<button
-						className="location-button"
-						onClick={handleLocationEvent}
-						title={getLocationButtonProps().title}
-					>
-						{getLocationButtonProps().icon}
-					</button>
-					<button
-						className="edit-button"
-						onClick={handleEditEvent}
-						title={t("view.eventManager.actions.edit")}
-					>
-						✏️
-					</button>
+					<Tooltip text={getLocationButtonProps().title}>
+						<button
+							className="location-button"
+							onClick={handleLocationEvent}
+						>
+							{getLocationButtonProps().icon}
+						</button>
+					</Tooltip>
+					<Tooltip text={t("view.eventManager.actions.edit")}>
+						<button
+							className="edit-button"
+							onClick={handleEditEvent}
+						>
+							✏️
+						</button>
+					</Tooltip>
 				</div>
 			</div>
 
@@ -234,9 +237,17 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 						<span className="tooltip-label">
 							{t("view.eventManager.basesEvent.sourceNote")}:
 						</span>
-						<span className="tooltip-value">
-							{event.sourceFilePath || event.id.replace(/^bases-/, "").replace(/-\d{4}-\d{2}-\d{2}$/, "")}
-						</span>
+						{(() => {
+							const fullPath = event.sourceFilePath || event.id.replace(/^bases-/, "").replace(/-\d{4}-\d{2}-\d{2}$/, "");
+							const filename = fullPath.split("/").pop() || fullPath;
+							return (
+								<Tooltip text={fullPath}>
+									<span className="tooltip-value">
+										{filename}
+									</span>
+								</Tooltip>
+							);
+						})()}
 					</div>
 				)}
 
@@ -246,9 +257,17 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 						<span className="tooltip-label">
 							{t("view.eventManager.source.dailynote")}:
 						</span>
-						<span className="tooltip-value">
-							{event.sourceFilePath}
-						</span>
+						{(() => {
+							const fullPath = event.sourceFilePath;
+							const filename = fullPath.split("/").pop() || fullPath;
+							return (
+								<Tooltip text={fullPath}>
+									<span className="tooltip-value">
+										{filename}
+									</span>
+								</Tooltip>
+							);
+						})()}
 					</div>
 				)}
 

@@ -5,6 +5,7 @@ interface NavTab {
 	label: string;
 	value: string;
 	icon?: React.ReactNode;
+	emoji?: string;
 	count?: number;
 }
 
@@ -45,9 +46,13 @@ export const NavTabs: React.FC<NavTabsProps> = ({
 						active === tab.value && !searchMode ? "active" : ""
 					} ${searchMode ? "search-mode" : ""}`}
 					onClick={() => handleClick(tab.value)}
+					title={tab.label}
 				>
 					{tab.icon && (
 						<span className="yg-nav-tab-icon">{tab.icon}</span>
+					)}
+					{tab.emoji && (
+						<span className="yg-nav-tab-emoji">{tab.emoji}</span>
 					)}
 					<span className="yg-nav-tab-label">{tab.label}</span>
 					{showCounts && typeof tab.count !== "undefined" && (

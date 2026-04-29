@@ -1,19 +1,14 @@
 .yg-nav-tabs {
 	display: flex;
 	gap: 4px;
-	background: linear-gradient(
-		145deg,
-		var(--background-secondary) 0%,
-		var(--background-modifier-border) 100%
-	);
 	padding: 6px;
 	border-radius: 12px;
 	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08),
 		0 2px 8px rgba(0, 0, 0, 0.04);
 	width: fit-content;
+	max-width: 100%;
 	border: 1px solid var(--background-modifier-border);
 	position: relative;
-	overflow: hidden;
 
 	.yg-nav-tab {
 		display: flex;
@@ -29,6 +24,7 @@
 		user-select: none;
 		position: relative;
 		background: transparent;
+		min-width: 0;
 
 		&::before {
 			content: "";
@@ -65,6 +61,17 @@
 			}
 		}
 
+		.yg-nav-tab-emoji {
+			display: none;
+			font-size: 16px;
+			line-height: 1;
+			flex-shrink: 0;
+		}
+
+		.yg-nav-tab-label {
+			min-width: 0;
+		}
+
 		.yg-nav-tab-count {
 			display: inline-flex;
 			align-items: center;
@@ -76,6 +83,21 @@
 			border-radius: 10px;
 			font-size: 12px;
 			font-weight: 600;
+			flex-shrink: 0;
+		}
+	}
+}
+
+/* 窄宽度时只显示 emoji，隐藏文字 label */
+@media (max-width: 600px) {
+	.yg-nav-tabs .yg-nav-tab {
+		padding: 10px 12px;
+
+		.yg-nav-tab-emoji {
+			display: inline;
+		}
+		.yg-nav-tab-label {
+			display: none;
 		}
 	}
 }

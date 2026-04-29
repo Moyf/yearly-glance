@@ -2,6 +2,7 @@ import * as React from "react";
 import { RotateCcw } from "lucide-react";
 import { DEFAULT_PRESET_COLORS, IPresetColor } from "@/src/type/Settings";
 import { Select, SelectOption } from "./Select";
+import { Tooltip } from "./Tooltip";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
 import "./style/ColorSelector.css";
@@ -124,15 +125,16 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 					className="yg-color-input"
 				/>
 				{isModified && (
-					<button
-						type="button"
-						className="yg-color-reset-button"
-						onClick={handleReset}
-						title={resetTitle}
-						disabled={disabled}
-					>
-						<RotateCcw size={16} />
-					</button>
+					<Tooltip text={resetTitle || ""}>
+						<button
+							type="button"
+							className="yg-color-reset-button"
+							onClick={handleReset}
+							disabled={disabled}
+						>
+							<RotateCcw size={16} />
+						</button>
+					</Tooltip>
 				)}
 			</div>
 			{presetColors && (
@@ -141,6 +143,20 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 					onValueChange={handlePresetColorSelect}
 					options={presetColorOptions}
 					placeholder={t("view.eventManager.form.selectPresetColor")}
+					renderOption={(option) => (
+						<span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+							<span style={{
+								display: 'inline-block',
+								width: '14px',
+								height: '14px',
+								borderRadius: '50%',
+								backgroundColor: option.value,
+								border: '1px solid var(--background-modifier-border)',
+								flexShrink: 0,
+							}} />
+							{option.label}
+						</span>
+					)}
 				/>
 			)}
 		</div>

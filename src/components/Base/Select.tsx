@@ -13,6 +13,7 @@ interface SelectProps {
 	options: SelectOption[];
 	placeholder?: string;
 	className?: string;
+	renderOption?: (option: SelectOption) => React.ReactNode;
 }
 
 export const Select: React.FC<SelectProps> = ({
@@ -21,6 +22,7 @@ export const Select: React.FC<SelectProps> = ({
 	options,
 	placeholder = "Select an option",
 	className = "",
+	renderOption,
 }) => {
 	const [isOpen, setIsOpen] = React.useState(false);
 	const selectRef = React.useRef<HTMLDivElement>(null);
@@ -92,7 +94,11 @@ export const Select: React.FC<SelectProps> = ({
 				onClick={() => setIsOpen(!isOpen)}
 			>
 				<span className="yg-select-value">
-					{selectedOption ? selectedOption.label : placeholder}
+					{selectedOption
+						? renderOption
+							? renderOption(selectedOption)
+							: selectedOption.label
+						: placeholder}
 				</span>
 				<span className="yg-select-arrow">
 					{isOpen ? <ChevronUp /> : <ChevronDown />}
@@ -139,7 +145,7 @@ export const Select: React.FC<SelectProps> = ({
 										setIsOpen(false);
 									}}
 								>
-									{option.label}
+									{renderOption ? renderOption(option) : option.label}
 								</div>
 							);
 						})}

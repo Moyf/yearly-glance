@@ -1,11 +1,11 @@
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
-import { Notice } from "obsidian";
+import { Menu, Notice } from "obsidian";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import YearlyGlancePlugin from "@/src/main";
 import { VIEW_TYPE_GLANCE_MANAGER } from "@/src/views/GlanceManagerView";
 import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
-import { EVENT_TYPE_DEFAULT, EVENT_TYPE_LIST } from "@/src/type/Events";
+import { EVENT_TYPE_DEFAULT, EVENT_TYPE_LIST, EventSource, EventType } from "@/src/type/Events";
 import {
 	getLayoutOptions,
 	viewTypeOptions,
@@ -19,6 +19,10 @@ import { TranslationKeys } from "@/src/i18n/types";
 import "./style/YearlyCalendarView.css";
 import { Tooltip } from "@/src/components/Base/Tooltip";
 import { IsoUtils } from "@/src/utils/isoUtils";
+import { ConfirmDialog } from "@/src/components/Base/ConfirmDialog";
+import { DailyNoteService } from "@/src/service/DailyNoteService";
+import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
+import { EVENT_SEARCH_REQUESTED, EventManagerBus } from "@/src/hooks/useEventBus";
 
 interface YearlyCalendarViewProps {
 	plugin: YearlyGlancePlugin;
@@ -193,6 +197,100 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 		new EventTooltip(plugin, event).open();
 	};
 
+	// 右键菜单：删除事件
+	const handleDeleteEventFromContextMenu = (event: CalendarEvent) => {
+		new ConfirmDialog(plugin, {
+			title: t("view.eventManager.actions.delete"),
+			message: t("view.eventManager.actions.deleteConfirm", { name: event.text }),
+			onConfirm: async () => {
+				const isBasesEvent = event.eventSource === EventSource.BASES || event.id.startsWith("bases-");
+				const isDailyNoteEvent = event.eventType === "dailyNoteEvent";
+
+				if (isBasesEvent) {
+					// Bases 事件：删除笔记文件
+					if (event.sourceFilePath) {
+						const file = plugin.app.vault.getAbstractFileByPath(event.sourceFilePath);
+						if (file) {
+							await plugin.app.fileManager.trashFile(file);
+							YearlyGlanceBus.publish("bases-data");
+						}
+					}
+				} else if (isDailyNoteEvent) {
+					// 日记事件：从 frontmatter 移除
+					const filePath = DailyNoteService.getFilePathFromEvent(event);
+					if (filePath) {
+						const pluginConfig = plugin.getSettings().config;
+						const defaultEmoji = EVENT_TYPE_DEFAULT.dailyNoteEvent.emoji;
+						const fullTitle = DailyNoteService.assembleTitle(
+							event.emoji !== defaultEmoji ? event.emoji : null,
+							event.text,
+							defaultEmoji,
+						);
+						await DailyNoteService.removeEventFromDaily(
+							plugin.app, filePath, pluginConfig.dailyNoteEventProp, fullTitle,
+						);
+						YearlyGlanceBus.publish("dailynote-data");
+					}
+				} else {
+					// Config 事件：从插件数据中移除
+					const events = plugin.getData();
+					await plugin.updateData({
+						holidays: events.holidays.filter((h) => h.id !== event.id),
+						birthdays: events.birthdays.filter((b) => b.id !== event.id),
+						customEvents: events.customEvents.filter((c) => c.id !== event.id),
+					});
+				}
+
+				new Notice(t("view.eventManager.form.eventDeleted"));
+			},
+		}).open();
+	};
+
+	// 右键菜单
+	const handleEventContextMenu = (e: React.MouseEvent, event: CalendarEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+
+		const menu = new Menu();
+
+		const isBasesEvent = event.eventSource === EventSource.BASES || event.id.startsWith("bases-");
+		const isDailyNoteEvent = event.eventType === "dailyNoteEvent";
+		const isConfigEvent = !isBasesEvent && !isDailyNoteEvent;
+
+		// 1. Edit（所有事件）
+		menu.addItem((item) => {
+			item.setTitle(t("view.eventManager.actions.edit"))
+				.setIcon("pencil")
+				.onClick(() => {
+					const eventType = event.eventType as EventType;
+					plugin.openEventForm(eventType, event, true, false);
+				});
+		});
+
+		// 2. Open Note（仅限笔记来源事件）
+		if ((isBasesEvent || isDailyNoteEvent) && event.sourceFilePath) {
+			menu.addItem((item) => {
+				item.setTitle(t("view.eventManager.actions.openOriginalNote"))
+					.setIcon("file-text")
+					.onClick(() => {
+						plugin.app.workspace.openLinkText(event.sourceFilePath!, "", true);
+					});
+			});
+		}
+
+		// 3. Delete
+		menu.addSeparator();
+		menu.addItem((item) => {
+			item.setTitle(t("view.eventManager.actions.delete"))
+				.setIcon("trash-2")
+				.onClick(() => {
+					handleDeleteEventFromContextMenu(event);
+				});
+		});
+
+		menu.showAtMouseEvent(e.nativeEvent);
+	};
+
 	const handleAddEventInDay = (day: CalendarDay) => {
 		// 避免时区转换问题，直接使用已经存在的date对象
 		const selectDate = IsoUtils.toLocalDateString(day.date);
@@ -289,6 +387,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 			className: eventClasses.filter(Boolean).join(" "),
 			style: eventStyle,
 			onClick: (e) => handleEventTooltip(event),
+			onContextMenu: (e) => handleEventContextMenu(e, event),
 		};
 
 		// 构建天数标记文本

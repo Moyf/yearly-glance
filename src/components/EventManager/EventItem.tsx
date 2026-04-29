@@ -82,20 +82,18 @@ export const EventItem: React.FC<EventItemProps> = ({
 	const getEventSpecificInfo = () => {
 		if (eventType === "holiday") {
 			const holiday = event as Holiday;
+			const hasInfo = holiday.isHidden || holiday.foundDate;
+			if (!hasInfo) return null;
 			return (
 				<>
-					<div className="event-info-row" data-property="isHidden">
-						<span className="info-label">
-							{t("view.eventManager.form.eventHidden")}:
-						</span>
-						<span
-							className={`info-value ${
-								holiday.isHidden ? "active" : "inactive"
-							}`}
-						>
-							{holiday.isHidden ? "✔" : "✘"}
-						</span>
-					</div>
+					{holiday.isHidden && (
+						<div className="event-info-row" data-property="isHidden">
+							<span className="info-label">
+								{t("view.eventManager.form.eventHidden")}:
+							</span>
+							<span className="info-value active">✔</span>
+						</div>
+					)}
 					{holiday.foundDate && (
 						<div
 							className="event-info-row"
@@ -183,52 +181,40 @@ export const EventItem: React.FC<EventItemProps> = ({
 							</span>
 						</div>
 					)}
-					<div className="event-info-row" data-property="isHidden">
-						<span className="info-label">
-							{t("view.eventManager.form.eventHidden")}:
-						</span>
-						<span
-							className={`info-value ${
-								birthday.isHidden ? "active" : "inactive"
-							}`}
-						>
-							{birthday.isHidden ? "✔" : "✘"}
-						</span>
-					</div>
+					{birthday.isHidden && (
+						<div className="event-info-row" data-property="isHidden">
+							<span className="info-label">
+								{t("view.eventManager.form.eventHidden")}:
+							</span>
+							<span className="info-value active">✔</span>
+						</div>
+					)}
 				</>
 			);
 		} else if (eventType === "basesEvent" || eventType === "dailyNoteEvent") {
-			// 笔记事件和日记事件不显示额外的特定信息
-			// 来源信息已在 event-source-info 区域显示
 			return null;
 		} else {
 			const customEvent = event as CustomEvent;
+			const hasInfo = customEvent.isHidden || customEvent.isRepeat;
+			if (!hasInfo) return null;
 			return (
 				<>
-					<div className="event-info-row" data-property="isHidden">
-						<span className="info-label">
-							{t("view.eventManager.form.eventHidden")}:
-						</span>
-						<span
-							className={`info-value ${
-								customEvent.isHidden ? "active" : "inactive"
-							}`}
-						>
-							{customEvent.isHidden ? "✔" : "✘"}
-						</span>
-					</div>
-					<div className="event-info-row" data-property="isRepeat">
-						<span className="info-label">
-							{t("view.eventManager.customEvent.repeat")}:
-						</span>
-						<span
-							className={`info-value ${
-								customEvent.isRepeat ? "active" : "inactive"
-							}`}
-						>
-							{customEvent.isRepeat ? "✔" : "✘"}
-						</span>
-					</div>
+					{customEvent.isHidden && (
+						<div className="event-info-row" data-property="isHidden">
+							<span className="info-label">
+								{t("view.eventManager.form.eventHidden")}:
+							</span>
+							<span className="info-value active">✔</span>
+						</div>
+					)}
+					{customEvent.isRepeat && (
+						<div className="event-info-row" data-property="isRepeat">
+							<span className="info-label">
+								{t("view.eventManager.customEvent.repeat")}:
+							</span>
+							<span className="info-value active">✔</span>
+						</div>
+					)}
 				</>
 			);
 		}
@@ -308,9 +294,11 @@ export const EventItem: React.FC<EventItemProps> = ({
 					</div>
 				)}
 
-				<div className="event-specific-info">
-					{getEventSpecificInfo()}
-				</div>
+				{getEventSpecificInfo() && (
+					<div className="event-specific-info">
+						{getEventSpecificInfo()}
+					</div>
+				)}
 			</div>
 
 			<div className="event-actions">

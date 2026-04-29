@@ -125,7 +125,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 
 	// 添加新事件
 	const handleAddEvent = () => {
-		plugin.openEventForm(activeTab, {}, false, false);
+		plugin.openEventForm(activeTab, {}, false, true);
 	};
 
 	// 编辑事件
@@ -400,8 +400,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 							className="add-event-button"
 							onClick={handleAddEvent}
 						>
-							<span className="add-icon">+</span>
-							<span>{t("view.eventManager.actions.add")}</span>
+							✏️
 						</button>
 					</Tooltip>
 				</div>

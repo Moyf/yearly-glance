@@ -103,9 +103,11 @@ export const SortControls: React.FC<SortControlsProps> = ({
 					</div>
 				</>
 			) : (
-				<button className="yg-sort-button" onClick={toggleSort}>
-					🎢
-				</button>
+				<Tooltip text={t("view.eventManager.actions.sort.label")}>
+					<button className="yg-sort-button" onClick={toggleSort}>
+						🎢
+					</button>
+				</Tooltip>
 			)}
 		</div>
 	);

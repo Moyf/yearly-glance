@@ -17,6 +17,8 @@ import { Toggle } from "@/src/components/Base/Toggle";
 import { Select } from "@/src/components/Base/Select";
 import { Input } from "@/src/components/Base/Input";
 import { FolderAutoComplete } from "@/src/components/Base/FolderAutoComplete";
+import { IsoUtils } from "@/src/utils/isoUtils";
+import { previewNoteEventPath } from "@/src/utils/notePathFormat";
 import { PresetColorSettings } from "./PresetColorSettings";
 
 interface ViewSettingsProps {
@@ -57,6 +59,12 @@ export const iconDisplayOptions = ICON_DISPLAY_OPTIONS.map((option) => ({
 
 export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 	const { config, updateConfig } = useYearlyGlanceConfig(plugin);
+	const basesEventFilePreview = previewNoteEventPath(
+		config.defaultBasesEventPath || "",
+		config.basesEventFileNameFormat || "{event_name}",
+		"MyEvent",
+		IsoUtils.getTodayLocalDateString()
+	);
 
 	const handleUpdateConfig = async (
 		updates: Partial<YearlyGlanceConfig["config"]>
@@ -161,6 +169,21 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						}
 						placeholder={t("setting.general.defaultBasesEventPath.placeholder")}
 						app={plugin.app}
+					/>
+				</SettingsItem>
+				<SettingsItem
+					name={t("setting.general.basesEventFileNameFormat.name")}
+					desc={`${t("setting.general.basesEventFileNameFormat.desc")} ${t("setting.general.basesEventFileNameFormat.preview")}: ${basesEventFilePreview}`}
+				>
+					<Input
+						type="text"
+						value={config.basesEventFileNameFormat || ""}
+						onChange={(value) =>
+							handleUpdateConfig({
+								basesEventFileNameFormat: value,
+							})
+						}
+						placeholder="{event_name}"
 					/>
 				</SettingsItem>
 				{/* 标题属性名 */}

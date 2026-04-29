@@ -27,6 +27,7 @@ import { MigrateData } from "./utils/migrateData";
 import { setDebugLoggerEnabled } from "./utils/logger";
 import { EventCalculator } from "./utils/eventCalculator";
 import { IsoUtils } from "./utils/isoUtils";
+import { formatNoteEventPath } from "./utils/notePathFormat";
 import { generateEventId } from "./utils/uniqueEventId";
 import { CalendarEvent } from "./type/CalendarEvent";
 
@@ -361,10 +362,16 @@ export default class YearlyGlancePlugin extends Plugin {
 		allowTypeChange: boolean = false,
 		props?: EventFormModalProps
 	) {
+		// 当允许类型切换（新建事件）且没有指定特定类型时，使用上次选择的类型
+		const resolvedEventType =
+			allowTypeChange && eventType === "customEvent"
+				? (this.settings.config.lastSelectedEventType ?? "customEvent")
+				: eventType;
+
 		new EventFormModal(
 			this,
 			event,
-			eventType,
+			resolvedEventType,
 			isEditing,
 			allowTypeChange,
 			props
@@ -434,10 +441,12 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		let file = this.app.vault.getAbstractFileByPath(filePath);
 		if (!file) {
-			if (folder) {
-				const folderExists = this.app.vault.getAbstractFileByPath(folder);
-				if (!folderExists) {
-					await this.app.vault.createFolder(folder);
+			// 确保所有中间目录存在（支持 format 含路径的情况如 YYYY-MM/YYYY-MM-DD）
+			const dirPath = filePath.substring(0, filePath.lastIndexOf('/'));
+			if (dirPath) {
+				const dirExists = this.app.vault.getAbstractFileByPath(dirPath);
+				if (!dirExists) {
+					await this.app.vault.createFolder(dirPath);
 				}
 			}
 
@@ -484,6 +493,7 @@ export default class YearlyGlancePlugin extends Plugin {
 	async createBasesEventNote(event: CustomEvent): Promise<string> {
 		const config = this.settings.config;
 		const defaultPath = config.defaultBasesEventPath?.trim();
+		const format = config.basesEventFileNameFormat || "{event_name}";
 		const propConfig = buildPropConfig(config);
 
 		// 2. 确定文件夹路径
@@ -499,9 +509,23 @@ export default class YearlyGlancePlugin extends Plugin {
 			}
 		}
 
-		// 3. 生成文件名（使用事件标题）
-		const fileName = `${event.text}.md`;
-		const filePath = folderPath ? normalizePath(`${folderPath}/${fileName}`) : fileName;
+		// 3. 生成文件名和路径
+		const formattedPath = formatNoteEventPath(
+			format,
+			event.text,
+			event.eventDate.isoDate
+		);
+		const fileName = `${formattedPath}.md`;
+		const filePath = folderPath
+			? normalizePath(`${folderPath}/${fileName}`)
+			: normalizePath(fileName);
+
+		const dirPath = normalizePath(
+			filePath.substring(0, filePath.lastIndexOf("/"))
+		);
+		if (dirPath) {
+			await this.ensureFolderPath(dirPath);
+		}
 
 		// 4. 创建文件
 		await this.app.vault.create(filePath, "");
@@ -531,6 +555,19 @@ export default class YearlyGlancePlugin extends Plugin {
 		}
 
 		return filePath;
+	}
+
+	private async ensureFolderPath(folderPath: string): Promise<void> {
+		const segments = folderPath.split("/").filter(Boolean);
+		let currentPath = "";
+
+		for (const segment of segments) {
+			currentPath = currentPath ? `${currentPath}/${segment}` : segment;
+			const existing = this.app.vault.getAbstractFileByPath(currentPath);
+			if (!existing) {
+				await this.app.vault.createFolder(currentPath);
+			}
+		}
 	}
 
 	// 重载插件

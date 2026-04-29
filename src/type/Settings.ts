@@ -1,6 +1,7 @@
 import { SelectOption } from "@/src/components/Base/Select";
 import { t } from "@/src/i18n/i18n";
 import { IsoUtils } from "@/src/utils/isoUtils";
+import { EventType } from "@/src/type/Events";
 
 export const LAYOUT_OPTIONS = ["12x1", "1x12", "6x2", "2x6", "3x4", "4x3"];
 export const VIEW_TYPE_OPTIONS = ["calendar", "list"];
@@ -123,6 +124,7 @@ export interface YearlyGlanceSettings {
 	gregorianDisplayFormat: (typeof GREGORIAN_DISPLAY_FORMAT_OPTIONS)[number]["value"]; // 公历显示格式
 	// 笔记事件设置
 	defaultBasesEventPath?: string; // 默认笔记事件路径
+	basesEventFileNameFormat?: string; // 笔记事件文件名格式
 	basesEventTitleProp?: string; // 笔记事件标题属性名
 	basesEventDateProp?: string; // 笔记事件日期属性名
 	basesEventDurationProp?: string; // 笔记事件持续天数属性名
@@ -133,6 +135,8 @@ export interface YearlyGlanceSettings {
 	showDailyNoteEvents: boolean; // 是否显示日记事件
 	dailyNoteSource: "daily-notes" | "periodic-notes"; // 日记来源插件
 	dailyNoteEventProp: string; // 日记事件属性名
+	// 表单设置
+	lastSelectedEventType: EventType; // 上次选择的事件类型
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -164,6 +168,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	wrapEventText: false,
 	gregorianDisplayFormat: "YYYY-MM-DD", // 默认使用ISO格式
 	defaultBasesEventPath: "", // 默认笔记事件路径为空（根目录）
+	basesEventFileNameFormat: "{event_name}",
 	basesEventTitleProp: "title", // 默认标题属性名
 	basesEventDateProp: "event_date", // 默认日期属性名
 	basesEventDurationProp: "duration", // 默认持续天数属性名
@@ -174,4 +179,6 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	showDailyNoteEvents: false, // 默认不显示日记事件（需要用户手动启用）
 	dailyNoteSource: "daily-notes", // 默认使用核心日记插件
 	dailyNoteEventProp: "events", // 默认事件属性名
+	// 表单设置
+	lastSelectedEventType: "customEvent", // 默认上次选择的事件类型
 };

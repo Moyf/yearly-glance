@@ -251,7 +251,7 @@ const translations: BaseMessage = {
 		},
 		yearlyGlance: {
 			name: "Yearly glance",
-			yearlyCalendar: "Year calendar",
+			yearlyCalendar: "Year Glance",
 			legend: {
 				holiday: "Holiday",
 				birthday: "Birthday",
@@ -304,6 +304,7 @@ const translations: BaseMessage = {
 				openOriginalNote: "Open original note",
 				toggleBuiltinEventHidden: "Toggle built-in events hidden",
 				sort: {
+					label: "Sort",
 					name: "Event name",
 					date: "Event date",
 					asc: "Ascending",

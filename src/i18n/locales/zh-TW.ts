@@ -251,7 +251,7 @@ const translations: BaseMessage = {
 		},
 		yearlyGlance: {
 			name: "年度概覽",
-			yearlyCalendar: "年 年曆",
+			yearlyCalendar: "年度概覽",
 			legend: {
 				holiday: "節日",
 				birthday: "生日",
@@ -304,6 +304,7 @@ const translations: BaseMessage = {
 				openOriginalNote: "開啟原始筆記",
 				toggleBuiltinEventHidden: "切換內建節日顯示狀態",
 				sort: {
+					label: "排序",
 					name: "事件名稱",
 					date: "事件日期",
 					asc: "升序",

@@ -190,6 +190,7 @@ export type BaseMessage = {
 				openOriginalNote: string;
 				toggleBuiltinEventHidden: string;
 				sort: {
+					label: string;
 					name: string;
 					date: string;
 					asc: string;

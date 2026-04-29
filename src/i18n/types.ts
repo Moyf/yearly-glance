@@ -79,6 +79,9 @@ export type BaseMessage = {
 			defaultBasesEventPath: SettingsItem<{
 				placeholder: string;
 			}>;
+			basesEventFileNameFormat: SettingsItem<{
+				preview: string;
+			}>;
 			basesEventTitleProp: SettingsItem<{
 				placeholder: string;
 			}>;
@@ -223,6 +226,7 @@ export type BaseMessage = {
 				selectPresetColor: string;
 				eventCreated: string;
 				eventUpdated: string;
+				eventDeleted: string;
 				saveFailed: string;
 			};
 			dateError: {
@@ -260,10 +264,13 @@ export type BaseMessage = {
 				dailyNoteEventCreate: {
 					label: string;
 					text: string;
+					textDetailed: string;
+					fileNotExist: string;
 				};
 				dailyNoteEventEdit: {
 					label: string;
 					text: string;
+					dateChanged: string;
 				};
 			};
 			holiday: {

@@ -125,6 +125,11 @@ const translations: BaseMessage = {
 				desc: "此文件夹中带有事件属性的笔记会显示在日历中。你也可以通过 Bases 视图实现更灵活的筛选。",
 				placeholder: "留空则使用库根目录",
 			},
+			basesEventFileNameFormat: {
+				name: "文件名格式",
+				desc: "笔记事件文件名格式。使用 {event_name} 代表事件标题，日期通配符（YYYY、MM、DD），[文本] 内为字面字符。",
+				preview: "预览",
+			},
 			basesEventTitleProp: {
 				name: "标题属性名",
 				desc: "笔记属性中用于存储事件标题的属性名",
@@ -335,6 +340,7 @@ const translations: BaseMessage = {
 				selectPresetColor: "选择预设",
 				eventCreated: "事件已创建",
 				eventUpdated: "事件已更新",
+				eventDeleted: "事件已删除",
 				saveFailed: "保存失败：{{error}}",
 			},
 			dateError: {
@@ -401,10 +407,13 @@ const translations: BaseMessage = {
 				dailyNoteEventCreate: {
 					label: "日记事件",
 					text: "事件将添加到日记笔记的 frontmatter 列表中",
+					textDetailed: "事件将被添加到日记 {{filename}} 的 \"{{prop}}\" 属性中。",
+					fileNotExist: "当前不存在该日记文件，将会自动创建。",
 				},
 				dailyNoteEventEdit: {
 					label: "日记事件",
 					text: "修改将写回日记笔记的 frontmatter",
+					dateChanged: "事件将从原来的日记（{{oldDate}}）中转移到新的日记。",
 				},
 			},
 			holiday: {

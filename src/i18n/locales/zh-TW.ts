@@ -125,6 +125,11 @@ const translations: BaseMessage = {
 				desc: "此資料夾中帶有事件屬性的筆記會顯示在日曆中。你也可以透過 Bases 視圖實現更靈活的篩選。",
 				placeholder: "留空則使用庫根目錄",
 			},
+			basesEventFileNameFormat: {
+				name: "檔案名稱格式",
+				desc: "筆記事件檔案名稱格式。使用 {event_name} 代表事件標題，日期萬用字元（YYYY、MM、DD），[文字] 內為字面字元。",
+				preview: "預覽",
+			},
 			basesEventTitleProp: {
 				name: "標題屬性名",
 				desc: "筆記屬性中用於儲存事件標題的屬性名",
@@ -335,6 +340,7 @@ const translations: BaseMessage = {
 				selectPresetColor: "選擇預設",
 				eventCreated: "事件已建立",
 				eventUpdated: "事件已更新",
+				eventDeleted: "事件已刪除",
 				saveFailed: "儲存失敗：{{error}}",
 			},
 			dateError: {
@@ -401,10 +407,13 @@ const translations: BaseMessage = {
 				dailyNoteEventCreate: {
 					label: "日記事件",
 					text: "事件將新增到日記筆記的 frontmatter 列表中",
+					textDetailed: "事件將被加入到日記 {{filename}} 的 \"{{prop}}\" 屬性中。",
+					fileNotExist: "目前不存在該日記檔案，將會自動建立。",
 				},
 				dailyNoteEventEdit: {
 					label: "日記事件",
 					text: "修改將寫回日記筆記的 frontmatter",
+					dateChanged: "事件將從原來的日記（{{oldDate}}）中轉移到新的日記。",
 				},
 			},
 			holiday: {

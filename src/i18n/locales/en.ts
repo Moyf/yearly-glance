@@ -125,6 +125,11 @@ const translations: BaseMessage = {
 				desc: "Notes with event properties in this folder will appear in the calendar. You can also use Bases view for more flexible filtering.",
 				placeholder: "Leave empty to use vault root",
 			},
+			basesEventFileNameFormat: {
+				name: "File Name Format",
+				desc: "Format for note event file names. Use {event_name} for the event title, date tokens (YYYY, MM, DD), and [text] for literal characters.",
+				preview: "Preview",
+			},
 			basesEventTitleProp: {
 				name: "Title property name",
 				desc: "Property name in note properties for storing event title",
@@ -335,6 +340,7 @@ const translations: BaseMessage = {
 				selectPresetColor: "Select preset",
 				eventCreated: "Event created",
 				eventUpdated: "Event updated",
+				eventDeleted: "Event deleted",
 				saveFailed: "Failed to save: {{error}}",
 			},
 			dateError: {
@@ -403,10 +409,13 @@ const translations: BaseMessage = {
 				dailyNoteEventCreate: {
 					label: "Daily note event",
 					text: "The event will be added to the daily note's frontmatter list",
+					textDetailed: "The event will be added to the \"{{prop}}\" property in the daily note {{filename}}.",
+					fileNotExist: "The daily note file does not exist yet and will be created automatically.",
 				},
 				dailyNoteEventEdit: {
 					label: "Daily note event",
 					text: "Changes will be written back to the daily note's frontmatter",
+					dateChanged: "The event will be moved from the original daily note ({{oldDate}}) to the new daily note.",
 				},
 			},
 			holiday: {

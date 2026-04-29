@@ -42,6 +42,64 @@ When editing a daily note event and changing its date:
 
 ---
 
+## Note Events
+
+Use any note with an `event_date` frontmatter property as an event source. This lets you attach rich content — descriptions, links, checklists — directly to an event note, going beyond what a simple calendar entry can hold.
+
+### How It Works
+
+1. **Set root folder**: Settings → Note Events → Default note event path (e.g., `Events/`)
+2. **Create a note** in that folder with the required frontmatter
+3. The note automatically appears as an event on the calendar
+
+### Example Note
+
+```yaml
+---
+title: Team Offsite
+event_date: 2026-06-15
+duration: 3
+icon: 🏢
+color: "#3498db"
+description: Annual team building event
+---
+
+## Agenda
+- Morning: Strategy session
+- Afternoon: Team activities
+```
+
+### Available Properties
+
+| Property | Default Name | Required | Description |
+|----------|-------------|----------|-------------|
+| Title | `title` | No (uses filename) | Event display name |
+| Date | `event_date` | **Yes** | Event date (YYYY-MM-DD) |
+| Duration | `duration` | No (default: 1) | Number of days |
+| Icon | `icon` | No | Custom emoji |
+| Color | `color` | No | Hex color code |
+| Description | `description` | No | Additional notes |
+
+All property names are customizable in Settings → Note Events.
+
+### Creating Note Events from the Calendar
+
+Click the ✏️ button → select "Note Event" tab → fill in the event details. A new note file is created automatically in the configured root folder with the proper frontmatter.
+
+### Bases View Integration
+
+For advanced filtering, use Obsidian's **Bases** feature:
+
+1. Create a `.base` file with a query selecting your event notes
+2. Add the **Yearly Glance** view
+3. Map property names in the view options
+
+This lets you create multiple calendar views with different event sources and filters.
+
+> For more on Bases, see the [Obsidian Bases documentation](https://help.obsidian.md/bases).
+
+---
+
 ## Note Event File Name Format
 
 Note events (Bases events) now support a configurable file name format with date-based folder organization.

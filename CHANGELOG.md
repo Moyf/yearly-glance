@@ -1,82 +1,29 @@
 ## [4.0.0-beta.1](https://github.com/Moyf/yearly-glance/compare/3.2.0...4.0.0-beta.1) (2025-04-29) (Pre Release)
 
-## 🎉 Major Release — v4.0
+### 🚀 Added
 
-This release is a significant upgrade focusing on **Daily Note Events**, **Note Event Path Formatting**, **Context Menus**, and a comprehensive UI/UX overhaul across all views.
+- **Daily Note Events**: Full lifecycle support — create, edit, delete events stored in daily note frontmatter properties ✨
+- **Note Events**: Use notes with specific `event_date` property as event sources ✨
+- **Note Event File Name Format**: Support `{event_name}` and date tokens (YYYY, MM, DD) for custom file paths
+- **Multi-Day Event Support**: Events can span multiple days with duration field ✨
+- **Bases View Integration**: Use `.base` files to create filtered calendar views ✨
+- **Right-Click Context Menu**: Right-click events to edit, open note, or delete ✨
+- **Delete Button in Edit Modal**: Delete button in the bottom-left of the edit form
+- **Remember Last Event Type**: Event creation form defaults to last selected type
+- **Color Selector Circle Hints**: Colored circles before preset color options
+- **NavTabs Responsive Emoji Mode**: Collapse to emoji-only when space is insufficient
+- **Date Validation**: Invalid dates like `2026-04-220` are now properly rejected
 
-### English
+### ⚡ Changed
 
-#### 🚀 Added
+- **Simplified "From Note" Display**: Show only filename, hover for full path
+- **Unified Tooltip Component**: Consistent hover hint styling across all buttons
+- **Title Styling**: Improved year number font and interactive styling
+- **Event Specific Info**: Only shows meaningful attribute values, saving space
 
-- **Daily Note Events**: Full lifecycle support — create, edit, delete events stored in daily note frontmatter properties. Events are read from the daily note's property list and displayed on the calendar alongside other event types.
-- **Daily Note Date Migration**: When editing a daily note event and changing its date, the event is automatically moved from the old daily note file to the new one (creating the file if needed).
-- **Note Event File Name Format**: New setting `basesEventFileNameFormat` allows configuring how note event files are named using `{event_name}` placeholder and moment.js date tokens (YYYY, MM, DD, etc.). Supports `[literal]` brackets and nested subdirectories. Live preview in settings.
-- **Right-Click Context Menu**: Right-clicking an event shows a native Obsidian menu with "Edit", "Open Note" (for note-based events), and "Delete" options.
-- **Delete Button in Edit Modal**: A delete button in the bottom-left of the edit form allows direct event deletion with confirmation dialog. Supports all event types (config events removed from data, note events trashed, daily note events removed from frontmatter).
-- **Remember Last Event Type**: The event creation form remembers your last selected event type (customEvent, basesEvent, dailyNoteEvent, etc.) and defaults to it next time.
-- **Color Selector Circle Hints**: Preset color dropdown now shows a colored circle before each option label for quick visual identification.
-- **NavTabs Responsive Emoji Mode**: Event type tabs show emoji + text at normal width, and collapse to emoji-only when space is insufficient (via container query).
-- **Multi-Day Event Support**: Events can span multiple days with duration field, displayed with connected borders across day cells.
-- **Bases View Integration**: Full integration with Obsidian Bases — use `.base` files to create filtered calendar views with customizable property mapping.
-- **Date Validation**: Invalid dates like `2026-04-220` are now properly rejected with error messages.
+### 🐛 Fixed
 
-#### ⚡ Changed
-
-- **Simplified "From Note" Display**: Event preview tooltip now shows only the filename (e.g., `my-event.md`) instead of the full path. Full path shown on hover via unified Tooltip component.
-- **Unified Tooltip Component**: All native `title` attributes on buttons replaced with the project's custom Tooltip component for consistent hover hint styling.
-- **Title Styling**: Year number uses serif font at 1.5em with underline decoration and accent color on hover. Title aligned at baseline.
-- **Event Manager Header**: Wraps to second line when space is insufficient instead of clipping buttons.
-- **Event Specific Info**: Only shows attributes with meaningful values (hidden events, repeat, foundDate). No longer renders empty "Hidden: ✘" rows.
-- **Calendar Legend**: Collapses to emoji-only at container width ≤600px.
-- **Add Event Button**: Changed from pill-shaped accent button to circular icon button (✏️) matching adjacent action buttons.
-- **Delete Button Style**: Subtle background with error-colored text instead of intense red fill.
-- **DailyNote Hints in Form**: Shows specific daily note filename, property name, auto-creation warning, and date migration warning.
-
-#### 🐛 Fixed
-
-- **Daily Note Date Change Bug**: Changing a daily note event's date now properly migrates the property between daily note files instead of only updating the title in the old file.
-- **Daily Note Creation ENOENT**: Fixed crash when creating daily note events with format paths containing subdirectories (e.g., `YYYY-MM/YYYY-MM-DD`). Now creates intermediate directories automatically.
-- **Optional Fields Locked**: Fixed bug where switching away from dailyNoteEvent type in the form still kept optional fields disabled (was caused by stale `isDailyNoteEventProp` reference).
-- **Context Menu Order**: Uses proper item ordering without `setSection("danger")` which caused Obsidian to reorder items.
-- **i18n Interpolation**: Fixed template variables using single braces `{name}` when the system requires double braces `{{name}}`.
-
----
-
-### 中文
-
-#### 🚀 新增
-
-- **日记事件**：完整的生命周期支持 — 创建、编辑、删除存储在日记 frontmatter 属性中的事件。从日记的属性列表读取事件并显示在年历上。
-- **日记事件日期迁移**：编辑日记事件并修改日期时，事件会自动从旧日记文件迁移到新日记文件（如果新文件不存在会自动创建）。
-- **笔记事件文件名格式**：新设置项 `basesEventFileNameFormat`，支持用 `{event_name}` 占位符和 moment 日期通配符（YYYY、MM、DD 等）定义文件路径。支持 `[字面量]` 括号和嵌套子目录，设置页实时预览。
-- **右键菜单**：右键点击事件显示 Obsidian 原生菜单，包含「编辑」「打开笔记」（仅笔记类事件）「删除」选项。
-- **编辑窗删除按钮**：编辑表单左下角新增删除按钮，支持确认对话框。适配所有事件类型（配置事件移除数据、笔记事件删除文件、日记事件移除 frontmatter 属性值）。
-- **记住上次事件类型**：创建事件时自动默认为上次选择的事件类型。
-- **颜色选择器圆形色块**：预设颜色下拉选项前显示对应颜色的圆形标识。
-- **标签页响应式 Emoji 模式**：事件类型标签在正常宽度显示 emoji + 文字，空间不足时自动切换为仅显示 emoji（通过容器查询实现）。
-- **多日事件支持**：事件可设置持续天数，在日历中以连接边框跨日显示。
-- **Bases 视图集成**：完整集成 Obsidian Bases — 使用 `.base` 文件创建带自定义属性映射的筛选日历视图。
-- **日期校验增强**：`2026-04-220` 等非法日期现在会正确报错。
-
-#### ⚡ 变更
-
-- **简化来源笔记显示**：事件预览弹窗仅显示文件名，hover 时通过统一 Tooltip 显示完整路径。
-- **统一 Tooltip 组件**：所有按钮的原生 `title` 属性替换为项目统一的 Tooltip 组件。
-- **标题样式**：年份数字使用衬线字体 1.5em，带下划线装饰，hover 时变为强调色。标题 baseline 对齐。
-- **事件管理器头部**：空间不足时操作按钮换行显示，不再被裁切。
-- **事件详情精简**：仅显示有意义的属性值（隐藏、重复、创始日期），不再显示 "Hidden: ✘" 等默认状态行。
-- **日历图例**：容器宽度 ≤600px 时折叠为仅 emoji 模式。
-- **添加事件按钮**：从胶囊形强调按钮改为与相邻按钮一致的圆形图标按钮（✏️）。
-- **删除按钮样式**：柔和背景配错误色文字，替代此前浓烈的红色填充。
-- **日记事件表单提示**：显示具体日记文件名、属性名、自动创建提示、日期变更迁移提示。
-
-#### 🐛 修复
-
-- **日记事件日期变更 Bug**：修改日期后事件属性正确迁移到新日记文件，而非仅更新旧文件中的标题。
-- **日记事件创建 ENOENT**：修复格式路径含子目录时（如 `YYYY-MM/YYYY-MM-DD`）创建失败的问题，现在自动创建中间目录。
-- **可选字段被锁定**：修复从 dailyNoteEvent 切换到其他类型后可选字段仍不可编辑的问题。
-- **右键菜单顺序**：移除 `setSection("danger")` 避免 Obsidian 自动重排菜单项。
-- **i18n 插值**：修复模板变量使用单花括号 `{name}` 而系统要求双花括号 `{{name}}` 的问题。
+- **Optional Fields Locked**: Fixed fields staying disabled after switching from dailyNoteEvent type
 
 ---
 

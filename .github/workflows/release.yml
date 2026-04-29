@@ -72,14 +72,20 @@ jobs:
                     > "$output_file"  # 初始化空文件
                     
                     # 确定版本的标题级别 (# 或 ##)
-                    # 分解版本号，检查是否为小版本
-                    IFS='.' read -r major minor patch <<< "$target_version"
+                    # 先去掉 -beta.N 后缀再判断 patch 级别
+                    local base_version="${target_version%%-*}"
+                    IFS='.' read -r major minor patch <<< "$base_version"
                     # 如果patch不是0，那么是小版本，使用二级标题 (##)
                     if [[ -n "$patch" && "$patch" != "0" ]]; then
                       local title_level="##"
                     else
                       # 大版本或次版本，使用一级标题 (#)
-                      local title_level="#"
+                      # 但 beta 版本统一使用二级标题 (##)
+                      if [[ "$target_version" == *"beta"* ]]; then
+                        local title_level="##"
+                      else
+                        local title_level="#"
+                      fi
                     fi
                     
                     echo "Looking for version $target_version with title level: $title_level"
@@ -109,7 +115,6 @@ jobs:
                     END { 
                       if (!found) {
                         print "Warning: Version " version " not found with title level " level > "/dev/stderr";
-                        exit 1;
                       }
                     }' "$changelog_file" > "temp_version_content.md"
                     

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
-import { Modal, Notice } from "obsidian";
+import { Modal, Notice, normalizePath } from "obsidian";
 import YearlyGlancePlugin from "@/src/main";
 import { YearlyGlanceConfig } from "@/src/type/Config";
 import {
@@ -18,6 +18,8 @@ import "./style/EventFormModal.css";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
 import { t } from "@/src/i18n/i18n";
 import { DailyNoteService } from "@/src/service/DailyNoteService";
+import { ConfirmDialog } from "@/src/components/Base/ConfirmDialog";
+import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 
 export interface EventFormModalProps {
 	date?: string; // 可选的日期属性
@@ -82,8 +84,11 @@ export class EventFormModal extends Modal {
 					isEditing={this.isEditing}
 					allowTypeChange={this.allowTypeChange}
 					settings={this.settings}
+					plugin={this.plugin}
 				onSave={this.onSave.bind(this)}
 				onCancel={() => this.close()}
+				onDelete={this.isEditing ? () => this.handleDelete() : undefined}
+				canDelete={this.isEditing}
 				props={this.props}
 				isBasesEvent={this.isBasesEvent}
 				isDailyNoteEvent={this.isDailyNoteEvent}
@@ -97,6 +102,50 @@ export class EventFormModal extends Modal {
 		setTimeout(() => {
 			this.root?.unmount();
 			this.contentEl.empty();
+		});
+	}
+
+	private async handleDelete(): Promise<void> {
+		return new Promise((resolve) => {
+			new ConfirmDialog(this.plugin, {
+				title: t("view.eventManager.actions.delete"),
+				message: t("view.eventManager.actions.deleteConfirm", { name: this.event.text || "" }),
+				onConfirm: async () => {
+					try {
+						if (this.isDailyNoteEvent) {
+							const filePath = (this.event as CalendarEvent).sourceFilePath || DailyNoteService.getFilePathFromEvent(this.event as CalendarEvent);
+							if (filePath) {
+								const defaultEmoji = EVENT_TYPE_DEFAULT.dailyNoteEvent.emoji;
+								const fullTitle = DailyNoteService.assembleTitle(this.event.emoji, this.event.text || '', defaultEmoji);
+								await DailyNoteService.removeEventFromDaily(this.app, filePath, this.plugin.getSettings().config.dailyNoteEventProp, fullTitle);
+								YearlyGlanceBus.publish('dailynote-data');
+							}
+						} else if (this.isBasesEvent) {
+							const filePath = (this.event as CalendarEvent).sourceFilePath;
+							if (filePath) {
+								const file = this.app.vault.getAbstractFileByPath(filePath);
+								if (file) {
+									await this.app.fileManager.trashFile(file);
+									YearlyGlanceBus.publish('bases-data');
+								}
+							}
+						} else {
+							const events = this.plugin.getData();
+							const newEvents = { ...events };
+							const eventId = this.event.id;
+							newEvents.holidays = events.holidays.filter(h => h.id !== eventId);
+							newEvents.birthdays = events.birthdays.filter(b => b.id !== eventId);
+							newEvents.customEvents = events.customEvents.filter(c => c.id !== eventId);
+							await this.plugin.updateData(newEvents);
+						}
+						new Notice(t("view.eventManager.form.eventUpdated"));
+						this.close();
+					} catch (error) {
+						console.error("[YearlyGlance] Delete failed:", error);
+					}
+					resolve();
+				},
+			}).open();
 		});
 	}
 
@@ -217,19 +266,87 @@ export class EventFormModal extends Modal {
 
 					if (this.isEditing && this.editingEvent) {
 						// 编辑模式：写回日记笔记的 frontmatter
-						const filePath = (this.editingEvent as CalendarEvent).sourceFilePath || DailyNoteService.getFilePathFromEvent(this.editingEvent as CalendarEvent);
-						if (filePath) {
-							const newTitle = DailyNoteService.assembleTitle(
-								event.emoji,
-								event.text || '',
-								defaultDailyEmoji
-							);
+						const oldIsoDate = this.editingEvent.eventDate?.isoDate;
+						const newIsoDate = event.eventDate.isoDate;
+						const oldFilePath = (this.editingEvent as CalendarEvent).sourceFilePath || DailyNoteService.getFilePathFromEvent(this.editingEvent as CalendarEvent);
+						const newTitle = DailyNoteService.assembleTitle(
+							event.emoji,
+							event.text || '',
+							defaultDailyEmoji
+						);
+
+						if (oldFilePath) {
 							// 从 event ID 提取 index（格式: dailynote-{date}-{index}）用于精确定位
 							const eventIndex = Number((this.editingEvent.id || '').split('-').pop());
-							if (!Number.isNaN(eventIndex)) {
+
+							if (oldIsoDate && newIsoDate && oldIsoDate !== newIsoDate) {
+								const oldEmoji = DailyNoteService.getEffectiveEmoji(
+									this.editingEvent as CalendarEvent,
+									defaultDailyEmoji
+								);
+								const oldTitle = DailyNoteService.assembleTitle(
+									oldEmoji,
+									this.editingEvent.text || '',
+									defaultDailyEmoji
+								);
+
+								await DailyNoteService.removeEventFromDaily(
+									this.app,
+									oldFilePath,
+									this.plugin.getSettings().config.dailyNoteEventProp,
+									oldTitle
+								);
+
+								const settings = DailyNoteService.getDailyNoteSettings(
+									this.app,
+									this.plugin.getSettings().config.dailyNoteSource
+								);
+								if (!settings) {
+									throw new Error("Daily note plugin is not available");
+								}
+
+								const momentFn = (window as typeof window & {
+									moment?: (input: string, format: string) => { format(pattern: string): string };
+								}).moment;
+								if (!momentFn) {
+									throw new Error("Moment is not available");
+								}
+
+								const formattedName = momentFn(newIsoDate, "YYYY-MM-DD").format(settings.format);
+								const folder = settings.folder.replace(/\/+$/, "");
+								const newFilePath = normalizePath(
+									folder ? `${folder}/${formattedName}.md` : `${formattedName}.md`
+								);
+
+								let newFile = this.app.vault.getAbstractFileByPath(newFilePath);
+								if (!newFile) {
+									if (folder) {
+										const normalizedFolder = normalizePath(folder);
+										const folderExists = this.app.vault.getAbstractFileByPath(normalizedFolder);
+										if (!folderExists) {
+											await this.app.vault.createFolder(normalizedFolder);
+										}
+									}
+
+									await this.app.vault.create(newFilePath, "");
+									newFile = this.app.vault.getAbstractFileByPath(newFilePath);
+								}
+
+								if (!newFile) {
+									throw new Error("Failed to create daily note");
+								}
+
+								await DailyNoteService.addEventToDaily(
+									this.app,
+									newFilePath,
+									this.plugin.getSettings().config.dailyNoteEventProp,
+									newTitle
+								);
+								YearlyGlanceBus.publish('dailynote-data');
+							} else if (!Number.isNaN(eventIndex)) {
 								await DailyNoteService.updateEventTitle(
 									this.app,
-									filePath,
+									oldFilePath,
 									this.plugin.getSettings().config.dailyNoteEventProp,
 									eventIndex,
 									newTitle
@@ -269,6 +386,11 @@ export class EventFormModal extends Modal {
 					? t("view.eventManager.form.eventUpdated")
 					: t("view.eventManager.form.eventCreated")
 			);
+
+			// 记住本次保存的事件类型，用于下次新建事件时的默认类型
+			if (!this.isEditing && this.allowTypeChange) {
+				this.plugin.updateConfig({ lastSelectedEventType: eventType });
+			}
 
 			this.close();
 		} catch (error) {

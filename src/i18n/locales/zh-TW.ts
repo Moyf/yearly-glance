@@ -187,12 +187,16 @@ const translations: BaseMessage = {
 				noPlugin: "日記外掛和 Periodic Notes 外掛均未啟用",
 				noDailyNotes: "核心日記外掛未啟用",
 				noPeriodicNotes: "Periodic Notes 外掛未安裝",
-			},
 		},
-		events: {
-			name: "事件",
-			desc: "各事件的管理",
+		customEmojiKeywords: {
+			name: "自訂 emoji 關鍵詞",
+			desc: "為 emoji 新增自訂搜尋關鍵詞。格式：emoji: 關鍵詞1, 關鍵詞2（每行一個）",
 		},
+	},
+	events: {
+		name: "事件",
+		desc: "各事件的管理",
+	},
 		group: {
 			basic: {
 				name: "基本設定",

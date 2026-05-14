@@ -187,10 +187,14 @@ const translations: BaseMessage = {
 				noPlugin: "日记插件和 Periodic Notes 插件均未启用",
 				noDailyNotes: "核心日记插件未启用",
 				noPeriodicNotes: "Periodic Notes 插件未安装",
-			},
 		},
-		events: {
-			name: "事件",
+		customEmojiKeywords: {
+			name: "自定义 emoji 关键词",
+			desc: "为 emoji 添加自定义搜索关键词。格式：emoji: 关键词1, 关键词2（每行一个）",
+		},
+	},
+	events: {
+		name: "事件",
 			desc: "各事件的管理",
 		},
 		group: {

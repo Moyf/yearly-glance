@@ -187,9 +187,13 @@ const translations: BaseMessage = {
 				noPlugin: "Neither Daily Notes nor Periodic Notes plugin is enabled",
 				noDailyNotes: "Core Daily Notes plugin is not enabled",
 				noPeriodicNotes: "Periodic Notes plugin is not installed",
-			},
 		},
-		events: {
+		customEmojiKeywords: {
+			name: "Custom emoji keywords",
+			desc: "Add custom search keywords for emoji. Format: emoji: keyword1, keyword2 (one per line)",
+		},
+	},
+	events: {
 			name: "Events",
 			desc: "Event management",
 		},

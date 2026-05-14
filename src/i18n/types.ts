@@ -111,12 +111,13 @@ export type BaseMessage = {
 				placeholder: string;
 			}>;
 			dailyNoteShowEmoji: IBaseSettingsItem;
-			dailyNoteWarning: SettingsItem<{
-				noPlugin: string;
-				noDailyNotes: string;
-				noPeriodicNotes: string;
-			}>;
+		dailyNoteWarning: SettingsItem<{
+			noPlugin: string;
+			noDailyNotes: string;
+			noPeriodicNotes: string;
 		}>;
+		customEmojiKeywords: IBaseSettingsItem;
+	}>;
 		events: IBaseSettingsItem;
 		group: {
 			basic: IBaseSettingsItem;

@@ -20,6 +20,7 @@ import { FolderAutoComplete } from "@/src/components/Base/FolderAutoComplete";
 import { IsoUtils } from "@/src/utils/isoUtils";
 import { previewNoteEventPath } from "@/src/utils/notePathFormat";
 import { PresetColorSettings } from "./PresetColorSettings";
+import { CustomEmojiKeywordsEditor } from "./CustomEmojiKeywordsEditor";
 
 interface ViewSettingsProps {
 	plugin: YearlyGlancePlugin;
@@ -533,6 +534,26 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						presetColors={config.presetColors}
 						onChange={(value) =>
 							handleUpdateConfig({ presetColors: value })
+						}
+					/>
+				</SettingsItem>
+			</SettingsBlock>
+
+			{/* Emoji 快捷词管理 */}
+			<SettingsBlock
+				name={t("setting.general.customEmojiKeywords.name")}
+				desc={t("setting.general.customEmojiKeywords.desc")}
+				collapsible
+				defaultCollapsed={true}
+			>
+				<SettingsItem
+					name={t("setting.general.customEmojiKeywords.name")}
+					desc={t("setting.general.customEmojiKeywords.desc")}
+				>
+					<CustomEmojiKeywordsEditor
+						value={config.customEmojiKeywords || {}}
+						onChange={(value) =>
+							handleUpdateConfig({ customEmojiKeywords: value })
 						}
 					/>
 				</SettingsItem>

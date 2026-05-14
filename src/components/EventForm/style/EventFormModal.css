@@ -256,3 +256,15 @@
 	pointer-events: none;
 	user-select: none;
 }
+
+/* Emoji input wrapper - input + picker button side by side */
+.yg-emoji-input-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex: 1;
+
+	input {
+		flex: 1;
+	}
+}

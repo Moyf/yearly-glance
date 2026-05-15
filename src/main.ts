@@ -626,21 +626,32 @@ export default class YearlyGlancePlugin extends Plugin {
 		const year = this.settings.config.year;
 		const events = this.settings.data;
 
-		// 更新节日和自定义事件的dateArr
-		events.holidays = EventCalculator.updateHolidaysInfo(
-			events.holidays,
-			year
-		);
-		events.customEvents = EventCalculator.updateCustomEventsInfo(
-			events.customEvents,
-			year
-		);
+		try {
+			events.holidays = EventCalculator.updateHolidaysInfo(
+				events.holidays,
+				year
+			);
+		} catch (e) {
+			console.error("[YearlyGlance] Failed to update holidays:", e);
+		}
 
-		// 更新生日的完整信息（包含dateArr、nextBirthday、age、animal、zodiac等）
-		events.birthdays = EventCalculator.updateBirthdaysInfo(
-			events.birthdays,
-			year
-		);
+		try {
+			events.customEvents = EventCalculator.updateCustomEventsInfo(
+				events.customEvents,
+				year
+			);
+		} catch (e) {
+			console.error("[YearlyGlance] Failed to update custom events:", e);
+		}
+
+		try {
+			events.birthdays = EventCalculator.updateBirthdaysInfo(
+				events.birthdays,
+				year
+			);
+		} catch (e) {
+			console.error("[YearlyGlance] Failed to update birthdays:", e);
+		}
 
 		// 不触发保存的通知，因为这是内部计算，不需要通知用户
 		await this.saveData(this.settings);

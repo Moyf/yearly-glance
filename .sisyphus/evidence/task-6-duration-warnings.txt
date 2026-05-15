@@ -1,0 +1,3 @@
+src/i18n/locales/en.ts:494:		invalidDuration: "{{count}} event(s) have invalid duration values and will be treated as 1 day. Check the console for details.",
+src/i18n/locales/zh.ts:490:		invalidDuration: "有 {{count}} 条事件的持续天数不规范，已按 1 天处理。详情请查看控制台。",
+src/i18n/locales/zh-TW.ts:490:		invalidDuration: "有 {{count}} 筆事件的持續天數不規範，已按 1 天處理。詳情請查看控制台。",

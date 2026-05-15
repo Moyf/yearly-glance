@@ -30,7 +30,20 @@ export class EventCalculator {
 	) {
 		if (!isoDate) return [];
 
-		const { year, month, day } = IsoUtils.parse(isoDate, calendar);
+		let parsed;
+		try {
+			parsed = IsoUtils.parse(isoDate, calendar);
+		} catch (e) {
+			console.warn(`[YearlyGlance] Failed to parse date "${isoDate}":`, e);
+			return [];
+		}
+		const { year, month, day } = parsed;
+
+		// Basic validation: month must be 1-12, day must be 1-31
+		if (month < 1 || month > 12 || day < 1 || day > 31) {
+			console.warn(`[YearlyGlance] Invalid date values in "${isoDate}": month=${month}, day=${day}`);
+			return [];
+		}
 
 		// 对于不重复的自定义事件且有年份，只需要计算出公历日期，不随yearSelected变动
 		if (
@@ -229,79 +242,80 @@ export class EventCalculator {
 	 * @returns 更新后的生日对象
 	 */
 	static updateBirthdayInfo(birthday: Birthday, yearSelected: number) {
-		const isoDate = birthday.eventDate.isoDate;
-		const calendar = birthday.eventDate.calendar;
+		try {
+			const isoDate = birthday.eventDate.isoDate;
+			const calendar = birthday.eventDate.calendar;
 
-		// 空值检查
-		if (!isoDate) {
-			console.warn("[YearlyGlance] Birthday isoDate is undefined, skipping update:", birthday);
-			return birthday;
-		}
-
-		const dateArr = this.calculateDateArr(
-			"birthday",
-			isoDate,
-			calendar,
-			yearSelected
-		);
-
-		// 如果 dateArr 为空（例如 yearSelected < birthYear），返回原始数据，避免覆盖 eventDate.isoDate
-		if (dateArr.length === 0) {
-			console.warn("[YearlyGlance] Birthday dateArr is empty, skipping update:", birthday);
-			return birthday;
-		}
-
-		// 从 userInput.input 解析出生年份，用于年龄和生肖计算
-		// （eventDate.isoDate 可能已经被更新为显示年份）
-		const birthIsoDate = birthday.eventDate.userInput?.input || isoDate;
-		const { year, month, day } = IsoUtils.parse(birthIsoDate, calendar);
-		const todaySolar = Solar.fromDate(new Date());
-
-		// 计算下一次生日，
-		let nextBirthday, currentYearBirthday, nextYearBirthday;
-		// 计算星座，生肖，
-		let zodiac, animal;
-		if (calendar === "GREGORIAN") {
-			currentYearBirthday = Solar.fromYmd(
-				todaySolar.getYear(),
-				month,
-				day
-			);
-			nextYearBirthday = Solar.fromYmd(
-				todaySolar.getYear() + 1,
-				month,
-				day
-			);
-			if (todaySolar.isBefore(currentYearBirthday)) {
-				// 今年的生日还没到
-				nextBirthday = currentYearBirthday.toString();
-			} else {
-				// 今年的生日已过，计算明年的生日
-				nextBirthday = nextYearBirthday.toString();
+			// 空值检查
+			if (!isoDate) {
+				console.warn("[YearlyGlance] Birthday isoDate is undefined, skipping update:", birthday);
+				return birthday;
 			}
 
-			if (year !== undefined) {
-				const xingzuo = Solar.fromYmd(year, month, day).getXingZuo();
-				zodiac = getBirthdayTranslation(xingzuo, "zodiac");
+			const dateArr = this.calculateDateArr(
+				"birthday",
+				isoDate,
+				calendar,
+				yearSelected
+			);
 
-				const ganzhi = Solar.fromYmd(year, month, day)
-					.getLunar()
-					.getYearInGanZhi();
-				const shengxiao = Solar.fromYmd(year, month, day)
-					.getLunar()
-					.getYearShengXiao();
-				// 获取生肖
-				animal =
-					getBirthdayTranslation(ganzhi, "ganzhi") +
-					getBirthdayTranslation(shengxiao, "animal");
-			} else {
-				const xingzuo = Solar.fromYmd(
-					yearSelected,
+			// 如果 dateArr 为空（例如 yearSelected < birthYear），返回原始数据，避免覆盖 eventDate.isoDate
+			if (dateArr.length === 0) {
+				console.warn("[YearlyGlance] Birthday dateArr is empty, skipping update:", birthday);
+				return birthday;
+			}
+
+			// 从 userInput.input 解析出生年份，用于年龄和生肖计算
+			// （eventDate.isoDate 可能已经被更新为显示年份）
+			const birthIsoDate = birthday.eventDate.userInput?.input || isoDate;
+			const { year, month, day } = IsoUtils.parse(birthIsoDate, calendar);
+			const todaySolar = Solar.fromDate(new Date());
+
+			// 计算下一次生日，
+			let nextBirthday, currentYearBirthday, nextYearBirthday;
+			// 计算星座，生肖，
+			let zodiac, animal;
+			if (calendar === "GREGORIAN") {
+				currentYearBirthday = Solar.fromYmd(
+					todaySolar.getYear(),
 					month,
 					day
-				).getXingZuo();
-				zodiac = getBirthdayTranslation(xingzuo, "zodiac");
-				animal = null;
+				);
+				nextYearBirthday = Solar.fromYmd(
+					todaySolar.getYear() + 1,
+					month,
+					day
+				);
+				if (todaySolar.isBefore(currentYearBirthday)) {
+					// 今年的生日还没到
+					nextBirthday = currentYearBirthday.toString();
+				} else {
+					// 今年的生日已过，计算明年的生日
+					nextBirthday = nextYearBirthday.toString();
+				}
+
+				if (year !== undefined) {
+					const xingzuo = Solar.fromYmd(year, month, day).getXingZuo();
+					zodiac = getBirthdayTranslation(xingzuo, "zodiac");
+
+					const ganzhi = Solar.fromYmd(year, month, day)
+						.getLunar()
+						.getYearInGanZhi();
+					const shengxiao = Solar.fromYmd(year, month, day)
+						.getLunar()
+						.getYearShengXiao();
+					// 获取生肖
+					animal =
+						getBirthdayTranslation(ganzhi, "ganzhi") +
+						getBirthdayTranslation(shengxiao, "animal");
+				} else {
+					const xingzuo = Solar.fromYmd(
+						yearSelected,
+						month,
+						day
+					).getXingZuo();
+					zodiac = getBirthdayTranslation(xingzuo, "zodiac");
+					animal = null;
 			}
 		} else if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {
 			currentYearBirthday = LunarLibrary.constructLunar(
@@ -370,5 +384,9 @@ export class EventCalculator {
 			animal,
 			zodiac,
 		};
+		} catch (error) {
+			console.warn(`[YearlyGlance] Failed to update birthday info for "${birthday.text}":`, error);
+			return birthday;
+		}
 	}
 }

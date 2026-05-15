@@ -60,11 +60,7 @@ const GlanceManager = React.forwardRef<
 			case "events":
 				return <EventManagerView plugin={plugin} />;
 			case "settings":
-				return (
-					<div>
-						<ViewSettings plugin={plugin} />
-					</div>
-				);
+				return <ViewSettings plugin={plugin} />;
 			case "dataPort":
 				return <DataPortManagerView plugin={plugin} />;
 			default:
@@ -82,7 +78,7 @@ const GlanceManager = React.forwardRef<
 					className="yg-glance-manager-nav"
 				/>
 			</div>
-			<div className="yg-glance-manager-content">
+			<div className={`yg-glance-manager-content tab-${activeTab}`}>
 				{renderTabContent()}
 			</div>
 		</div>

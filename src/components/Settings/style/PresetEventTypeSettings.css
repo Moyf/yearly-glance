@@ -99,7 +99,7 @@
 
 	.yg-preset-type-name {
 		flex: 2;
-		min-width: 0;
+		min-width: 4em;
 	}
 
 	.yg-preset-type-emoji {
@@ -160,9 +160,9 @@
 		border-radius: 6px;
 		cursor: pointer;
 		color: var(--text-muted);
-		transition: all 0.2s ease;
 		background: none;
 		border: none;
+		transition: all 0.2s ease;
 
 		&:hover {
 			color: var(--text-error);

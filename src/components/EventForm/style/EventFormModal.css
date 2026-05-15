@@ -30,6 +30,10 @@
 		padding: 4px 6px;
 	}
 
+	.yg-select-wrapper {
+		flex: 1;
+		min-width: 0;
+	}
 	label {
 		display: block;
 		margin-bottom: 0;

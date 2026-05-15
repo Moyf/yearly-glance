@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { EventPresetType } from "@/src/type/Settings";
-import { ColorSelector } from "@/src/components/Base/ColorSelector";
 import { t } from "@/src/i18n/i18n";
 import { TranslationKeys } from "@/src/i18n/types";
 import { generateUUID } from "@/src/utils/uuid";
 import YearlyGlancePlugin from "@/src/main";
 import { Input } from "@/src/components/Base/Input";
+import { Toggle } from "@/src/components/Base/Toggle";
 import { ConfirmDialog } from "@/src/components/Base/ConfirmDialog";
 import "./style/PresetEventTypeSettings.css";
 
@@ -21,6 +21,8 @@ export const PresetEventTypeSettings: React.FC<
 > = ({ presetTypes, onChange, plugin }) => {
 	const [types, setTypes] = React.useState<EventPresetType[]>(presetTypes);
 	const [errors, setErrors] = React.useState<Record<string, string>>({});
+	const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
+	const [dragOverIndex, setDragOverIndex] = React.useState<number | null>(null);
 
 	React.useEffect(() => {
 		setTypes(presetTypes);
@@ -31,15 +33,48 @@ export const PresetEventTypeSettings: React.FC<
 		onChange(newTypes);
 	};
 
+	// --- Drag handlers ---
+	const handleDragStart = (_e: React.DragEvent, index: number) => {
+		setDraggedIndex(index);
+	};
+
+	const handleDragOver = (e: React.DragEvent, index: number) => {
+		e.preventDefault();
+		setDragOverIndex(index);
+	};
+
+	const handleDrop = (e: React.DragEvent) => {
+		e.preventDefault();
+		if (
+			draggedIndex !== null &&
+			dragOverIndex !== null &&
+			draggedIndex !== dragOverIndex
+		) {
+			const newTypes = [...types];
+			const draggedItem = newTypes[draggedIndex];
+			newTypes.splice(draggedIndex, 1);
+			newTypes.splice(dragOverIndex, 0, draggedItem);
+			updateTypes(newTypes);
+		}
+		setDraggedIndex(null);
+		setDragOverIndex(null);
+	};
+
+	const handleDragEnd = () => {
+		setDraggedIndex(null);
+		setDragOverIndex(null);
+	};
+
+	// --- Field handlers ---
 	const handleAdd = () => {
 		const newType: EventPresetType = {
 			id: generateUUID({ length: 8 }),
 			name: "",
 			emoji: "",
 			color: undefined,
+			enable: true,
 		};
-		const newTypes = [...types, newType];
-		updateTypes(newTypes);
+		updateTypes([...types, newType]);
 	};
 
 	const handleNameChange = (id: string, name: string) => {
@@ -48,7 +83,6 @@ export const PresetEventTypeSettings: React.FC<
 		);
 		setTypes(newTypes);
 
-		// Validate duplicate names
 		const duplicate = newTypes.find(
 			(t) => t.id !== id && t.name.trim() === name.trim() && name.trim() !== ""
 		);
@@ -77,19 +111,30 @@ export const PresetEventTypeSettings: React.FC<
 	};
 
 	const handleEmojiChange = (id: string, emoji: string) => {
-		// Allow only up to 2 characters (emoji can be multi-byte)
 		const trimmed = [...emoji].slice(0, 2).join("");
-		const newTypes = types.map((type) =>
+		updateTypes(types.map((type) =>
 			type.id === id ? { ...type, emoji: trimmed } : type
-		);
-		updateTypes(newTypes);
+		));
 	};
 
-	const handleColorChange = (id: string, color: string | undefined) => {
-		const newTypes = types.map((type) =>
+	const handleColorChange = (id: string, color: string) => {
+		updateTypes(types.map((type) =>
 			type.id === id ? { ...type, color } : type
-		);
-		updateTypes(newTypes);
+		));
+	};
+
+	const handlePresetColorSelect = (id: string, value: string) => {
+		updateTypes(types.map((type) =>
+			type.id === id ? { ...type, color: value } : type
+		));
+	};
+
+	const handleEnableChange = (id: string) => {
+		updateTypes(types.map((type) =>
+			type.id === id
+				? { ...type, enable: !(type.enable ?? true) }
+				: type
+		));
 	};
 
 	const countReferences = (typeId: string): number => {
@@ -97,9 +142,7 @@ export const PresetEventTypeSettings: React.FC<
 		let count = 0;
 		count += data.holidays.filter((e) => e.presetTypeId === typeId).length;
 		count += data.birthdays.filter((e) => e.presetTypeId === typeId).length;
-		count += data.customEvents.filter(
-			(e) => e.presetTypeId === typeId
-		).length;
+		count += data.customEvents.filter((e) => e.presetTypeId === typeId).length;
 		return count;
 	};
 
@@ -117,9 +160,7 @@ export const PresetEventTypeSettings: React.FC<
 
 		if (refCount > 0) {
 			new ConfirmDialog(plugin, {
-				title: t(
-					"setting.general.eventPresetTypes.name" as TranslationKeys
-				),
+				title: t("setting.general.eventPresetTypes.name" as TranslationKeys),
 				message: t(
 					"setting.general.eventPresetTypes.deleteConfirm" as TranslationKeys,
 					{ count: refCount }
@@ -131,56 +172,105 @@ export const PresetEventTypeSettings: React.FC<
 		}
 	};
 
+	// Build preset color options from plugin config
+	const presetColorOptions = (plugin.getConfig().presetColors ?? [])
+		.filter((c) => c.enable)
+		.map((c) => ({
+			label: c.id
+				? t(`data.color.${c.id}` as TranslationKeys)
+				: c.label,
+			value: c.value,
+		}));
+
 	return (
-		<div className="yg-preset-type-list">
-			{types.map((type) => (
-				<div key={type.id} className="yg-preset-type-row">
-					<Input
-						className="yg-preset-type-emoji-input"
-						value={type.emoji || ""}
-						onChange={(value) => handleEmojiChange(type.id, value)}
-						placeholder="😀"
-						maxLength={4}
-					/>
-					<div className="yg-preset-type-name-input">
-						<Input
-							value={type.name}
-							onChange={(value) => handleNameChange(type.id, value)}
-							onBlur={() => handleNameBlur(type.id)}
-							placeholder={t(
-								"setting.general.eventPresetTypes.namePlaceholder" as TranslationKeys
-							)}
-						/>
-						{errors[type.id] && (
-							<div className="yg-preset-type-error">
-								{t(
+		<div className="yg-preset-types">
+			<div className="yg-preset-types-header">
+				<button className="yg-type-add mod-cta" onClick={handleAdd}>
+					<Plus />
+				</button>
+			</div>
+			<div className="yg-preset-types-container">
+				{types.map((type, index) => (
+					<div
+						key={type.id}
+						className={`yg-preset-type-item ${
+							draggedIndex === index ? "dragging" : ""
+						} ${dragOverIndex === index ? "drag-over" : ""}`}
+					>
+						<div className="yg-preset-type-inputs">
+							<span
+								className="yg-drag-handle"
+								draggable
+								onDragStart={(e) => handleDragStart(e, index)}
+								onDragOver={(e) => handleDragOver(e, index)}
+								onDrop={handleDrop}
+								onDragEnd={handleDragEnd}
+							>
+								≡
+							</span>
+							<Input
+								className="yg-preset-type-name"
+								value={type.name}
+								onChange={(value) => handleNameChange(type.id, value)}
+								onBlur={() => handleNameBlur(type.id)}
+								placeholder={t(
 									"setting.general.eventPresetTypes.namePlaceholder" as TranslationKeys
 								)}
-							</div>
-						)}
+							/>
+							<input
+								className="yg-preset-type-emoji"
+								type="text"
+								value={type.emoji || ""}
+								onChange={(e) => handleEmojiChange(type.id, e.target.value)}
+								placeholder="😀"
+								maxLength={4}
+							/>
+							<input
+								className="yg-preset-type-color-pick"
+								type="color"
+								value={type.color || "#cccccc"}
+								onChange={(e) => handleColorChange(type.id, e.target.value)}
+								title={t("common.color" as TranslationKeys)}
+							/>
+							{presetColorOptions.length > 0 && (
+								<select
+									className="yg-preset-type-preset-select"
+									value={type.color || ""}
+									onChange={(e) =>
+										handlePresetColorSelect(type.id, e.target.value)
+									}
+									title={t("setting.general.presetColors.name" as TranslationKeys)}
+								>
+									<option value="">—</option>
+									{presetColorOptions.map((opt) => (
+										<option key={opt.value} value={opt.value}>
+											{opt.label}
+										</option>
+									))}
+								</select>
+							)}
+						</div>
+						<div className="yg-preset-type-actions">
+							{errors[type.id] && (
+								<span className="yg-preset-type-error">
+									{t("setting.general.eventPresetTypes.namePlaceholder" as TranslationKeys)}
+								</span>
+							)}
+							<Toggle
+								checked={type.enable ?? true}
+								onChange={() => handleEnableChange(type.id)}
+							/>
+							<button
+								className="yg-preset-type-delete-btn mod-cta"
+								onClick={() => handleDelete(type.id)}
+								title={t("common.delete" as TranslationKeys)}
+							>
+								<Trash2 size={18} />
+							</button>
+						</div>
 					</div>
-					<ColorSelector
-						value={type.color}
-						onChange={(color) => handleColorChange(type.id, color)}
-						submitDefaultAsValue={false}
-					/>
-					<button
-						className="yg-preset-type-delete-btn"
-						onClick={() => handleDelete(type.id)}
-						title={t("common.delete" as TranslationKeys)}
-					>
-						<Trash2 size={16} />
-					</button>
-				</div>
-			))}
-			<button className="yg-preset-type-add-btn" onClick={handleAdd}>
-				<Plus size={16} />
-				<span>
-					{t(
-						"setting.general.eventPresetTypes.addNew" as TranslationKeys
-					)}
-				</span>
-			</button>
+				))}
+			</div>
 		</div>
 	);
 };

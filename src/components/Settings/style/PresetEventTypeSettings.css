@@ -1,59 +1,177 @@
-.yg-preset-type-list {
+.yg-preset-types {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 16px;
+	width: 100%;
 }
 
-.yg-preset-type-row {
+.yg-preset-types-header {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	justify-content: flex-end;
+
+	.yg-type-add {
+		padding: 8px;
+		margin-right: 0.75rem;
+		border-radius: 6px;
+		background: var(--interactive-accent);
+		color: var(--text-on-accent);
+		transition: all 0.2s ease;
+
+		&:hover {
+			transform: scale(1.05);
+			background: var(--interactive-accent-hover);
+		}
+	}
 }
 
-.yg-preset-type-emoji-input {
-	width: 40px;
-	text-align: center;
+.yg-preset-types-container {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
 }
 
-.yg-preset-type-name-input {
-	flex: 1;
-}
-
-.yg-preset-type-delete-btn {
-	background: none;
-	border: none;
-	cursor: pointer;
-	color: var(--text-muted);
-	padding: 4px;
-	border-radius: 4px;
+.yg-preset-type-item {
 	display: flex;
 	align-items: center;
-	justify-content: center;
-}
-
-.yg-preset-type-delete-btn:hover {
-	color: var(--text-error);
-}
-
-.yg-preset-type-add-btn {
-	display: flex;
-	align-items: center;
-	gap: 4px;
-	margin-top: 8px;
-	background: none;
-	border: none;
-	cursor: pointer;
-	color: var(--text-muted);
-	padding: 4px 8px;
-	border-radius: 4px;
-}
-
-.yg-preset-type-add-btn:hover {
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding: 0.5rem 0.75rem;
+	background: var(--background-primary);
+	border-radius: 8px;
 	color: var(--text-normal);
+	user-select: none;
+	transition: all 0.2s ease;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+	border: 1px solid var(--background-modifier-border);
+
+	&:hover {
+		background: var(--interactive-hover);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+	}
+
+	&.dragging {
+		opacity: 0.6;
+		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+	}
+
+	&.drag-over {
+		transform: translateX(8px);
+		border: 2px dashed var(--interactive-accent);
+	}
+}
+
+.yg-preset-type-inputs {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.5rem;
+	flex: 1;
+	min-width: 0;
+
+	.yg-drag-handle {
+		color: var(--text-muted);
+		cursor: grab;
+		font-size: 1.2em;
+		padding: 12px 8px;
+		margin: -8px -4px;
+		border-radius: 4px;
+		transition: all 0.2s ease;
+		min-width: 32px;
+		min-height: 32px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		&:hover {
+			color: var(--text-normal);
+			background: var(--interactive-hover);
+		}
+
+		&:active {
+			cursor: grabbing;
+			background: var(--interactive-active);
+			transform: scale(0.95);
+		}
+	}
+
+	.yg-preset-type-name {
+		flex: 2;
+		min-width: 0;
+	}
+
+	.yg-preset-type-emoji {
+		width: 40px;
+		text-align: center;
+		flex-shrink: 0;
+		padding: 6px 4px;
+		border-radius: 4px;
+		border: 1px solid var(--background-modifier-border);
+		background: var(--background-secondary);
+		color: var(--text-normal);
+		font-size: 1rem;
+
+		&::placeholder {
+			opacity: 0.4;
+		}
+	}
+
+	.yg-preset-type-color-pick {
+		width: 36px;
+		height: 36px;
+		flex-shrink: 0;
+		cursor: pointer;
+		border-radius: 4px;
+		border: 1px solid var(--background-modifier-border);
+		padding: 2px;
+		background: none;
+	}
+
+	.yg-preset-type-preset-select {
+		width: 120px;
+		max-width: 120px;
+		flex-shrink: 0;
+		padding: 6px 4px;
+		border-radius: 4px;
+		border: 1px solid var(--background-modifier-border);
+		background: var(--background-secondary);
+		color: var(--text-normal);
+		font-size: var(--font-ui-small);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		cursor: pointer;
+	}
+}
+
+.yg-preset-type-actions {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex-shrink: 0;
+
+	.yg-preset-type-delete-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: none;
+		border: none;
+		cursor: pointer;
+		color: var(--text-muted);
+		padding: 4px;
+		border-radius: 4px;
+		transition: all 0.2s ease;
+
+		&:hover {
+			color: var(--text-error);
+			background: var(--background-modifier-error-hover);
+		}
+	}
 }
 
 .yg-preset-type-error {
 	color: var(--text-error);
 	font-size: var(--font-ui-smaller);
-	margin-top: 2px;
+	white-space: nowrap;
 }

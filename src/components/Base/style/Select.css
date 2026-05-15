@@ -46,7 +46,6 @@
 	position: absolute;
 	top: 100%;
 	left: 0;
-	right: 0;
 	margin-top: 4px;
 	background-color: var(--background-primary);
 	border: 1px solid var(--background-modifier-border);
@@ -56,6 +55,9 @@
 	z-index: 1000;
 	max-height: 200px;
 	overflow-y: auto;
+	min-width: 100%;
+	width: max-content;
+	max-width: 300px;
 }
 
 .yg-select-options-container {
@@ -70,6 +72,8 @@
 	height: 36px;
 	box-sizing: border-box;
 	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	&:hover {
 		background-color: var(--background-modifier-hover);
 	}

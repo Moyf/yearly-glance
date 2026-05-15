@@ -101,6 +101,7 @@ export interface EventPresetType {
 	name: string;     // user-defined name, e.g. "健康"
 	emoji?: string;   // optional emoji, e.g. "🌿"
 	color?: string;   // optional hex color, e.g. "#66FF33"
+	enable?: boolean; // whether this type is available in EventForm selector (default: true)
 }
 
 // 插件设置接口

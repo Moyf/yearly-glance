@@ -477,10 +477,12 @@ export const EventForm: React.FC<EventFormProps> = ({
 							<Select
 								options={[
 									{ label: t("view.eventManager.presetType.none"), value: "" },
-									...(settings.config.eventPresetTypes ?? []).map((pt) => ({
-										label: `${pt.emoji ?? ""} ${pt.name}`.trim(),
-										value: pt.id,
-									})),
+									...(settings.config.eventPresetTypes ?? [])
+										.filter((pt) => pt.enable ?? true)
+										.map((pt) => ({
+											label: `${pt.emoji ?? ""} ${pt.name}`.trim(),
+											value: pt.id,
+										})),
 								]}
 								value={formData.presetTypeId ?? ""}
 								onValueChange={(value) => {

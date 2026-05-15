@@ -42,3 +42,6 @@ dist
 # agent state
 .claude/
 .sisyphus/
+
+# Worktrees
+.worktrees/

@@ -212,9 +212,8 @@ const translations: BaseMessage = {
 				noPeriodicNotes: "Periodic Notes 插件未安装",
 			},
 			customEmojiKeywords: {
-				name: "自定义 emoji 关键词",
-				desc: "为 emoji 添加自定义搜索关键词。格式：emoji: 关键词1, 关键词2（每行一个）",
-				pickerHint: "提示：也可以在事件编辑界面的 emoji 选择器中直接添加关键词",
+				name: "Emoji 关键词映射",
+				desc: "为 emoji 添加自定义搜索关键词。格式：emoji: 关键词1, 关键词2（每行一个）"
 			},
 		},
 		events: {
@@ -242,7 +241,7 @@ const translations: BaseMessage = {
 				name: "布局相关",
 				desc: "年历的整体布局与视图类型",
 			},
-			displayContent: {
+			style: {
 				name: "样式设置",
 				desc: "年历外观相关的内容",
 			},
@@ -252,7 +251,7 @@ const translations: BaseMessage = {
 			},
 			customEmoji: {
 				name: "自定义 Emoji",
-				desc: "在这里配置的 Emoji 会出现在图标选择窗口中",
+				desc: "在这里配置的 Emoji 会出现在图标选择窗口中  （你可以在事件编辑界面的 emoji 选择器中直接新增关键词）",
 			},
 			colorSets: {
 				name: "颜色预设",
@@ -604,6 +603,9 @@ const translations: BaseMessage = {
 	common: {
 		confirm: "确认",
 		cancel: "取消",
+		color: "颜色",
+		delete: "删除",
+		edit: "编辑",
 	},
 	notice: {
 		setDefaultBasesEventPath: "提示：请在插件设置中选择默认笔记事件路径",

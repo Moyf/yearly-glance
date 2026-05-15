@@ -23,6 +23,7 @@ import { previewNoteEventPath } from "@/src/utils/notePathFormat";
 import { PresetColorSettings } from "./PresetColorSettings";
 import { PresetEventTypeSettings } from "./PresetEventTypeSettings";
 import { NavTabs } from "@/src/components/Base/NavTabs";
+import { CustomEmojiKeywordsEditor } from "./CustomEmojiKeywordsEditor";
 
 interface ViewSettingsProps {
 	plugin: YearlyGlancePlugin;
@@ -52,7 +53,7 @@ export const eventClickActionOptions = EVENT_CLICK_ACTION_OPTIONS.map((option) =
 	label: t(`setting.general.eventClickAction.options.${option}` as TranslationKeys),
 }));
 
-type SettingsTabKey = "basic" | "layout" | "noteEvents" | "dailyNoteEvents" | "presets";
+type SettingsTabKey = "basic" | "style" | "noteEvents" | "dailyNoteEvents" | "presets";
 
 export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 	const { config, updateConfig } = useYearlyGlanceConfig(plugin);
@@ -73,7 +74,7 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 
 	const settingsTabs = [
 		{ label: t("setting.group.basic.name"), value: "basic" },
-		{ label: t("setting.group.displayContent.name" as TranslationKeys), value: "layout" },
+		{ label: t("setting.group.style.name" as TranslationKeys), value: "style" },
 		{ label: t("setting.group.basesEvent.name"), value: "noteEvents" },
 		{ label: t("setting.group.dailyNoteEvent.name"), value: "dailyNoteEvents" },
 		{ label: t("setting.group.presets.name" as TranslationKeys), value: "presets" },
@@ -140,13 +141,13 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 					</>
 				);
 
-			case "layout":
+			case "style":
 				return (
 					<>
 						{/* 样式设置 */}
 						<SettingsBlock
-							name={t("setting.group.displayContent.name" as TranslationKeys)}
-							desc={t("setting.group.displayContent.desc" as TranslationKeys)}
+							name={t("setting.group.style.name" as TranslationKeys)}
+							desc={t("setting.group.style.desc" as TranslationKeys)}
 							collapsible
 							defaultCollapsed={false}
 						>
@@ -307,6 +308,26 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 			case "presets":
 				return (
 					<>
+						{/* Emoji 快捷词管理 */}
+						<SettingsBlock
+							name={t("setting.group.customEmoji.name")}
+							desc={t("setting.group.customEmoji.desc")}
+							collapsible
+							defaultCollapsed={true}
+						>
+							<SettingsItem
+								name={t("setting.general.customEmojiKeywords.name")}
+								desc={t("setting.general.customEmojiKeywords.desc")}
+							>
+								<CustomEmojiKeywordsEditor
+									value={config.customEmojiKeywords || {}}
+									onChange={(value) =>
+										handleUpdateConfig({ customEmojiKeywords: value })
+									}
+								/>
+							</SettingsItem>
+						</SettingsBlock>
+
 						{/* 颜色预设 */}
 						<SettingsBlock
 							name={t("setting.group.colorSets.name")}

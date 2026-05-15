@@ -212,9 +212,8 @@ const translations: BaseMessage = {
 				noPeriodicNotes: "Periodic Notes plugin is not installed",
 			},
 			customEmojiKeywords: {
-				name: "Custom emoji keywords",
-				desc: "Add custom search keywords for emoji. Format: emoji: keyword1, keyword2 (one per line)",
-				pickerHint: "Tip: You can also add keywords from the emoji picker in the event form",
+				name: "Emoji keywords mapping",
+				desc: "Add custom search keywords for emoji. Format: emoji: keyword1, keyword2 (one per line)"
 			},
 		},
 		events: {
@@ -242,7 +241,7 @@ const translations: BaseMessage = {
 				name: "Layout",
 				desc: "Overall layout and view type of the calendar.",
 			},
-			displayContent: {
+			style: {
 				name: "Style",
 				desc: "Appearance-related options for the calendar.",
 			},
@@ -252,7 +251,7 @@ const translations: BaseMessage = {
 			},
 			customEmoji: {
 				name: "Custom Emoji",
-				desc: "Emoji configured here will appear in the icon selection window",
+				desc: "Emoji configured here will appear in the icon selection window (you can also directly add keywords in the emoji selector of the event editing interface)",
 			},
 			colorSets: {
 				name: "Color presets",
@@ -608,6 +607,9 @@ const translations: BaseMessage = {
 	common: {
 		confirm: "Confirm",
 		cancel: "Cancel",
+		color: "Color",
+		delete: "Delete",
+		edit: "Edit",
 	},
 	notice: {
 		setDefaultBasesEventPath: "Tip: Please select the default note event path in plugin settings",

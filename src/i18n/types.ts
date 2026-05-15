@@ -133,9 +133,7 @@ export type BaseMessage = {
 			noDailyNotes: string;
 			noPeriodicNotes: string;
 		}>;
-		customEmojiKeywords: SettingsItem<{
-			pickerHint: string;
-		}>;
+		customEmojiKeywords: IBaseSettingsItem;
 	}>;
 	events: IBaseSettingsItem;
 	group: {
@@ -144,7 +142,7 @@ export type BaseMessage = {
 			noteEventProps: IBaseSettingsItem;
 			dailyNoteEvent: IBaseSettingsItem;
 			layout: IBaseSettingsItem;
-			displayContent: IBaseSettingsItem;
+			style: IBaseSettingsItem;
 			eventDisplay: IBaseSettingsItem;
 			customEmoji: IBaseSettingsItem;
 			colorSets: IBaseSettingsItem;
@@ -456,6 +454,9 @@ export type BaseMessage = {
 	common: {
 		confirm: string;
 		cancel: string;
+		color: string;
+		delete: string;
+		edit: string;
 	};
 	notice: {
 		setDefaultBasesEventPath: string;

@@ -192,14 +192,14 @@ export const PresetColorSettings: React.FC<PresetColorSettingsProps> = ({
 							/>
 							{color.id !== undefined ? (
 								<button
-									className="yg-color-reset mod-cta"
+									className="yg-color-reset"
 									onClick={() => handleReset(index)}
 								>
 									<RotateCcw size={18} />
 								</button>
 							) : (
 								<button
-									className="yg-color-remove mod-cta"
+									className="yg-color-remove"
 									onClick={() => handleRemove(index)}
 								>
 									<Trash2 size={18} />

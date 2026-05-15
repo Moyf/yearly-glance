@@ -212,9 +212,8 @@ const translations: BaseMessage = {
 				noPeriodicNotes: "Periodic Notes 外掛未安裝",
 			},
 			customEmojiKeywords: {
-				name: "自訂 emoji 關鍵詞",
-				desc: "為 emoji 新增自訂搜尋關鍵詞。格式：emoji: 關鍵詞1, 關鍵詞2（每行一個）",
-				pickerHint: "提示：也可以在事件編輯介面的 emoji 選擇器中直接新增關鍵詞",
+				name: "emoji 關鍵詞映射",
+				desc: "為 emoji 新增自訂搜尋關鍵詞。格式：emoji: 關鍵詞1, 關鍵詞2（每行一個）"
 			},
 		},
 		events: {
@@ -242,7 +241,7 @@ const translations: BaseMessage = {
 				name: "佈局相關",
 				desc: "年曆的整體佈局與視圖類型",
 			},
-			displayContent: {
+			style: {
 				name: "樣式設定",
 				desc: "年曆外觀相關的內容",
 			},
@@ -252,7 +251,7 @@ const translations: BaseMessage = {
 			},
 			customEmoji: {
 				name: "自訂 Emoji",
-				desc: "在這裡配置的 Emoji 會出現在圖示選擇窗口中",
+				desc: "在這裡配置的 Emoji 會出現在圖示選擇窗口中（也可以在事件編輯介面的 emoji 選擇器中直接新增關鍵詞）",
 			},
 			colorSets: {
 				name: "顏色預設",
@@ -604,6 +603,9 @@ const translations: BaseMessage = {
 	common: {
 		confirm: "確認",
 		cancel: "取消",
+		color: "顏色",
+		delete: "刪除",
+		edit: "編輯"
 	},
 	notice: {
 		setDefaultBasesEventPath: "提示：請在外掛設定中選擇預設筆記事件路徑",

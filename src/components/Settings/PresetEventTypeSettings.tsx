@@ -255,7 +255,7 @@ export const PresetEventTypeSettings: React.FC<
 								</span>
 							)}
 							<button
-								className="yg-preset-type-delete-btn mod-cta"
+								className="yg-preset-type-delete-btn"
 								onClick={() => handleDelete(type.id)}
 								title={t("common.delete" as TranslationKeys)}
 							>

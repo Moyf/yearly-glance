@@ -153,20 +153,12 @@
 	flex-shrink: 0;
 
 	.yg-preset-type-delete-btn {
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		padding: 8px;
 		border-radius: 6px;
-		cursor: pointer;
-		color: var(--text-muted);
-		background: none;
-		border: none;
 		transition: all 0.2s ease;
 
 		&:hover {
-			color: var(--text-error);
-			background: var(--background-modifier-error-hover);
+			background: var(--interactive-accent);
 		}
 	}
 }

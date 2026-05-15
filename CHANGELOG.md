@@ -1,3 +1,22 @@
+## [4.0.0-beta.5] (Pre Release)
+
+### 🚀 Added
+
+- **Multi-token search in EventManager**: Support `@year:2026 @month:3 @type:健康` combined filters, with a suggestion panel for available tokens
+- **Settings layout improvements**: Content area now has tab class; settings panel centered at max 700px width
+
+### 🐛 Fixed
+
+- **Search chip display**: Removed `@id` from chip labels; chips now fade in with 200ms delay; space auto-inserted after token completion
+- **EventForm layout**: Select wrapper now fills the full form-group row; color selector dropdown no longer clipped by `overflow:hidden`
+- **Preset type assignment**: Emoji and color are now always applied on type change, not just on initial selection
+- **Preset type UI**: Redesigned preset type row; wider type dropdown; tooltip moved to EventForm label; basesEvent type selector works correctly
+- **Settings tab**: Placeholder/cursor fixes; unnecessary toggle hidden; restructured for clarity
+- **Delete button styles**: Restored correct styles in PresetEventTypeSettings
+- **IME input**: Removed emoji input length restriction to allow multi-character IME composition
+
+---
+
 ## [4.0.0-beta.4] (Pre Release)
 
 ### 🚀 Added

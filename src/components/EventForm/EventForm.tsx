@@ -471,7 +471,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 					</div>
 
 					{/* 预设类型（仅对配置事件显示） */}
-					{currentEventType !== "basesEvent" && currentEventType !== "dailyNoteEvent" && (
+					{currentEventType !== "dailyNoteEvent" && (
 						<div className="form-group">
 							<label>{t("view.eventManager.presetType.label")}</label>
 							<Select

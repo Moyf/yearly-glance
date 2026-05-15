@@ -130,10 +130,11 @@
 	}
 
 	.yg-preset-type-preset-select {
-		width: 120px;
-		max-width: 120px;
+		width: 140px;
+		min-width: 140px;
+		max-width: 140px;
 		flex-shrink: 0;
-		padding: 6px 4px;
+		padding: 4px 6px;
 		border-radius: 4px;
 		border: 1px solid var(--background-modifier-border);
 		background: var(--background-secondary);

@@ -110,12 +110,13 @@ export type BaseMessage = {
 			basesEventPresetTypeProp: SettingsItem<{
 				placeholder: string;
 			}>;
-			eventPresetTypes: SettingsItem<{
-				addNew: string;
-				namePlaceholder: string;
-				deleteConfirm: string;
-				usedByCount: string;
-			}>;
+		eventPresetTypes: SettingsItem<{
+			tooltip: string;
+			addNew: string;
+			namePlaceholder: string;
+			deleteConfirm: string;
+			usedByCount: string;
+		}>;
 			showDailyNoteEvents: IBaseSettingsItem;
 			dailyNoteSource: SettingsItem<{
 				options: {

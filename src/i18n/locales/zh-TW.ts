@@ -177,6 +177,7 @@ const translations: BaseMessage = {
 			eventPresetTypes: {
 				name: "預設事件類型",
 				desc: "定義可分配給事件的命名類型（含 emoji 和顏色）",
+				tooltip: "給事件分配類型後將自動套用該類型的 emoji 和顏色。單個事件仍可覆蓋自己的 emoji 和顏色。",
 				addNew: "新建類型",
 				namePlaceholder: "類型名稱（如：健康）",
 				deleteConfirm: "此類型被 {count} 個事件使用，刪除後將回退到預設顏色，是否繼續？",

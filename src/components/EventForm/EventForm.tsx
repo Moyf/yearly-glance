@@ -134,7 +134,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 			color: event.color,
 			remark: event.remark,
 			isHidden: event.isHidden,
-			presetTypeId: (event as any).presetTypeId,
+			presetTypeId: event.presetTypeId,
 		};
 
 		// 处理不同事件类型的特有属性

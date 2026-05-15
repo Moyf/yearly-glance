@@ -31,22 +31,6 @@ export const PresetEventTypeSettings: React.FC<
 		onChange(newTypes);
 	};
 
-	const validateName = (
-		name: string,
-		currentId: string
-	): string | undefined => {
-		if (!name.trim()) return undefined; // allow empty names during editing
-		const duplicate = types.find(
-			(t) => t.id !== currentId && t.name.trim() === name.trim()
-		);
-		if (duplicate) {
-			return t(
-				"setting.general.eventPresetTypes.namePlaceholder" as TranslationKeys
-			);
-		}
-		return undefined;
-	};
-
 	const handleAdd = () => {
 		const newType: EventPresetType = {
 			id: generateUUID({ length: 8 }),

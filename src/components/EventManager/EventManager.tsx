@@ -5,7 +5,6 @@ import { useYearlyGlanceConfig, YearlyGlanceBus } from "@/src/hooks/useYearlyGla
 import { EVENT_TYPE_OPTIONS } from "@/src/components/EventForm/EventForm";
 import { SortControls, SortDirection, SortField } from "./SortControls";
 import { EventList } from "./EventList";
-import { Input } from "@/src/components/Base/Input";
 import { ConfirmDialog } from "@/src/components/Base/ConfirmDialog";
 import { NavTabs } from "@/src/components/Base/NavTabs";
 import { Tooltip } from "@/src/components/Base/Tooltip";
@@ -20,6 +19,30 @@ import { NoteEventService } from "@/src/service/NoteEventService";
 import { DailyNoteService } from "@/src/service/DailyNoteService";
 import "./style/EventManagerView.css";
 
+// ---------- search token parser ----------
+type TokenType = "year" | "month" | "type" | "id";
+interface SearchToken {
+	type: TokenType;
+	value: string;
+}
+interface ParsedSearch {
+	tokens: SearchToken[];
+	freetext: string;
+}
+
+function parseSearchTokens(raw: string): ParsedSearch {
+	const tokens: SearchToken[] = [];
+	let freetext = raw;
+	const tokenRegex = /@(year|month|type|id):([^\s@]*)/gi;
+	let match: RegExpExecArray | null;
+	while ((match = tokenRegex.exec(raw)) !== null) {
+		tokens.push({ type: match[1].toLowerCase() as TokenType, value: match[2].trim() });
+		freetext = freetext.replace(match[0], "");
+	}
+	freetext = freetext.trim().toLowerCase();
+	return { tokens, freetext };
+}
+
 interface EventManagerViewProps {
 	plugin: YearlyGlancePlugin;
 }
@@ -32,7 +55,9 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 	const [activeTab, setActiveTab] = React.useState<EventType>("customEvent");
 	const [searchTerm, setSearchTerm] = React.useState("");
 	const [searchExpanded, setSearchExpanded] = React.useState(false);
+	const [searchFocused, setSearchFocused] = React.useState(false);
 	const searchContainerRef = React.useRef<HTMLDivElement>(null);
+	const searchInputRef = React.useRef<HTMLInputElement>(null);
 
 	// 添加排序状态
 	const [sortField, setSortField] = React.useState<SortField>("date");
@@ -188,93 +213,89 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 		}).open();
 	};
 
+	// ---------- multi-token search ----------
+	const matchesSearch = React.useCallback(
+		(event: Holiday | Birthday | CustomEvent | CalendarEvent): boolean => {
+			const raw = searchTerm.trim();
+			if (!raw) return true;
+			const { tokens, freetext } = parseSearchTokens(raw);
+
+			// freetext match
+			if (freetext) {
+				const textMatch =
+					event.text.toLowerCase().includes(freetext) ||
+					(event.remark && event.remark.toLowerCase().includes(freetext)) ||
+					(event.eventDate?.isoDate?.toLowerCase().includes(freetext) ?? false);
+				if (!textMatch) return false;
+			}
+
+			// token conditions (AND)
+			for (const token of tokens) {
+				if (token.value === "") continue; // ignore empty tokens
+				switch (token.type) {
+					case "id":
+						if (event.id?.toString() !== token.value) return false;
+						break;
+					case "year": {
+						const yearStr = token.value;
+						const hasYear =
+							(event as CalendarEvent).dateArr?.some((d) => d.startsWith(yearStr)) ||
+							(event.eventDate?.isoDate?.startsWith(yearStr) ?? false);
+						if (!hasYear) return false;
+						break;
+					}
+					case "month": {
+						const monthNum = parseInt(token.value, 10);
+						if (isNaN(monthNum)) break;
+						const paddedMonth = String(monthNum).padStart(2, "0");
+						const hasMonth =
+							(event as CalendarEvent).dateArr?.some((d) => {
+								// "YYYY-MM-DD" → month is index 5-6
+								const parts = d.split("-");
+								return parts.length >= 2 && parseInt(parts[1], 10) === monthNum;
+							}) ||
+							(() => {
+								const iso = event.eventDate?.isoDate ?? "";
+								const parts = iso.split("-");
+								// support "YYYY-MM-DD" or "MM-DD"
+								if (parts.length === 3) return parseInt(parts[1], 10) === monthNum;
+								if (parts.length === 2) return parseInt(parts[0], 10) === monthNum;
+								return false;
+							})();
+						if (!hasMonth) return false;
+						break;
+					}
+					case "type": {
+						const partial = token.value.toLowerCase();
+						const matchingTypeIds = (config.eventPresetTypes ?? [])
+							.filter((pt) => pt.name.toLowerCase().includes(partial))
+							.map((pt) => pt.id);
+						if (matchingTypeIds.length === 0) return false;
+						if (!event.presetTypeId || !matchingTypeIds.includes(event.presetTypeId)) return false;
+						break;
+					}
+				}
+			}
+			return true;
+		},
+		[searchTerm, config.eventPresetTypes]
+	);
+
 	// 获取当前标签页的事件列表
 	const getCurrentEvents = () => {
 		// 如果有搜索词，从所有事件中搜索
 		if (searchTerm.trim()) {
-			const term = searchTerm.trim().toLowerCase();
-
-			// 检查是否使用 @id 语法进行搜索
-			const idMatch = term.match(/^@id\s+(.+)$/);
-			if (idMatch) {
-				const idTerm = idMatch[1].trim();
-				// 在所有事件类型中搜索指定ID - 使用精确匹配
-				const results: Array<Holiday | Birthday | CustomEvent | CalendarEvent> = [
-					...events.holidays.filter(
-						(event) => event.id?.toString() === idTerm
-					),
-					...events.birthdays.filter(
-						(event) => event.id?.toString() === idTerm
-					),
-					...events.customEvents.filter(
-						(event) => event.id?.toString() === idTerm
-					),
-					...basesEvents.filter(
-						(event) => event.id?.toString() === idTerm
-					),
-					...dailyNoteEvents.filter(
-						(event) => event.id?.toString() === idTerm
-					),
-				];
-				return results;
-			}
-
-			// 检查是否使用 @type: 语法进行搜索
-			const typeMatch = term.match(/^@type:(.+)$/);
-			if (typeMatch) {
-				const typeName = typeMatch[1].trim().toLowerCase();
-				const matchingTypeIds = (config.eventPresetTypes ?? [])
-					.filter(pt => pt.name.toLowerCase().includes(typeName))
-					.map(pt => pt.id);
-				if (matchingTypeIds.length === 0) return [];
-				return [
-					...events.holidays.filter(e => e.presetTypeId && matchingTypeIds.includes(e.presetTypeId)),
-					...events.birthdays.filter(e => e.presetTypeId && matchingTypeIds.includes(e.presetTypeId)),
-					...events.customEvents.filter(e => e.presetTypeId && matchingTypeIds.includes(e.presetTypeId)),
-					...basesEvents.filter(e => e.presetTypeId && matchingTypeIds.includes(e.presetTypeId)),
-				];
-			}
-
-			// 常规搜索 - 从所有事件类型中搜索
-			const results: Array<Holiday | Birthday | CustomEvent | CalendarEvent> = [
-				...events.holidays.filter(
-					(event) =>
-						event.text.toLowerCase().includes(term) ||
-						(event.remark &&
-							event.remark.toLowerCase().includes(term)) ||
-						event.eventDate?.isoDate?.includes(term)
-				),
-				...events.birthdays.filter(
-					(event) =>
-						event.text.toLowerCase().includes(term) ||
-						(event.remark &&
-							event.remark.toLowerCase().includes(term)) ||
-						event.eventDate?.isoDate?.includes(term)
-				),
-				...events.customEvents.filter(
-					(event) =>
-						event.text.toLowerCase().includes(term) ||
-						(event.remark &&
-							event.remark.toLowerCase().includes(term)) ||
-						event.eventDate?.isoDate?.includes(term)
-				),
-				...basesEvents.filter(
-					(event) =>
-						event.text.toLowerCase().includes(term) ||
-						(event.remark &&
-							event.remark.toLowerCase().includes(term)) ||
-						event.eventDate?.isoDate?.includes(term)
-				),
-				...dailyNoteEvents.filter(
-					(event) =>
-						event.text.toLowerCase().includes(term) ||
-						(event.remark &&
-							event.remark.toLowerCase().includes(term)) ||
-						event.eventDate?.isoDate?.includes(term)
-				),
+			const allEvents: Array<Holiday | Birthday | CustomEvent | CalendarEvent> = [
+				...events.holidays,
+				...events.birthdays,
+				...events.customEvents,
+				...basesEvents,
+				...dailyNoteEvents,
 			];
-			return results;
+			return allEvents.filter(matchesSearch);
 		}
+
+
 
 		// 没有搜索词时，只显示当前激活标签页的事件
 		switch (activeTab) {
@@ -299,19 +320,18 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 		if (!searchExpanded) {
 			// 当展开搜索框时，聚焦输入框
 			setTimeout(() => {
-				const searchInput = document.querySelector(
-					".search-input"
-				) as HTMLInputElement;
-				if (searchInput) searchInput.focus();
+				searchInputRef.current?.focus();
 			}, 100);
 		} else {
 			// 当收起搜索框时，清空搜索内容
 			setSearchTerm("");
+			setSearchFocused(false);
 		}
 	};
 
 	// 处理搜索框失焦事件
 	const handleSearchBlur = (e: React.FocusEvent) => {
+		setSearchFocused(false);
 		// 如果搜索框为空且不是点击了清除按钮，则收起搜索框
 		if (
 			searchTerm === "" &&
@@ -320,6 +340,22 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 			setSearchExpanded(false);
 		}
 	};
+
+	// 计算 suggestion 面板内容
+	const getActiveSuggestion = (term: string) => {
+		const typePartial = term.match(/@type:([^\s@]*)$/i);
+		if (typePartial) {
+			const partial = typePartial[1].toLowerCase();
+			return {
+				mode: "type-candidates" as const,
+				candidates: (config.eventPresetTypes ?? [])
+					.filter((pt) => (pt.enable ?? true) && pt.name.toLowerCase().includes(partial)),
+			};
+		}
+		return { mode: "tokens" as const, candidates: [] };
+	};
+
+	const suggestion = getActiveSuggestion(searchTerm);
 
 	// 判断是否在搜索模式
 	const isSearching = searchTerm.trim() !== "";
@@ -361,14 +397,16 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 					>
 						{searchExpanded ? (
 							<>
-								<Input
+								<input
+									ref={searchInputRef}
 									type="text"
 									className="search-input"
 									placeholder={t(
 										"view.eventManager.actions.search"
 									)}
 									value={searchTerm}
-									onChange={(value) => setSearchTerm(value)}
+									onChange={(e) => setSearchTerm(e.target.value)}
+									onFocus={() => setSearchFocused(true)}
 									onBlur={handleSearchBlur}
 								/>
 								<Tooltip text={t("view.eventManager.actions.clearSearch")}>
@@ -384,6 +422,49 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 									✕
 								</button>
 							</Tooltip>
+								{searchFocused && (
+									<div className="yg-search-suggestions">
+										{suggestion.mode === "tokens" && (
+											<div className="yg-search-token-chips">
+												{["@year:", "@month:", "@type:", "@id:"].map((token) => (
+													<button
+														key={token}
+														className="yg-search-chip"
+														onMouseDown={(e) => {
+															e.preventDefault();
+															setSearchTerm((prev) => prev + token);
+															searchInputRef.current?.focus();
+														}}
+													>
+														{token}
+													</button>
+												))}
+											</div>
+										)}
+										{suggestion.mode === "type-candidates" &&
+											suggestion.candidates.length > 0 && (
+												<div className="yg-search-type-candidates">
+													{suggestion.candidates.map((pt) => (
+														<button
+															key={pt.id}
+															className="yg-search-candidate"
+															onMouseDown={(e) => {
+																e.preventDefault();
+																const completed = searchTerm.replace(
+																	/@type:[^\s@]*$/i,
+																	`@type:${pt.name} `
+																);
+																setSearchTerm(completed);
+																searchInputRef.current?.focus();
+															}}
+														>
+															{pt.emoji} {pt.name}
+														</button>
+													))}
+												</div>
+											)}
+									</div>
+								)}
 							</>
 						) : (
 							<Tooltip text={t("view.eventManager.actions.search")}>

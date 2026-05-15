@@ -9,6 +9,7 @@ import { Bolt, Database, SquareChartGantt } from "lucide-react";
 import { EventManagerView } from "@/src/components/EventManager/EventManager";
 import { ViewSettings } from "@/src/components/Settings/ViewSettings";
 import { DataPortManagerView } from "@/src/components/DataPort/DataPortManager";
+import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 
 export const VIEW_TYPE_GLANCE_MANAGER = "yearly-glance-manager-view";
 
@@ -92,6 +93,7 @@ export class GlanceManagerView extends ItemView {
 	plugin: YearlyGlancePlugin;
 	root: Root | null = null;
 	private initialTab: GlanceManagerTab;
+	private unsubscribeBus?: () => void;
 	private glanceManagerRef: React.RefObject<{
 		setActiveTab: (tab: GlanceManagerTab) => void;
 	} | null> = React.createRef();
@@ -145,9 +147,16 @@ export class GlanceManagerView extends ItemView {
 				/>
 			</React.StrictMode>
 		);
+
+		// Subscribe to config changes to refresh tab icon and title
+		this.unsubscribeBus = YearlyGlanceBus.subscribeTopics(['config', 'all'], () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(this.leaf as any).updateHeader();
+		});
 	}
 
 	async onClose() {
+		this.unsubscribeBus?.();
 		if (this.root) {
 			this.root.unmount();
 			this.root = null;

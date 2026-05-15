@@ -62,6 +62,9 @@ interface EventFormData {
 
 	// CustomEvent 特有属性
 	isRepeat?: boolean;
+
+	// 预设类型
+	presetTypeId?: string;
 }
 
 interface EventFormProps {
@@ -131,6 +134,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 			color: event.color,
 			remark: event.remark,
 			isHidden: event.isHidden,
+			presetTypeId: (event as any).presetTypeId,
 		};
 
 		// 处理不同事件类型的特有属性
@@ -302,6 +306,9 @@ export const EventForm: React.FC<EventFormProps> = ({
 			remark: formData.remark,
 			isHidden: formData.isHidden,
 
+			// 预设类型
+			...(formData.presetTypeId ? { presetTypeId: formData.presetTypeId } : {}),
+
 			// 根据当前事件类型添加特有字段
 			...(currentEventType === "customEvent" || currentEventType === "basesEvent" || currentEventType === "dailyNoteEvent"
 				? { isRepeat: formData.isRepeat }
@@ -462,6 +469,38 @@ export const EventForm: React.FC<EventFormProps> = ({
 							}
 						/>
 					</div>
+
+					{/* 预设类型（仅对配置事件显示） */}
+					{currentEventType !== "basesEvent" && currentEventType !== "dailyNoteEvent" && (
+						<div className="form-group">
+							<label>{t("view.eventManager.presetType.label")}</label>
+							<Select
+								options={[
+									{ label: t("view.eventManager.presetType.none"), value: "" },
+									...(settings.config.eventPresetTypes ?? []).map((pt) => ({
+										label: `${pt.emoji ?? ""} ${pt.name}`.trim(),
+										value: pt.id,
+									})),
+								]}
+								value={formData.presetTypeId ?? ""}
+								onValueChange={(value) => {
+									handleFieldChange("presetTypeId", value || undefined);
+									// Auto-fill emoji/color if empty
+									if (value) {
+										const preset = settings.config.eventPresetTypes?.find((p) => p.id === value);
+										if (preset) {
+											if (!formData.emoji && preset.emoji) {
+												handleFieldChange("emoji", preset.emoji);
+											}
+											if (!formData.color && preset.color) {
+												handleFieldChange("color", preset.color);
+											}
+										}
+									}
+								}}
+							/>
+						</div>
+					)}
 
 					<div className="form-group">
 						<label>

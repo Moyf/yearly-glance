@@ -42,7 +42,7 @@ export default class YearlyGlanceSettingsTab extends PluginSettingTab {
 	private renderContent() {
 		this.root?.render(
 			<React.StrictMode>
-				<div className="yg-settings-container">
+				<div className="yg-settings-container yg-settings-in-obsidian-panel">
 					<div className="yg-settings-header">
 						<div className="yg-settings-item-name">
 							{t("setting.title")}

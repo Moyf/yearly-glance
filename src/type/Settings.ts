@@ -96,6 +96,13 @@ export const DEFAULT_PRESET_COLORS: IPresetColor[] = [
 	{ label: "", value: "#A2845E", enable: true, id: "brown" },
 ];
 
+export interface EventPresetType {
+	id: string;       // short UUID
+	name: string;     // user-defined name, e.g. "健康"
+	emoji?: string;   // optional emoji, e.g. "🌿"
+	color?: string;   // optional hex color, e.g. "#66FF33"
+}
+
 // 插件设置接口
 export interface YearlyGlanceSettings {
 	year: number; // 当前选择的年份
@@ -123,6 +130,8 @@ export interface YearlyGlanceSettings {
 	showLunarDay: boolean; // 是否显示农历日
 	showDebugInfo: boolean; // 是否显示调试信息
 	presetColors: IPresetColor[];
+	eventPresetTypes: EventPresetType[];    // user-defined preset event types
+	basesEventPresetTypeProp?: string;      // frontmatter property for event type name
 	// 日历视图设置
 	emojiOnTop: boolean; // 是否在事件上方显示emoji（仅日历视图）
 	wrapEventText: boolean; // 是否换行显示事件文本
@@ -170,6 +179,8 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	showLunarDay: false,
 	showDebugInfo: false,
 	presetColors: DEFAULT_PRESET_COLORS,
+	eventPresetTypes: [],
+	basesEventPresetTypeProp: "event_type",
 	emojiOnTop: false, // 默认在左侧显示emoji
 	wrapEventText: false,
 	gregorianDisplayFormat: "YYYY-MM-DD", // 默认使用ISO格式

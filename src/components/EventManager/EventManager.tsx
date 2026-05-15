@@ -219,6 +219,22 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 				return results;
 			}
 
+			// 检查是否使用 @type: 语法进行搜索
+			const typeMatch = term.match(/^@type:(.+)$/);
+			if (typeMatch) {
+				const typeName = typeMatch[1].trim().toLowerCase();
+				const matchingTypeIds = (config.eventPresetTypes ?? [])
+					.filter(pt => pt.name.toLowerCase().includes(typeName))
+					.map(pt => pt.id);
+				if (matchingTypeIds.length === 0) return [];
+				return [
+					...events.holidays.filter(e => e.presetTypeId && matchingTypeIds.includes(e.presetTypeId)),
+					...events.birthdays.filter(e => e.presetTypeId && matchingTypeIds.includes(e.presetTypeId)),
+					...events.customEvents.filter(e => e.presetTypeId && matchingTypeIds.includes(e.presetTypeId)),
+					...basesEvents.filter(e => e.presetTypeId && matchingTypeIds.includes(e.presetTypeId)),
+				];
+			}
+
 			// 常规搜索 - 从所有事件类型中搜索
 			const results: Array<Holiday | Birthday | CustomEvent | CalendarEvent> = [
 				...events.holidays.filter(

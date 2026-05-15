@@ -295,11 +295,23 @@ export const EventItem: React.FC<EventItemProps> = ({
 					</div>
 				)}
 
-				{getEventSpecificInfo() && (
+			{event.presetTypeId && (() => {
+				const preset = plugin.getConfig().eventPresetTypes?.find(p => p.id === event.presetTypeId);
+				return preset ? (
 					<div className="event-specific-info">
-						{getEventSpecificInfo()}
+						<div className="event-info-row" data-property="presetType">
+							<span className="info-label">{t("view.eventManager.presetType.label")}:</span>
+							<span className="info-value">{preset.emoji} {preset.name}</span>
+						</div>
 					</div>
-				)}
+				) : null;
+			})()}
+
+			{getEventSpecificInfo() && (
+				<div className="event-specific-info">
+					{getEventSpecificInfo()}
+				</div>
+			)}
 			</div>
 
 			<div className="event-actions">

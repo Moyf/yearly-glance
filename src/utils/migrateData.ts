@@ -42,6 +42,14 @@ export class MigrateData {
 		// 迁移生日的 zodiac/animal 字段到 key-based 格式
 		this.migrateBirthdayTranslations(migratedData);
 
+		// Ensure new config fields have defaults (belt-and-suspenders alongside DEFAULT_SETTINGS spread)
+		if (!Array.isArray(migratedData.config.eventPresetTypes)) {
+			migratedData.config.eventPresetTypes = [];
+		}
+		if (!migratedData.config.basesEventPresetTypeProp) {
+			migratedData.config.basesEventPresetTypeProp = "event_type";
+		}
+
 		return migratedData;
 	}
 

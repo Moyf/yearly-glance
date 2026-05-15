@@ -169,6 +169,19 @@ const translations: BaseMessage = {
 			desc: "筆記屬性中用於儲存事件描述的屬性名",
 			placeholder: "預設: description",
 		},
+			basesEventPresetTypeProp: {
+				name: "事件類型屬性",
+				desc: "用於給筆記事件指定預設類型的 frontmatter 屬性名",
+				placeholder: "event_type",
+			},
+			eventPresetTypes: {
+				name: "預設事件類型",
+				desc: "定義可分配給事件的命名類型（含 emoji 和顏色）",
+				addNew: "新建類型",
+				namePlaceholder: "類型名稱（如：健康）",
+				deleteConfirm: "此類型被 {count} 個事件使用，刪除後將回退到預設顏色，是否繼續？",
+				usedByCount: "被 {count} 個事件使用",
+			},
 			showDailyNoteEvents: {
 				name: "顯示日記事件",
 				desc: "在日曆上顯示來自日記筆記的事件",
@@ -230,6 +243,10 @@ const translations: BaseMessage = {
 			colorSets: {
 				name: "顏色設定",
 				desc: "各事件的配色預設選項",
+			},
+			presets: {
+				name: "預設設定",
+				desc: "顏色預設和事件類型預設",
 			},
 		},
 	},
@@ -453,6 +470,10 @@ const translations: BaseMessage = {
 			source: {
 				bases: "來自筆記",
 				dailynote: "來自日記",
+			},
+			presetType: {
+				label: "類型",
+				none: "無類型",
 			},
 		},
 		dataPortView: {

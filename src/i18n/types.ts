@@ -107,6 +107,15 @@ export type BaseMessage = {
 		basesEventDescriptionProp: SettingsItem<{
 			placeholder: string;
 		}>;
+			basesEventPresetTypeProp: SettingsItem<{
+				placeholder: string;
+			}>;
+			eventPresetTypes: SettingsItem<{
+				addNew: string;
+				namePlaceholder: string;
+				deleteConfirm: string;
+				usedByCount: string;
+			}>;
 			showDailyNoteEvents: IBaseSettingsItem;
 			dailyNoteSource: SettingsItem<{
 				options: {
@@ -133,6 +142,7 @@ export type BaseMessage = {
 			displayContent: IBaseSettingsItem;
 			eventDisplay: IBaseSettingsItem;
 			colorSets: IBaseSettingsItem;
+			presets: IBaseSettingsItem;
 		};
 	};
 	view: {
@@ -308,6 +318,10 @@ export type BaseMessage = {
 			source: {
 				bases: string;
 				dailynote: string;
+			};
+			presetType: {
+				label: string;
+				none: string;
 			};
 		};
 		dataPortView: {

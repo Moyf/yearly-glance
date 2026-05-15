@@ -169,6 +169,19 @@ const translations: BaseMessage = {
 			desc: "Property name in note properties for storing event description",
 			placeholder: "Default: description",
 		},
+			basesEventPresetTypeProp: {
+				name: "Event type property",
+				desc: "Frontmatter property name used to assign a preset event type to note events",
+				placeholder: "event_type",
+			},
+			eventPresetTypes: {
+				name: "Preset event types",
+				desc: "Define named types with emoji and color that can be assigned to events",
+				addNew: "Add type",
+				namePlaceholder: "Type name (e.g. Health)",
+				deleteConfirm: "This type is used by {count} events. Deleting it will fall back to default colors. Continue?",
+				usedByCount: "Used by {count} events",
+			},
 			showDailyNoteEvents: {
 				name: "Show daily note events",
 				desc: "Display events from daily notes on the calendar",
@@ -230,6 +243,10 @@ const translations: BaseMessage = {
 			colorSets: {
 				name: "Color",
 				desc: "Color configuration related content",
+			},
+			presets: {
+				name: "Presets",
+				desc: "Color presets and event type presets",
 			},
 		},
 	},
@@ -455,6 +472,10 @@ const translations: BaseMessage = {
 			source: {
 				bases: "From note",
 				dailynote: "From daily note",
+			},
+			presetType: {
+				label: "Type",
+				none: "No type",
 			},
 		},
 		dataPortView: {

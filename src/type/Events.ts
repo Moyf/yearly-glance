@@ -30,6 +30,7 @@ export interface BaseEvent {
 	color?: string;
 	remark?: string;
 	isHidden?: boolean;
+	presetTypeId?: string;
 	/** 事件来源 */
 	eventSource?: EventSource;
 }

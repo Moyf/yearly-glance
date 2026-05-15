@@ -14,6 +14,7 @@ import {
 	JsonEventsParseResult,
 } from "@/src/type/DataPort";
 import { prefixMap, validEventId } from "../utils/uniqueEventId";
+import { EventPresetType } from "@/src/type/Settings";
 
 export class JsonService {
 	static validJsonStructure(jsonString: string): {
@@ -40,23 +41,27 @@ export class JsonService {
 		}
 	}
 
-	static createJsonEvents(eventsData: Events): string {
+	static createJsonEvents(eventsData: Events, eventPresetTypes?: EventPresetType[]): string {
+		const presetTypes = eventPresetTypes ?? [];
 		const jsonData: ImportJsonEvents = {
 			holidays: eventsData.holidays?.map((h) =>
-				this.converterToJsonEvent(h)
+				this.converterToJsonEvent(h, presetTypes)
 			),
 			birthdays: eventsData.birthdays?.map((b) =>
-				this.converterToJsonEvent(b)
+				this.converterToJsonEvent(b, presetTypes)
 			),
 			customEvents: eventsData.customEvents?.map((c) =>
-				this.converterToJsonEvent(c)
+				this.converterToJsonEvent(c, presetTypes)
 			),
 		};
 
 		return JsonService.stringify(jsonData as string);
 	}
 
-	private static converterToJsonEvent(event: EventData): JsonEvent {
+	private static converterToJsonEvent(event: EventData, eventPresetTypes: EventPresetType[]): JsonEvent {
+		const preset = eventPresetTypes.find(p => p.id === (event as any).presetTypeId);
+		const resolvedEmoji = event.emoji ?? preset?.emoji;
+		const resolvedColor = event.color ?? preset?.color;
 		return {
 			id: event.id,
 			text: event.text,
@@ -64,8 +69,8 @@ export class JsonService {
 				input: event.eventDate.isoDate,
 				calendar: event.eventDate.calendar,
 			},
-			emoji: event.emoji,
-			color: event.color,
+			emoji: resolvedEmoji,
+			color: resolvedColor,
 			remark: event.remark,
 			isHidden: event.isHidden,
 			// Holiday 和 CustomEvent 的两个独特字段

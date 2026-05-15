@@ -14,6 +14,7 @@ import {
 } from "@/src/type/DataPort";
 import { FrontMatter } from "@/src/utils/frontMatter";
 import { translateBirthdayDisplay } from "@/src/i18n/birthday";
+import { EventPresetType } from "@/src/type/Settings";
 
 type FrontmatterValue = string | number | boolean | string[] | null | undefined;
 
@@ -33,7 +34,8 @@ export class MarkdownService {
 	 */
 	async exportMarkdownEvents(
 		eventsData: Events,
-		config: MarkdownExportConfig
+		config: MarkdownExportConfig,
+		eventPresetTypes?: EventPresetType[]
 	): Promise<{ success: number; failed: number; errors: string[] }> {
 		const results = {
 			success: 0,
@@ -41,13 +43,16 @@ export class MarkdownService {
 			errors: [] as string[],
 		};
 
+		const presetTypes = eventPresetTypes ?? [];
+
 		// 导出节假日
 		if (eventsData.holidays.length > 0) {
 			const holidayResult = await this.exportEventType(
 				eventsData.holidays,
 				"holiday",
 				config.holidayFolder,
-				config.holidayFields
+				config.holidayFields,
+				presetTypes
 			);
 			results.success += holidayResult.success;
 			results.failed += holidayResult.failed;
@@ -60,7 +65,8 @@ export class MarkdownService {
 				eventsData.birthdays,
 				"birthday",
 				config.birthdayFolder,
-				config.birthdayFields
+				config.birthdayFields,
+				presetTypes
 			);
 			results.success += birthdayResult.success;
 			results.failed += birthdayResult.failed;
@@ -73,7 +79,8 @@ export class MarkdownService {
 				eventsData.customEvents,
 				"customEvent",
 				config.customEventFolder,
-				config.customEventFields
+				config.customEventFields,
+				presetTypes
 			);
 			results.success += customResult.success;
 			results.failed += customResult.failed;
@@ -90,7 +97,8 @@ export class MarkdownService {
 		events: BaseEvent[],
 		eventType: EventType,
 		folderPath: string,
-		fieldConfig: MarkdownFieldConfig
+		fieldConfig: MarkdownFieldConfig,
+		eventPresetTypes: EventPresetType[]
 	): Promise<{ success: number; failed: number; errors: string[] }> {
 		const results = {
 			success: 0,
@@ -107,7 +115,8 @@ export class MarkdownService {
 					event,
 					eventType,
 					folderPath,
-					fieldConfig
+					fieldConfig,
+					eventPresetTypes
 				);
 				results.success++;
 			} catch (error) {
@@ -130,7 +139,8 @@ export class MarkdownService {
 		event: BaseEvent,
 		eventType: EventType,
 		folderPath: string,
-		fieldConfig: MarkdownFieldConfig
+		fieldConfig: MarkdownFieldConfig,
+		eventPresetTypes: EventPresetType[]
 	): Promise<void> {
 		// 生成安全的文件名
 		const fileName = this.sanitizeFileName(event.text) + ".md";
@@ -144,7 +154,8 @@ export class MarkdownService {
 		const frontmatterData = this.buildFrontmatterData(
 			event,
 			eventType,
-			fieldConfig
+			fieldConfig,
+			eventPresetTypes
 		);
 
 		// 检查文件是否存在
@@ -176,17 +187,23 @@ export class MarkdownService {
 	private buildFrontmatterData(
 		event: BaseEvent,
 		eventType: EventType,
-		fieldConfig: MarkdownFieldConfig
+		fieldConfig: MarkdownFieldConfig,
+		eventPresetTypes: EventPresetType[]
 	): Record<string, FrontmatterValue> {
 		const data: Record<string, FrontmatterValue> = {};
+
+		// Resolve emoji/color from preset if not directly set on event
+		const preset = eventPresetTypes.find(p => p.id === (event as any).presetTypeId);
+		const resolvedEmoji = event.emoji ?? preset?.emoji;
+		const resolvedColor = event.color ?? preset?.color;
 
 		// 基础字段
 		if (fieldConfig.id) data.id = event.id;
 		if (fieldConfig.isoDate) data.isoDate = event.eventDate.isoDate;
 		if (fieldConfig.calendar) data.calendar = event.eventDate.calendar;
 		if (fieldConfig.dateArr && event.dateArr) data.dateArr = event.dateArr;
-		if (fieldConfig.emoji && event.emoji) data.emoji = event.emoji;
-		if (fieldConfig.color && event.color) data.color = event.color;
+		if (fieldConfig.emoji && resolvedEmoji) data.emoji = resolvedEmoji;
+		if (fieldConfig.color && resolvedColor) data.color = resolvedColor;
 		if (fieldConfig.remark && event.remark) data.remark = event.remark;
 		if (fieldConfig.isHidden) data.isHidden = event.isHidden;
 

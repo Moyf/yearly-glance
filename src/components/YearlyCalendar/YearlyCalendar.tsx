@@ -20,6 +20,7 @@ import "./style/YearlyCalendarView.css";
 import { Tooltip } from "@/src/components/Base/Tooltip";
 import { IsoUtils } from "@/src/utils/isoUtils";
 import { ConfirmDialog } from "@/src/components/Base/ConfirmDialog";
+import { resolveEventDisplay } from "@/src/utils/resolveEventDisplay";
 import { DailyNoteService } from "@/src/service/DailyNoteService";
 import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 import { EVENT_SEARCH_REQUESTED, EventManagerBus } from "@/src/hooks/useEventBus";
@@ -75,6 +76,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 		hideFutureMonths,
 		showLunarDay,
 		emojiOnTop,
+		eventPresetTypes,
 	} = config;
 
 	// 添加状态来跟踪年份控制按钮是否显示
@@ -370,12 +372,12 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 		}
 
 		// 获取事件颜色
-		const eventColor = event.color ?? EVENT_TYPE_DEFAULT[event.eventType].color;
+		const { emoji: resolvedEmoji, color: resolvedColor } = resolveEventDisplay(event, eventPresetTypes ?? []);
 
 		// 构建样式对象
 		const eventStyle: React.CSSProperties = {
-			backgroundColor: `${eventColor}20`,
-			borderLeft: `3px solid ${eventColor}`,
+			backgroundColor: `${resolvedColor}20`,
+			borderLeft: `3px solid ${resolvedColor}`,
 		};
 
 		// 为多日事件添加特殊边框
@@ -385,11 +387,11 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 				// - 第一天：仅 border-left（默认已有），无其他边框
 				// - 最后一天：仅 border-right，无 border-left
 				// - 中间日：无边框
-				if (event._isLastDay) {
-					// 最后一天：移除 border-left，添加 border-right
-					eventStyle.borderLeft = undefined;
-					eventStyle.borderRight = `3px solid ${eventColor}`;
-				} else if (event._isFirstDay) {
+			if (event._isLastDay) {
+				// 最后一天：移除 border-left，添加 border-right
+				eventStyle.borderLeft = undefined;
+				eventStyle.borderRight = `3px solid ${resolvedColor}`;
+			} else if (event._isFirstDay) {
 					// 第一天：保持默认的 border-left，不添加其他边框
 					//（默认已有 border-left，无需额外操作）
 				} else {
@@ -398,12 +400,12 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 				}
 			} else {
 				// 列表视图：第一天添加顶部边框，最后一天添加底部边框
-				if (event._isFirstDay) {
-					eventStyle.borderTop = `3px solid ${eventColor}`;
-				}
-				if (event._isLastDay) {
-					eventStyle.borderBottom = `3px solid ${eventColor}`;
-				}
+			if (event._isFirstDay) {
+				eventStyle.borderTop = `3px solid ${resolvedColor}`;
+			}
+			if (event._isLastDay) {
+				eventStyle.borderBottom = `3px solid ${resolvedColor}`;
+			}
 			}
 		}
 
@@ -430,11 +432,9 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 					key={eventKey}
 					{...eventProps}
 				>
-					<span className="event-emoji">
-						{!event.emoji
-							? EVENT_TYPE_DEFAULT[event.eventType].emoji
-							: event.emoji}
-					</span>
+				<span className="event-emoji">
+					{resolvedEmoji}
+				</span>
 					<span className="event-text">{event.text}{dayLabel}</span>
 				</div>
 			</Tooltip>

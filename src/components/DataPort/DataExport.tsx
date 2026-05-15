@@ -259,7 +259,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 
 			switch (activeExportFormat) {
 				case "json": {
-					const content = JsonService.createJsonEvents(selectedData);
+					const content = JsonService.createJsonEvents(selectedData, config.eventPresetTypes);
 					const filename = `${exportFileName}.json`;
 					const mimeType = "application/json";
 
@@ -298,7 +298,8 @@ export const DataExport: React.FC<DataExportProps> = ({
 					const markdownService = new MarkdownService(app);
 					const result = await markdownService.exportMarkdownEvents(
 						selectedData,
-						markdownConfig
+						markdownConfig,
+						config.eventPresetTypes
 					);
 
 					if (result.success > 0) {

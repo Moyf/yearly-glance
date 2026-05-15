@@ -111,9 +111,8 @@ export const PresetEventTypeSettings: React.FC<
 	};
 
 	const handleEmojiChange = (id: string, emoji: string) => {
-		const trimmed = [...emoji].slice(0, 2).join("");
 		updateTypes(types.map((type) =>
-			type.id === id ? { ...type, emoji: trimmed } : type
+			type.id === id ? { ...type, emoji } : type
 		));
 	};
 
@@ -217,14 +216,13 @@ export const PresetEventTypeSettings: React.FC<
 									"setting.general.eventPresetTypes.namePlaceholder" as TranslationKeys
 								)}
 							/>
-							<input
-								className="yg-preset-type-emoji"
-								type="text"
-								value={type.emoji || ""}
-								onChange={(e) => handleEmojiChange(type.id, e.target.value)}
-								placeholder="😀"
-								maxLength={4}
-							/>
+						<input
+							className="yg-preset-type-emoji"
+							type="text"
+							value={type.emoji || ""}
+							placeholder="😀"
+							onChange={(e) => handleEmojiChange(type.id, e.target.value)}
+						/>
 							<input
 								className="yg-preset-type-color-pick"
 								type="color"

@@ -1,3 +1,22 @@
+## [4.0.0-beta.4] (Pre Release)
+
+### 🚀 Added
+
+- **EventPresetType**: Define named event types (e.g. "健康 🌿") with emoji and color; assign to events for consistent styling. Display falls back through: event override → preset type → default color
+- **Settings Tabs**: Settings panel reorganized into 5 tabs (Basic / Layout & Display / Note Events / Daily Note Events / Presets) — both in GlanceManager and Obsidian native settings
+- **@type: search**: In EventManager, search `@type:健康` to filter by preset type name (partial match supported)
+- **basesEvent type mapping**: Set `event_type: 健康` in note frontmatter to auto-assign preset type to note events
+
+### ⚡ Changed
+
+- **resolveEventDisplay utility**: Color/emoji fallback logic centralized — removes duplicated inline code across components
+
+### 🐛 Fixed
+
+- **Lucide tab icon not refreshing**: Tab icon now updates immediately when "Tab icon display" setting changes, without needing to restart Obsidian
+
+---
+
 ## [4.0.0-beta.3] (Pre Release)
 
 ### 🚀 Added

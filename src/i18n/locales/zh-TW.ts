@@ -187,16 +187,17 @@ const translations: BaseMessage = {
 				noPlugin: "日記外掛和 Periodic Notes 外掛均未啟用",
 				noDailyNotes: "核心日記外掛未啟用",
 				noPeriodicNotes: "Periodic Notes 外掛未安裝",
+			},
+			customEmojiKeywords: {
+				name: "自訂 emoji 關鍵詞",
+				desc: "為 emoji 新增自訂搜尋關鍵詞。格式：emoji: 關鍵詞1, 關鍵詞2（每行一個）",
+				pickerHint: "提示：也可以在事件編輯介面的 emoji 選擇器中直接新增關鍵詞",
+			},
 		},
-		customEmojiKeywords: {
-			name: "自訂 emoji 關鍵詞",
-			desc: "為 emoji 新增自訂搜尋關鍵詞。格式：emoji: 關鍵詞1, 關鍵詞2（每行一個）",
+		events: {
+			name: "事件",
+			desc: "各事件的管理",
 		},
-	},
-	events: {
-		name: "事件",
-		desc: "各事件的管理",
-	},
 		group: {
 			basic: {
 				name: "基本設定",
@@ -228,7 +229,7 @@ const translations: BaseMessage = {
 			},
 		},
 	},
-		view: {
+	view: {
 		basesView: {
 			name: "年度概覽",
 			options: {
@@ -285,6 +286,25 @@ const translations: BaseMessage = {
 				showFutureMonths: "顯示當月之後的月份",
 				futureMonths: "未來",
 			},
+		},
+		emojiPicker: {
+			searchPlaceholder: "搜尋 emoji...",
+			customCategory: "自訂",
+			noResults: "未找到匹配的 emoji",
+			categoryCommon: "常用",
+			categoryActivity: "活動",
+			categoryHoliday: "節日",
+			categoryEmotion: "表情",
+			categoryNature: "自然",
+			categoryFood: "餐飲",
+			categoryTech: "數位",
+			categoryOther: "其他",
+			keywordManager: "快捷詞管理",
+			keywordEmpty: "暫無自訂關鍵詞",
+			keywordRemove: "刪除",
+			keywordEmojiPlaceholder: "emoji",
+			keywordTextPlaceholder: "關鍵詞",
+			keywordSettingsHint: "提示：也可以在 設定 → 自訂 emoji 關鍵詞 中批量編輯映射表",
 		},
 		eventManager: {
 			solar: "公曆",

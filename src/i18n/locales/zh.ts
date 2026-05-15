@@ -187,14 +187,15 @@ const translations: BaseMessage = {
 				noPlugin: "日记插件和 Periodic Notes 插件均未启用",
 				noDailyNotes: "核心日记插件未启用",
 				noPeriodicNotes: "Periodic Notes 插件未安装",
+			},
+			customEmojiKeywords: {
+				name: "自定义 emoji 关键词",
+				desc: "为 emoji 添加自定义搜索关键词。格式：emoji: 关键词1, 关键词2（每行一个）",
+				pickerHint: "提示：也可以在事件编辑界面的 emoji 选择器中直接添加关键词",
+			},
 		},
-		customEmojiKeywords: {
-			name: "自定义 emoji 关键词",
-			desc: "为 emoji 添加自定义搜索关键词。格式：emoji: 关键词1, 关键词2（每行一个）",
-		},
-	},
-	events: {
-		name: "事件",
+		events: {
+			name: "事件",
 			desc: "各事件的管理",
 		},
 		group: {
@@ -228,7 +229,7 @@ const translations: BaseMessage = {
 			},
 		},
 	},
-		view: {
+	view: {
 		basesView: {
 			name: "年度概览",
 			options: {
@@ -285,6 +286,25 @@ const translations: BaseMessage = {
 				showFutureMonths: "显示当月之后的月份",
 				futureMonths: "未来",
 			},
+		},
+		emojiPicker: {
+			searchPlaceholder: "搜索 emoji...",
+			customCategory: "自定义",
+			noResults: "未找到匹配的 emoji",
+			categoryCommon: "常用",
+			categoryActivity: "活动",
+			categoryHoliday: "节日",
+			categoryEmotion: "表情",
+			categoryNature: "自然",
+			categoryFood: "餐饮",
+			categoryTech: "数码",
+			categoryOther: "其他",
+			keywordManager: "快捷词管理",
+			keywordEmpty: "暂无自定义关键词",
+			keywordRemove: "删除",
+			keywordEmojiPlaceholder: "emoji",
+			keywordTextPlaceholder: "关键词",
+			keywordSettingsHint: "提示：也可以在 设置 → 自定义 emoji 关键词 中批量编辑映射表",
 		},
 		eventManager: {
 			solar: "公历",

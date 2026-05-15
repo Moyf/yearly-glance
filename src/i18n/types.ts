@@ -110,16 +110,18 @@ export type BaseMessage = {
 			dailyNoteEventProp: SettingsItem<{
 				placeholder: string;
 			}>;
-			dailyNoteShowEmoji: IBaseSettingsItem;
+		dailyNoteShowEmoji: IBaseSettingsItem;
 		dailyNoteWarning: SettingsItem<{
 			noPlugin: string;
 			noDailyNotes: string;
 			noPeriodicNotes: string;
 		}>;
-		customEmojiKeywords: IBaseSettingsItem;
+		customEmojiKeywords: SettingsItem<{
+			pickerHint: string;
+		}>;
 	}>;
-		events: IBaseSettingsItem;
-		group: {
+	events: IBaseSettingsItem;
+	group: {
 			basic: IBaseSettingsItem;
 			basesEvent: IBaseSettingsItem;
 			dailyNoteEvent: IBaseSettingsItem;
@@ -168,6 +170,25 @@ export type BaseMessage = {
 				showFutureMonths: string;
 				futureMonths: string;
 			};
+		};
+		emojiPicker: {
+			searchPlaceholder: string;
+			customCategory: string;
+			noResults: string;
+			categoryCommon: string;
+			categoryActivity: string;
+			categoryHoliday: string;
+			categoryEmotion: string;
+			categoryNature: string;
+			categoryFood: string;
+			categoryTech: string;
+			categoryOther: string;
+			keywordManager: string;
+			keywordEmpty: string;
+			keywordRemove: string;
+			keywordEmojiPlaceholder: string;
+			keywordTextPlaceholder: string;
+			keywordSettingsHint: string;
 		};
 		eventManager: {
 			solar: string;

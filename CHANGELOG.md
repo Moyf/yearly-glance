@@ -1,3 +1,16 @@
+## [4.0.0-beta.3] (Pre Release)
+
+### 🚀 Added
+
+- **Event Click Action Setting**: New setting to control what happens when clicking an event — choose from "Show preview" (default), "Edit event", or "Open note" (for note-backed events)
+- **Auto-Refresh on Metadata Changes**: The calendar view now automatically refreshes when frontmatter changes in the note events folder or daily notes folder, no manual reload needed
+
+### ⚡ Changed
+
+- **Zodiac/Animal Stored as Locale-Independent Keys**: `zodiac` and `animal` fields in `data.json` are now stored as English identifiers (e.g. `capricorn`, `jia-zi:rat`) and translated at display time, preventing mixed-language data when switching languages
+
+---
+
 ## [4.0.0-beta.2](https://github.com/Moyf/yearly-glance/compare/3.2.0...4.0.0-beta.2) (2025-04-29) (Pre Release)
 
 ### 🚀 Added

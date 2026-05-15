@@ -56,6 +56,8 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 	const [searchTerm, setSearchTerm] = React.useState("");
 	const [searchExpanded, setSearchExpanded] = React.useState(false);
 	const [searchFocused, setSearchFocused] = React.useState(false);
+	const [suggestionVisible, setSuggestionVisible] = React.useState(false);
+	const suggestionTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 	const searchContainerRef = React.useRef<HTMLDivElement>(null);
 	const searchInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -326,12 +328,16 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 			// 当收起搜索框时，清空搜索内容
 			setSearchTerm("");
 			setSearchFocused(false);
+			setSuggestionVisible(false);
+			if (suggestionTimerRef.current) clearTimeout(suggestionTimerRef.current);
 		}
 	};
 
 	// 处理搜索框失焦事件
 	const handleSearchBlur = (e: React.FocusEvent) => {
 		setSearchFocused(false);
+		setSuggestionVisible(false);
+		if (suggestionTimerRef.current) clearTimeout(suggestionTimerRef.current);
 		// 如果搜索框为空且不是点击了清除按钮，则收起搜索框
 		if (
 			searchTerm === "" &&
@@ -406,7 +412,11 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 									)}
 									value={searchTerm}
 									onChange={(e) => setSearchTerm(e.target.value)}
-									onFocus={() => setSearchFocused(true)}
+							onFocus={() => {
+										setSearchFocused(true);
+										if (suggestionTimerRef.current) clearTimeout(suggestionTimerRef.current);
+										suggestionTimerRef.current = setTimeout(() => setSuggestionVisible(true), 200);
+									}}
 									onBlur={handleSearchBlur}
 								/>
 								<Tooltip text={t("view.eventManager.actions.clearSearch")}>
@@ -422,17 +432,17 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 									✕
 								</button>
 							</Tooltip>
-								{searchFocused && (
+								{searchFocused && suggestionVisible && (
 									<div className="yg-search-suggestions">
 										{suggestion.mode === "tokens" && (
 											<div className="yg-search-token-chips">
-												{["@year:", "@month:", "@type:", "@id:"].map((token) => (
+												{["@year:", "@month:", "@type:"].map((token) => (
 													<button
 														key={token}
 														className="yg-search-chip"
 														onMouseDown={(e) => {
 															e.preventDefault();
-															setSearchTerm((prev) => prev + token);
+															setSearchTerm((prev) => prev.trim() ? prev.trim() + ' ' + token : token);
 															searchInputRef.current?.focus();
 														}}
 													>

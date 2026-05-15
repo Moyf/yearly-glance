@@ -465,6 +465,11 @@
 }
 
 /* 搜索建议面板 */
+@keyframes yg-suggestion-fadein {
+	from { opacity: 0; transform: translateY(-4px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
 .yg-search-suggestions {
 	position: absolute;
 	top: calc(100% + 4px);
@@ -477,6 +482,7 @@
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 	padding: 8px;
 	z-index: 1000;
+	animation: yg-suggestion-fadein 0.15s ease both;
 }
 
 .yg-search-token-chips {

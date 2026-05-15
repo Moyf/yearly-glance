@@ -26,6 +26,11 @@ export class MigrateData {
 			migratedData.config.showEmojiBeforeTabName = migratedData.config.showEmojiBeforeTabName ? "emoji" : "none";
 		}
 
+		// 迁移 customEmojiKeywords 字段
+		if (!migratedData.config.customEmojiKeywords) {
+			migratedData.config.customEmojiKeywords = {};
+		}
+
 		const eventTypes = ["holidays", "birthdays", "customEvents"];
 
 		for (const type of eventTypes) {

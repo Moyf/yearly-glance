@@ -211,6 +211,11 @@ const translations: BaseMessage = {
 				noDailyNotes: "Core Daily Notes plugin is not enabled",
 				noPeriodicNotes: "Periodic Notes plugin is not installed",
 			},
+			customEmojiKeywords: {
+				name: "Custom emoji keywords",
+				desc: "Add custom search keywords for emoji. Format: emoji: keyword1, keyword2 (one per line)",
+				pickerHint: "Tip: You can also add keywords from the emoji picker in the event form",
+			},
 		},
 		events: {
 			name: "Events",
@@ -244,6 +249,10 @@ const translations: BaseMessage = {
 			eventDisplay: {
 				name: "Event Display",
 				desc: "Settings for events, holidays, birthdays, etc.",
+			},
+			customEmoji: {
+				name: "Custom Emoji",
+				desc: "Emoji configured here will appear in the icon selection window",
 			},
 			colorSets: {
 				name: "Color presets",
@@ -312,6 +321,25 @@ const translations: BaseMessage = {
 				showFutureMonths: "Show future months",
 				futureMonths: "Future",
 			},
+		},
+		emojiPicker: {
+			searchPlaceholder: "Search emoji...",
+			customCategory: "Custom",
+			noResults: "No matching emoji found",
+			categoryCommon: "Common",
+			categoryActivity: "Activity",
+			categoryHoliday: "Holiday",
+			categoryEmotion: "Emotion",
+			categoryNature: "Nature",
+			categoryFood: "Food",
+			categoryTech: "Tech",
+			categoryOther: "Other",
+			keywordManager: "Keyword manager",
+			keywordEmpty: "No custom keywords yet",
+			keywordRemove: "Remove",
+			keywordEmojiPlaceholder: "emoji",
+			keywordTextPlaceholder: "Keyword",
+			keywordSettingsHint: "Tip: Batch edit in Settings → Custom Emoji Keywords",
 		},
 		eventManager: {
 			solar: "Solar",

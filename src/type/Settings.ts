@@ -152,6 +152,8 @@ export interface YearlyGlanceSettings {
 	dailyNoteEventProp: string; // 日记事件属性名
 	// 表单设置
 	lastSelectedEventType: EventType; // 上次选择的事件类型
+	// Emoji 自定义关键词
+	customEmojiKeywords: Record<string, string[]>; // { "😂": ["lol", "笑死"] }
 }
 
 export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
@@ -199,4 +201,6 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	dailyNoteEventProp: "events", // 默认事件属性名
 	// 表单设置
 	lastSelectedEventType: "customEvent", // 默认上次选择的事件类型
+	// Emoji 自定义关键词
+	customEmojiKeywords: {}, // 默认为空
 };

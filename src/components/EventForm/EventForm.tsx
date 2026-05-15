@@ -20,6 +20,7 @@ import { Toggle } from "@/src/components/Base/Toggle";
 import { DateInput } from "@/src/components/Base/DateInput";
 import { parseUserDateInput } from "@/src/service/DateParseService";
 import { Tooltip } from "@/src/components/Base/Tooltip";
+import { EmojiPicker } from "@/src/components/Base/EmojiPicker";
 import { IsoUtils } from "@/src/utils/isoUtils";
 import { previewNoteEventPath } from "@/src/utils/notePathFormat";
 
@@ -386,13 +387,14 @@ export const EventForm: React.FC<EventFormProps> = ({
 						required
 					/>
 				</div>
-				<div className="form-group">
-					<label>
-						{t("view.eventManager.form.eventEmoji")}
-						<Tooltip
-							text={t("view.eventManager.help.eventEmoji")}
-						/>
-					</label>
+			<div className="form-group">
+				<label>
+					{t("view.eventManager.form.eventEmoji")}
+					<Tooltip
+						text={t("view.eventManager.help.eventEmoji")}
+					/>
+				</label>
+				<div className="yg-emoji-input-wrapper">
 					<input
 						type="text"
 						value={formData.emoji || ""}
@@ -403,7 +405,15 @@ export const EventForm: React.FC<EventFormProps> = ({
 							EVENT_TYPE_DEFAULT[currentEventType].emoji
 						}
 					/>
+					<EmojiPicker
+						value={formData.emoji || ""}
+						onChange={(emoji) =>
+							handleFieldChange("emoji", emoji)
+						}
+						plugin={plugin}
+					/>
 				</div>
+			</div>
 				<div className="form-group">
 					<label>
 						{t("view.eventManager.form.eventDate")}

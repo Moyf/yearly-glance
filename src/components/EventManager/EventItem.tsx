@@ -9,6 +9,7 @@ import {
 } from "@/src/type/Events";
 import { Tooltip } from "@/src/components/Base/Tooltip";
 import { t } from "@/src/i18n/i18n";
+import { translateBirthdayDisplay } from "@/src/i18n/birthday";
 import { CalendarType } from "@/src/type/Date";
 import { IsoUtils } from "@/src/utils/isoUtils";
 import YearlyGlancePlugin from "@/src/main";
@@ -143,44 +144,44 @@ export const EventItem: React.FC<EventItemProps> = ({
 							{birthday.nextBirthday}
 						</span>
 					</div>
-					{birthday.animal !== undefined && (
-						<div className="event-info-row" data-property="animal">
-							<span className="info-label">
-								{t("view.eventManager.birthday.animal")}:
-							</span>
-							<span className="info-value">
-								{birthday.animal}
-								{birthday.animal !== null ? (
-									<></>
-								) : (
-									<Tooltip
-										text={t(
-											"view.eventManager.birthday.noYear"
-										)}
-									/>
-								)}
-							</span>
-						</div>
-					)}
-					{birthday.zodiac !== undefined && (
-						<div className="event-info-row" data-property="zodiac">
-							<span className="info-label">
-								{t("view.eventManager.birthday.zodiac")}:
-							</span>
-							<span className="info-value">
-								{birthday.zodiac}
-								{birthday.zodiac !== null ? (
-									<></>
-								) : (
-									<Tooltip
-										text={t(
-											"view.eventManager.birthday.noYear"
-										)}
-									/>
-								)}
-							</span>
-						</div>
-					)}
+				{birthday.animal !== undefined && (
+					<div className="event-info-row" data-property="animal">
+						<span className="info-label">
+							{t("view.eventManager.birthday.animal")}:
+						</span>
+						<span className="info-value">
+							{translateBirthdayDisplay(birthday.animal, "animal")}
+							{birthday.animal !== null ? (
+								<></>
+							) : (
+								<Tooltip
+									text={t(
+										"view.eventManager.birthday.noYear"
+									)}
+								/>
+							)}
+						</span>
+					</div>
+				)}
+				{birthday.zodiac !== undefined && (
+					<div className="event-info-row" data-property="zodiac">
+						<span className="info-label">
+							{t("view.eventManager.birthday.zodiac")}:
+						</span>
+						<span className="info-value">
+							{translateBirthdayDisplay(birthday.zodiac, "zodiac")}
+							{birthday.zodiac !== null ? (
+								<></>
+							) : (
+								<Tooltip
+									text={t(
+										"view.eventManager.birthday.noYear"
+									)}
+								/>
+							)}
+						</span>
+					</div>
+				)}
 					{birthday.isHidden && (
 						<div className="event-info-row" data-property="isHidden">
 							<span className="info-label">

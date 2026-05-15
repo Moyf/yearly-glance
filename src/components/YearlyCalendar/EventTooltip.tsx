@@ -14,6 +14,7 @@ import {
 	EventManagerBus,
 } from "@/src/hooks/useEventBus";
 import { t } from "@/src/i18n/i18n";
+import { translateBirthdayDisplay } from "@/src/i18n/birthday";
 import "./style/EventTooltip.css";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
 import { IsoUtils } from "@/src/utils/isoUtils";
@@ -208,26 +209,26 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 								</span>
 							</div>
 						)}
-						{(event as Birthday).animal !== undefined && (
-							<div className="tooltip-row">
-								<span className="tooltip-label">
-									{t("view.eventManager.birthday.animal")}:
-								</span>
-								<span className="tooltip-value">
-									{(event as Birthday).animal ?? "-"}
-								</span>
-							</div>
-						)}
-						{(event as Birthday).zodiac !== undefined && (
-							<div className="tooltip-row">
-								<span className="tooltip-label">
-									{t("view.eventManager.birthday.zodiac")}:
-								</span>
-								<span className="tooltip-value">
-									{(event as Birthday).zodiac ?? "-"}
-								</span>
-							</div>
-						)}
+					{(event as Birthday).animal !== undefined && (
+						<div className="tooltip-row">
+							<span className="tooltip-label">
+								{t("view.eventManager.birthday.animal")}:
+							</span>
+							<span className="tooltip-value">
+								{translateBirthdayDisplay((event as Birthday).animal, "animal")}
+							</span>
+						</div>
+					)}
+					{(event as Birthday).zodiac !== undefined && (
+						<div className="tooltip-row">
+							<span className="tooltip-label">
+								{t("view.eventManager.birthday.zodiac")}:
+							</span>
+							<span className="tooltip-value">
+								{translateBirthdayDisplay((event as Birthday).zodiac, "zodiac")}
+							</span>
+						</div>
+					)}
 					</>
 				)}
 

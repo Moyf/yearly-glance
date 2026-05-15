@@ -1,6 +1,6 @@
 import { Lunar, Solar } from "lunar-typescript";
 import { Birthday, CustomEvent, EventType, Holiday } from "@/src/type/Events";
-import { getBirthdayTranslation } from "@/src/i18n/birthday";
+import { getBirthdayKeyId } from "@/src/i18n/birthday";
 import { IsoUtils } from "./isoUtils";
 import { LunarLibrary } from "./lunarLibrary";
 import { SpecialHoliday } from "./specialHoliday";
@@ -282,7 +282,7 @@ export class EventCalculator {
 
 			if (year !== undefined) {
 				const xingzuo = Solar.fromYmd(year, month, day).getXingZuo();
-				zodiac = getBirthdayTranslation(xingzuo, "zodiac");
+				zodiac = getBirthdayKeyId(xingzuo, "zodiac");
 
 				const ganzhi = Solar.fromYmd(year, month, day)
 					.getLunar()
@@ -290,17 +290,17 @@ export class EventCalculator {
 				const shengxiao = Solar.fromYmd(year, month, day)
 					.getLunar()
 					.getYearShengXiao();
-				// 获取生肖
-				animal =
-					getBirthdayTranslation(ganzhi, "ganzhi") +
-					getBirthdayTranslation(shengxiao, "animal");
+				// 获取生肖：存储格式 "ganzhi_key:animal_key"
+				const ganzhiKey = getBirthdayKeyId(ganzhi, "ganzhi");
+				const animalKey = getBirthdayKeyId(shengxiao, "animal");
+				animal = ganzhiKey && animalKey ? `${ganzhiKey}:${animalKey}` : null;
 			} else {
 				const xingzuo = Solar.fromYmd(
 					yearSelected,
 					month,
 					day
 				).getXingZuo();
-				zodiac = getBirthdayTranslation(xingzuo, "zodiac");
+				zodiac = getBirthdayKeyId(xingzuo, "zodiac");
 				animal = null;
 			}
 		} else if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {
@@ -328,7 +328,7 @@ export class EventCalculator {
 				const xingzuo = Lunar.fromYmd(year, month, day)
 					.getSolar()
 					.getXingZuo();
-				zodiac = getBirthdayTranslation(xingzuo, "zodiac");
+				zodiac = getBirthdayKeyId(xingzuo, "zodiac");
 
 				const ganzhi = Lunar.fromYmd(
 					year,
@@ -340,10 +340,10 @@ export class EventCalculator {
 					month,
 					day
 				).getYearShengXiao();
-				// 获取生肖
-				animal =
-					getBirthdayTranslation(ganzhi, "ganzhi") +
-					getBirthdayTranslation(shengxiao, "animal");
+				// 获取生肖：存储格式 "ganzhi_key:animal_key"
+				const ganzhiKey = getBirthdayKeyId(ganzhi, "ganzhi");
+				const animalKey = getBirthdayKeyId(shengxiao, "animal");
+				animal = ganzhiKey && animalKey ? `${ganzhiKey}:${animalKey}` : null;
 			} else {
 				// 对于农历生日，如果没有年份，无法计算星座，生肖和干支
 				zodiac = null;

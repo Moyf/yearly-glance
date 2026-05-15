@@ -13,6 +13,7 @@ import {
 	MarkdownFieldConfig,
 } from "@/src/type/DataPort";
 import { FrontMatter } from "@/src/utils/frontMatter";
+import { translateBirthdayDisplay } from "@/src/i18n/birthday";
 
 type FrontmatterValue = string | number | boolean | string[] | null | undefined;
 
@@ -206,9 +207,9 @@ export class MarkdownService {
 				if (fieldConfig.age && birthday.age !== undefined)
 					data.age = birthday.age;
 				if (fieldConfig.animal && birthday.animal)
-					data.animal = birthday.animal;
+					data.animal = translateBirthdayDisplay(birthday.animal, "animal");
 				if (fieldConfig.zodiac && birthday.zodiac)
-					data.zodiac = birthday.zodiac;
+					data.zodiac = translateBirthdayDisplay(birthday.zodiac, "zodiac");
 				break;
 			}
 
@@ -292,8 +293,8 @@ export class MarkdownService {
 					...baseMarkdownEvent,
 					nextBirthday: birthday.nextBirthday,
 					age: birthday.age,
-					animal: birthday.animal,
-					zodiac: birthday.zodiac,
+					animal: translateBirthdayDisplay(birthday.animal, "animal"),
+					zodiac: translateBirthdayDisplay(birthday.zodiac, "zodiac"),
 				};
 			}
 

@@ -250,6 +250,10 @@ const translations: BaseMessage = {
 				name: "事件显示",
 				desc: "事件、节假日、生日等相关显示设置",
 			},
+			customEmoji: {
+				name: "自定义 Emoji",
+				desc: "在这里配置的 Emoji 会出现在图标选择窗口中",
+			},
 			colorSets: {
 				name: "颜色预设",
 				desc: "设定你喜欢的颜色值并快速调用",

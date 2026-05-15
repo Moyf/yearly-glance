@@ -250,6 +250,10 @@ const translations: BaseMessage = {
 				name: "Event Display",
 				desc: "Settings for events, holidays, birthdays, etc.",
 			},
+			customEmoji: {
+				name: "Custom Emoji",
+				desc: "Emoji configured here will appear in the icon selection window",
+			},
 			colorSets: {
 				name: "Color presets",
 				desc: "Define color values for quick selection",

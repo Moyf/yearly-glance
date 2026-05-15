@@ -146,6 +146,7 @@ export type BaseMessage = {
 			layout: IBaseSettingsItem;
 			displayContent: IBaseSettingsItem;
 			eventDisplay: IBaseSettingsItem;
+			customEmoji: IBaseSettingsItem;
 			colorSets: IBaseSettingsItem;
 			presets: IBaseSettingsItem;
 		};

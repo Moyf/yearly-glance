@@ -28,12 +28,13 @@ function parseKeywordsText(text: string): Record<string, string[]> {
 		if (!trimmed) continue;
 
 		// Find emoji at start of line
-		const match = trimmed.match(emojiRegex);
+		emojiRegex.lastIndex = 0;
+		const match = emojiRegex.exec(trimmed);
 		if (!match) continue;
 
 		const emoji = match[0];
-		// Get the rest of the line after the emoji
-		const rest = trimmed.slice(match.index! + match[0].length).trim();
+		// Get the rest of the line after the emoji (match.index gives correct position)
+		const rest = trimmed.slice(match.index + match[0].length).trim();
 		// Remove leading colon or comma if present
 		const cleaned = rest.replace(/^[:\s,，：]+/, "").trim();
 

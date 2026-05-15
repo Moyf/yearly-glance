@@ -320,28 +320,30 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 									)}
 									{/* Add new keyword inline */}
 									<div className="yg-emoji-keyword-add">
-										<input
-											type="text"
-											placeholder={t("view.emojiPicker.keywordEmojiPlaceholder")}
-											value={newKeywordEmoji}
-											onChange={(e) =>
-												setNewKeywordEmoji(e.target.value)
-											}
-											className="yg-emoji-keyword-input-emoji"
-										/>
-										<input
-											type="text"
-											placeholder={t("view.emojiPicker.keywordTextPlaceholder")}
-											value={newKeywordText}
-											onChange={(e) =>
-												setNewKeywordText(e.target.value)
-											}
-											onKeyDown={(e) => {
-												if (e.key === "Enter")
-													handleAddKeyword();
-											}}
-											className="yg-emoji-keyword-input-text"
-										/>
+								<input
+										type="text"
+										placeholder={t("view.emojiPicker.keywordEmojiPlaceholder")}
+										value={newKeywordEmoji}
+										onChange={(e) =>
+											setNewKeywordEmoji(e.target.value)
+										}
+										onFocus={(e) => e.stopPropagation()}
+										className="yg-emoji-keyword-input-emoji"
+									/>
+									<input
+										type="text"
+										placeholder={t("view.emojiPicker.keywordTextPlaceholder")}
+										value={newKeywordText}
+										onChange={(e) =>
+											setNewKeywordText(e.target.value)
+										}
+										onKeyDown={(e) => {
+											if (e.key === "Enter")
+												handleAddKeyword();
+										}}
+										onFocus={(e) => e.stopPropagation()}
+										className="yg-emoji-keyword-input-text"
+									/>
 										<button
 											className="yg-emoji-keyword-add-btn"
 											onClick={handleAddKeyword}

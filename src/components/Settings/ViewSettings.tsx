@@ -3,6 +3,7 @@ import YearlyGlancePlugin from "@/src/main";
 import { YearlyGlanceConfig } from "@/src/type/Config";
 import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
 import {
+	EVENT_CLICK_ACTION_OPTIONS,
 	EVENT_FONT_SIZE_OPTIONS,
 	GREGORIAN_DISPLAY_FORMAT_OPTIONS,
 	ICON_DISPLAY_OPTIONS,
@@ -54,6 +55,13 @@ export const iconDisplayOptions = ICON_DISPLAY_OPTIONS.map((option) => ({
 	value: option,
 	label: t(
 		`setting.general.showEmojiBeforeTabName.options.${option}` as TranslationKeys
+	),
+}));
+
+export const eventClickActionOptions = EVENT_CLICK_ACTION_OPTIONS.map((option) => ({
+	value: option,
+	label: t(
+		`setting.general.eventClickAction.options.${option}` as TranslationKeys
 	),
 }));
 
@@ -117,6 +125,21 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						onValueChange={(value) =>
 							handleUpdateConfig({
 								showEmojiBeforeTabName: value,
+							})
+						}
+					/>
+				</SettingsItem>
+				{/* 事件点击操作 */}
+				<SettingsItem
+					name={t("setting.general.eventClickAction.name")}
+					desc={t("setting.general.eventClickAction.desc")}
+				>
+					<Select
+						options={eventClickActionOptions}
+						value={config.eventClickAction}
+						onValueChange={(value) =>
+							handleUpdateConfig({
+								eventClickAction: value,
 							})
 						}
 					/>

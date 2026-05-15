@@ -76,6 +76,15 @@ const translations: BaseMessage = {
 				name: "Event tooltips",
 				desc: "Display details when hovering events",
 			},
+			eventClickAction: {
+				name: "Event click action",
+				desc: "Action to perform when clicking an event",
+				options: {
+					showTooltip: "Show preview (default)",
+					editEvent: "Edit event",
+					openNote: "Open note (for note events only)",
+				},
+			},
 			colorful: {
 				name: "Colorful theme",
 				desc: "Use different colors for each month",

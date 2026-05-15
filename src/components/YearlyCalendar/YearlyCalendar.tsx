@@ -62,6 +62,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 		limitListHeight,
 		eventFontSize,
 		showTooltips,
+		eventClickAction,
 		colorful,
 		showHolidays,
 		showBirthdays,
@@ -193,8 +194,31 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 	const handleEventForm = () => {
 		plugin.openEventForm("customEvent", {}, false, true);
 	};
-	const handleEventTooltip = (event: CalendarEvent) => {
-		new EventTooltip(plugin, event).open();
+	const handleEventClick = (event: CalendarEvent) => {
+		const action = eventClickAction || "showTooltip";
+
+		switch (action) {
+			case "editEvent":
+				// 直接打开编辑表单
+				plugin.openEventForm(event.eventType as EventType, event, true, false);
+				break;
+			case "openNote": {
+				// 打开笔记（仅对有笔记来源的事件生效，否则 fallback 到 tooltip）
+				const isBasesEvent = event.eventSource === EventSource.BASES || event.id.startsWith("bases-");
+				const isDailyNoteEvent = event.eventType === "dailyNoteEvent";
+				if ((isBasesEvent || isDailyNoteEvent) && event.sourceFilePath) {
+					plugin.app.workspace.openLinkText(event.sourceFilePath, '', true);
+				} else {
+					// 非笔记事件，fallback 到显示 tooltip
+					new EventTooltip(plugin, event).open();
+				}
+				break;
+			}
+			case "showTooltip":
+			default:
+				new EventTooltip(plugin, event).open();
+				break;
+		}
 	};
 
 	// 右键菜单：删除事件
@@ -386,7 +410,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 		const eventProps: React.HTMLAttributes<HTMLDivElement> = {
 			className: eventClasses.filter(Boolean).join(" "),
 			style: eventStyle,
-			onClick: (e) => handleEventTooltip(event),
+			onClick: (e) => handleEventClick(event),
 			onContextMenu: (e) => handleEventContextMenu(e, event),
 		};
 

@@ -11,6 +11,10 @@ export const EVENT_FONT_SIZE_OPTIONS = ["small", "medium", "large"];
 export const ICON_DISPLAY_OPTIONS = ["none", "lucide", "emoji"] as const;
 export type IconDisplayOption = typeof ICON_DISPLAY_OPTIONS[number];
 
+// 事件点击操作选项
+export const EVENT_CLICK_ACTION_OPTIONS = ["showTooltip", "editEvent", "openNote"] as const;
+export type EventClickAction = typeof EVENT_CLICK_ACTION_OPTIONS[number];
+
 // 公历日期显示格式选项
 export const GREGORIAN_DISPLAY_FORMAT_OPTIONS: SelectOption[] = [
 	{
@@ -114,6 +118,7 @@ export interface YearlyGlanceSettings {
 	title: string; // 年历标题
 	showEmojiBeforeTabName: IconDisplayOption; // 标签图标显示方式
 	showTooltips: boolean; // 是否显示提示
+	eventClickAction: EventClickAction; // 事件点击操作
 	colorful: boolean; // 是否多彩
 	showLunarDay: boolean; // 是否显示农历日
 	showDebugInfo: boolean; // 是否显示调试信息
@@ -160,6 +165,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	title: "",
 	showEmojiBeforeTabName: "emoji",
 	showTooltips: true,
+	eventClickAction: "showTooltip", // 默认显示预览
 	colorful: false,
 	showLunarDay: false,
 	showDebugInfo: false,

@@ -76,6 +76,15 @@ const translations: BaseMessage = {
 				name: "显示事件悬浮提示",
 				desc: "鼠标悬停在事件上时显示完整内容",
 			},
+			eventClickAction: {
+				name: "事件点击操作",
+				desc: "点击事件时执行的操作",
+				options: {
+					showTooltip: "显示预览（默认）",
+					editEvent: "编辑事件",
+					openNote: "打开笔记（仅针对笔记事件）",
+				},
+			},
 			colorful: {
 				name: "彩色主题",
 				desc: "为每个月使用不同的主题色",

@@ -47,6 +47,13 @@ export type BaseMessage = {
 			showBasesEvents: IBaseSettingsItem;
 			mondayFirst: IBaseSettingsItem;
 			showTooltips: IBaseSettingsItem;
+			eventClickAction: SettingsItem<{
+				options: {
+					showTooltip: string;
+					editEvent: string;
+					openNote: string;
+				};
+			}>;
 			colorful: IBaseSettingsItem;
 			showLunarDay: IBaseSettingsItem;
 			showEmojiBeforeTabName: SettingsItem<{

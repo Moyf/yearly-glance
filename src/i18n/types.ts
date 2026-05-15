@@ -47,6 +47,13 @@ export type BaseMessage = {
 			showBasesEvents: IBaseSettingsItem;
 			mondayFirst: IBaseSettingsItem;
 			showTooltips: IBaseSettingsItem;
+			eventClickAction: SettingsItem<{
+				options: {
+					showTooltip: string;
+					editEvent: string;
+					openNote: string;
+				};
+			}>;
 			colorful: IBaseSettingsItem;
 			showLunarDay: IBaseSettingsItem;
 			showEmojiBeforeTabName: SettingsItem<{
@@ -100,6 +107,16 @@ export type BaseMessage = {
 		basesEventDescriptionProp: SettingsItem<{
 			placeholder: string;
 		}>;
+			basesEventPresetTypeProp: SettingsItem<{
+				placeholder: string;
+			}>;
+		eventPresetTypes: SettingsItem<{
+			tooltip: string;
+			addNew: string;
+			namePlaceholder: string;
+			deleteConfirm: string;
+			usedByCount: string;
+		}>;
 			showDailyNoteEvents: IBaseSettingsItem;
 			dailyNoteSource: SettingsItem<{
 				options: {
@@ -124,11 +141,13 @@ export type BaseMessage = {
 	group: {
 			basic: IBaseSettingsItem;
 			basesEvent: IBaseSettingsItem;
+			noteEventProps: IBaseSettingsItem;
 			dailyNoteEvent: IBaseSettingsItem;
 			layout: IBaseSettingsItem;
 			displayContent: IBaseSettingsItem;
 			eventDisplay: IBaseSettingsItem;
 			colorSets: IBaseSettingsItem;
+			presets: IBaseSettingsItem;
 		};
 	};
 	view: {
@@ -323,6 +342,10 @@ export type BaseMessage = {
 			source: {
 				bases: string;
 				dailynote: string;
+			};
+			presetType: {
+				label: string;
+				none: string;
 			};
 		};
 		dataPortView: {

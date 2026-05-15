@@ -76,6 +76,15 @@ const translations: BaseMessage = {
 				name: "显示事件悬浮提示",
 				desc: "鼠标悬停在事件上时显示完整内容",
 			},
+			eventClickAction: {
+				name: "事件点击操作",
+				desc: "点击事件时执行的操作",
+				options: {
+					showTooltip: "显示预览（默认）",
+					editEvent: "编辑事件",
+					openNote: "打开笔记（仅针对笔记事件）",
+				},
+			},
 			colorful: {
 				name: "彩色主题",
 				desc: "为每个月使用不同的主题色",
@@ -160,6 +169,20 @@ const translations: BaseMessage = {
 			desc: "笔记属性中用于存储事件描述的属性名",
 			placeholder: "默认: description",
 		},
+			basesEventPresetTypeProp: {
+				name: "事件类型属性",
+				desc: "用于给笔记事件指定预设类型的 frontmatter 属性名",
+				placeholder: "event_type",
+			},
+			eventPresetTypes: {
+				name: "事件类型预设",
+				desc: "定义偏好的图标和颜色组合，快速分配给事件，也可用于按分组筛选",
+				tooltip: "给事件分配类型后将自动应用该类型的 emoji 和颜色。单个事件仍可覆盖自己的 emoji 和颜色。",
+				addNew: "新建类型",
+				namePlaceholder: "类型名称（如：出游）",
+				deleteConfirm: "此类型被 {count} 个事件使用，删除后将回退到默认颜色，是否继续？",
+				usedByCount: "被 {count} 个事件使用",
+			},
 			showDailyNoteEvents: {
 				name: "显示日记事件",
 				desc: "在日历上显示来自日记笔记的事件",
@@ -207,6 +230,10 @@ const translations: BaseMessage = {
 				name: "笔记事件",
 				desc: "使用带有特定属性的笔记作为事件来源。默认路径中的笔记会显示在年历视图中。你也可以添加 Yearly Glance Bases 视图，定义不同的筛选条件来显示不同的笔记事件。",
 			},
+			noteEventProps: {
+				name: "笔记属性",
+				desc: "配置读取笔记事件数据所使用的 frontmatter 属性名",
+			},
 			dailyNoteEvent: {
 				name: "日记事件",
 				desc: "从日记笔记的 frontmatter 列表属性中读取事件",
@@ -224,8 +251,12 @@ const translations: BaseMessage = {
 				desc: "事件、节假日、生日等相关显示设置",
 			},
 			colorSets: {
-				name: "颜色设置",
-				desc: "颜色配置相关内容",
+				name: "颜色预设",
+				desc: "设定你喜欢的颜色值并快速调用",
+			},
+			presets: {
+				name: "预设配置",
+				desc: "颜色预设和事件类型预设",
 			},
 		},
 	},
@@ -468,6 +499,10 @@ const translations: BaseMessage = {
 			source: {
 				bases: "来自笔记",
 				dailynote: "来自日记",
+			},
+			presetType: {
+				label: "类型",
+				none: "无类型",
 			},
 		},
 		dataPortView: {

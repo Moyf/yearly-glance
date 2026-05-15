@@ -222,3 +222,47 @@
 	background: var(--background-primary);
 	position: relative;
 }
+
+/* Settings tab navigation wrapper */
+.yg-settings-tabs-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+/* Tab nav within settings — override for tighter fit */
+.yg-settings-tabs-wrapper .yg-nav-tabs {
+	display: flex;
+	flex-wrap: wrap; /* allow wrapping in narrow panels */
+	gap: 4px;
+	margin-bottom: 1rem;
+	padding: 4px;
+	background: var(--background-secondary);
+	border-radius: 8px;
+	border: 1px solid var(--background-modifier-border);
+}
+
+.yg-settings-tabs-wrapper .yg-nav-tab {
+	flex: 1;
+	min-width: 80px;
+	text-align: center;
+	padding: 6px 10px;
+	border-radius: 6px;
+	font-size: var(--font-ui-small);
+	white-space: nowrap;
+}
+
+.yg-settings-tabs-wrapper .yg-nav-tab.active {
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+/* Obsidian native settings panel specific adjustments */
+.yg-settings-in-obsidian-panel .yg-settings-tabs-wrapper .yg-nav-tabs {
+	/* native panel is narrower — smaller font */
+	font-size: var(--font-ui-smaller);
+}
+
+.yg-settings-tab-content {
+	min-height: 200px;
+}

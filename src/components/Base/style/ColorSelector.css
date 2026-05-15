@@ -4,6 +4,7 @@
 	gap: 0.75rem;
 	width: 100%;
 	flex-wrap: wrap;
+	min-width: 0;
 
 	label {
 		font-size: 0.875rem;
@@ -18,8 +19,8 @@
 
 	.yg-select-wrapper {
 		min-width: 0;
-		flex: 1 1 120px;
-		max-width: 50%;
+		flex: 1 1 100px;
+		max-width: 160px;
 		margin-left: auto;
 	}
 

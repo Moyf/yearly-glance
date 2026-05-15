@@ -9,11 +9,13 @@ import {
 	EventType,
 	Holiday,
 } from "@/src/type/Events";
+import { resolveEventDisplay } from "@/src/utils/resolveEventDisplay";
 import {
 	EVENT_SEARCH_REQUESTED,
 	EventManagerBus,
 } from "@/src/hooks/useEventBus";
 import { t } from "@/src/i18n/i18n";
+import { translateBirthdayDisplay } from "@/src/i18n/birthday";
 import "./style/EventTooltip.css";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
 import { IsoUtils } from "@/src/utils/isoUtils";
@@ -33,6 +35,8 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 	const eventType = event.eventType;
 
 	const gregorianDisplayFormat = plugin.getConfig().gregorianDisplayFormat;
+	const eventPresetTypes = plugin.getConfig().eventPresetTypes ?? [];
+	const resolved = resolveEventDisplay(event, eventPresetTypes);
 
 	// 编辑事件
 	const handleEditEvent = () => {
@@ -127,12 +131,11 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 			<div
 				className="tooltip-header"
 				style={{
-					backgroundColor:
-						event.color ?? EVENT_TYPE_DEFAULT[eventType].color,
+					backgroundColor: resolved.color,
 				}}
 			>
 				<span className="tooltip-emoji">
-					{event.emoji ?? EVENT_TYPE_DEFAULT[eventType].emoji}
+					{resolved.emoji}
 				</span>
 				<span className="tooltip-title">{event.text}</span>
 				<div className="tooltip-actions">
@@ -169,6 +172,18 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 						)}
 					</span>
 				</div>
+
+				{/* 预设类型 */}
+				{resolved.presetType && (
+					<div className="tooltip-row">
+						<span className="tooltip-label">
+							{t("view.eventManager.presetType.label")}:
+						</span>
+						<span className="tooltip-value">
+							{resolved.presetType.emoji} {resolved.presetType.name}
+						</span>
+					</div>
+				)}
 
 				{/* 节日特有信息 */}
 				{eventType === "holiday" && (event as Holiday).foundDate && (
@@ -208,26 +223,26 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 								</span>
 							</div>
 						)}
-						{(event as Birthday).animal !== undefined && (
-							<div className="tooltip-row">
-								<span className="tooltip-label">
-									{t("view.eventManager.birthday.animal")}:
-								</span>
-								<span className="tooltip-value">
-									{(event as Birthday).animal ?? "-"}
-								</span>
-							</div>
-						)}
-						{(event as Birthday).zodiac !== undefined && (
-							<div className="tooltip-row">
-								<span className="tooltip-label">
-									{t("view.eventManager.birthday.zodiac")}:
-								</span>
-								<span className="tooltip-value">
-									{(event as Birthday).zodiac ?? "-"}
-								</span>
-							</div>
-						)}
+					{(event as Birthday).animal !== undefined && (
+						<div className="tooltip-row">
+							<span className="tooltip-label">
+								{t("view.eventManager.birthday.animal")}:
+							</span>
+							<span className="tooltip-value">
+								{translateBirthdayDisplay((event as Birthday).animal, "animal")}
+							</span>
+						</div>
+					)}
+					{(event as Birthday).zodiac !== undefined && (
+						<div className="tooltip-row">
+							<span className="tooltip-label">
+								{t("view.eventManager.birthday.zodiac")}:
+							</span>
+							<span className="tooltip-value">
+								{translateBirthdayDisplay((event as Birthday).zodiac, "zodiac")}
+							</span>
+						</div>
+					)}
 					</>
 				)}
 

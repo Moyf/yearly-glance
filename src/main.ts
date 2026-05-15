@@ -24,7 +24,7 @@ import { t } from "./i18n/i18n";
 import { buildPropConfig, syncEventToFrontmatter } from "./service/BasesEventFrontmatterService";
 import { DailyNoteService } from "./service/DailyNoteService";
 import { MigrateData } from "./utils/migrateData";
-import { setDebugLoggerEnabled } from "./utils/logger";
+import { setDebugLoggerEnabled, logger } from "./utils/logger";
 import { EventCalculator } from "./utils/eventCalculator";
 import { IsoUtils } from "./utils/isoUtils";
 import { formatNoteEventPath } from "./utils/notePathFormat";
@@ -48,9 +48,60 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		// 添加设置选项卡
 		this.addSettingTab(new YearlyGlanceSettingsTab(this.app, this));
+
+		// 注册元数据变更监听，自动刷新视图
+		this.registerMetadataWatcher();
 	}
 
 	onunload() {}
+
+	/**
+	 * 注册元数据变更监听器
+	 * 监听笔记事件文件夹和日记文件夹的 frontmatter 变化，自动刷新视图
+	 */
+	private registerMetadataWatcher() {
+		// 防抖定时器
+		let basesDebounceTimer: number | undefined;
+		let dailyNoteDebounceTimer: number | undefined;
+
+		this.registerEvent(
+			this.app.metadataCache.on("changed", (file: TFile) => {
+				// 检查是否在笔记事件文件夹中
+				const basesEventPath = this.settings.config.defaultBasesEventPath;
+				if (basesEventPath && file.path.startsWith(basesEventPath)) {
+					// 防抖：500ms 内只触发一次
+					if (basesDebounceTimer !== undefined) {
+						window.clearTimeout(basesDebounceTimer);
+					}
+					basesDebounceTimer = window.setTimeout(() => {
+						logger.debug("[MetadataWatcher] Bases event file changed:", file.path);
+						YearlyGlanceBus.publish('bases-data');
+						basesDebounceTimer = undefined;
+					}, 500);
+					return;
+				}
+
+				// 检查是否在日记文件夹中
+				if (this.settings.config.showDailyNoteEvents) {
+					const dailySettings = DailyNoteService.getDailyNoteSettings(
+						this.app,
+						this.settings.config.dailyNoteSource
+					);
+					if (dailySettings && dailySettings.folder && file.path.startsWith(dailySettings.folder)) {
+						// 防抖：500ms 内只触发一次
+						if (dailyNoteDebounceTimer !== undefined) {
+							window.clearTimeout(dailyNoteDebounceTimer);
+						}
+						dailyNoteDebounceTimer = window.setTimeout(() => {
+							logger.debug("[MetadataWatcher] Daily note file changed:", file.path);
+							YearlyGlanceBus.publish('dailynote-data');
+							dailyNoteDebounceTimer = undefined;
+						}, 500);
+					}
+				}
+			})
+		);
+	}
 
 	async loadSettings() {
 		// 加载数据

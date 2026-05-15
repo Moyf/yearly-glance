@@ -84,6 +84,8 @@ export class NoteEventService {
 			this.config.basesEventColorProp || "color";
 		const descriptionProp =
 			this.config.basesEventDescriptionProp || "description";
+		const presetTypeProp =
+			this.config.basesEventPresetTypeProp || "event_type";
 
 		// 读取日期字段（必需）
 		const dateValue = frontmatter[dateProp];
@@ -103,6 +105,16 @@ export class NoteEventService {
 		const icon = frontmatter[iconProp] || null;
 		const color = frontmatter[colorProp] || null;
 		const description = frontmatter[descriptionProp] || "";
+		const presetTypeName = frontmatter[presetTypeProp];
+
+		// 按名称匹配预设类型（大小写不敏感）
+		let presetTypeId: string | undefined;
+		if (presetTypeName && typeof presetTypeName === "string") {
+			const matched = (this.config.eventPresetTypes ?? []).find(
+				(pt) => pt.name.trim().toLowerCase() === presetTypeName.trim().toLowerCase()
+			);
+			presetTypeId = matched?.id;
+		}
 
 		// 构建事件 ID
 		const filePath = file.path;
@@ -126,6 +138,7 @@ export class NoteEventService {
 			eventType: "basesEvent",
 			isRepeat: false,
 			eventSource: EventSource.BASES,
+			presetTypeId,
 		} as CalendarEvent;
 	}
 

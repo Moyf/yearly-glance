@@ -45,12 +45,13 @@
 	}
 
 	.search-container.expanded {
-		width: 200px;
+		width: 280px;
 		background-color: var(--background-primary);
 		border-radius: 18px;
 		border: 1px solid var(--background-modifier-border);
 		padding: 0 8px 0 12px;
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+		position: relative;
 	}
 
 	.search-toggle {
@@ -460,5 +461,75 @@
 	/* 移动设备上的标签样式 */
 	.yg-event-tabs {
 		width: 100%;
+	}
+}
+
+/* 搜索建议面板 */
+@keyframes yg-suggestion-fadein {
+	from { opacity: 0; transform: translateY(-4px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+.yg-search-suggestions {
+	position: absolute;
+	top: calc(100% + 4px);
+	left: 0;
+	right: 0;
+	min-width: 220px;
+	background: var(--background-primary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	padding: 8px;
+	z-index: 1000;
+	animation: yg-suggestion-fadein 0.15s ease both;
+}
+
+.yg-search-token-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.yg-search-chip {
+	padding: 3px 10px;
+	border-radius: 12px;
+	border: 1px solid var(--background-modifier-border);
+	background: var(--background-secondary);
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	cursor: pointer;
+	font-family: monospace;
+	transition: all 0.15s ease;
+
+	&:hover {
+		background: var(--interactive-hover);
+		color: var(--text-normal);
+		border-color: var(--interactive-accent);
+	}
+}
+
+.yg-search-type-candidates {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.yg-search-candidate {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	border-radius: 6px;
+	border: none;
+	background: none;
+	color: var(--text-normal);
+	font-size: var(--font-ui-small);
+	cursor: pointer;
+	text-align: left;
+	width: 100%;
+
+	&:hover {
+		background: var(--interactive-hover);
 	}
 }

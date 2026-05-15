@@ -76,6 +76,15 @@ const translations: BaseMessage = {
 				name: "Event tooltips",
 				desc: "Display details when hovering events",
 			},
+			eventClickAction: {
+				name: "Event click action",
+				desc: "Action to perform when clicking an event",
+				options: {
+					showTooltip: "Show preview (default)",
+					editEvent: "Edit event",
+					openNote: "Open note (for note events only)",
+				},
+			},
 			colorful: {
 				name: "Colorful theme",
 				desc: "Use different colors for each month",
@@ -160,6 +169,20 @@ const translations: BaseMessage = {
 			desc: "Property name in note properties for storing event description",
 			placeholder: "Default: description",
 		},
+			basesEventPresetTypeProp: {
+				name: "Event type property",
+				desc: "Frontmatter property name used to assign a preset event type to note events",
+				placeholder: "event_type",
+			},
+			eventPresetTypes: {
+				name: "Event type presets",
+				desc: "Define icon and color combinations, assign to events, and filter by group",
+				tooltip: "Assign a type to events to apply its emoji and color. You can still override emoji/color on individual events.",
+				addNew: "Add type",
+				namePlaceholder: "Type name (e.g. Travel)",
+				deleteConfirm: "This type is used by {count} events. Deleting it will fall back to default colors. Continue?",
+				usedByCount: "Used by {count} events",
+			},
 			showDailyNoteEvents: {
 				name: "Show daily note events",
 				desc: "Display events from daily notes on the calendar",
@@ -207,6 +230,10 @@ const translations: BaseMessage = {
 				name: "Note Events",
 				desc: "Use notes with specific properties as event sources. Notes in the default path will appear in the Year Calendar view. You can also add a Yearly Glance Bases view for advanced filtering. See docs for details.",
 			},
+			noteEventProps: {
+				name: "Note Properties",
+				desc: "Configure the frontmatter property names used to read note event data",
+			},
 			dailyNoteEvent: {
 				name: "Daily Note Events",
 				desc: "Read events from daily note frontmatter list properties",
@@ -224,8 +251,12 @@ const translations: BaseMessage = {
 				desc: "Settings for events, holidays, birthdays, etc.",
 			},
 			colorSets: {
-				name: "Color",
-				desc: "Color configuration related content",
+				name: "Color presets",
+				desc: "Define color values for quick selection",
+			},
+			presets: {
+				name: "Presets",
+				desc: "Color presets and event type presets",
 			},
 		},
 	},
@@ -470,6 +501,10 @@ const translations: BaseMessage = {
 			source: {
 				bases: "From note",
 				dailynote: "From daily note",
+			},
+			presetType: {
+				label: "Type",
+				none: "No type",
 			},
 		},
 		dataPortView: {

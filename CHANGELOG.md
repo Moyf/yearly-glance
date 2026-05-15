@@ -1,3 +1,35 @@
+## [4.0.0-beta.4] (Pre Release)
+
+### 🚀 Added
+
+- **EventPresetType**: Define named event types (e.g. "健康 🌿") with emoji and color; assign to events for consistent styling. Display falls back through: event override → preset type → default color
+- **Settings Tabs**: Settings panel reorganized into 5 tabs (Basic / Layout & Display / Note Events / Daily Note Events / Presets) — both in GlanceManager and Obsidian native settings
+- **@type: search**: In EventManager, search `@type:健康` to filter by preset type name (partial match supported)
+- **basesEvent type mapping**: Set `event_type: 健康` in note frontmatter to auto-assign preset type to note events
+
+### ⚡ Changed
+
+- **resolveEventDisplay utility**: Color/emoji fallback logic centralized — removes duplicated inline code across components
+
+### 🐛 Fixed
+
+- **Lucide tab icon not refreshing**: Tab icon now updates immediately when "Tab icon display" setting changes, without needing to restart Obsidian
+
+---
+
+## [4.0.0-beta.3] (Pre Release)
+
+### 🚀 Added
+
+- **Event Click Action Setting**: New setting to control what happens when clicking an event — choose from "Show preview" (default), "Edit event", or "Open note" (for note-backed events)
+- **Auto-Refresh on Metadata Changes**: The calendar view now automatically refreshes when frontmatter changes in the note events folder or daily notes folder, no manual reload needed
+
+### ⚡ Changed
+
+- **Zodiac/Animal Stored as Locale-Independent Keys**: `zodiac` and `animal` fields in `data.json` are now stored as English identifiers (e.g. `capricorn`, `jia-zi:rat`) and translated at display time, preventing mixed-language data when switching languages
+
+---
+
 ## [4.0.0-beta.2](https://github.com/Moyf/yearly-glance/compare/3.2.0...4.0.0-beta.2) (2025-04-29) (Pre Release)
 
 ### 🚀 Added

@@ -23,3 +23,9 @@
 		margin-top: 0;
 	}
 }
+
+.yg-glance-manager-content.tab-settings {
+	max-width: 700px;
+	width: 100%;
+	margin: 0 auto;
+}

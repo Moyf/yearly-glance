@@ -490,14 +490,15 @@ export const EventForm: React.FC<EventFormProps> = ({
 								value={formData.presetTypeId ?? ""}
 								onValueChange={(value) => {
 									handleFieldChange("presetTypeId", value || undefined);
-									// Auto-fill emoji/color if empty
+									// 每次切换类型，都用该类型的 emoji/color 覆盖当前值
+									// 用户可在选完类型后手动修改来实现单独覆盖
 									if (value) {
 										const preset = settings.config.eventPresetTypes?.find((p) => p.id === value);
 										if (preset) {
-											if (!formData.emoji && preset.emoji) {
+											if (preset.emoji) {
 												handleFieldChange("emoji", preset.emoji);
 											}
-											if (!formData.color && preset.color) {
+											if (preset.color) {
 												handleFieldChange("color", preset.color);
 											}
 										}

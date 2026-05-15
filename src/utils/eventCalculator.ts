@@ -251,10 +251,9 @@ export class EventCalculator {
 			return birthday;
 		}
 
-		// 从 userInput.input 解析出生年份，用于年龄和生肖计算
-		// （eventDate.isoDate 可能已经被更新为显示年份）
-		const birthIsoDate = birthday.eventDate.userInput?.input || isoDate;
-		const { year, month, day } = IsoUtils.parse(birthIsoDate, calendar);
+		// 从 eventDate.isoDate 解析出生年份，用于年龄和生肖计算
+		// isoDate 是标准 ISO 格式（YYYY-MM-DD 或 MM-DD），userInput.input 是用户原始输入，不能直接 parse
+		const { year, month, day } = IsoUtils.parse(isoDate, calendar);
 		const todaySolar = Solar.fromDate(new Date());
 
 		// 计算下一次生日，

@@ -32,6 +32,7 @@ export interface BasesViewConfig {
 	propIcon: string | null;
 	propColor: string | null;
 	propDescription: string | null;
+	propPresetType: string | null;
 	limitHeight: boolean;
 	embeddedHeight: number;
 }

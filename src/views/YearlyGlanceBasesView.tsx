@@ -83,6 +83,7 @@ export class YearlyGlanceBasesView extends BasesView {
                 propIcon: this.config.getAsPropertyId('propIcon') || pluginConfig.basesEventIconProp || null,
                 propColor: this.config.getAsPropertyId('propColor') || pluginConfig.basesEventColorProp || null,
                 propDescription: this.config.getAsPropertyId('propDescription') || pluginConfig.basesEventDescriptionProp || null,
+                propPresetType: this.config.getAsPropertyId('propPresetType') || pluginConfig.basesEventPresetTypeProp || null,
                 limitHeight: this.getBooleanConfig('limitHeight', false),
                 embeddedHeight: this.getNumericConfig('embeddedHeight', 600, 400, 2000),
             };
@@ -336,6 +337,17 @@ export class YearlyGlanceBasesView extends BasesView {
                 const colorValue = this.readOptionalProp(entry, config.propColor, 'color');
                 const descriptionValue = this.readOptionalProp(entry, config.propDescription, 'description');
 
+                // 读取预设类型名并反查 presetTypeId
+                const presetTypeName = this.readOptionalProp(entry, config.propPresetType, 'event_type');
+                const eventPresetTypes = this.plugin.getConfig().eventPresetTypes ?? [];
+                let presetTypeId: string | undefined;
+                if (presetTypeName) {
+                    const matched = eventPresetTypes.find(
+                        (pt) => pt.name.trim().toLowerCase() === presetTypeName.trim().toLowerCase()
+                    );
+                    presetTypeId = matched?.id;
+                }
+
                 const event = this.convertBasesEvent(
                     entry,
                     dateValue,
@@ -344,7 +356,8 @@ export class YearlyGlanceBasesView extends BasesView {
                     iconValue,
                     colorValue,
                     descriptionValue,
-                    entry.file.path
+                    entry.file.path,
+                    presetTypeId
                 );
                 if (event) {
                     events.push(event);
@@ -368,7 +381,8 @@ export class YearlyGlanceBasesView extends BasesView {
         icon: string | null,
         color: string | null,
         description: string | null,
-        filePath: string
+        filePath: string,
+        presetTypeId?: string
     ): CalendarEvent | null {
         try {
             // 尝试解析日期
@@ -415,7 +429,8 @@ export class YearlyGlanceBasesView extends BasesView {
                 remark: description || "",
                 eventType: 'basesEvent',
                 isRepeat: false,
-                eventSource: EventSource.BASES
+                eventSource: EventSource.BASES,
+                presetTypeId,
             } as CalendarEvent;
         } catch (error) {
             console.warn('Failed to convert Bases event:', error, entry);

@@ -8,7 +8,6 @@ import YearlyGlancePlugin from "@/src/main";
 import { Input } from "@/src/components/Base/Input";
 import { Toggle } from "@/src/components/Base/Toggle";
 import { ConfirmDialog } from "@/src/components/Base/ConfirmDialog";
-import { Tooltip } from "@/src/components/Base/Tooltip";
 import "./style/PresetEventTypeSettings.css";
 
 interface PresetEventTypeSettingsProps {
@@ -185,7 +184,6 @@ export const PresetEventTypeSettings: React.FC<
 	return (
 		<div className="yg-preset-types">
 			<div className="yg-preset-types-header">
-				<Tooltip text={t("setting.general.eventPresetTypes.tooltip" as TranslationKeys)} />
 				<button className="yg-type-add mod-cta" onClick={handleAdd}>
 					<Plus />
 				</button>

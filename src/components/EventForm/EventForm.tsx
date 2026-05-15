@@ -470,10 +470,13 @@ export const EventForm: React.FC<EventFormProps> = ({
 						/>
 					</div>
 
-					{/* 预设类型（仅对配置事件显示） */}
+					{/* 预设类型（不对 dailyNoteEvent 显示） */}
 					{currentEventType !== "dailyNoteEvent" && (
 						<div className="form-group">
-							<label>{t("view.eventManager.presetType.label")}</label>
+							<label>
+								{t("view.eventManager.presetType.label")}
+								<Tooltip text={t("setting.general.eventPresetTypes.tooltip" as TranslationKeys)} />
+							</label>
 							<Select
 								options={[
 									{ label: t("view.eventManager.presetType.none"), value: "" },

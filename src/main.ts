@@ -457,9 +457,10 @@ export default class YearlyGlancePlugin extends Plugin {
 		}
 
 		const propConfig = buildPropConfig(this.settings.config);
+		const eventPresetTypes = this.settings.config.eventPresetTypes ?? [];
 
 		try {
-			await syncEventToFrontmatter(this.app, file, eventToSync, propConfig);
+			await syncEventToFrontmatter(this.app, file, eventToSync, propConfig, eventPresetTypes);
 			YearlyGlanceBus.publish('bases-data');
 		} catch (error) {
 			console.error('[YearlyGlance] Failed to sync frontmatter:', error);
@@ -546,6 +547,7 @@ export default class YearlyGlancePlugin extends Plugin {
 		const defaultPath = config.defaultBasesEventPath?.trim();
 		const format = config.basesEventFileNameFormat || "{event_name}";
 		const propConfig = buildPropConfig(config);
+		const eventPresetTypes = config.eventPresetTypes ?? [];
 
 		// 2. 确定文件夹路径
 		let folderPath = "";
@@ -597,6 +599,12 @@ export default class YearlyGlancePlugin extends Plugin {
 			}
 			if (event.remark) {
 				fm[propConfig.descriptionProp] = event.remark;
+			}
+			if (event.presetTypeId) {
+				const preset = eventPresetTypes.find((p) => p.id === event.presetTypeId);
+				if (preset) {
+					fm[propConfig.presetTypeProp] = preset.name;
+				}
 			}
 		});
 

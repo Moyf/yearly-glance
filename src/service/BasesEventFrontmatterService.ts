@@ -2,6 +2,7 @@ import { App, TFile } from "obsidian";
 import { CalendarEvent } from "@/src/type/CalendarEvent";
 import { BasesEventPropertyConfig } from "@/src/type/BasesTypes";
 import { EVENT_TYPE_DEFAULT } from "@/src/type/Events";
+import { EventPresetType } from "@/src/type/Settings";
 
 /**
  * Syncs a Bases event to its corresponding note's frontmatter.
@@ -11,7 +12,8 @@ export async function syncEventToFrontmatter(
 	app: App,
 	file: TFile,
 	event: CalendarEvent,
-	propConfig: BasesEventPropertyConfig
+	propConfig: BasesEventPropertyConfig,
+	eventPresetTypes: EventPresetType[] = []
 ): Promise<void> {
 	const eventDate = event.eventDate?.isoDate;
 	if (!eventDate) {
@@ -46,6 +48,18 @@ export async function syncEventToFrontmatter(
 		} else if (fm[propConfig.descriptionProp]) {
 			delete fm[propConfig.descriptionProp];
 		}
+
+		// 写入事件类型（presetType name）
+		if (event.presetTypeId) {
+			const preset = eventPresetTypes.find((p) => p.id === event.presetTypeId);
+			if (preset) {
+				fm[propConfig.presetTypeProp] = preset.name;
+			} else if (fm[propConfig.presetTypeProp]) {
+				delete fm[propConfig.presetTypeProp];
+			}
+		} else if (fm[propConfig.presetTypeProp]) {
+			delete fm[propConfig.presetTypeProp];
+		}
 	});
 }
 
@@ -59,6 +73,7 @@ export function buildPropConfig(config: {
 	basesEventIconProp?: string;
 	basesEventColorProp?: string;
 	basesEventDescriptionProp?: string;
+	basesEventPresetTypeProp?: string;
 }): BasesEventPropertyConfig {
 	return {
 		titleProp: config.basesEventTitleProp || "title",
@@ -67,5 +82,6 @@ export function buildPropConfig(config: {
 		iconProp: config.basesEventIconProp || "icon",
 		colorProp: config.basesEventColorProp || "color",
 		descriptionProp: config.basesEventDescriptionProp || "description",
+		presetTypeProp: config.basesEventPresetTypeProp || "event_type",
 	};
 }

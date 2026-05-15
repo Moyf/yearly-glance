@@ -203,19 +203,20 @@ export class EventFormModal extends Modal {
 
 					// 同步到 frontmatter（编辑模式下）
 					if (this.isEditing) {
-						const calendarEvent: CalendarEvent = {
-							id: event.id,
-							text: event.text,
-							eventDate: event.eventDate,
-							dateArr: event.dateArr,
-							duration: (event as CustomEvent).duration,
-							emoji: event.emoji,
-							color: event.color,
-							isHidden: event.isHidden,
-							remark: event.remark,
-							eventType: eventType,
-							isRepeat: (event as CustomEvent).isRepeat
-						};
+					const calendarEvent: CalendarEvent = {
+						id: event.id,
+						text: event.text,
+						eventDate: event.eventDate,
+						dateArr: event.dateArr,
+						duration: (event as CustomEvent).duration,
+						emoji: event.emoji,
+						color: event.color,
+						isHidden: event.isHidden,
+						remark: event.remark,
+						eventType: eventType,
+						isRepeat: (event as CustomEvent).isRepeat,
+						presetTypeId: event.presetTypeId,
+					};
 						await this.plugin.syncBasesEventToFrontmatter(calendarEvent);
 					}
 					break;

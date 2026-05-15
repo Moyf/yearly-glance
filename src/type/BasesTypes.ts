@@ -20,6 +20,7 @@ export interface BasesEventPropertyConfig {
 	iconProp: string;
 	colorProp: string;
 	descriptionProp: string;
+	presetTypeProp: string;
 }
 
 /** Config for BasesView internal rendering settings */

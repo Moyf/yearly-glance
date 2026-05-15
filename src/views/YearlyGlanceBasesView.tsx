@@ -467,10 +467,12 @@ export class YearlyGlanceBasesView extends BasesView {
             iconProp: this.config.getAsPropertyId('propIcon') || pluginConfig.basesEventIconProp || "icon",
             colorProp: this.config.getAsPropertyId('propColor') || pluginConfig.basesEventColorProp || "color",
             descriptionProp: this.config.getAsPropertyId('propDescription') || pluginConfig.basesEventDescriptionProp || "description",
+            presetTypeProp: pluginConfig.basesEventPresetTypeProp || "event_type",
         };
+        const eventPresetTypes = pluginConfig.eventPresetTypes ?? [];
 
 		try {
-            await syncEventToFrontmatter(this.app, file, event, propConfig);
+            await syncEventToFrontmatter(this.app, file, event, propConfig, eventPresetTypes);
             YearlyGlanceBus.publish('bases-data');
         } catch (error) {
             console.error('Failed to update frontmatter:', error);

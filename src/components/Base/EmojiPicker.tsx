@@ -193,15 +193,24 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 
 		try {
 			const emoji = newKeywordEmoji.trim();
-			const keyword = newKeywordText.trim();
+			// Split by spaces and/or English commas, filter empty tokens
+			const newKeywords = newKeywordText
+				.split(/[\s,]+/)
+				.map((s) => s.trim())
+				.filter((s) => s.length > 0);
+			if (newKeywords.length === 0) return;
+
 			const current = plugin.getConfig().customEmojiKeywords || {};
 			const existing = current[emoji] || [];
-
-			if (existing.includes(keyword)) return;
+			// Merge, deduplicate
+			const merged = [...existing];
+			for (const kw of newKeywords) {
+				if (!merged.includes(kw)) merged.push(kw);
+			}
 
 			const updated = {
 				...current,
-				[emoji]: [...existing, keyword],
+				[emoji]: merged,
 			};
 
 		await plugin.updateConfig({

@@ -26,11 +26,10 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 	const popoverRef = React.useRef<HTMLDivElement>(null);
 	const searchRef = React.useRef<HTMLInputElement>(null);
 
-	// Get custom keywords from plugin settings
-	const customKeywords: Record<string, string[]> = React.useMemo(() => {
-		if (!plugin) return {};
-		return plugin.getConfig().customEmojiKeywords || {};
-	}, [plugin]);
+	// Get custom keywords from plugin settings — use useState for immediate re-render
+	const [customKeywords, setCustomKeywords] = React.useState<Record<string, string[]>>(
+		() => (plugin ? plugin.getConfig().customEmojiKeywords || {} : {})
+	);
 
 	// Build the combined keyword map (built-in + custom)
 	const keywordMap = React.useMemo(() => {
@@ -205,13 +204,15 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 				[emoji]: [...existing, keyword],
 			};
 
-			await plugin.updateConfig({
-				...plugin.getConfig(),
-				customEmojiKeywords: updated,
-			});
+		await plugin.updateConfig({
+			...plugin.getConfig(),
+			customEmojiKeywords: updated,
+		});
 
-			setNewKeywordEmoji("");
-			setNewKeywordText("");
+		// Update local state for immediate re-render
+		setCustomKeywords(updated);
+		setNewKeywordEmoji("");
+		setNewKeywordText("");
 		} catch (error) {
 			console.error("Failed to add keyword:", error);
 		}
@@ -230,13 +231,16 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 				current[emoji] = updated;
 			}
 
-			await plugin.updateConfig({
-				...plugin.getConfig(),
-				customEmojiKeywords: current,
-			});
-		} catch (error) {
-			console.error("Failed to remove keyword:", error);
-		}
+		await plugin.updateConfig({
+			...plugin.getConfig(),
+			customEmojiKeywords: current,
+		});
+
+		// Update local state for immediate re-render
+		setCustomKeywords({ ...current });
+	} catch (error) {
+		console.error("Failed to remove keyword:", error);
+	}
 	};
 
 	const popover = isOpen

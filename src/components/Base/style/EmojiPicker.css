@@ -14,7 +14,7 @@
 	line-height: 1;
 	padding: 0;
 	flex-shrink: 0;
-	transition: all 0.15s ease;
+	transition: all 0.2s ease;
 
 	&:hover {
 		border-color: var(--interactive-accent);
@@ -27,28 +27,41 @@
 	}
 }
 
+/* Dropdown appear animation */
+@keyframes dropdown-appear {
+	from {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 /* Emoji Picker Popover */
 .yg-emoji-picker-popover {
 	z-index: 1000;
 	background-color: var(--background-primary);
 	border: 1px solid var(--background-modifier-border);
-	border-radius: 8px;
-	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+	border-radius: 4px;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 	max-height: 380px;
+	animation: dropdown-appear 0.15s ease-out;
 }
 
 /* Search input */
 .yg-emoji-search {
 	width: 100%;
-	padding: 8px 10px;
+	padding: 8px 12px;
 	border: none;
 	border-bottom: 1px solid var(--background-modifier-border);
 	background-color: var(--background-primary);
 	color: var(--text-normal);
-	font-size: 13px;
+	font-size: 14px;
 	outline: none;
 	box-sizing: border-box;
 
@@ -58,6 +71,7 @@
 
 	&:focus {
 		border-bottom-color: var(--interactive-accent);
+		box-shadow: 0 1px 0 var(--interactive-accent);
 	}
 }
 
@@ -70,11 +84,11 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 6px 10px;
+	padding: 6px 12px;
 	cursor: pointer;
 	font-size: 12px;
 	color: var(--text-muted);
-	transition: background-color 0.15s;
+	transition: background-color 0.2s ease;
 
 	&:hover {
 		background-color: var(--background-modifier-hover);
@@ -87,7 +101,7 @@
 
 .yg-emoji-keyword-toggle {
 	font-size: 12px;
-	transition: transform 0.2s;
+	transition: transform 0.2s ease;
 
 	&.open {
 		transform: rotate(90deg);
@@ -95,7 +109,7 @@
 }
 
 .yg-emoji-keyword-body {
-	padding: 6px 10px 8px;
+	padding: 6px 12px 8px;
 	background-color: var(--background-secondary);
 }
 
@@ -132,7 +146,7 @@
 	gap: 2px;
 	background-color: var(--background-primary);
 	border: 1px solid var(--background-modifier-border);
-	border-radius: 3px;
+	border-radius: 4px;
 	padding: 1px 6px;
 	font-size: 11px;
 	color: var(--text-muted);
@@ -162,30 +176,42 @@
 .yg-emoji-keyword-input-emoji {
 	width: 48px !important;
 	min-width: 48px;
-	padding: 4px 6px;
+	padding: 4px 8px;
 	border: 1px solid var(--background-modifier-border);
-	border-radius: 3px;
+	border-radius: 4px;
 	background-color: var(--background-primary);
 	color: var(--text-normal);
 	font-size: 14px;
 	text-align: center;
+	outline: none;
+	transition: border-color 0.2s ease;
+
+	&:focus {
+		border-color: var(--interactive-accent);
+	}
 }
 
 .yg-emoji-keyword-input-text {
 	flex: 1;
-	padding: 4px 6px;
+	padding: 4px 8px;
 	border: 1px solid var(--background-modifier-border);
-	border-radius: 3px;
+	border-radius: 4px;
 	background-color: var(--background-primary);
 	color: var(--text-normal);
 	font-size: 12px;
+	outline: none;
+	transition: border-color 0.2s ease;
+
+	&:focus {
+		border-color: var(--interactive-accent);
+	}
 }
 
 .yg-emoji-keyword-add-btn {
 	width: 26px;
 	height: 26px;
 	border: 1px solid var(--background-modifier-border);
-	border-radius: 3px;
+	border-radius: 4px;
 	background-color: var(--background-modifier-hover);
 	color: var(--text-muted);
 	cursor: pointer;
@@ -193,6 +219,7 @@
 	line-height: 1;
 	padding: 0;
 	flex-shrink: 0;
+	transition: all 0.2s ease;
 
 	&:hover:not(:disabled) {
 		background-color: var(--interactive-accent);
@@ -203,6 +230,14 @@
 		opacity: 0.4;
 		cursor: not-allowed;
 	}
+}
+
+.yg-emoji-keyword-hint {
+	font-size: 11px;
+	color: var(--text-faint);
+	padding: 6px 0 2px;
+	font-style: italic;
+	line-height: 1.4;
 }
 
 /* Emoji Grid Container */
@@ -218,11 +253,9 @@
 
 .yg-emoji-category-label {
 	font-size: 11px;
-	font-weight: 600;
+	font-weight: 500;
 	color: var(--text-muted);
-	padding: 4px 10px 2px;
-	text-transform: uppercase;
-	letter-spacing: 0.5px;
+	padding: 6px 12px 4px;
 }
 
 .yg-emoji-grid {
@@ -245,11 +278,10 @@
 	font-size: 18px;
 	line-height: 1;
 	padding: 0;
-	transition: all 0.1s ease;
+	transition: background-color 0.2s ease;
 
 	&:hover {
 		background-color: var(--background-modifier-hover);
-		transform: scale(1.15);
 	}
 
 	&.selected {

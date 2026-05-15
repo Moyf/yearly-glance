@@ -2,6 +2,7 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { EMOJI_DATA, buildEmojiKeywordMap } from "@/src/data/emojiData";
 import type YearlyGlancePlugin from "@/src/main";
+import { t } from "@/src/i18n/i18n";
 import "./style/EmojiPicker.css";
 
 interface EmojiPickerProps {
@@ -23,6 +24,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 
 	const triggerRef = React.useRef<HTMLButtonElement>(null);
 	const popoverRef = React.useRef<HTMLDivElement>(null);
+	const searchRef = React.useRef<HTMLInputElement>(null);
 
 	// Get custom keywords from plugin settings
 	const customKeywords: Record<string, string[]> = React.useMemo(() => {
@@ -52,7 +54,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 		const entries = Object.keys(customKeywords);
 		if (entries.length === 0) return null;
 		return {
-			name: "⭐ 自定义",
+			name: "⭐ " + t("view.emojiPicker.customCategory"),
 			emojis: entries.map((emoji) => ({
 				emoji,
 				keywords: customKeywords[emoji] || [],
@@ -146,6 +148,15 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 		};
 	}, [isOpen, updatePosition]);
 
+	// Focus search input when popover opens (delayed to avoid Obsidian Modal focus trap)
+	React.useEffect(() => {
+		if (isOpen && searchRef.current) {
+			requestAnimationFrame(() => {
+				searchRef.current?.focus();
+			});
+		}
+	}, [isOpen]);
+
 	const togglePopover = () => {
 		if (!isOpen) {
 			setSearch("");
@@ -163,29 +174,47 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 		setSearch("");
 	};
 
+	const categoryLabel = (key: string): string => {
+		const map: Record<string, string> = {
+			common: t("view.emojiPicker.categoryCommon"),
+			activity: t("view.emojiPicker.categoryActivity"),
+			holiday: t("view.emojiPicker.categoryHoliday"),
+			emotion: t("view.emojiPicker.categoryEmotion"),
+			nature: t("view.emojiPicker.categoryNature"),
+			food: t("view.emojiPicker.categoryFood"),
+			tech: t("view.emojiPicker.categoryTech"),
+			other: t("view.emojiPicker.categoryOther"),
+		};
+		return map[key] || key;
+	};
+
 	// Add custom keyword inline
 	const handleAddKeyword = async () => {
 		if (!plugin || !newKeywordEmoji.trim() || !newKeywordText.trim()) return;
 
-		const emoji = newKeywordEmoji.trim();
-		const keyword = newKeywordText.trim();
-		const current = plugin.getConfig().customEmojiKeywords || {};
-		const existing = current[emoji] || [];
+		try {
+			const emoji = newKeywordEmoji.trim();
+			const keyword = newKeywordText.trim();
+			const current = plugin.getConfig().customEmojiKeywords || {};
+			const existing = current[emoji] || [];
 
-		if (existing.includes(keyword)) return;
+			if (existing.includes(keyword)) return;
 
-		const updated = {
-			...current,
-			[emoji]: [...existing, keyword],
-		};
+			const updated = {
+				...current,
+				[emoji]: [...existing, keyword],
+			};
 
-		await plugin.updateConfig({
-			...plugin.getConfig(),
-			customEmojiKeywords: updated,
-		});
+			await plugin.updateConfig({
+				...plugin.getConfig(),
+				customEmojiKeywords: updated,
+			});
 
-		setNewKeywordEmoji("");
-		setNewKeywordText("");
+			setNewKeywordEmoji("");
+			setNewKeywordText("");
+		} catch (error) {
+			console.error("Failed to add keyword:", error);
+		}
 	};
 
 	const handleRemoveKeyword = async (emoji: string, keyword: string) => {
@@ -194,16 +223,20 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 		const existing = current[emoji] || [];
 		const updated = existing.filter((kw) => kw !== keyword);
 
-		if (updated.length === 0) {
-			delete current[emoji];
-		} else {
-			current[emoji] = updated;
-		}
+		try {
+			if (updated.length === 0) {
+				delete current[emoji];
+			} else {
+				current[emoji] = updated;
+			}
 
-		await plugin.updateConfig({
-			...plugin.getConfig(),
-			customEmojiKeywords: current,
-		});
+			await plugin.updateConfig({
+				...plugin.getConfig(),
+				customEmojiKeywords: current,
+			});
+		} catch (error) {
+			console.error("Failed to remove keyword:", error);
+		}
 	};
 
 	const popover = isOpen
@@ -212,16 +245,18 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 					className="yg-emoji-picker-popover"
 					ref={popoverRef}
 					style={popoverStyle}
+					onMouseDown={(e) => e.stopPropagation()}
 				>
 					{/* Search input */}
-					<input
-						className="yg-emoji-search"
-						type="text"
-						placeholder="搜索 emoji..."
-						value={search}
-						onChange={(e) => setSearch(e.target.value)}
-						autoFocus
-					/>
+				<input
+					ref={searchRef}
+					className="yg-emoji-search"
+					type="text"
+					placeholder={t("view.emojiPicker.searchPlaceholder")}
+					value={search}
+					onChange={(e) => setSearch(e.target.value)}
+					onFocus={(e) => e.stopPropagation()}
+				/>
 
 					{/* Custom keyword management (collapsible) */}
 					{plugin && (
@@ -231,7 +266,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 								onClick={() => setKeywordSectionOpen(!keywordSectionOpen)}
 							>
 								<span className="yg-emoji-keyword-header-text">
-									⚙️ 快捷词管理
+									{"⚙️ " + t("view.emojiPicker.keywordManager")}
 								</span>
 								<span
 									className={`yg-emoji-keyword-toggle ${
@@ -246,7 +281,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 									{/* Existing custom keywords */}
 									{Object.entries(customKeywords).length === 0 && (
 										<div className="yg-emoji-keyword-empty">
-											暂无自定义关键词
+											{t("view.emojiPicker.keywordEmpty")}
 										</div>
 									)}
 									{Object.entries(customKeywords).map(
@@ -273,7 +308,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 																		kw
 																	)
 																}
-																title="删除"
+																title={t("view.emojiPicker.keywordRemove")}
 															>
 																×
 															</button>
@@ -287,7 +322,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 									<div className="yg-emoji-keyword-add">
 										<input
 											type="text"
-											placeholder="emoji"
+											placeholder={t("view.emojiPicker.keywordEmojiPlaceholder")}
 											value={newKeywordEmoji}
 											onChange={(e) =>
 												setNewKeywordEmoji(e.target.value)
@@ -296,7 +331,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 										/>
 										<input
 											type="text"
-											placeholder="关键词"
+											placeholder={t("view.emojiPicker.keywordTextPlaceholder")}
 											value={newKeywordText}
 											onChange={(e) =>
 												setNewKeywordText(e.target.value)
@@ -318,6 +353,9 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 											+
 										</button>
 									</div>
+									<div className="yg-emoji-keyword-hint">
+										{t("view.emojiPicker.keywordSettingsHint")}
+									</div>
 								</div>
 							)}
 						</div>
@@ -328,7 +366,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 						{filteredCategories.map((category) => (
 							<div key={category.name} className="yg-emoji-category">
 								<div className="yg-emoji-category-label">
-									{category.name}
+									{categoryLabel(category.name)}
 								</div>
 								<div className="yg-emoji-grid">
 									{category.emojis.map((entry) => (
@@ -355,7 +393,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 							</div>
 						))}
 						{filteredCategories.length === 0 && (
-							<div className="yg-emoji-empty">未找到匹配的 emoji</div>
+							<div className="yg-emoji-empty">{t("view.emojiPicker.noResults")}</div>
 						)}
 					</div>
 				</div>,
@@ -370,7 +408,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 				ref={triggerRef}
 				onClick={togglePopover}
 				type="button"
-				title="选择 emoji"
+				title="Select emoji"
 			>
 				😀
 			</button>

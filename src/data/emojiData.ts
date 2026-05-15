@@ -10,7 +10,7 @@ export interface EmojiCategory {
 
 export const EMOJI_DATA: EmojiCategory[] = [
 	{
-		name: "常用",
+		name: "common",
 		emojis: [
 			{ emoji: "🎉", keywords: ["庆祝", "party", "恭喜", "congratulations"] },
 			{ emoji: "🎂", keywords: ["蛋糕", "birthday", "生日", "cake"] },
@@ -34,7 +34,7 @@ export const EMOJI_DATA: EmojiCategory[] = [
 		],
 	},
 	{
-		name: "活动",
+		name: "activity",
 		emojis: [
 			{ emoji: "✈️", keywords: ["飞机", "flight", "旅行", "travel"] },
 			{ emoji: "🚗", keywords: ["汽车", "car", "出行", "drive"] },
@@ -61,7 +61,7 @@ export const EMOJI_DATA: EmojiCategory[] = [
 		],
 	},
 	{
-		name: "数码",
+		name: "tech",
 		emojis: [
 			{ emoji: "💻", keywords: ["电脑", "computer", "笔记本", "laptop"] },
 			{ emoji: "📱", keywords: ["手机", "phone", "移动", "mobile"] },
@@ -77,7 +77,7 @@ export const EMOJI_DATA: EmojiCategory[] = [
 		],
 	},
 	{
-		name: "表情",
+		name: "emotion",
 		emojis: [
 			{ emoji: "❤️", keywords: ["爱心", "love", "喜欢", "heart"] },
 			{ emoji: "👍", keywords: ["赞", "like", "好的", "thumbsup"] },
@@ -117,7 +117,7 @@ export const EMOJI_DATA: EmojiCategory[] = [
 		],
 	},
 	{
-		name: "自然",
+		name: "nature",
 		emojis: [
 			{ emoji: "☀️", keywords: ["太阳", "sun", "晴天", "sunny"] },
 			{ emoji: "🌤️", keywords: ["多云", "partlycloudy", "晴朗", "fair"] },
@@ -136,7 +136,7 @@ export const EMOJI_DATA: EmojiCategory[] = [
 		],
 	},
 	{
-		name: "餐饮",
+		name: "food",
 		emojis: [
 			{ emoji: "☕", keywords: ["咖啡", "coffee", "热饮", "drink"] },
 			{ emoji: "🍺", keywords: ["啤酒", "beer", "喝酒", "pub"] },
@@ -154,7 +154,7 @@ export const EMOJI_DATA: EmojiCategory[] = [
 		],
 	},
 	{
-		name: "其他",
+		name: "other",
 		emojis: [
 			{ emoji: "📌", keywords: ["图钉", "pin", "标记", "mark"] },
 			{ emoji: "📎", keywords: ["回形针", "clip", "附件", "attach"] },

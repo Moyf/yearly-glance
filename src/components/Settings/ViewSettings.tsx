@@ -557,6 +557,9 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 						}
 					/>
 				</SettingsItem>
+				<div className="yg-emoji-picker-hint">
+					{t("setting.general.customEmojiKeywords.pickerHint")}
+				</div>
 			</SettingsBlock>
 		</>
 	);

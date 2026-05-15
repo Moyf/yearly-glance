@@ -175,11 +175,11 @@ const translations: BaseMessage = {
 				placeholder: "event_type",
 			},
 			eventPresetTypes: {
-				name: "預設事件類型",
-				desc: "定義可分配給事件的命名類型（含 emoji 和顏色）",
+				name: "事件類型預設",
+				desc: "定義偏好的圖示和顏色組合，快速分配給事件，也可用於按分組篩選",
 				tooltip: "給事件分配類型後將自動套用該類型的 emoji 和顏色。單個事件仍可覆蓋自己的 emoji 和顏色。",
 				addNew: "新建類型",
-				namePlaceholder: "類型名稱（如：健康）",
+				namePlaceholder: "類型名稱（如：出遊）",
 				deleteConfirm: "此類型被 {count} 個事件使用，刪除後將回退到預設顏色，是否繼續？",
 				usedByCount: "被 {count} 個事件使用",
 			},
@@ -225,6 +225,10 @@ const translations: BaseMessage = {
 				name: "筆記事件",
 				desc: "使用帶有特定屬性的筆記作為事件來源。預設路徑中的筆記會顯示在年曆視圖中。你也可以新增 Yearly Glance Bases 視圖，定義不同的篩選條件來顯示不同的筆記事件。",
 			},
+			noteEventProps: {
+				name: "筆記屬性",
+				desc: "設定讀取筆記事件資料所使用的 frontmatter 屬性名稱",
+			},
 			dailyNoteEvent: {
 				name: "日記事件",
 				desc: "從日記筆記的 frontmatter 列表屬性中讀取事件",
@@ -242,8 +246,8 @@ const translations: BaseMessage = {
 				desc: "事件、節假日、生日等相關顯示設定",
 			},
 			colorSets: {
-				name: "顏色設定",
-				desc: "各事件的配色預設選項",
+				name: "顏色預設",
+				desc: "設定喜好的顏色值並快速調用",
 			},
 			presets: {
 				name: "預設設定",

@@ -175,11 +175,11 @@ const translations: BaseMessage = {
 				placeholder: "event_type",
 			},
 			eventPresetTypes: {
-				name: "Preset event types",
-				desc: "Define named types with emoji and color that can be assigned to events",
+				name: "Event type presets",
+				desc: "Define icon and color combinations, assign to events, and filter by group",
 				tooltip: "Assign a type to events to apply its emoji and color. You can still override emoji/color on individual events.",
 				addNew: "Add type",
-				namePlaceholder: "Type name (e.g. Health)",
+				namePlaceholder: "Type name (e.g. Travel)",
 				deleteConfirm: "This type is used by {count} events. Deleting it will fall back to default colors. Continue?",
 				usedByCount: "Used by {count} events",
 			},
@@ -225,6 +225,10 @@ const translations: BaseMessage = {
 				name: "Note Events",
 				desc: "Use notes with specific properties as event sources. Notes in the default path will appear in the Year Calendar view. You can also add a Yearly Glance Bases view for advanced filtering. See docs for details.",
 			},
+			noteEventProps: {
+				name: "Note Properties",
+				desc: "Configure the frontmatter property names used to read note event data",
+			},
 			dailyNoteEvent: {
 				name: "Daily Note Events",
 				desc: "Read events from daily note frontmatter list properties",
@@ -242,8 +246,8 @@ const translations: BaseMessage = {
 				desc: "Settings for events, holidays, birthdays, etc.",
 			},
 			colorSets: {
-				name: "Color",
-				desc: "Color configuration related content",
+				name: "Color presets",
+				desc: "Define color values for quick selection",
 			},
 			presets: {
 				name: "Presets",

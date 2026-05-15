@@ -138,6 +138,7 @@ export type BaseMessage = {
 		group: {
 			basic: IBaseSettingsItem;
 			basesEvent: IBaseSettingsItem;
+			noteEventProps: IBaseSettingsItem;
 			dailyNoteEvent: IBaseSettingsItem;
 			layout: IBaseSettingsItem;
 			displayContent: IBaseSettingsItem;

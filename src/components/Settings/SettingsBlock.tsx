@@ -8,6 +8,7 @@ interface SettingsBlockProps {
 	children?: React.ReactNode;
 	collapsible?: boolean;
 	defaultCollapsed?: boolean;
+	onCollapse?: (collapsed: boolean) => void;
 }
 
 export const SettingsBlock: React.FC<SettingsBlockProps> = ({
@@ -17,8 +18,15 @@ export const SettingsBlock: React.FC<SettingsBlockProps> = ({
 	children,
 	collapsible,
 	defaultCollapsed,
+	onCollapse,
 }) => {
 	const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
+
+	const handleToggle = () => {
+		const next = !isCollapsed;
+		setIsCollapsed(next);
+		onCollapse?.(next);
+	};
 
 	return (
 		<div
@@ -29,11 +37,7 @@ export const SettingsBlock: React.FC<SettingsBlockProps> = ({
 			<div className="yg-settings-block-info">
 				<div
 					className="yg-settings-block-heading"
-					onClick={
-						collapsible
-							? () => setIsCollapsed(!isCollapsed)
-							: undefined
-					}
+					onClick={collapsible ? handleToggle : undefined}
 				>
 					{icon && (
 						<span className="yg-settings-block-icon">{icon}</span>

@@ -104,7 +104,7 @@
 
 	.yg-preset-type-emoji {
 		width: 40px;
-		text-align: center;
+		text-align: left;
 		flex-shrink: 0;
 		padding: 6px 4px;
 		border-radius: 4px;
@@ -156,13 +156,13 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: none;
-		border: none;
+		padding: 8px;
+		border-radius: 6px;
 		cursor: pointer;
 		color: var(--text-muted);
-		padding: 4px;
-		border-radius: 4px;
 		transition: all 0.2s ease;
+		background: none;
+		border: none;
 
 		&:hover {
 			color: var(--text-error);

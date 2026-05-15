@@ -220,7 +220,7 @@ export const PresetEventTypeSettings: React.FC<
 							className="yg-preset-type-emoji"
 							type="text"
 							value={type.emoji || ""}
-							placeholder="😀"
+							placeholder="🪁"
 							onChange={(e) => handleEmojiChange(type.id, e.target.value)}
 						/>
 							<input
@@ -254,10 +254,6 @@ export const PresetEventTypeSettings: React.FC<
 									{t("setting.general.eventPresetTypes.namePlaceholder" as TranslationKeys)}
 								</span>
 							)}
-							<Toggle
-								checked={type.enable ?? true}
-								onChange={() => handleEnableChange(type.id)}
-							/>
 							<button
 								className="yg-preset-type-delete-btn mod-cta"
 								onClick={() => handleDelete(type.id)}

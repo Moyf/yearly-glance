@@ -7,89 +7,6 @@
 
 ### 🚀 Added
 
-- **Multi-token search in EventManager**: Support `@year:2026 @month:3 @type:健康` combined filters, with a suggestion panel for available tokens
-- **Settings layout improvements**: Content area now has tab class; settings panel centered at max 700px width
-
-### 🐛 Fixed
-
-- **Search chip display**: Removed `@id` from chip labels; chips now fade in with 200ms delay; space auto-inserted after token completion
-- **EventForm layout**: Select wrapper now fills the full form-group row; color selector dropdown no longer clipped by `overflow:hidden`
-- **Preset type assignment**: Emoji and color are now always applied on type change, not just on initial selection
-- **Preset type UI**: Redesigned preset type row; wider type dropdown; tooltip moved to EventForm label; basesEvent type selector works correctly
-- **Settings tab**: Placeholder/cursor fixes; unnecessary toggle hidden; restructured for clarity
-- **Delete button styles**: Restored correct styles in PresetEventTypeSettings
-- **IME input**: Removed emoji input length restriction to allow multi-character IME composition
-
----
-
-## [4.0.0-beta.4] (Pre Release)
-
-### 🚀 Added
-
-- **EventPresetType**: Define named event types (e.g. "健康 🌿") with emoji and color; assign to events for consistent styling. Display falls back through: event override → preset type → default color
-- **Settings Tabs**: Settings panel reorganized into 5 tabs (Basic / Layout & Display / Note Events / Daily Note Events / Presets) — both in GlanceManager and Obsidian native settings
-- **@type: search**: In EventManager, search `@type:健康` to filter by preset type name (partial match supported)
-- **basesEvent type mapping**: Set `event_type: 健康` in note frontmatter to auto-assign preset type to note events
-
-### ⚡ Changed
-
-- **resolveEventDisplay utility**: Color/emoji fallback logic centralized — removes duplicated inline code across components
-
-### 🐛 Fixed
-
-- **Lucide tab icon not refreshing**: Tab icon now updates immediately when "Tab icon display" setting changes, without needing to restart Obsidian
-
----
-
-## [4.0.0-beta.3] (Pre Release)
-
-### 🚀 Added
-
-- **Event Click Action Setting**: New setting to control what happens when clicking an event — choose from "Show preview" (default), "Edit event", or "Open note" (for note-backed events)
-- **Auto-Refresh on Metadata Changes**: The calendar view now automatically refreshes when frontmatter changes in the note events folder or daily notes folder, no manual reload needed
-
-### ⚡ Changed
-
-- **Zodiac/Animal Stored as Locale-Independent Keys**: `zodiac` and `animal` fields in `data.json` are now stored as English identifiers (e.g. `capricorn`, `jia-zi:rat`) and translated at display time, preventing mixed-language data when switching languages
-
----
-
-## [4.0.0-beta.2](https://github.com/Moyf/yearly-glance/compare/3.2.0...4.0.0-beta.2) (2025-04-29) (Pre Release)
-
-### 🚀 Added
-
-- **Daily Note Events**: Full lifecycle support — create, edit, delete events stored in daily note frontmatter properties ✨ (beta.1)
-- **Note Events**: Use notes with specific `event_date` property as event sources ✨ (beta.1)
-- **Note Event File Name Format**: Support `{event_name}` and date tokens (YYYY, MM, DD) for custom file paths (beta.1)
-- **Multi-Day Event Support**: Events can span multiple days with duration field ✨ (beta.1)
-- **Bases View Integration**: Use `.base` files to create filtered calendar views ✨ (beta.1)
-- **Right-Click Context Menu**: Right-click events to edit, open note, or delete ✨ (beta.1)
-- **Delete Button in Edit Modal**: Delete button in the bottom-left of the edit form (beta.1)
-- **Remember Last Event Type**: Event creation form defaults to last selected type (beta.1)
-- **Color Selector Circle Hints**: Colored circles before preset color options (beta.1)
-- **NavTabs Responsive Emoji Mode**: Collapse to emoji-only when space is insufficient (beta.1)
-- **Date Validation**: Invalid dates like `2026-04-220` are now properly rejected (beta.1)
-
-> [More details](https://github.com/Moyf/yearly-glance/blob/master/doc/whats-new-v4.md)
-
-### ⚡ Changed
-
-- **Simplified "From Note" Display**: Show only filename, hover for full path (beta.1)
-- **Unified Tooltip Component**: Consistent hover hint styling across all buttons (beta.1)
-- **Title Styling**: Improved year number font and interactive styling (beta.1)
-- **Event Specific Info**: Only shows meaningful attribute values, saving space (beta.1)
-
-### 🐛 Fixed
-
-- **Year Switch Corrupts Event Dates**: Switching display year (e.g. to 2027) permanently overwrote `eventDate.isoDate` with the display year, causing events to "move" and disappear from their original year. Now `isoDate` stays immutable as the user-entered date, and `dateArr` is used for display-year calculations.
-- **Optional Fields Locked**: Fixed fields staying disabled after switching from dailyNoteEvent type (beta.1)
-
----
-
-## [4.0.0-beta.1](https://github.com/Moyf/yearly-glance/compare/3.2.0...4.0.0-beta.1) (2025-04-29) (Pre Release)
-
-### 🚀 Added
-
 - **Daily Note Events**: Full lifecycle support — create, edit, delete events stored in daily note frontmatter properties ✨
 - **Note Events**: Use notes with specific `event_date` property as event sources ✨
 - **Note Event File Name Format**: Support `{event_name}` and date tokens (YYYY, MM, DD) for custom file paths
@@ -101,8 +18,14 @@
 - **Color Selector Circle Hints**: Colored circles before preset color options
 - **NavTabs Responsive Emoji Mode**: Collapse to emoji-only when space is insufficient
 - **Date Validation**: Invalid dates like `2026-04-220` are now properly rejected
+- **Event Click Action Setting**: New setting to control what happens when clicking an event — choose from "Show preview" (default), "Edit event", or "Open note" (for note-backed events)
+- **Auto-Refresh on Metadata Changes**: The calendar view now automatically refreshes when frontmatter changes in the note events folder or daily notes folder, no manual reload needed
+- **EventPresetType**: Define named event types (e.g. "健康 🌿") with emoji and color; assign to events for consistent styling. Display falls back through: event override → preset type → default color
+- **Settings Tabs**: Settings panel reorganized into 5 tabs (Basic / Layout & Display / Note Events / Daily Note Events / Presets) — both in GlanceManager and Obsidian native settings
+- **Multi-token search in EventManager**: Support `@year:2026 @month:3 @type:健康` combined filters, with a suggestion panel for available tokens
+- **basesEvent type mapping**: Set `event_type` in note frontmatter to auto-assign preset type to note events
 
-> [More details](https://github.com/Moyf/yearly-glance/blob/master/doc/whats-new-v4.md)
+> [More details on v4 features](https://github.com/Moyf/yearly-glance/blob/master/doc/whats-new-v4.md)
 
 ### ⚡ Changed
 
@@ -110,10 +33,28 @@
 - **Unified Tooltip Component**: Consistent hover hint styling across all buttons
 - **Title Styling**: Improved year number font and interactive styling
 - **Event Specific Info**: Only shows meaningful attribute values, saving space
+- **Zodiac/Animal Stored as Locale-Independent Keys**: `zodiac` and `animal` fields in `data.json` are now stored as English identifiers (e.g. `capricorn`, `jia-zi:rat`) and translated at display time, preventing mixed-language data when switching languages
+- **resolveEventDisplay utility**: Color/emoji fallback logic centralized — removes duplicated inline code across components
+- **Settings layout**: Content area now has tab class; settings panel centered at max 700px width
 
 ### 🐛 Fixed
 
+- **Year Switch Corrupts Event Dates**: Switching display year permanently overwrote `eventDate.isoDate` with the display year, causing events to "move" and disappear. Now `isoDate` stays immutable and `dateArr` is used for display-year calculations.
 - **Optional Fields Locked**: Fixed fields staying disabled after switching from dailyNoteEvent type
+- **Lucide tab icon not refreshing**: Tab icon now updates immediately when "Tab icon display" setting changes, without needing to restart Obsidian
+- **Search chip display**: Removed `@id` from chip labels; chips now fade in with 200ms delay; space auto-inserted after token completion
+- **EventForm layout**: Select wrapper now fills the full form-group row; color selector dropdown no longer clipped by `overflow:hidden`
+- **Preset type assignment**: Emoji and color are now always applied on type change, not just on initial selection
+- **Preset type UI**: Redesigned preset type row; wider type dropdown; tooltip moved to EventForm label; basesEvent type selector works correctly
+- **Settings tab**: Placeholder/cursor fixes; unnecessary toggle hidden; restructured for clarity
+- **Delete button styles**: Restored correct styles in PresetEventTypeSettings
+- **IME input**: Removed emoji input length restriction to allow multi-character IME composition
+
+---
+
+## [4.0.0-beta.1 ~ beta.5] (Pre Release)
+
+> Collapsed — contents merged into [4.0.0] above.
 
 ---
 

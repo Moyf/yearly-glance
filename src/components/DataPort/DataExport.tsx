@@ -266,12 +266,12 @@ export const DataExport: React.FC<DataExportProps> = ({
 					// 创建下载链接
 					const blob = new Blob([content], { type: mimeType });
 					const url = URL.createObjectURL(blob);
-					const link = document.createElement("a");
-					link.href = url;
-					link.download = filename;
-					document.body.appendChild(link);
-					link.click();
-					document.body.removeChild(link);
+				const link = activeDocument.createElement("a");
+				link.href = url;
+				link.download = filename;
+				activeDocument.body.appendChild(link);
+				link.click();
+				activeDocument.body.removeChild(link);
 					URL.revokeObjectURL(url);
 					break;
 				}
@@ -284,12 +284,12 @@ export const DataExport: React.FC<DataExportProps> = ({
 					// 创建下载链接
 					const blob = new Blob([content], { type: mimeType });
 					const url = URL.createObjectURL(blob);
-					const link = document.createElement("a");
-					link.href = url;
-					link.download = filename;
-					document.body.appendChild(link);
-					link.click();
-					document.body.removeChild(link);
+				const link = activeDocument.createElement("a");
+				link.href = url;
+				link.download = filename;
+				activeDocument.body.appendChild(link);
+				link.click();
+				activeDocument.body.removeChild(link);
 					URL.revokeObjectURL(url);
 					break;
 				}

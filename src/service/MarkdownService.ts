@@ -172,8 +172,12 @@ export class MarkdownService {
 		} else {
 			// 文件不存在，创建新文件
 			await this.app.vault.create(filePath, "");
+			const newFile = this.app.vault.getAbstractFileByPath(filePath);
+			if (!(newFile instanceof TFile)) {
+				throw new Error(`Failed to access created file: ${filePath}`);
+			}
 			await this.frontMatterService.updateFrontMatter(
-				this.app.vault.getAbstractFileByPath(filePath) as TFile,
+				newFile,
 				(fm) => {
 					Object.assign(fm, frontmatterData);
 				}

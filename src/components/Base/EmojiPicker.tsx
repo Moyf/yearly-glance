@@ -136,12 +136,12 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 			if (isOpen) updatePosition();
 		};
 
-		document.addEventListener("mousedown", handleClickOutside);
+		activeDocument.addEventListener("mousedown", handleClickOutside);
 		window.addEventListener("scroll", handleScroll, true);
 		window.addEventListener("resize", updatePosition);
 
 		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
+			activeDocument.removeEventListener("mousedown", handleClickOutside);
 			window.removeEventListener("scroll", handleScroll, true);
 			window.removeEventListener("resize", updatePosition);
 		};
@@ -150,7 +150,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 	// Focus search input when popover opens (delayed to avoid Obsidian Modal focus trap)
 	React.useEffect(() => {
 		if (isOpen && searchRef.current) {
-			requestAnimationFrame(() => {
+			window.requestAnimationFrame(() => {
 				searchRef.current?.focus();
 			});
 		}
@@ -163,7 +163,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 		setIsOpen(!isOpen);
 		// Defer position update so the popover renders first
 		if (!isOpen) {
-			requestAnimationFrame(() => updatePosition());
+			window.requestAnimationFrame(() => updatePosition());
 		}
 	};
 
@@ -412,7 +412,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 						)}
 					</div>
 				</div>,
-				document.body
+				activeDocument.body
 		  )
 		: null;
 

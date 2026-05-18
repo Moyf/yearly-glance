@@ -41,13 +41,7 @@ function getStringProperty(record: Record<string, unknown>, key: string): string
 }
 
 function getMomentFromWindow(): MomentLike | null {
-	const globalWindow = globalThis as typeof globalThis & {
-		window?: {
-			moment?: unknown;
-		};
-	};
-
-	const momentValue = globalWindow.window?.moment;
+	const momentValue = (window as typeof window & { moment?: unknown }).moment;
 	return typeof momentValue === 'function' ? (momentValue as MomentLike) : null;
 }
 
@@ -358,12 +352,12 @@ export class DailyNoteService {
 				: `${formattedPath}.md`;
 
 			const file = app.vault.getAbstractFileByPath(filePath);
-			if (!file || !('basename' in file)) {
+			if (!(file instanceof TFile)) {
 				continue;
 			}
 
 			const isoDate = date.format('YYYY-MM-DD');
-			const frontmatter = DailyNoteService.getFrontmatter(app, file as TFile);
+			const frontmatter = DailyNoteService.getFrontmatter(app, file);
 			const titles = DailyNoteService.parseEventsFromFrontmatter(frontmatter, eventProp);
 
 			titles.forEach((title, index) => {

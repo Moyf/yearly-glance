@@ -28,7 +28,7 @@ export const Pre: React.FC<PreProps> = ({
 			const textContent = preRef.current.textContent || "";
 			await navigator.clipboard.writeText(textContent);
 			setCopied(true);
-			setTimeout(() => setCopied(false), 2000);
+			window.setTimeout(() => setCopied(false), 2000);
 		} catch (error) {
 			console.error("Failed to copy text:", error);
 		}

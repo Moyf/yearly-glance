@@ -99,7 +99,7 @@ export class EventFormModal extends Modal {
 
 	onClose(): void {
 		super.onClose();
-		setTimeout(() => {
+		window.setTimeout(() => {
 			this.root?.unmount();
 			this.contentEl.empty();
 		});

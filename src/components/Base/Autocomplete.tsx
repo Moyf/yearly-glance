@@ -77,9 +77,9 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
 		};
 
 		if (isOpen) {
-			document.addEventListener("mousedown", handleClickOutside);
+			activeDocument.addEventListener("mousedown", handleClickOutside);
 			return () => {
-				document.removeEventListener("mousedown", handleClickOutside);
+				activeDocument.removeEventListener("mousedown", handleClickOutside);
 			};
 		}
 	}, [isOpen]);

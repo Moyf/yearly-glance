@@ -269,7 +269,7 @@ export default class YearlyGlancePlugin extends Plugin {
 
 	private registerCommands() {
 		this.addCommand({
-			id: "open-yearly-glance",
+			id: "open-view",
 			name: t("command.openYearlyGlance"),
 			callback: () => this.openPluginView(VIEW_TYPE_YEARLY_GLANCE),
 		});
@@ -380,7 +380,7 @@ export default class YearlyGlancePlugin extends Plugin {
 			const view = leaf.view as GlanceManagerView;
 			if (view && view.updateActiveTab) {
 				// 使用 setTimeout 确保视图已完全渲染
-				setTimeout(() => {
+				window.setTimeout(() => {
 					view.updateActiveTab(tab);
 				}, 50);
 			}
@@ -396,7 +396,7 @@ export default class YearlyGlancePlugin extends Plugin {
 			const view = leaf.view as GlanceManagerView;
 			if (view && view.updateActiveTab) {
 				// 使用 setTimeout 确保视图已完全渲染
-				setTimeout(() => {
+				window.setTimeout(() => {
 					view.updateActiveTab(tab);
 				}, 100);
 			}
@@ -584,8 +584,11 @@ export default class YearlyGlancePlugin extends Plugin {
 		await this.app.vault.create(filePath, "");
 
 		// 5. 写入 frontmatter（使用自定义属性名）
-		const file = this.app.vault.getAbstractFileByPath(filePath) as TFile;
-		await this.app.fileManager.processFrontMatter(file, (fm) => {
+		const abstractFile = this.app.vault.getAbstractFileByPath(filePath);
+		if (!(abstractFile instanceof TFile)) {
+			throw new Error(`Failed to access created file: ${filePath}`);
+		}
+		await this.app.fileManager.processFrontMatter(abstractFile, (fm) => {
 			fm[propConfig.titleProp] = event.text;
 			fm[propConfig.dateProp] = event.eventDate.isoDate;
 			if (event.duration && event.duration > 1) {
@@ -636,7 +639,7 @@ export default class YearlyGlancePlugin extends Plugin {
 			await this.app.plugins.disablePluginAndSave("yearly-glance");
 			// @ts-ignore
 			await this.app.plugins.enablePluginAndSave("yearly-glance");
-			new Notice("[Yearly Glance] Reloaded successfully");
+			new Notice("[yearly glance] reloaded successfully");
 		} catch (error) {
 			console.error("[Yearly Glance] Fail to reload", error);
 		}

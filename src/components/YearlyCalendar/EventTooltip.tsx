@@ -47,7 +47,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 		onClose();
 
 		// 使用延迟确保tooltip已完全关闭
-		setTimeout(() => {
+		window.setTimeout(() => {
 			plugin.openEventForm(eventType, event, true, false);
 		}, 100);
 	};
@@ -68,12 +68,12 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 			plugin.app.workspace.openLinkText(event.sourceFilePath, '', true);
 		} else {
 			// 对于 Config 事件，打开事件管理器
-			setTimeout(() => {
+			window.setTimeout(() => {
 				// 打开事件管理器视图
 				plugin.openGlanceManagerWithTab("events");
 
 				// 使用延迟确保事件管理器视图已完全加载
-				setTimeout(() => {
+				window.setTimeout(() => {
 					// 通过事件总线发送搜索请求
 					EventManagerBus.publish(EVENT_SEARCH_REQUESTED, {
 						searchType: "id",

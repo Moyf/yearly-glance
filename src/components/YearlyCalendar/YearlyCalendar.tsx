@@ -109,11 +109,11 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 
 		// 只有当控制按钮显示时才添加事件监听器
 		if (showYearControls) {
-			document.addEventListener("mousedown", handleClickOutside);
+			activeDocument.addEventListener("mousedown", handleClickOutside);
 		}
 
 		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
+			activeDocument.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, [showYearControls]);
 

@@ -74,6 +74,7 @@ function createFile(path: string): TFile {
 		path,
 		name,
 		basename,
+		// eslint-disable-next-line obsidianmd/no-tfile-tfolder-cast
 	} as unknown as TFile;
 }
 
@@ -143,12 +144,14 @@ describe('DailyNoteService', () => {
 	const mockMoment = createMockMoment();
 
 	beforeEach(() => {
+		// eslint-disable-next-line obsidianmd/no-global-this
 		(globalThis as { window?: { moment?: MockMoment } }).window = {
 			moment: mockMoment,
 		};
 	});
 
 	afterEach(() => {
+		// eslint-disable-next-line obsidianmd/no-global-this
 		delete (globalThis as { window?: { moment?: MockMoment } }).window;
 	});
 

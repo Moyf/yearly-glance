@@ -30,7 +30,7 @@ export const ImportJson: React.FC<ImportJsonProps> = ({
 			JSON.parse(pasteContent);
 			onPasteJson(pasteContent);
 			// 成功后延迟关闭弹窗
-			setTimeout(() => {
+			window.setTimeout(() => {
 				setPasteContent("");
 				setShowPasteModal(false);
 			}, 1000);

@@ -80,7 +80,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
 		if (disabled) return;
 
 		if (timeoutRef.current) {
-			clearTimeout(timeoutRef.current);
+			window.clearTimeout(timeoutRef.current);
 		}
 		updatePosition();
 		setIsVisible(true);
@@ -106,7 +106,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
 	const keepTooltip = () => {
 		if (timeoutRef.current) {
-			clearTimeout(timeoutRef.current);
+			window.clearTimeout(timeoutRef.current);
 		}
 	};
 
@@ -138,9 +138,9 @@ export const Tooltip: React.FC<TooltipProps> = ({
 				}
 			};
 
-			document.addEventListener("mousedown", handleClickOutside);
+			activeDocument.addEventListener("mousedown", handleClickOutside);
 			return () => {
-				document.removeEventListener("mousedown", handleClickOutside);
+				activeDocument.removeEventListener("mousedown", handleClickOutside);
 			};
 		}
 	}, [isVisible, trigger]);
@@ -149,7 +149,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
 	React.useEffect(() => {
 		return () => {
 			if (timeoutRef.current) {
-				clearTimeout(timeoutRef.current);
+				window.clearTimeout(timeoutRef.current);
 			}
 		};
 	}, []);
@@ -205,7 +205,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
 							trigger === "hover" ? hideTooltip : undefined
 						}
 					/>,
-					document.body
+					activeDocument.body
 				)}
 		</>
 	);

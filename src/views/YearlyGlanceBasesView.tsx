@@ -161,9 +161,11 @@ export class YearlyGlanceBasesView extends BasesView {
 
             // 6. 应用高度限制
             if (config.limitHeight && this.isEmbedded()) {
-                this.glanceEl.style.height = `${config.embeddedHeight}px`;
+                this.glanceEl.setCssProps({ "--yg-embedded-height": `${config.embeddedHeight}px` });
+                this.glanceEl.addClass("yg-height-limited");
             } else {
-                this.glanceEl.style.height = '';
+                this.glanceEl.setCssProps({ "--yg-embedded-height": "" });
+                this.glanceEl.removeClass("yg-height-limited");
             }
 
             // 7. 构建混合数据（同时填充 basesEventMap）

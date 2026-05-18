@@ -29,3 +29,8 @@
 	width: 100%;
 	margin: 0 auto;
 }
+
+.yg-bases-view-glance.yg-height-limited {
+	height: var(--yg-embedded-height);
+	overflow-y: auto;
+}

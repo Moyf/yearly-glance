@@ -57,7 +57,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 	const [searchExpanded, setSearchExpanded] = React.useState(false);
 	const [searchFocused, setSearchFocused] = React.useState(false);
 	const [suggestionVisible, setSuggestionVisible] = React.useState(false);
-	const suggestionTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+	const suggestionTimerRef = React.useRef<number | null>(null);
 	const searchContainerRef = React.useRef<HTMLDivElement>(null);
 	const searchInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -321,7 +321,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 		setSearchExpanded(!searchExpanded);
 		if (!searchExpanded) {
 			// 当展开搜索框时，聚焦输入框
-			setTimeout(() => {
+			window.setTimeout(() => {
 				searchInputRef.current?.focus();
 			}, 100);
 		} else {
@@ -329,7 +329,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 			setSearchTerm("");
 			setSearchFocused(false);
 			setSuggestionVisible(false);
-			if (suggestionTimerRef.current) clearTimeout(suggestionTimerRef.current);
+			if (suggestionTimerRef.current) window.clearTimeout(suggestionTimerRef.current);
 		}
 	};
 
@@ -337,7 +337,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 	const handleSearchBlur = (e: React.FocusEvent) => {
 		setSearchFocused(false);
 		setSuggestionVisible(false);
-		if (suggestionTimerRef.current) clearTimeout(suggestionTimerRef.current);
+		if (suggestionTimerRef.current) window.clearTimeout(suggestionTimerRef.current);
 		// 如果搜索框为空且不是点击了清除按钮，则收起搜索框
 		if (
 			searchTerm === "" &&
@@ -414,8 +414,8 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 									onChange={(e) => setSearchTerm(e.target.value)}
 							onFocus={() => {
 										setSearchFocused(true);
-										if (suggestionTimerRef.current) clearTimeout(suggestionTimerRef.current);
-										suggestionTimerRef.current = setTimeout(() => setSuggestionVisible(true), 200);
+										if (suggestionTimerRef.current) window.clearTimeout(suggestionTimerRef.current);
+										suggestionTimerRef.current = window.setTimeout(() => setSuggestionVisible(true), 200);
 									}}
 									onBlur={handleSearchBlur}
 								/>

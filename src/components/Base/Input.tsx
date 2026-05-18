@@ -72,13 +72,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
 		const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
 			// focus时延迟设置value，避免光标位置问题
-			setTimeout(forceSetValue, 10);
+			window.setTimeout(forceSetValue, 10);
 			props.onFocus?.(e);
 		};
 
 		const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
 			// blur时延迟设置value
-			setTimeout(forceSetValue, 150);
+			window.setTimeout(forceSetValue, 150);
 			props.onBlur?.(e);
 		};
 

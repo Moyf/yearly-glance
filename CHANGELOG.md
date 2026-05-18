@@ -24,6 +24,8 @@
 - **Settings Tabs**: Settings panel reorganized into 5 tabs (Basic / Layout & Display / Note Events / Daily Note Events / Presets) — both in GlanceManager and Obsidian native settings
 - **Multi-token search in EventManager**: Support `@year:2026 @month:3 @type:健康` combined filters, with a suggestion panel for available tokens
 - **basesEvent type mapping**: Set `event_type` in note frontmatter to auto-assign preset type to note events
+- **Emoji Picker**: New emoji picker for selecting event icons — supports custom emoji keyword mapping (add your own keywords to make emoji searchable)
+- **Bases View — Inherit Plugin Data**: Option to inherit plugin's built-in events (holidays, birthdays, custom events) in Bases View, displayed alongside note events
 
 > [More details on v4 features](https://github.com/Moyf/yearly-glance/blob/master/doc/whats-new-v4.md)
 
@@ -36,6 +38,7 @@
 - **Zodiac/Animal Stored as Locale-Independent Keys**: `zodiac` and `animal` fields in `data.json` are now stored as English identifiers (e.g. `capricorn`, `jia-zi:rat`) and translated at display time, preventing mixed-language data when switching languages
 - **resolveEventDisplay utility**: Color/emoji fallback logic centralized — removes duplicated inline code across components
 - **Settings layout**: Content area now has tab class; settings panel centered at max 700px width
+- **Hide past/future months state persisted**: `hidePreviousMonths` and `hideFutureMonths` toggle states are now saved to config and restored on reload
 
 ### 🐛 Fixed
 
@@ -48,7 +51,57 @@
 - **Preset type UI**: Redesigned preset type row; wider type dropdown; tooltip moved to EventForm label; basesEvent type selector works correctly
 - **Settings tab**: Placeholder/cursor fixes; unnecessary toggle hidden; restructured for clarity
 - **Delete button styles**: Restored correct styles in PresetEventTypeSettings
+- **Birthday 旧格式数据修复**: Birthday age/animal not calculated for events saved in old date format — now correctly handled
 - **IME input**: Removed emoji input length restriction to allow multi-character IME composition
+
+<details>
+<summary>中文说明（点击展开）</summary>
+
+### ⚠️ 破坏性变更
+
+- **命令 ID 已重命名**：`yearly-glance:open-yearly-glance` → `yearly-glance:open-view`。如果你在快捷键或第三方插件（如 Spacekeys）中绑定了旧的命令 ID，请重新绑定。
+- **最低 Obsidian 版本要求**：从 1.8.0 提升至 **1.10.0**（Bases API 和 `getLanguage()` 所需）。
+
+### 🚀 新增
+
+- **日记事件**：完整生命周期支持——在日记的 frontmatter 属性中创建、编辑、删除事件 ✨
+- **笔记事件**：支持将含有 `event_date` 属性的笔记作为事件来源 ✨
+- **笔记事件文件名格式**：支持 `{event_name}` 和日期占位符（YYYY、MM、DD）自定义文件路径
+- **多日事件**：事件支持设置持续天数（duration） ✨
+- **Bases View 集成**：可使用 `.base` 文件创建自定义过滤的日历视图 ✨
+- **右键上下文菜单**：右键事件可编辑、打开笔记或删除 ✨
+- **编辑表单删除按钮**：在编辑表单左下角新增删除按钮
+- **记忆上次事件类型**：新建事件时默认使用上次选择的类型
+- **预设颜色圆形提示**：颜色选项前显示彩色圆点预览
+- **导航栏响应式 Emoji 模式**：空间不足时自动折叠为纯 emoji 显示
+- **日期验证**：拒绝 `2026-04-220` 等格式非法的日期输入
+- **事件点击行为设置**：可设置点击事件的行为——预览（默认）、编辑、或打开来源笔记
+- **元数据变更自动刷新**：笔记事件文件夹或日记文件夹的 frontmatter 变更后，日历视图自动刷新
+- **事件类型预设（EventPresetType）**：定义带 emoji 和颜色的命名类型（如"健康 🌿"），指定给事件后统一样式
+- **设置页分 Tab**：设置面板重新整理为 5 个标签（基础 / 布局与显示 / 笔记事件 / 日记事件 / 预设）
+- **多 token 搜索**：支持 `@year:2026 @month:3 @type:健康` 组合筛选，并提供候选词提示面板
+- **笔记事件类型映射**：在笔记 frontmatter 中设置 `event_type` 可自动绑定事件类型预设
+- **Emoji 选择器**：新增 emoji 图标选择弹窗，支持搜索，并可在设置中添加自定义关键词
+- **Bases View 继承插件数据**：可选择在 Bases View 中继承插件内置事件（节假日、生日、自定义事件）
+
+### ⚡ 变更
+
+- **笔记来源显示简化**：仅显示文件名，悬停查看完整路径
+- **统一 Tooltip 组件**：所有按钮的悬停提示风格统一
+- **标题样式优化**：年份数字字体和交互样式改进
+- **事件专属信息**：仅显示有意义的属性值，节省空间
+- **生肖/星座存储为与语言无关的 key**：避免切换语言时数据混乱
+- **隐藏过去/未来月份状态持久化**：切换后的状态现在会保存，重启插件后不再重置
+
+### 🐛 修复
+
+- **切换显示年份导致事件日期被覆写**：切换到 2027 年等操作不再永久修改事件的原始日期
+- **可选字段被锁定**：从日记事件类型切换后，可选字段不再保持禁用状态
+- **Lucide 标签图标不刷新**：修改"标签图标显示"设置后，图标立即更新无需重启
+- **生日旧格式数据不计算年龄/生肖**：兼容旧格式保存的生日数据
+- **IME 输入限制**：移除 emoji 输入长度限制，支持多字符 IME 输入法组合
+
+</details>
 
 ---
 

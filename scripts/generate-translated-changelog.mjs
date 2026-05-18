@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { config } from "dotenv";
+import { loadEnv } from "./load-env.mjs";
 import { exec } from "child_process";
 import { promisify } from "util";
 import path from "path";
@@ -11,7 +11,7 @@ import AITranslator from "./ai-translator.mjs";
 // 加载环境变量
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-config({ path: path.resolve(__dirname, "../.env") });
+loadEnv(path.resolve(__dirname, "../.env"));
 
 const execAsync = promisify(exec);
 

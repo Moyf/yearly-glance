@@ -2,7 +2,7 @@ import { copyFile, mkdir, readFile } from "fs/promises";
 import { existsSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import dotenv from "dotenv";
+import { loadEnv } from "./load-env.mjs";
 
 // 获取当前文件的目录
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -67,7 +67,7 @@ async function main() {
 	console.log(`项目根目录: ${rootDir}`);
 
 	// 加载 .env 文件中的环境变量
-	dotenv.config();
+	loadEnv();
 
 	// 获取 VAULT_PATH 环境变量
 	const VAULT_PATH = process.env.VAULT_PATH;

@@ -1,6 +1,6 @@
 {
 	"name": "yearly-glance",
-	"version": "4.0.0",
+	"version": "4.0.1",
 	"description": "Year at a glance - overview of annual events with customizable management options.",
 	"main": "main.js",
 	"scripts": {
@@ -40,14 +40,12 @@
 		"@types/react-dom": "^19.1.6",
 		"@typescript-eslint/eslint-plugin": "^8.59.3",
 		"@typescript-eslint/parser": "^8.59.3",
-		"builtin-modules": "^5.0.0",
 		"commitizen": "^4.3.1",
 		"conventional-changelog-cli": "^5.0.0",
 		"cz-conventional-changelog": "^3.3.0",
 		"esbuild": "^0.27.1",
 		"eslint": "^8.57.1",
 		"eslint-plugin-obsidianmd": "^0.3.0",
-		"fs-extra": "^11.3.0",
 		"jest": "^30.0.4",
 		"obsidian": "latest",
 		"postcss": "^8.5.1",
@@ -57,7 +55,6 @@
 		"typescript": "4.7.4"
 	},
 	"dependencies": {
-		"dotenv": "^17.2.3",
 		"html-react-parser": "^5.2.5",
 		"lucide-react": "^0.555.0",
 		"lunar-typescript": "^1.7.8",

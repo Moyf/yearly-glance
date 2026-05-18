@@ -7,6 +7,8 @@ on:
 
 permissions:
     contents: write
+    id-token: write
+    attestations: write
 
 env:
     PLUGIN_ID: yearly-glance
@@ -38,11 +40,113 @@ jobs:
                   npm install -g yarn
                   yarn
                   yarn run build --if-present
-                  mkdir -p ${{ env.PLUGIN_ID }}
-                  cp main.js manifest.json styles.css ${{ env.PLUGIN_ID }}
-                  zip -r ${{ env.PLUGIN_ID }}.zip ${{ env.PLUGIN_ID }}
-                  ls
                   echo "tag_name=$(git tag --sort version:refname | tail -n 1)" >> $GITHUB_OUTPUT
+
+            - name: Generate Changelog
+              id: changelog
+              run: |
+                  # 初始化 changelog 文件
+                  CHANGELOG_EN="CHANGELOG.md"
+                  TEMP_CHANGELOG="temp_changelog.md"
+                  EN_TEMP_CHANGELOG="en_temp_changelog.md"
+
+                  # 获取当前版本号（从 git tag）
+                  CURRENT_VERSION=$(git tag --sort version:refname | tail -n 1)
+                  echo "Current version: $CURRENT_VERSION"
+
+                  # 确保 PLUGIN_ID 变量可用
+                  PLUGIN_ID="${{ env.PLUGIN_ID }}"
+                  echo "Using plugin name: $PLUGIN_ID"
+
+                  # 使用 awk 提取特定版本的 changelog 内容
+                  extract_changelog() {
+                    local changelog_file=$1
+                    local output_file=$2
+                    local target_version=$3
+                    
+                    > "$output_file"  # 初始化空文件
+                    
+                    # 确定版本的标题级别 (# 或 ##)
+                    local base_version="${target_version%%-*}"
+                    IFS='.' read -r major minor patch <<< "$base_version"
+                    if [[ -n "$patch" && "$patch" != "0" ]]; then
+                      local title_level="##"
+                    else
+                      if [[ "$target_version" == *"beta"* ]]; then
+                        local title_level="##"
+                      else
+                        local title_level="#"
+                      fi
+                    fi
+                    
+                    echo "Looking for version $target_version with title level: $title_level"
+                    
+                    # 使用 awk 提取目标版本的内容
+                    awk -v version="$target_version" -v level="$title_level" '
+                    BEGIN { found = 0; printing = 0; }
+                    $0 ~ "^" level " +\\[" version "\\]" { 
+                      found = 1; printing = 1; next;
+                    }
+                    printing && $0 ~ "^#+ +\\[" { printing = 0; }
+                    printing { print; }
+                    END { 
+                      if (!found) {
+                        print "Warning: Version " version " not found" > "/dev/stderr";
+                      }
+                    }' "$changelog_file" > "temp_version_content.md"
+                    
+                    if [ ! -s "temp_version_content.md" ]; then
+                      echo "Warning: No content found for version $target_version" >&2
+                      echo -e "## Changes\n\nNo changelog found for version $target_version.\n" >> "$output_file"
+                    else
+                      echo "Successfully extracted changelog for version $target_version"
+                      cat "temp_version_content.md" >> "$output_file"
+                    fi
+                  }
+
+                  # 处理英文 changelog
+                  if [ -f "$CHANGELOG_EN" ]; then
+                    extract_changelog "$CHANGELOG_EN" "$EN_TEMP_CHANGELOG" "$CURRENT_VERSION"
+                  else
+                    echo -e "## Changes\n\nNo changelog available." > "$EN_TEMP_CHANGELOG"
+                  fi
+
+                  cp "$EN_TEMP_CHANGELOG" "$TEMP_CHANGELOG"
+
+                  # 输出 changelog 给 GitHub Actions
+                  echo "changelog<<EOF" >> $GITHUB_OUTPUT
+                  cat "$TEMP_CHANGELOG" >> $GITHUB_OUTPUT
+                  echo "EOF" >> $GITHUB_OUTPUT
+
+            - name: Attest build provenance
+              uses: actions/attest-build-provenance@v2
+              with:
+                  subject-path: |
+                      main.js
+                      styles.css
+                      manifest.json
+
+            - name: Create Release
+              uses: softprops/action-gh-release@v2
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ github.ref }}
+                  name: ${{ github.ref_name }}
+                  draft: false
+                  prerelease: ${{ contains(github.ref, 'beta') }}
+                  body: |
+                      ${{ contains(github.ref, 'beta') && '🚧 This is a beta release' || '🎉 This is a stable release' }}
+
+                      **Version:** ${{ github.ref_name }}
+
+                      [Changelog](https://github.com/Moyf/yearly-glance/blob/master/CHANGELOG.md)
+
+                      ${{ steps.changelog.outputs.changelog }}
+                  files: |
+                      main.js
+                      manifest.json
+                      styles.css
 
             - name: Generate Changelog
               id: changelog

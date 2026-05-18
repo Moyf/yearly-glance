@@ -1,3 +1,26 @@
+## [4.0.1](https://github.com/Moyf/yearly-glance/compare/4.0.0...4.0.1) (2026-05-18)
+
+### 🔧 Chore
+
+- **Remove deprecated dependencies**: Replaced `builtin-modules`, `fs-extra`, and `dotenv` with Node.js built-in equivalents — removes packages flagged by the Obsidian plugin review bot
+- **Add pnpm lockfile**: Added `pnpm-lock.yaml` for compatibility with the Obsidian plugin review process
+- **Release pipeline**: Removed unnecessary `.zip` artifact from releases; added artifact attestation for cryptographic provenance verification of `main.js`, `manifest.json`, and `styles.css`
+- **CI**: Upgrade Node.js from 18 to 20 in CI workflows
+
+<details>
+<summary>中文说明（点击展开）</summary>
+
+### 🔧 工程改动
+
+- **移除废弃依赖**：用 Node.js 内置模块替换 `builtin-modules`、`fs-extra`、`dotenv`，消除 Obsidian 插件审核机器人标记的警告
+- **添加 pnpm lockfile**：生成 `pnpm-lock.yaml`，修复审核流程中的 Error
+- **发布流程优化**：移除 Release 中多余的 `.zip` 文件；为 `main.js`、`manifest.json`、`styles.css` 添加构建来源证明（artifact attestation）
+- **CI 升级**：CI 工作流中 Node.js 从 18 升级到 20
+
+</details>
+
+---
+
 ## [4.0.0](https://github.com/Moyf/yearly-glance/compare/3.2.0...4.0.0) (2026-05-18)
 
 ### ⚠️ Breaking Changes

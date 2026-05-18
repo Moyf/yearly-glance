@@ -1,11 +1,11 @@
-import { config } from "dotenv";
+import { loadEnv } from "./load-env.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
 
 // 加载环境变量
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-config({ path: path.resolve(__dirname, "../.env") });
+loadEnv(path.resolve(__dirname, "../.env"));
 
 class AITranslator {
 	constructor() {

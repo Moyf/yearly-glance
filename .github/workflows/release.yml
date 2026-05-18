@@ -38,7 +38,7 @@ jobs:
                   npm install -g yarn
                   yarn
                   yarn run build --if-present
-                  mkdir ${{ env.PLUGIN_ID }}
+                  mkdir -p ${{ env.PLUGIN_ID }}
                   cp main.js manifest.json styles.css ${{ env.PLUGIN_ID }}
                   zip -r ${{ env.PLUGIN_ID }}.zip ${{ env.PLUGIN_ID }}
                   ls

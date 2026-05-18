@@ -1,4 +1,9 @@
-## [4.0.0-beta.5] (Pre Release)
+## [4.0.0](https://github.com/Moyf/yearly-glance/compare/3.2.0...4.0.0) (2026-05-18)
+
+### ⚠️ Breaking Changes
+
+- **Command ID renamed**: `yearly-glance:open-yearly-glance` → `yearly-glance:open-view`. If you have hotkeys or third-party plugins (e.g. Spacekeys) referencing the old command ID, please re-bind them.
+- **Minimum Obsidian version**: raised from 1.8.0 to **1.10.0** (required for Bases API and `getLanguage()`).
 
 ### 🚀 Added
 

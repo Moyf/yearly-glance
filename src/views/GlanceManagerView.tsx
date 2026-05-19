@@ -92,7 +92,7 @@ export class GlanceManagerView extends ItemView {
 	private unsubscribeBus?: () => void;
 	private glanceManagerRef: React.RefObject<{
 		setActiveTab: (tab: GlanceManagerTab) => void;
-	} | null> = React.createRef();
+	}> = React.createRef();
 
 	constructor(
 		leaf: WorkspaceLeaf,

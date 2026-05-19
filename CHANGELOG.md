@@ -1,3 +1,32 @@
+## [4.0.2](https://github.com/Moyf/yearly-glance/compare/4.0.1...4.0.2) (2026-05-19)
+
+### 🔧 Chore
+
+- **Downgrade React to 18**: Replaced React 19 with React 18.3.1 to resolve `Found 3 dynamic <script> element creations` error in the Obsidian plugin review — those instances were from React 19's internal Hoistable Scripts feature, not plugin code
+
+### 🐛 Bug Fixes
+
+- **CSS**: Move Firefox scrollbar styles to the correct selector in Tooltip
+- **CSS**: Fix `export-event-list` responsive grid styles nesting in DataExport
+- **CSS**: Remove duplicate `font-weight` declaration in SettingsTab
+
+<details>
+<summary>中文说明（点击展开）</summary>
+
+### 🔧 工程改动
+
+- **降级 React 到 18**：将 React 19 替换为 React 18.3.1，修复 Obsidian 插件审核报告的 `Found 3 dynamic <script> element creations` 错误——该问题来自 React 19 内部的 Hoistable Scripts 特性，并非插件自身代码
+
+### 🐛 问题修复
+
+- **CSS**：修复 Tooltip 中 Firefox 滚动条样式应用到错误选择器的问题
+- **CSS**：修复 DataExport 中 `export-event-list` 响应式网格样式的嵌套问题
+- **CSS**：移除 SettingsTab 中重复的 `font-weight` 声明
+
+</details>
+
+---
+
 ## [4.0.1](https://github.com/Moyf/yearly-glance/compare/4.0.0...4.0.1) (2026-05-18)
 
 ### 🔧 Chore

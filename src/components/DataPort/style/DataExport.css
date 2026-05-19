@@ -552,6 +552,12 @@
 			.export-event-item {
 				padding: 10px 12px;
 			}
+
+			.export-event-list {
+				grid-template-columns: 1fr;
+				gap: 8px;
+				padding: 8px;
+			}
 		}
 
 		.export-actions {
@@ -571,13 +577,6 @@
 			}
 		}
 
-		.export-event-groups {
-			.export-event-list {
-				grid-template-columns: 1fr;
-				gap: 8px;
-				padding: 8px;
-			}
-		}
 
 		.markdown-export-config {
 			gap: 16px;

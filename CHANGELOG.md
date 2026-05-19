@@ -58,6 +58,8 @@
 - **组合搜索**：事件管理页面，支持 `@year:2026 @month:3 @type:健康` 组合筛选，并提供候选词提示面板
 - **Emoji 选择器**：新增 emoji 图标选择弹窗，支持搜索，并可在设置中添加自定义关键词
 
+> [v4 功能详情](https://github.com/Moyf/yearly-glance/blob/master/doc/whats-new-v4-zh.md)
+
 ### ✨ 提升
 
 - **标题样式优化**：年历标题的年份数字字体和交互样式改进

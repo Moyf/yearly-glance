@@ -53,22 +53,11 @@ jobs:
 
                     > "$output_file"
 
-                    local base_version="${target_version%%-*}"
-                    IFS='.' read -r major minor patch <<< "$base_version"
-                    if [[ -n "$patch" && "$patch" != "0" ]]; then
-                      local title_level="##"
-                    else
-                      if [[ "$target_version" == *"beta"* ]]; then
-                        local title_level="##"
-                      else
-                        local title_level="#"
-                      fi
-                    fi
-
-                    awk -v version="$target_version" -v level="$title_level" '
+                    awk -v version="$target_version" '
                     BEGIN { found = 0; printing = 0; }
-                    $0 ~ "^" level " +\\[" version "\\]" { found = 1; printing = 1; next; }
-                    printing && $0 ~ "^#+ +\\[" { printing = 0; }
+                    $0 ~ "^## +\\[" version "\\]" { found = 1; printing = 1; next; }
+                    printing && $0 ~ "^## +\\[" { printing = 0; }
+                    printing && $0 ~ "^---" { printing = 0; }
                     printing { print; }
                     END {
                       if (!found) print "Warning: Version " version " not found" > "/dev/stderr";
@@ -106,14 +95,7 @@ jobs:
                   name: ${{ github.ref_name }}
                   draft: false
                   prerelease: ${{ contains(github.ref, 'beta') }}
-                  body: |
-                      ${{ contains(github.ref, 'beta') && '🚧 This is a beta release' || '🎉 This is a stable release' }}
-
-                      **Version:** ${{ github.ref_name }}
-
-                      [Changelog](https://github.com/Moyf/yearly-glance/blob/master/CHANGELOG.md)
-
-                      ${{ steps.changelog.outputs.changelog }}
+                  body: ${{ steps.changelog.outputs.changelog }}
                   files: |
                       main.js
                       manifest.json

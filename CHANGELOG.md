@@ -1,55 +1,3 @@
-## [4.0.2](https://github.com/Moyf/yearly-glance/compare/4.0.1...4.0.2) (2026-05-19)
-
-### 🔧 Chore
-
-- **Downgrade React to 18**: Replaced React 19 with React 18.3.1 to resolve `Found 3 dynamic <script> element creations` error in the Obsidian plugin review — those instances were from React 19's internal Hoistable Scripts feature, not plugin code
-
-### 🐛 Bug Fixes
-
-- **CSS**: Move Firefox scrollbar styles to the correct selector in Tooltip
-- **CSS**: Fix `export-event-list` responsive grid styles nesting in DataExport
-- **CSS**: Remove duplicate `font-weight` declaration in SettingsTab
-
-<details>
-<summary>中文说明（点击展开）</summary>
-
-### 🔧 工程改动
-
-- **降级 React 到 18**：将 React 19 替换为 React 18.3.1，修复 Obsidian 插件审核报告的 `Found 3 dynamic <script> element creations` 错误——该问题来自 React 19 内部的 Hoistable Scripts 特性，并非插件自身代码
-
-### 🐛 问题修复
-
-- **CSS**：修复 Tooltip 中 Firefox 滚动条样式应用到错误选择器的问题
-- **CSS**：修复 DataExport 中 `export-event-list` 响应式网格样式的嵌套问题
-- **CSS**：移除 SettingsTab 中重复的 `font-weight` 声明
-
-</details>
-
----
-
-## [4.0.1](https://github.com/Moyf/yearly-glance/compare/4.0.0...4.0.1) (2026-05-18)
-
-### 🔧 Chore
-
-- **Remove deprecated dependencies**: Replaced `builtin-modules`, `fs-extra`, and `dotenv` with Node.js built-in equivalents — removes packages flagged by the Obsidian plugin review bot
-- **Add pnpm lockfile**: Added `pnpm-lock.yaml` for compatibility with the Obsidian plugin review process
-- **Release pipeline**: Removed unnecessary `.zip` artifact from releases; added artifact attestation for cryptographic provenance verification of `main.js`, `manifest.json`, and `styles.css`
-- **CI**: Upgrade Node.js from 18 to 20 in CI workflows
-
-<details>
-<summary>中文说明（点击展开）</summary>
-
-### 🔧 工程改动
-
-- **移除废弃依赖**：用 Node.js 内置模块替换 `builtin-modules`、`fs-extra`、`dotenv`，消除 Obsidian 插件审核机器人标记的警告
-- **添加 pnpm lockfile**：生成 `pnpm-lock.yaml`，修复审核流程中的 Error
-- **发布流程优化**：移除 Release 中多余的 `.zip` 文件；为 `main.js`、`manifest.json`、`styles.css` 添加构建来源证明（artifact attestation）
-- **CI 升级**：CI 工作流中 Node.js 从 18 升级到 20
-
-</details>
-
----
-
 ## [4.0.0](https://github.com/Moyf/yearly-glance/compare/3.2.0...4.0.0) (2026-05-18)
 
 ### ⚠️ Breaking Changes
@@ -59,52 +7,38 @@
 
 ### 🚀 Added
 
-- **Daily Note Events**: Full lifecycle support — create, edit, delete events stored in daily note frontmatter properties ✨
-- **Note Events**: Use notes with specific `event_date` property as event sources ✨
-- **Note Event File Name Format**: Support `{event_name}` and date tokens (YYYY, MM, DD) for custom file paths
-- **Multi-Day Event Support**: Events can span multiple days with duration field ✨
-- **Bases View Integration**: Use `.base` files to create filtered calendar views ✨
-- **Right-Click Context Menu**: Right-click events to edit, open note, or delete ✨
-- **Delete Button in Edit Modal**: Delete button in the bottom-left of the edit form
-- **Remember Last Event Type**: Event creation form defaults to last selected type
-- **Color Selector Circle Hints**: Colored circles before preset color options
-- **NavTabs Responsive Emoji Mode**: Collapse to emoji-only when space is insufficient
-- **Date Validation**: Invalid dates like `2026-04-220` are now properly rejected
-- **Event Click Action Setting**: New setting to control what happens when clicking an event — choose from "Show preview" (default), "Edit event", or "Open note" (for note-backed events)
-- **Auto-Refresh on Metadata Changes**: The calendar view now automatically refreshes when frontmatter changes in the note events folder or daily notes folder, no manual reload needed
-- **EventPresetType**: Define named event types (e.g. "健康 🌿") with emoji and color; assign to events for consistent styling. Display falls back through: event override → preset type → default color
-- **Settings Tabs**: Settings panel reorganized into 5 tabs (Basic / Layout & Display / Note Events / Daily Note Events / Presets) — both in GlanceManager and Obsidian native settings
-- **Multi-token search in EventManager**: Support `@year:2026 @month:3 @type:健康` combined filters, with a suggestion panel for available tokens
-- **basesEvent type mapping**: Set `event_type` in note frontmatter to auto-assign preset type to note events
-- **Emoji Picker**: New emoji picker for selecting event icons — supports custom emoji keyword mapping (add your own keywords to make emoji searchable)
-- **Bases View — Inherit Plugin Data**: Option to inherit plugin's built-in events (holidays, birthdays, custom events) in Bases View, displayed alongside note events
+- **Daily Note Events**: Create, edit, and delete events directly in daily note frontmatter properties ✨
+- **Note Events**: Any note with an `event_date` property can serve as an event source ✨
+- **Bases View Integration**: Use `.base` files to create custom aggregated calendar views ✨
+- **Multi-Day Events**: Events support a duration field to span multiple days ✨
+- **Event Preset Types**: Define named types (e.g. "健康 🌿") with emoji and color for consistent event styling, with type-based filtering support
+- **Multi-Token Search in Event Manager**: Combined filters like `@year:2026 @month:3 @type:健康` with a token suggestion panel
+- **Emoji Picker**: Searchable emoji picker for event icons — supports custom keyword mapping in settings
 
 > [More details on v4 features](https://github.com/Moyf/yearly-glance/blob/master/doc/whats-new-v4.md)
 
-### ⚡ Changed
+### ✨ Improved
 
-- **Simplified "From Note" Display**: Show only filename, hover for full path
-- **Unified Tooltip Component**: Consistent hover hint styling across all buttons
-- **Title Styling**: Improved year number font and interactive styling
-- **Event Specific Info**: Only shows meaningful attribute values, saving space
-- **Zodiac/Animal Stored as Locale-Independent Keys**: `zodiac` and `animal` fields in `data.json` are now stored as English identifiers (e.g. `capricorn`, `jia-zi:rat`) and translated at display time, preventing mixed-language data when switching languages
-- **resolveEventDisplay utility**: Color/emoji fallback logic centralized — removes duplicated inline code across components
-- **Settings layout**: Content area now has tab class; settings panel centered at max 700px width
-- **Hide past/future months state persisted**: `hidePreviousMonths` and `hideFutureMonths` toggle states are now saved to config and restored on reload
+- **Title Styling**: Improved year number font and interactive styling in the calendar header
+- **Right-Click Context Menu**: Right-click any event to edit, open its source note, or delete
+- **Delete Button in Edit Modal**: Delete button added to the bottom-left of the edit form
+- **Remember Last Event Type**: Event creation form defaults to the last used type
+- **Color Swatches in Color Selector**: Colored circles shown before each preset color option
+- **Compact Tab Bar**: Tab bar collapses to emoji-only when there is insufficient space
+- **Event Click Action Setting**: Choose what happens when clicking an event — "Show preview" (default), "Edit event", or "Open note"
+- **Simplified Source Note Display**: Shows filename only; hover to see the full path
+- **Unified Tooltip Style**: Consistent hover hint styling across all buttons
+- **Event Detail Trimming**: Only meaningful attribute values are shown, reducing visual noise
+- **Zodiac/Animal Stored as Locale-Independent Keys**: `zodiac` and `animal` in `data.json` now store English identifiers (e.g. `capricorn`, `jia-zi:rat`) and are translated at display time, preventing mixed-language data when switching locales
+- **Hide Past/Future Months State Persisted**: Toggle states are now saved and restored on reload
+- **Date Validation**: Invalid dates like `2026-04-220` are now properly rejected
+- **Settings Tabs**: Settings panel reorganized into 5 tabs (Basic / Layout & Display / Note Events / Daily Note Events / Presets)
 
 ### 🐛 Fixed
 
-- **Year Switch Corrupts Event Dates**: Switching display year permanently overwrote `eventDate.isoDate` with the display year, causing events to "move" and disappear. Now `isoDate` stays immutable and `dateArr` is used for display-year calculations.
-- **Optional Fields Locked**: Fixed fields staying disabled after switching from dailyNoteEvent type
-- **Lucide tab icon not refreshing**: Tab icon now updates immediately when "Tab icon display" setting changes, without needing to restart Obsidian
-- **Search chip display**: Removed `@id` from chip labels; chips now fade in with 200ms delay; space auto-inserted after token completion
-- **EventForm layout**: Select wrapper now fills the full form-group row; color selector dropdown no longer clipped by `overflow:hidden`
-- **Preset type assignment**: Emoji and color are now always applied on type change, not just on initial selection
-- **Preset type UI**: Redesigned preset type row; wider type dropdown; tooltip moved to EventForm label; basesEvent type selector works correctly
-- **Settings tab**: Placeholder/cursor fixes; unnecessary toggle hidden; restructured for clarity
-- **Delete button styles**: Restored correct styles in PresetEventTypeSettings
-- **Birthday 旧格式数据修复**: Birthday age/animal not calculated for events saved in old date format — now correctly handled
-- **IME input**: Removed emoji input length restriction to allow multi-character IME composition
+- **Year Switch Corrupts Event Dates**: Switching the display year no longer permanently overwrites the original event date
+- **Birthday Age/Zodiac for Legacy Date Format**: Events saved in the old date format now correctly calculate age and zodiac
+- **CSS**: Various minor CSS fixes
 
 <details>
 <summary>中文说明（点击展开）</summary>
@@ -116,42 +50,42 @@
 
 ### 🚀 新增
 
-- **日记事件**：完整生命周期支持——在日记的 frontmatter 属性中创建、编辑、删除事件 ✨
-- **笔记事件**：支持将含有 `event_date` 属性的笔记作为事件来源 ✨
-- **笔记事件文件名格式**：支持 `{event_name}` 和日期占位符（YYYY、MM、DD）自定义文件路径
+- **日记事件**：现在起，你可以在日记的 frontmatter 属性中直接添加当天的事件 ✨
+- **笔记事件**：以及，数据终于不再只存在在插件内——你可以将任意笔记作为事件来源 ✨
+- **Bases 集成**：现在，可在 `.base` 数据库内添加 `yearly-glance` 视图，自定义不同笔记事件的聚合显示 ✨
 - **多日事件**：事件支持设置持续天数（duration） ✨
-- **Bases View 集成**：可使用 `.base` 文件创建自定义过滤的日历视图 ✨
-- **右键上下文菜单**：右键事件可编辑、打开笔记或删除 ✨
+- **事件类型预设（EventPresetType）**：定义带 emoji 和颜色的命名类型（如"健康 🌿"），指定给事件后统一样式，支持按类型筛选
+- **组合搜索**：事件管理页面，支持 `@year:2026 @month:3 @type:健康` 组合筛选，并提供候选词提示面板
+- **Emoji 选择器**：新增 emoji 图标选择弹窗，支持搜索，并可在设置中添加自定义关键词
+
+### ✨ 提升
+
+- **标题样式优化**：年历标题的年份数字字体和交互样式改进
+- **右键上下文菜单**：右键事件可编辑、打开笔记或删除
 - **编辑表单删除按钮**：在编辑表单左下角新增删除按钮
 - **记忆上次事件类型**：新建事件时默认使用上次选择的类型
 - **预设颜色圆形提示**：颜色选项前显示彩色圆点预览
 - **导航栏响应式 Emoji 模式**：空间不足时自动折叠为纯 emoji 显示
-- **日期验证**：拒绝 `2026-04-220` 等格式非法的日期输入
 - **事件点击行为设置**：可设置点击事件的行为——预览（默认）、编辑、或打开来源笔记
-- **元数据变更自动刷新**：笔记事件文件夹或日记文件夹的 frontmatter 变更后，日历视图自动刷新
-- **事件类型预设（EventPresetType）**：定义带 emoji 和颜色的命名类型（如"健康 🌿"），指定给事件后统一样式
-- **设置页分 Tab**：设置面板重新整理为 5 个标签（基础 / 布局与显示 / 笔记事件 / 日记事件 / 预设）
-- **多 token 搜索**：支持 `@year:2026 @month:3 @type:健康` 组合筛选，并提供候选词提示面板
-- **笔记事件类型映射**：在笔记 frontmatter 中设置 `event_type` 可自动绑定事件类型预设
-- **Emoji 选择器**：新增 emoji 图标选择弹窗，支持搜索，并可在设置中添加自定义关键词
-- **Bases View 继承插件数据**：可选择在 Bases View 中继承插件内置事件（节假日、生日、自定义事件）
-
-### ⚡ 变更
-
 - **笔记来源显示简化**：仅显示文件名，悬停查看完整路径
 - **统一 Tooltip 组件**：所有按钮的悬停提示风格统一
-- **标题样式优化**：年份数字字体和交互样式改进
 - **事件专属信息**：仅显示有意义的属性值，节省空间
 - **生肖/星座存储为与语言无关的 key**：避免切换语言时数据混乱
 - **隐藏过去/未来月份状态持久化**：切换后的状态现在会保存，重启插件后不再重置
+- **日期验证**：拒绝 `2026-04-220` 等格式非法的日期输入
+- **设置页改进**：设置面板重新整理为 5 个标签页（基础 / 布局与显示 / 笔记事件 / 日记事件 / 预设）
 
 ### 🐛 修复
 
 - **切换显示年份导致事件日期被覆写**：切换到 2027 年等操作不再永久修改事件的原始日期
-- **可选字段被锁定**：从日记事件类型切换后，可选字段不再保持禁用状态
-- **Lucide 标签图标不刷新**：修改"标签图标显示"设置后，图标立即更新无需重启
 - **生日旧格式数据不计算年龄/生肖**：兼容旧格式保存的生日数据
-- **IME 输入限制**：移除 emoji 输入长度限制，支持多字符 IME 输入法组合
+- **CSS**：修复各种 CSS 内的小错误
+
+### 🔧 构建
+- **降级 React 到 18**：将 React 19 替换为 React 18.3.1，修复 Obsidian 插件审核报告的错误
+- **移除废弃依赖**：用 Node.js 内置模块替换依赖
+- **发布流程优化**：移除 Release 中多余的 `.zip` 文件；为 `main.js`、`manifest.json`、`styles.css` 添加构建来源证明（artifact attestation）
+- **CI 升级**：CI 工作流中 Node.js 从 18 升级到 20
 
 </details>
 

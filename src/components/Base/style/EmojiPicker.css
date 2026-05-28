@@ -10,7 +10,7 @@
 	background-color: var(--background-primary);
 	color: var(--text-normal);
 	cursor: pointer;
-	font-size: 18px;
+	font-size: var(--font-ui-large);
 	line-height: 1;
 	padding: 0;
 	flex-shrink: 0;
@@ -54,14 +54,18 @@
 }
 
 /* Search input */
-.yg-emoji-search {
+input[type="text"].yg-emoji-search {
 	width: 100%;
-	padding: 10px 14px;
+	height: var(--input-height);
+	min-height: var(--input-height);
+	padding: 0 14px;
 	border: none;
 	border-bottom: 1px solid var(--background-modifier-border);
+	border-radius: 0;
 	background-color: var(--background-primary);
 	color: var(--text-normal);
-	font-size: 14px;
+	font-size: var(--font-ui-medium);
+	line-height: var(--input-height);
 	outline: none;
 	box-sizing: border-box;
 
@@ -86,7 +90,7 @@
 	justify-content: space-between;
 	padding: 6px 12px;
 	cursor: pointer;
-	font-size: 12px;
+	font-size: var(--font-ui-small);
 	color: var(--text-muted);
 	transition: background-color 0.2s ease;
 
@@ -100,7 +104,7 @@
 }
 
 .yg-emoji-keyword-toggle {
-	font-size: 12px;
+	font-size: var(--font-ui-small);
 	transition: transform 0.2s ease;
 
 	&.open {
@@ -114,21 +118,21 @@
 }
 
 .yg-emoji-keyword-empty {
-	font-size: 11px;
+	font-size: var(--font-ui-smaller);
 	color: var(--text-faint);
 	padding: 4px 0;
 }
 
 .yg-emoji-keyword-row {
 	display: flex;
-	align-items: flex-start;
+	align-items: baseline;
 	gap: 6px;
 	padding: 3px 0;
-	font-size: 12px;
+	font-size: var(--font-ui-small);
 }
 
 .yg-emoji-keyword-emoji {
-	font-size: 16px;
+	font-size: var(--font-ui-medium);
 	line-height: 1;
 	flex-shrink: 0;
 	margin-top: 1px;
@@ -148,16 +152,18 @@
 	border: 1px solid var(--background-modifier-border);
 	border-radius: 4px;
 	padding: 1px 6px;
-	font-size: 11px;
+	font-size: var(--font-ui-small);
 	color: var(--text-muted);
 }
 
-.yg-emoji-keyword-remove {
+button:not(.clickable-icon).yg-emoji-keyword-remove {
+	width: 12px;
 	background: none;
+	background-color: transparent;
 	border: none;
 	color: var(--text-faint);
 	cursor: pointer;
-	font-size: 13px;
+	font-size: var(--font-ui-small);
 	line-height: 1;
 	padding: 0 1px;
 
@@ -181,7 +187,7 @@
 	border-radius: 4px;
 	background-color: var(--background-primary);
 	color: var(--text-normal);
-	font-size: 14px;
+	font-size: var(--font-ui-medium);
 	text-align: center;
 	outline: none;
 	transition: border-color 0.2s ease;
@@ -198,7 +204,7 @@
 	border-radius: 4px;
 	background-color: var(--background-primary);
 	color: var(--text-normal);
-	font-size: 12px;
+	font-size: var(--font-ui-small);
 	outline: none;
 	transition: border-color 0.2s ease;
 
@@ -215,7 +221,7 @@
 	background-color: var(--background-modifier-hover);
 	color: var(--text-muted);
 	cursor: pointer;
-	font-size: 16px;
+	font-size: var(--font-ui-medium);
 	line-height: 1;
 	padding: 0;
 	flex-shrink: 0;
@@ -233,7 +239,7 @@
 }
 
 .yg-emoji-keyword-hint {
-	font-size: 11px;
+	font-size: var(--font-ui-smaller);
 	color: var(--text-faint);
 	padding: 6px 0 2px;
 	font-style: italic;
@@ -252,7 +258,7 @@
 }
 
 .yg-emoji-category-label {
-	font-size: 11px;
+	font-size: var(--font-ui-small);
 	font-weight: 500;
 	color: var(--text-muted);
 	padding: 6px 12px 4px;
@@ -275,7 +281,7 @@
 	border-radius: 4px;
 	background: transparent;
 	cursor: pointer;
-	font-size: 18px;
+	font-size: var(--font-ui-large);
 	line-height: 1;
 	padding: 0;
 	transition: background-color 0.2s ease;
@@ -294,5 +300,5 @@
 	text-align: center;
 	padding: 20px 10px;
 	color: var(--text-faint);
-	font-size: 13px;
+	font-size: var(--font-ui-small);
 }

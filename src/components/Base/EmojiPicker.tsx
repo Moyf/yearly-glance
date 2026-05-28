@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { EMOJI_DATA, buildEmojiKeywordMap } from "@/src/data/emojiData";
 import type YearlyGlancePlugin from "@/src/main";
 import { t } from "@/src/i18n/i18n";
+import { Tooltip } from "@/src/components/Base/Tooltip";
 import "./style/EmojiPicker.css";
 
 interface EmojiPickerProps {
@@ -384,26 +385,27 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 									{categoryLabel(category.name)}
 								</div>
 								<div className="yg-emoji-grid">
-									{category.emojis.map((entry) => (
-										<button
-											key={entry.emoji}
-											className={`yg-emoji-item ${
-												value === entry.emoji
-													? "selected"
-													: ""
-											}`}
-											onClick={() =>
-												handleEmojiClick(entry.emoji)
-											}
-											title={
-												keywordMap[entry.emoji]?.join(
-													", "
-												) || entry.emoji
-											}
-										>
-											{entry.emoji}
-										</button>
-									))}
+									{category.emojis.map((entry) => {
+										const tooltipText =
+											keywordMap[entry.emoji]?.join(", ") || entry.emoji;
+
+										return (
+											<Tooltip key={entry.emoji} text={tooltipText}>
+												<button
+													className={`yg-emoji-item ${
+														value === entry.emoji
+															? "selected"
+															: ""
+													}`}
+													onClick={() =>
+														handleEmojiClick(entry.emoji)
+													}
+												>
+													{entry.emoji}
+												</button>
+											</Tooltip>
+										);
+									})}
 								</div>
 							</div>
 						))}

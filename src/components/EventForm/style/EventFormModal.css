@@ -134,6 +134,7 @@
 			border-radius: 4px;
 			color: var(--text-error);
 			cursor: pointer;
+			font-size: var(--font-ui-medium);
 			font-weight: 500;
 			transition: background-color 0.2s ease, transform 0.1s ease;
 

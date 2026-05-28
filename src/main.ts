@@ -68,7 +68,12 @@ export default class YearlyGlancePlugin extends Plugin {
 			this.app.metadataCache.on("changed", (file: TFile) => {
 				// 检查是否在笔记事件文件夹中
 				const basesEventPath = this.settings.config.defaultBasesEventPath;
-				if (basesEventPath && file.path.startsWith(basesEventPath)) {
+				// 空字符串表示不扫描，直接跳过
+				// "/" 表示全库，监听所有文件；具体路径只监听该文件夹
+				const normalizedBasesPath = basesEventPath?.replace(/^\/+|\/+$/g, "").trim() ?? "";
+				const isEnabled = basesEventPath !== "" && basesEventPath != null;
+				const isInBasesPath = !normalizedBasesPath || file.path.startsWith(normalizedBasesPath + "/") || file.path === normalizedBasesPath;
+				if (this.settings.config.showBasesEvents && isEnabled && isInBasesPath) {
 					// 防抖：500ms 内只触发一次
 					if (basesDebounceTimer !== undefined) {
 						window.clearTimeout(basesDebounceTimer);

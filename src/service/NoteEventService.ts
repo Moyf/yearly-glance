@@ -29,15 +29,31 @@ export class NoteEventService {
 	): Promise<CalendarEvent[]> {
 		// 获取文件夹中的所有 markdown 文件
 		const files = this.app.vault.getMarkdownFiles();
-		const filteredFiles = folderPath
-			? files.filter((f) => f.path.startsWith(folderPath))
+		// 规范化路径：
+		//   - 空字符串：调用方不应传入（应在调用前判断），此处防御性返回空
+		//   - "/"：全库扫描，等同于无过滤
+		//   - 其他路径：只扫描该文件夹下的笔记
+		const normalizedPath = folderPath?.replace(/^\/+|\/+$/g, "").trim() || "";
+		const filteredFiles = normalizedPath
+			? files.filter((f) => f.path.startsWith(normalizedPath + "/") || f.path === normalizedPath)
 			: files;
+
+		// 提取属性名配置，避免在每个文件解析时重复读取
+		const propConfig = {
+			titleProp: this.config.basesEventTitleProp || "title",
+			dateProp: this.config.basesEventDateProp || "event_date",
+			durationProp: this.config.basesEventDurationProp || "duration",
+			iconProp: this.config.basesEventIconProp || "icon",
+			colorProp: this.config.basesEventColorProp || "color",
+			descriptionProp: this.config.basesEventDescriptionProp || "description",
+			presetTypeProp: this.config.basesEventPresetTypeProp || "event_type",
+		};
 
 		const events: CalendarEvent[] = [];
 
 		for (const file of filteredFiles) {
 			try {
-				const event = this.parseEventFromFile(file);
+				const event = this.parseEventFromFile(file, propConfig);
 				if (event) {
 					// 如果指定了年份，只返回该年份的事件
 					if (year) {
@@ -67,25 +83,20 @@ export class NoteEventService {
 	 * 从单个笔记文件解析事件
 	 */
 	private parseEventFromFile(
-		file: TFile
+		file: TFile,
+		propConfig: {
+			titleProp: string;
+			dateProp: string;
+			durationProp: string;
+			iconProp: string;
+			colorProp: string;
+			descriptionProp: string;
+			presetTypeProp: string;
+		}
 	): CalendarEvent | null {
 		const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter ?? {};
 
-		// 获取配置的属性名
-		const titleProp =
-			this.config.basesEventTitleProp || "title";
-		const dateProp =
-			this.config.basesEventDateProp || "event_date";
-		const durationProp =
-			this.config.basesEventDurationProp || "duration";
-		const iconProp =
-			this.config.basesEventIconProp || "icon";
-		const colorProp =
-			this.config.basesEventColorProp || "color";
-		const descriptionProp =
-			this.config.basesEventDescriptionProp || "description";
-		const presetTypeProp =
-			this.config.basesEventPresetTypeProp || "event_type";
+		const { titleProp, dateProp, durationProp, iconProp, colorProp, descriptionProp, presetTypeProp } = propConfig;
 
 		// 读取日期字段（必需）
 		const dateValue = frontmatter[dateProp];

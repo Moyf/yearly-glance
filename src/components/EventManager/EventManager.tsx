@@ -77,6 +77,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 	// 加载笔记事件（Manager 始终加载，不受日历显示开关影响）
 	React.useEffect(() => {
 		const loadBasesEvents = () => {
+			// 空字符串表示不扫描；"/" 或具体路径才执行扫描
 			if (config.defaultBasesEventPath) {
 				const noteEventService = new NoteEventService(plugin.app, config);
 				noteEventService.loadEventsFromPath(config.defaultBasesEventPath, config.year)

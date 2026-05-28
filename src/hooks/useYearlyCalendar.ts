@@ -141,7 +141,8 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 
 	// 异步加载笔记事件
 	React.useEffect(() => {
-		if (!showBasesEvents || !defaultBasesEventPath) {
+		// 空字符串表示不扫描；"/" 表示全库扫描
+		if (!showBasesEvents || defaultBasesEventPath === "" || defaultBasesEventPath == null) {
 			setBasesEvents([]);
 			return;
 		}

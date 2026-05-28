@@ -187,7 +187,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	emojiOnTop: false, // 默认在左侧显示emoji
 	wrapEventText: false,
 	gregorianDisplayFormat: "YYYY-MM-DD", // 默认使用ISO格式
-	defaultBasesEventPath: "", // 默认笔记事件路径为空（根目录）
+	defaultBasesEventPath: "/", // 默认笔记事件路径为"/"（全库扫描），留空表示不扫描
 	basesEventFileNameFormat: "{event_name}",
 	basesEventTitleProp: "title", // 默认标题属性名
 	basesEventDateProp: "event_date", // 默认日期属性名

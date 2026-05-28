@@ -225,10 +225,11 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 
 			// freetext match
 			if (freetext) {
-				const textMatch =
-					event.text.toLowerCase().includes(freetext) ||
-					(event.remark && event.remark.toLowerCase().includes(freetext)) ||
-					(event.eventDate?.isoDate?.toLowerCase().includes(freetext) ?? false);
+			const textMatch =
+				event.text.toLowerCase().includes(freetext) ||
+				(event.emoji && event.emoji.toLowerCase().includes(freetext)) ||
+				(event.remark && event.remark.toLowerCase().includes(freetext)) ||
+				(event.eventDate?.isoDate?.toLowerCase().includes(freetext) ?? false);
 				if (!textMatch) return false;
 			}
 

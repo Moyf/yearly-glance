@@ -131,8 +131,8 @@ const translations: BaseMessage = {
 			},
 			defaultBasesEventPath: {
 				name: "默认笔记事件路径",
-				desc: "此文件夹中带有事件属性的笔记会显示在日历中。你也可以通过 Bases 视图实现更灵活的筛选。",
-				placeholder: "留空则使用库根目录",
+				desc: "此文件夹中带有事件属性的笔记会显示在日历中。使用「/」扫描整个库，留空则禁用笔记事件扫描。",
+				placeholder: "留空则禁用扫描",
 			},
 			basesEventFileNameFormat: {
 				name: "文件名格式",
@@ -609,6 +609,7 @@ const translations: BaseMessage = {
 	},
 	notice: {
 		setDefaultBasesEventPath: "提示：请在插件设置中选择默认笔记事件路径",
+		invalidFolderPath: "文件夹「{{path}}」在库中不存在",
 	},
 	warning: {
 		invalidDuration: "有 {{count}} 条事件的持续天数不规范，已按 1 天处理。详情请查看控制台。",

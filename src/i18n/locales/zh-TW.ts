@@ -131,8 +131,8 @@ const translations: BaseMessage = {
 			},
 			defaultBasesEventPath: {
 				name: "預設筆記事件路徑",
-				desc: "此資料夾中帶有事件屬性的筆記會顯示在日曆中。你也可以透過 Bases 視圖實現更靈活的篩選。",
-				placeholder: "留空則使用庫根目錄",
+				desc: "此資料夾中帶有事件屬性的筆記會顯示在日曆中。使用「/」掃描整個庫，留空則停用筆記事件掃描。",
+				placeholder: "留空則停用掃描",
 			},
 			basesEventFileNameFormat: {
 				name: "檔案名稱格式",
@@ -609,6 +609,7 @@ const translations: BaseMessage = {
 	},
 	notice: {
 		setDefaultBasesEventPath: "提示：請在外掛設定中選擇預設筆記事件路徑",
+		invalidFolderPath: "資料夾「{{path}}」在庫中不存在",
 	},
 	warning: {
 		invalidDuration: "有 {{count}} 筆事件的持續天數不規範，已按 1 天處理。詳情請查看控制台。",

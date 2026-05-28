@@ -131,8 +131,8 @@ const translations: BaseMessage = {
 			},
 			defaultBasesEventPath: {
 				name: "Default note event path",
-				desc: "Notes with event properties in this folder will appear in the calendar. You can also use Bases view for more flexible filtering.",
-				placeholder: "Leave empty to use vault root",
+				desc: "Notes with event properties in this folder will appear in the calendar. Use \"/\" to scan the entire vault, or leave empty to disable note event scanning.",
+				placeholder: "Leave empty to disable scanning",
 			},
 			basesEventFileNameFormat: {
 				name: "File Name Format",
@@ -613,6 +613,7 @@ const translations: BaseMessage = {
 	},
 	notice: {
 		setDefaultBasesEventPath: "Tip: Please select the default note event path in plugin settings",
+		invalidFolderPath: "Folder \"{{path}}\" does not exist in the vault",
 	},
 	warning: {
 		invalidDuration: "{{count}} event(s) have invalid duration values and will be treated as 1 day. Check the console for details.",

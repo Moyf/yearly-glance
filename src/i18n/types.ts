@@ -460,6 +460,7 @@ export type BaseMessage = {
 	};
 	notice: {
 		setDefaultBasesEventPath: string;
+		invalidFolderPath: string;
 	};
 	warning: {
 		invalidDuration: string;

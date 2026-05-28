@@ -13,6 +13,8 @@ interface AutoCompleteProps {
 	value: string;
 	valueLabel?: string;
 	onChange: (value: string) => void;
+	/** 自由输入提交前的验证钩子，返回 false 则阻止保存 */
+	onCommit?: (value: string) => boolean;
 	placeholder?: string;
 	items: AutoCompleteItem[] | (() => AutoCompleteItem[]);
 	disabled?: boolean;
@@ -24,6 +26,7 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
 	value,
 	valueLabel,
 	onChange,
+	onCommit,
 	placeholder,
 	items,
 	disabled = false,
@@ -64,6 +67,19 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
 		setHighlightedIndex(filtered.length > 0 ? 0 : -1);
 	}, [searchTerm, computeFiltered]);
 
+	// 提交当前输入值
+	const commitSearchTerm = React.useCallback((term: string) => {
+		// 有外部验证钩子时先校验，失败则不调用 onChange
+		if (onCommit && !onCommit(term)) {
+			setIsOpen(false);
+			setSearchTerm("");
+			return;
+		}
+		onChange(term);
+		setIsOpen(false);
+		setSearchTerm("");
+	}, [onChange, onCommit]);
+
 	// 处理点击外部关闭
 	React.useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -71,8 +87,7 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
 				containerRef.current &&
 				!containerRef.current.contains(event.target as Node)
 			) {
-				setIsOpen(false);
-				setSearchTerm("");
+				commitSearchTerm(searchTerm);
 			}
 		};
 
@@ -82,7 +97,7 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
 				activeDocument.removeEventListener("mousedown", handleClickOutside);
 			};
 		}
-	}, [isOpen]);
+	}, [isOpen, searchTerm, commitSearchTerm]);
 
 	// 处理键盘导航
 	const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -114,6 +129,9 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
 					highlightedIndex < filteredItems.length
 				) {
 					handleSelectItem(filteredItems[highlightedIndex]);
+				} else {
+					// 没有高亮选项时，直接提交输入的文本
+					commitSearchTerm(searchTerm);
 				}
 				break;
 			case "Escape":

@@ -1,6 +1,7 @@
 import * as React from "react";
-import { App, TFolder } from "obsidian";
+import { App, Notice, TFolder } from "obsidian";
 import { AutoComplete, AutoCompleteItem } from "./Autocomplete";
+import { t } from "@/src/i18n/i18n";
 
 interface FolderAutoCompleteProps {
 	label?: React.ReactNode;
@@ -35,7 +36,7 @@ export const FolderAutoComplete: React.FC<FolderAutoCompleteProps> = ({
 	}, [app]);
 
 	const getValueLabel = React.useCallback(() => {
-		if (!value) return "/";
+		if (!value) return ""; // 空值时不显示任何内容，让 input 展示 placeholder
 
 		// 如果值存在，尝试从文件夹列表中找到对应的名称
 		const items = getItems();
@@ -43,12 +44,26 @@ export const FolderAutoComplete: React.FC<FolderAutoCompleteProps> = ({
 		return matchedItem?.label || value;
 	}, [value, getItems]);
 
+	/** 自由输入提交前校验：空值和根目录直接放行，否则检查文件夹是否存在 */
+	const handleCommit = React.useCallback((inputValue: string): boolean => {
+		const normalized = inputValue.replace(/^\/+|\/+$/g, "").trim();
+		// 空字符串（不扫描）或 "/" （全库扫描）均为合法值，直接放行
+		if (!normalized) return true;
+
+		const folder = app.vault.getAbstractFileByPath(normalized);
+		if (folder instanceof TFolder) return true;
+
+		new Notice(t("notice.invalidFolderPath", { path: inputValue.trim() }));
+		return false;
+	}, [app]);
+
 	return (
 		<AutoComplete
 			label={label}
 			value={value}
 			valueLabel={getValueLabel()}
 			onChange={onChange}
+			onCommit={handleCommit}
 			placeholder={placeholder}
 			items={getItems}
 			disabled={disabled}

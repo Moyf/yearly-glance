@@ -55,6 +55,15 @@
 		color: var(--text-normal);
 	}
 
+	.yg-field-control {
+		flex: 1;
+		min-width: 0;
+
+		input {
+			width: 100%;
+		}
+	}
+
 	input::placeholder {
 		opacity: 0.5;
 	}

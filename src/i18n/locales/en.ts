@@ -385,6 +385,8 @@ const translations: BaseMessage = {
 				eventName: "Event name",
 				eventDate: "Event date",
 				eventDuration: "Event duration",
+				eventDurationInvalid: "Event duration must be an integer greater than or equal to 1. It will be saved as 1 day.",
+				eventDurationEndDate: "Ends on: {{date}}",
 				eventDateType: "Date type",
 				optional: "Optional",
 				eventHidden: "Hidden",

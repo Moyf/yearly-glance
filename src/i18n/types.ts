@@ -253,6 +253,8 @@ export type BaseMessage = {
 				eventName: string;
 				eventDate: string;
 				eventDuration: string;
+				eventDurationInvalid: string;
+				eventDurationEndDate: string;
 				eventDateType: string;
 				optional: string;
 				eventHidden: string;

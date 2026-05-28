@@ -49,7 +49,7 @@ interface EventFormData {
 	text: string;
 	userInputDate: string;
 	userInputCalendar?: string;
-	duration?: number; // 事件持续天数
+	duration?: string; // 事件持续天数输入值
 	emoji?: string;
 	color?: string;
 	remark?: string;
@@ -130,7 +130,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 			text: event.text || "",
 			userInputDate: event.eventDate?.userInput?.input || todayString,
 			userInputCalendar: event.eventDate?.userInput?.calendar,
-			duration: event.duration || 1, // 默认为1天
+			duration: String(event.duration || 1), // 默认为1天
 			emoji: event.emoji,
 			color: event.color,
 			remark: event.remark,
@@ -164,12 +164,39 @@ export const EventForm: React.FC<EventFormProps> = ({
 	// 处理表单字段变化
 	const handleFieldChange = (
 		name: string,
-		value: string | boolean | number | undefined
+		value: string | boolean | undefined
 	) => {
 		setFormData((prev) => ({
 			...prev,
 			[name]: value === "" ? undefined : value,
 		}));
+	};
+
+	const parseDurationInput = (value: string | undefined): number | null => {
+		if (!value) {
+			return null;
+		}
+
+		const duration = Number(value);
+
+		if (!Number.isFinite(duration) || !Number.isInteger(duration) || duration < 1) {
+			return null;
+		}
+
+		return duration;
+	};
+
+	const getValidDurationOrDefault = (value: string | undefined): number => {
+		return parseDurationInput(value) ?? 1;
+	};
+
+	const handleDurationBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+		const normalizedDuration = String(getValidDurationOrDefault(e.currentTarget.value));
+		e.currentTarget.value = normalizedDuration;
+		handleFieldChange(
+			"duration",
+			normalizedDuration
+		);
 	};
 
 	const [optionalCollapsed, setOptionalCollapsed] = React.useState(false);
@@ -235,6 +262,44 @@ export const EventForm: React.FC<EventFormProps> = ({
 		todayString,
 	]);
 
+	const durationPreview = React.useMemo(() => {
+		if (formData.duration && parseDurationInput(formData.duration) === null) {
+			return {
+				success: false as const,
+				error: t("view.eventManager.form.eventDurationInvalid"),
+			};
+		}
+
+		const duration = parseDurationInput(formData.duration);
+
+		if (duration === null || duration <= 1) {
+			return null;
+		}
+
+		try {
+			const { isoDate, calendar } = parseUserDateInput(
+				formData.userInputDate,
+				formData.userInputCalendar as CalendarType | undefined
+			);
+			const endDate = IsoUtils.fromLocalDateString(isoDate);
+			endDate.setDate(endDate.getDate() + duration - 1);
+
+			return {
+				success: true as const,
+				endIsoDate: IsoUtils.toLocalDateString(endDate),
+			};
+		} catch (error) {
+			return {
+				success: false as const,
+				error: error instanceof Error ? error.message : String(error),
+			};
+		}
+	}, [
+		formData.duration,
+		formData.userInputCalendar,
+		formData.userInputDate,
+	]);
+
 	// 组件挂载时自动聚焦到第一个输入框
 	React.useEffect(() => {
 		if (firstInputRef.current) {
@@ -286,6 +351,8 @@ export const EventForm: React.FC<EventFormProps> = ({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
+		const duration = getValidDurationOrDefault(formData.duration);
+
 		const completeEvent: CustomEvent | Birthday | Holiday = {
 			id: formData.id,
 			text: formData.text,
@@ -301,7 +368,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 						| undefined,
 				},
 			},
-			duration: formData.duration || 1, // 添加 duration 字段
+			duration, // 添加 duration 字段
 			emoji: formData.emoji,
 			color: formData.color,
 			remark: formData.remark,
@@ -469,15 +536,40 @@ export const EventForm: React.FC<EventFormProps> = ({
 							{t("view.eventManager.form.eventDuration")}
 							<Tooltip text={t("view.eventManager.help.eventDuration")} />
 						</label>
-						<input
-							type="number"
-							min="1"
-							max="365"
-							value={formData.duration || 1}
-							onChange={(e) =>
-								handleFieldChange("duration", parseInt(e.target.value) || 1)
-							}
-						/>
+						<div className="yg-field-control">
+							<input
+								type="text"
+								inputMode="numeric"
+								value={formData.duration ?? ""}
+								onChange={(e) =>
+									handleFieldChange("duration", e.target.value)
+								}
+								onBlur={handleDurationBlur}
+							/>
+							{durationPreview && (
+								<div className="date-preview">
+									{durationPreview.success ? (
+										<div className="preview-success">
+											<span className="preview-icon">✓</span>
+											<span className="preview-text">
+												{t("view.eventManager.form.eventDurationEndDate", {
+													date: IsoUtils.formatDate(
+														durationPreview.endIsoDate,
+														"GREGORIAN",
+														settings.config.gregorianDisplayFormat
+													),
+												})}
+											</span>
+										</div>
+									) : (
+										<div className="preview-error">
+											<span className="preview-icon">⚠</span>
+											<span className="preview-text">{durationPreview.error}</span>
+										</div>
+									)}
+								</div>
+							)}
+						</div>
 					</div>
 
 					{/* 预设类型（不对 dailyNoteEvent 显示） */}

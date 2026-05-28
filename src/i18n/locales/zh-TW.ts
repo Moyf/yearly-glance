@@ -385,6 +385,8 @@ const translations: BaseMessage = {
 				eventName: "事件名稱",
 				eventDate: "事件日期",
 				eventDuration: "事件天數",
+				eventDurationInvalid: "事件天數必須是大於等於 1 的整數，儲存時將按 1 天處理",
+				eventDurationEndDate: "結束日期：{{date}}",
 				eventDateType: "日期類型",
 				optional: "可選",
 				eventHidden: "隱藏",

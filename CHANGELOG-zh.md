@@ -1,3 +1,22 @@
+# [4.1.0](https://github.com/Moyf/yearly-glance/compare/4.0.0...4.1.0) (2026-05-28)
+
+
+### ✨ 新功能
+
+* preview event duration end date ([8dd0f2d](https://github.com/Moyf/yearly-glance/commit/8dd0f2dcfbc430cc37c1afa2cf597004e842e1e8))
+
+
+### 🎨 样式
+
+* align emoji picker typography ([474bc41](https://github.com/Moyf/yearly-glance/commit/474bc41c53111b00a36539e41a556bed7c403488))
+
+
+### 🐛 修复
+
+* handle vault root note event paths ([aedca48](https://github.com/Moyf/yearly-glance/commit/aedca485f3e6d03887391349b0b25f9abfbf479a)), closes [#123](https://github.com/Moyf/yearly-glance/issues/123)
+* remove unsupported CSS selectors and overrides ([37294ec](https://github.com/Moyf/yearly-glance/commit/37294ec73fa1291f4ceac9c3e039e54f35a575a3))
+* support emoji search in event manager ([401576e](https://github.com/Moyf/yearly-glance/commit/401576e31c255700fbbaa31b29196c2a369ed387))
+* validate typed note event paths ([39a2683](https://github.com/Moyf/yearly-glance/commit/39a2683cf99994c2d06f836e51bc556507479635))
 ## [4.0.0-beta.4]（预发布）
 
 ### 🚀 新增

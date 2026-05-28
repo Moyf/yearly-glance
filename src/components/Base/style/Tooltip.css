@@ -16,12 +16,6 @@
 }
 
 /* 当tooltip包裹其他元素时的样式 */
-.yg-tooltip-container:not(:has(.yg-tooltip-icon)) {
-	margin-left: 0; /* 移除默认的左边距 */
-	cursor: help; /* 添加帮助光标 */
-}
-
-/* 如果浏览器不支持:has选择器，提供回退 */
 .yg-tooltip-container.has-children {
 	margin-left: 0;
 	cursor: help;

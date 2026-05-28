@@ -334,7 +334,7 @@
 		grid-template-columns: repeat(
 			auto-fit,
 			minmax(max(var(--min-view-width), var(--max-view-width)), 1fr)
-		) !important;
+		);
 		overflow-x: hidden;
 		gap: var(--gap-calendar);
 		grid-auto-rows: max-content;
@@ -921,8 +921,12 @@
 			max-width: 100%;
 		}
 
+		.layout-1x12 .month-row {
+			flex-wrap: wrap;
+		}
+
 		.month-row {
-			flex-wrap: wrap !important;
+			flex-wrap: wrap;
 			gap: 10px;
 			margin-bottom: 10px;
 			justify-content: space-between;
@@ -1210,8 +1214,12 @@
 			max-width: 100%;
 		}
 
+		.layout-1x12 .month-row {
+			flex-wrap: wrap;
+		}
+
 		.month-row {
-			flex-wrap: wrap !important;
+			flex-wrap: wrap;
 			gap: 10px;
 			margin-bottom: 10px;
 			justify-content: space-between;

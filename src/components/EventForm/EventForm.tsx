@@ -85,6 +85,9 @@ interface EventFormProps {
 	onEventTypeChange?: (newType: EventType) => void;
 	props?: {
 		date?: string; // 可选的日期属性
+		targetBasesEventFilePath?: string;
+		isConvertingExistingNote?: boolean;
+		pathWarning?: string;
 	};
 	isBasesEvent?: boolean;
 	isDailyNoteEvent?: boolean;
@@ -248,7 +251,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 
 		return previewNoteEventPath(
 			settings.config.defaultBasesEventPath || "",
-			settings.config.basesEventFileNameFormat || "{event_name}",
+			settings.config.basesEventFileNameFormat || "YYYY/{event_name}",
 			formData.text || "EventName",
 			isoDate
 		);
@@ -713,6 +716,12 @@ export const EventForm: React.FC<EventFormProps> = ({
 										<br />
 										{t("view.eventManager.help.basesEventEdit.syncText")}
 									</>
+								) : props.targetBasesEventFilePath && props.isConvertingExistingNote ? (
+									<>
+										<b>{t("view.eventManager.help.basesEventConvert.label")}：</b>
+										{t("view.eventManager.help.basesEventConvert.text")}<br />
+										<i>{props.targetBasesEventFilePath}</i>
+									</>
 								) : (
 									// 新增模式
 									<>
@@ -730,6 +739,12 @@ export const EventForm: React.FC<EventFormProps> = ({
 											})
 										)}
 									</>
+								)}
+								{props.pathWarning && (
+									<div className="yg-bases-event-path-warning">
+										<b>{t("view.eventManager.form.notePathWarningTitle")}：</b>
+										{props.pathWarning}
+									</div>
 								)}
 							</div>
 						</div>

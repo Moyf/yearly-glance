@@ -294,6 +294,23 @@ export default class YearlyGlancePlugin extends Plugin {
 		});
 
 		this.addCommand({
+			id: "convert-note-to-event",
+			name: t("command.convertNoteToEvent"),
+			checkCallback: (checking) => {
+				const activeFile = this.app.workspace.getActiveFile();
+				if (!(activeFile instanceof TFile) || activeFile.extension !== "md") {
+					return false;
+				}
+
+				if (!checking) {
+					this.openConvertNoteToEventForm(activeFile);
+				}
+
+				return true;
+			},
+		});
+
+		this.addCommand({
 			id: "reload-plugin",
 			name: t("command.reloadPlugin"),
 			callback: () => this.reloadPlugin(),
@@ -304,6 +321,18 @@ export default class YearlyGlancePlugin extends Plugin {
 		this.addRibbonIcon("telescope", t("command.openYearlyGlance"), () =>
 			this.openPluginView(VIEW_TYPE_YEARLY_GLANCE)
 		);
+
+		if (this.settings.config.showConvertNoteToEventRibbon) {
+			this.addRibbonIcon("calendar-plus", t("command.convertNoteToEvent"), () => {
+				const activeFile = this.app.workspace.getActiveFile();
+				if (activeFile instanceof TFile && activeFile.extension === "md") {
+					this.openConvertNoteToEventForm(activeFile);
+					return;
+				}
+
+				new Notice(t("notice.openMarkdownNoteToConvert"));
+			});
+		}
 	}
 
 	public getSettings() {
@@ -434,6 +463,135 @@ export default class YearlyGlancePlugin extends Plugin {
 		).open();
 	}
 
+	private openConvertNoteToEventForm(file: TFile) {
+		const event = this.buildEventFromNoteProperties(file);
+		const pathWarning = this.getConvertNotePathWarning(file);
+		const isEditing = !!event.id;
+
+		new EventFormModal(
+			this,
+			event,
+			"basesEvent",
+			isEditing,
+			false,
+			{
+				targetBasesEventFilePath: file.path,
+				isConvertingExistingNote: !isEditing,
+				pathWarning,
+			}
+		).open();
+	}
+
+	private buildEventFromNoteProperties(file: TFile): Partial<CalendarEvent> {
+		const propConfig = buildPropConfig(this.settings.config);
+		const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter ?? {};
+		const readStringProp = (propName: string): string | undefined => {
+			const value = frontmatter[propName];
+			if (typeof value === "string") {
+				return value;
+			}
+			if (typeof value === "number") {
+				return String(value);
+			}
+			return undefined;
+		};
+		const readNumberProp = (propName: string): number | undefined => {
+			const value = frontmatter[propName];
+			if (typeof value === "number") {
+				return value;
+			}
+			if (typeof value === "string") {
+				const parsed = Number(value);
+				return Number.isFinite(parsed) ? parsed : undefined;
+			}
+			return undefined;
+		};
+		const today = IsoUtils.getTodayLocalDateString();
+		const existingIsoDate = this.parseFrontmatterDate(frontmatter[propConfig.dateProp]);
+		const eventIsoDate = existingIsoDate ?? today;
+		const title = readStringProp(propConfig.titleProp)?.trim() || file.basename;
+		const presetTypeName = readStringProp(propConfig.presetTypeProp);
+		const presetTypeId = presetTypeName
+			? this.settings.config.eventPresetTypes?.find((preset) => preset.name === presetTypeName)?.id
+			: undefined;
+
+		return {
+			id: existingIsoDate ? `bases-${file.path}-${existingIsoDate}` : undefined,
+			text: title,
+			sourceFilePath: file.path,
+			eventDate: {
+				isoDate: eventIsoDate,
+				calendar: "GREGORIAN",
+				userInput: {
+					input: eventIsoDate,
+					calendar: "GREGORIAN",
+				},
+			},
+			duration: readNumberProp(propConfig.durationProp),
+			emoji: readStringProp(propConfig.iconProp),
+			color: readStringProp(propConfig.colorProp),
+			remark: readStringProp(propConfig.descriptionProp),
+			presetTypeId,
+			isRepeat: false,
+		};
+	}
+
+	private parseFrontmatterDate(dateValue: unknown): string | undefined {
+		if (!dateValue) {
+			return undefined;
+		}
+
+		if (typeof dateValue === "string") {
+			const date = new Date(dateValue);
+			return Number.isNaN(date.getTime()) ? undefined : date.toISOString().split("T")[0];
+		}
+
+		if (dateValue instanceof Date) {
+			return Number.isNaN(dateValue.getTime()) ? undefined : dateValue.toISOString().split("T")[0];
+		}
+
+		const date = new Date(String(dateValue));
+		return Number.isNaN(date.getTime()) ? undefined : date.toISOString().split("T")[0];
+	}
+
+	private getConvertNotePathWarning(file: TFile): string | undefined {
+		const defaultPath = this.settings.config.defaultBasesEventPath?.trim() ?? "";
+		if (!defaultPath || defaultPath === "/") {
+			return undefined;
+		}
+
+		const normalizedPath = normalizePath(defaultPath).replace(/^\/+|\/+$/g, "");
+		const isInBasesPath = file.path.startsWith(`${normalizedPath}/`) || file.path === normalizedPath;
+		if (isInBasesPath) {
+			return undefined;
+		}
+
+		return t("view.eventManager.form.notePathWarning", {
+			path: defaultPath,
+		});
+	}
+
+	async convertExistingNoteToBasesEvent(filePath: string, event: CustomEvent): Promise<string> {
+		const file = this.app.vault.getAbstractFileByPath(filePath);
+		if (!(file instanceof TFile)) {
+			throw new Error(`Failed to access note: ${filePath}`);
+		}
+
+		const propConfig = buildPropConfig(this.settings.config);
+		const eventPresetTypes = this.settings.config.eventPresetTypes ?? [];
+		const calendarEvent: CalendarEvent = {
+			...event,
+			eventType: "basesEvent",
+			eventSource: EventSource.BASES,
+			sourceFilePath: file.path,
+		};
+
+		await syncEventToFrontmatter(this.app, file, calendarEvent, propConfig, eventPresetTypes);
+		YearlyGlanceBus.publish('bases-data');
+
+		return file.path;
+	}
+
 	// 同步 Bases 事件到 frontmatter
 	async syncBasesEventToFrontmatter(event: CalendarEvent): Promise<void> {
 		if (!event.id.startsWith('bases-')) {
@@ -550,7 +708,7 @@ export default class YearlyGlancePlugin extends Plugin {
 	async createBasesEventNote(event: CustomEvent): Promise<string> {
 		const config = this.settings.config;
 		const defaultPath = config.defaultBasesEventPath?.trim();
-		const format = config.basesEventFileNameFormat || "{event_name}";
+		const format = config.basesEventFileNameFormat || "YYYY/{event_name}";
 		const propConfig = buildPropConfig(config);
 		const eventPresetTypes = config.eventPresetTypes ?? [];
 

@@ -139,6 +139,7 @@ export interface YearlyGlanceSettings {
 	gregorianDisplayFormat: (typeof GREGORIAN_DISPLAY_FORMAT_OPTIONS)[number]["value"]; // 公历显示格式
 	// 笔记事件设置
 	defaultBasesEventPath?: string; // 默认笔记事件路径
+	showConvertNoteToEventRibbon: boolean; // 是否显示转换当前笔记为笔记事件的功能区按钮
 	basesEventFileNameFormat?: string; // 笔记事件文件名格式
 	basesEventTitleProp?: string; // 笔记事件标题属性名
 	basesEventDateProp?: string; // 笔记事件日期属性名
@@ -188,7 +189,8 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	wrapEventText: false,
 	gregorianDisplayFormat: "YYYY-MM-DD", // 默认使用ISO格式
 	defaultBasesEventPath: "/", // 默认笔记事件路径为"/"（全库扫描），留空表示不扫描
-	basesEventFileNameFormat: "{event_name}",
+	showConvertNoteToEventRibbon: true, // 默认显示转换当前笔记为笔记事件的功能区按钮
+	basesEventFileNameFormat: "YYYY/{event_name}",
 	basesEventTitleProp: "title", // 默认标题属性名
 	basesEventDateProp: "event_date", // 默认日期属性名
 	basesEventDurationProp: "duration", // 默认持续天数属性名

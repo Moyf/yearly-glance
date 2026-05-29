@@ -63,7 +63,7 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 
 	const basesEventFilePreview = previewNoteEventPath(
 		config.defaultBasesEventPath || "",
-		config.basesEventFileNameFormat || "{event_name}",
+		config.basesEventFileNameFormat || "YYYY/{event_name}",
 		"MyEvent",
 		IsoUtils.getTodayLocalDateString()
 	);
@@ -223,6 +223,9 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 									app={plugin.app}
 								/>
 							</SettingsItem>
+							<SettingsItem name={t("setting.general.showConvertNoteToEventRibbon.name")} desc={t("setting.general.showConvertNoteToEventRibbon.desc")}>
+								<Toggle checked={config.showConvertNoteToEventRibbon} onChange={(value) => handleUpdateConfig({ showConvertNoteToEventRibbon: value })} />
+							</SettingsItem>
 							<SettingsItem
 								name={t("setting.general.basesEventFileNameFormat.name")}
 								desc={`${t("setting.general.basesEventFileNameFormat.desc")} ${t("setting.general.basesEventFileNameFormat.preview")}: ${basesEventFilePreview}`}
@@ -231,7 +234,7 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 									type="text"
 									value={config.basesEventFileNameFormat || ""}
 									onChange={(value) => handleUpdateConfig({ basesEventFileNameFormat: value })}
-									placeholder="{event_name}"
+									placeholder="YYYY/{event_name}"
 								/>
 							</SettingsItem>
 						</SettingsBlock>

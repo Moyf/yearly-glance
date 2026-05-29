@@ -251,9 +251,17 @@
 	border: 1px solid currentColor;
 
 	.yg-bases-event-hint-content {
+		font-size: var(--font-ui-smaller);
+		line-height: var(--line-height-tight);
+
 		/* Markdown 内容容器 */
 		p {
 			margin: 0;
+		}
+
+		.yg-bases-event-path-warning {
+			margin-top: var(--size-4-2);
+			color: var(--text-muted);
 		}
 
 		code {

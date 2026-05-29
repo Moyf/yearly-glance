@@ -23,6 +23,9 @@ import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 
 export interface EventFormModalProps {
 	date?: string; // 可选的日期属性
+	targetBasesEventFilePath?: string;
+	isConvertingExistingNote?: boolean;
+	pathWarning?: string;
 }
 
 export class EventFormModal extends Modal {
@@ -54,8 +57,8 @@ export class EventFormModal extends Modal {
 		this.allowTypeChange = allowTypeChange;
 		this.settings = plugin.getSettings();
 		this.props = props;
-		// 检查是否是 Bases 事件（通过 id 判断或事件类型判断）
-		this.isBasesEvent = event.id ? event.id.startsWith('bases-') : eventType === 'basesEvent';
+		// 检查是否是 Bases 事件（通过 id 判断、事件类型或指定目标文件判断）
+		this.isBasesEvent = event.id ? event.id.startsWith('bases-') : eventType === 'basesEvent' || !!props.targetBasesEventFilePath;
 		// 检查是否是日记事件
 		this.isDailyNoteEvent = event.id ? event.id.startsWith('dailynote-') : eventType === 'dailyNoteEvent';
 		// 保存编辑前的事件引用，用于比较标题变化
@@ -190,9 +193,14 @@ export class EventFormModal extends Modal {
 						currentYear
 					);
 
-					// 如果是新增事件，创建笔记文件
-					if (!this.isEditing) {
-						const filePath = await this.plugin.createBasesEventNote(event as CustomEvent);
+					// 如果是新增事件，创建笔记文件；从当前笔记转换时写入指定的现有笔记
+					if (!this.isEditing || this.props.isConvertingExistingNote) {
+						const filePath = this.props.targetBasesEventFilePath
+							? await this.plugin.convertExistingNoteToBasesEvent(
+								this.props.targetBasesEventFilePath,
+								event as CustomEvent
+							)
+							: await this.plugin.createBasesEventNote(event as CustomEvent);
 						// 更新 event.id 为 bases-{filePath}-{isoDate}
 						const idWithoutDate = filePath.replace(/\.md$/, "");
 						event.id = `bases-${idWithoutDate}-${event.eventDate.isoDate}`;

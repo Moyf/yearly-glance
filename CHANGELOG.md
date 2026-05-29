@@ -1,3 +1,22 @@
+# [4.2.0](https://github.com/Moyf/yearly-glance/compare/4.1.0...4.2.0) (2026-05-29)
+
+
+### ✨ Features
+
+* add collapsible calendar toolbar actions ([ff4a4f1](https://github.com/Moyf/yearly-glance/commit/ff4a4f1a1f925fa50148b1122be0c32ba6715d8f))
+* convert or edit note events ([e9e9a53](https://github.com/Moyf/yearly-glance/commit/e9e9a53ff3c4e2ffb0bfc587e708a64013e4737c))
+* persist calendar toolbar controls ([e29a8e1](https://github.com/Moyf/yearly-glance/commit/e29a8e164a31192047fdf0e6da140af7be24defa))
+
+
+### 🎨 Styles
+
+* refine calendar toolbar layout ([0af1681](https://github.com/Moyf/yearly-glance/commit/0af16817ec510bebe1bfe8d4ff73072ab55ddb02))
+
+
+### 🐛 Bug Fixes
+
+* prevent timezone date rollback in event expansion ([beae0d2](https://github.com/Moyf/yearly-glance/commit/beae0d2fe9aca27e975594737582b89f2b5e8e54))
+
 # [4.1.0](https://github.com/Moyf/yearly-glance/compare/4.0.0...4.1.0) (2026-05-28)
 
 
@@ -675,6 +694,5 @@
 * **.gitignore:** Add 'styles.css' to the list of ignored files ([e99ec99](https://github.com/Moyf/yearly-glance/commit/e99ec99a0167c45a9125c00d83886f7c9666644c))
 * **.gitignore:** Exclude Thumbs.db to prevent Windows Explorer view states from being tracked ([2f6924c](https://github.com/Moyf/yearly-glance/commit/2f6924c717a300c011ec29351259b3cd5b3cc985))
 * **style:** remove tooltip CSS ([6dbca9e](https://github.com/Moyf/yearly-glance/commit/6dbca9e883fe2e29c0cf0d1e1f0d3a6959d351ab))
-
 
 

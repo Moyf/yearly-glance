@@ -55,8 +55,8 @@ jobs:
 
                     awk -v version="$target_version" '
                     BEGIN { found = 0; printing = 0; }
-                    $0 ~ "^## +\\[" version "\\]" { found = 1; printing = 1; next; }
-                    printing && $0 ~ "^## +\\[" { printing = 0; }
+                    (($0 ~ /^# / || $0 ~ /^## /) && index($0, "[" version "]") > 0) { found = 1; printing = 1; next; }
+                    printing && ($0 ~ /^# / || $0 ~ /^## /) { printing = 0; }
                     printing && $0 ~ "^---" { printing = 0; }
                     printing { print; }
                     END {

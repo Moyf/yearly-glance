@@ -86,6 +86,7 @@ export type BaseMessage = {
 			defaultBasesEventPath: SettingsItem<{
 				placeholder: string;
 			}>;
+			showConvertNoteToEventRibbon: IBaseSettingsItem;
 			basesEventFileNameFormat: SettingsItem<{
 				preview: string;
 			}>;
@@ -271,6 +272,8 @@ export type BaseMessage = {
 				eventUpdated: string;
 				eventDeleted: string;
 				saveFailed: string;
+				notePathWarningTitle: string;
+				notePathWarning: string;
 			};
 			dateError: {
 				emptyDate: string;
@@ -298,6 +301,10 @@ export type BaseMessage = {
 					label: string;
 					text: string;
 					textWithName: string;
+				};
+				basesEventConvert: {
+					label: string;
+					text: string;
 				};
 				basesEventEdit: {
 					label: string;
@@ -451,6 +458,7 @@ export type BaseMessage = {
 		openYearlyGlance: string;
 		openGlanceManager: string;
 		addEvent: string;
+		convertNoteToEvent: string;
 		reloadPlugin: string;
 	};
 	common: {
@@ -463,6 +471,7 @@ export type BaseMessage = {
 	notice: {
 		setDefaultBasesEventPath: string;
 		invalidFolderPath: string;
+		openMarkdownNoteToConvert: string;
 	};
 	warning: {
 		invalidDuration: string;

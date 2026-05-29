@@ -106,6 +106,10 @@ const translations: BaseMessage = {
 				name: "Debug information",
 				desc: "Show debug information for development",
 			},
+			showConvertNoteToEventRibbon: {
+				name: "Register ribbon button",
+				desc: "Show a ribbon button for converting the current note into a note event.",
+			},
 			presetColors: {
 				name: "Preset colors",
 				desc: "Color presets for different events",
@@ -403,6 +407,8 @@ const translations: BaseMessage = {
 				eventUpdated: "Event updated",
 				eventDeleted: "Event deleted",
 				saveFailed: "Failed to save: {{error}}",
+				notePathWarningTitle: "Path notice",
+				notePathWarning: "The current note is outside the default note event path ({{path}}), so it will not appear in the plugin view. You can view it through a separate Bases view filter, or change the path in settings.",
 			},
 			dateError: {
 				emptyDate: "Date cannot be empty, please enter a date",
@@ -461,6 +467,10 @@ const translations: BaseMessage = {
 					label: "Create new note",
 					text: "A new note will be created in the {{path}} folder after saving. Configure default path in plugin settings.",
 					textWithName: "Will be saved as:",
+				},
+				basesEventConvert: {
+					label: "Convert current note",
+					text: "After saving, event properties will be written to the current note:",
 				},
 				basesEventEdit: {
 					label: "Event Source",
@@ -604,6 +614,7 @@ const translations: BaseMessage = {
 		openYearlyGlance: "Open yearly glance",
 		openGlanceManager: "Open glance manager",
 		addEvent: "Add event",
+		convertNoteToEvent: "Convert or edit note event",
 		reloadPlugin: "Reload plugin",
 	},
 	common: {
@@ -616,6 +627,7 @@ const translations: BaseMessage = {
 	notice: {
 		setDefaultBasesEventPath: "Tip: Please select the default note event path in plugin settings",
 		invalidFolderPath: "Folder \"{{path}}\" does not exist in the vault",
+		openMarkdownNoteToConvert: "Open a Markdown note first",
 	},
 	warning: {
 		invalidDuration: "{{count}} event(s) have invalid duration values and will be treated as 1 day. Check the console for details.",

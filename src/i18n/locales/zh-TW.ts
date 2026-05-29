@@ -106,6 +106,10 @@ const translations: BaseMessage = {
 				name: "顯示偵錯資訊",
 				desc: "在主控台中顯示偵錯資訊",
 			},
+			showConvertNoteToEventRibbon: {
+				name: "註冊功能區按鈕",
+				desc: "在左側功能區顯示一個按鈕，用於將目前筆記轉換為筆記事件。",
+			},
 			presetColors: {
 				name: "預設顏色",
 				desc: "各事件的配色預設選項",
@@ -403,6 +407,8 @@ const translations: BaseMessage = {
 				eventUpdated: "事件已更新",
 				eventDeleted: "事件已刪除",
 				saveFailed: "儲存失敗：{{error}}",
+				notePathWarningTitle: "路徑提示",
+				notePathWarning: "目前筆記位於預設筆記事件路徑（{{path}}）之外，不會在外掛視圖中顯示。你可以透過單獨的 Bases 視圖篩選查看，或者在設定中修改路徑。",
 			},
 			dateError: {
 				emptyDate: "日期不能為空，請輸入日期",
@@ -459,6 +465,10 @@ const translations: BaseMessage = {
 					label: "創建新筆記",
 					text: "保存後將在 {{path}} 文件夾中創建新筆記，可在插件設置中配置默認路徑。",
 					textWithName: "將保存為新筆記：",
+				},
+				basesEventConvert: {
+					label: "轉換目前筆記",
+					text: "儲存後會將事件屬性寫入目前筆記：",
 				},
 				basesEventEdit: {
 					label: "事件來源",
@@ -600,6 +610,7 @@ const translations: BaseMessage = {
 		openYearlyGlance: "開啟年度概覽",
 		openGlanceManager: "開啟概覽管理",
 		addEvent: "新增事件",
+		convertNoteToEvent: "轉換或編輯筆記事件",
 		reloadPlugin: "重新載入外掛程式",
 	},
 	common: {
@@ -612,6 +623,7 @@ const translations: BaseMessage = {
 	notice: {
 		setDefaultBasesEventPath: "提示：請在外掛設定中選擇預設筆記事件路徑",
 		invalidFolderPath: "資料夾「{{path}}」在庫中不存在",
+		openMarkdownNoteToConvert: "請先開啟一篇 Markdown 筆記",
 	},
 	warning: {
 		invalidDuration: "有 {{count}} 筆事件的持續天數不規範，已按 1 天處理。詳情請查看控制台。",

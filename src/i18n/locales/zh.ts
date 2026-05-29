@@ -106,6 +106,10 @@ const translations: BaseMessage = {
 				name: "显示调试信息",
 				desc: "在控制台中显示调试信息",
 			},
+			showConvertNoteToEventRibbon: {
+				name: "注册功能区按钮",
+				desc: "在左侧功能区显示一个按钮，用于将当前笔记转换为笔记事件。",
+			},
 			presetColors: {
 				name: "预设颜色",
 				desc: "各事件的配色预设选项",
@@ -403,6 +407,8 @@ const translations: BaseMessage = {
 				eventUpdated: "事件已更新",
 				eventDeleted: "事件已删除",
 				saveFailed: "保存失败：{{error}}",
+				notePathWarningTitle: "路径提示",
+				notePathWarning: "当前笔记位于默认笔记事件路径（{{path}}）之外，不会在插件视图中显示。你可以通过单独的 Bases 视图筛选查看，或者在设置中修改路径。",
 			},
 			dateError: {
 				emptyDate: "日期不能为空，请输入日期",
@@ -459,6 +465,10 @@ const translations: BaseMessage = {
 					label: "创建新笔记",
 					text: "保存后将在 {{path}} 文件夹中创建新笔记，可在插件设置中配置默认路径。",
 					textWithName: "将保存为新笔记：",
+				},
+				basesEventConvert: {
+					label: "转换当前笔记",
+					text: "保存后会将事件属性写入当前笔记：",
 				},
 				basesEventEdit: {
 					label: "事件来源",
@@ -600,6 +610,7 @@ const translations: BaseMessage = {
 		openYearlyGlance: "打开年度概览",
 		openGlanceManager: "打开概览管理",
 		addEvent: "添加事件",
+		convertNoteToEvent: "转换或编辑笔记事件",
 		reloadPlugin: "重载插件",
 	},
 	common: {
@@ -612,6 +623,7 @@ const translations: BaseMessage = {
 	notice: {
 		setDefaultBasesEventPath: "提示：请在插件设置中选择默认笔记事件路径",
 		invalidFolderPath: "文件夹「{{path}}」在库中不存在",
+		openMarkdownNoteToConvert: "请先打开一篇 Markdown 笔记",
 	},
 	warning: {
 		invalidDuration: "有 {{count}} 条事件的持续天数不规范，已按 1 天处理。详情请查看控制台。",

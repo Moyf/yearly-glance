@@ -45,3 +45,4 @@ dist
 
 # Worktrees
 .worktrees/
+/coverage

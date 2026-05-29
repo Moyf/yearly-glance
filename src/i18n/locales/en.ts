@@ -6,7 +6,7 @@ const translations: BaseMessage = {
 		desc: "View <a href='https://docs.ravenhogwarts.top/obsidian-yearly-glance/' target='_blank'>wiki documentation</a> to learn more features",
 		general: {
 			name: "Calendar",
-			desc: "Basic of the calendar",
+			desc: "Calendar basics",
 			title: {
 				name: "Title",
 				desc: "Use {{year}} placeholder when customizing, otherwise use the default title",

@@ -3,20 +3,20 @@
 
 ### ✨ 新功能
 
-* preview event duration end date ([8dd0f2d](https://github.com/Moyf/yearly-glance/commit/8dd0f2dcfbc430cc37c1afa2cf597004e842e1e8))
+* 预览事件持续时间的结束日期 ([8dd0f2d](https://github.com/Moyf/yearly-glance/commit/8dd0f2dcfbc430cc37c1afa2cf597004e842e1e8))
 
 
 ### 🎨 样式
 
-* align emoji picker typography ([474bc41](https://github.com/Moyf/yearly-glance/commit/474bc41c53111b00a36539e41a556bed7c403488))
+* 对齐 emoji 选择器的文字排版 ([474bc41](https://github.com/Moyf/yearly-glance/commit/474bc41c53111b00a36539e41a556bed7c403488))
 
 
 ### 🐛 修复
 
-* handle vault root note event paths ([aedca48](https://github.com/Moyf/yearly-glance/commit/aedca485f3e6d03887391349b0b25f9abfbf479a)), closes [#123](https://github.com/Moyf/yearly-glance/issues/123)
-* remove unsupported CSS selectors and overrides ([37294ec](https://github.com/Moyf/yearly-glance/commit/37294ec73fa1291f4ceac9c3e039e54f35a575a3))
-* support emoji search in event manager ([401576e](https://github.com/Moyf/yearly-glance/commit/401576e31c255700fbbaa31b29196c2a369ed387))
-* validate typed note event paths ([39a2683](https://github.com/Moyf/yearly-glance/commit/39a2683cf99994c2d06f836e51bc556507479635))
+* 处理库根目录下的笔记事件路径 ([aedca48](https://github.com/Moyf/yearly-glance/commit/aedca485f3e6d03887391349b0b25f9abfbf479a)), closes [#123](https://github.com/Moyf/yearly-glance/issues/123)
+* 移除不受支持的 CSS 选择器和样式覆盖 ([37294ec](https://github.com/Moyf/yearly-glance/commit/37294ec73fa1291f4ceac9c3e039e54f35a575a3))
+* 支持在事件管理器中搜索 emoji ([401576e](https://github.com/Moyf/yearly-glance/commit/401576e31c255700fbbaa31b29196c2a369ed387))
+* 校验手动输入的笔记事件路径 ([39a2683](https://github.com/Moyf/yearly-glance/commit/39a2683cf99994c2d06f836e51bc556507479635))
 ## [4.0.0-beta.4]（预发布）
 
 ### 🚀 新增
@@ -677,6 +677,5 @@
 * **.gitignore:** 将'styles.css'添加到忽略文件列表中 ([e99ec99](https://github.com/Moyf/yearly-glance/commit/e99ec99a0167c45a9125c00d83886f7c9666644c))
 * **.gitignore:** 排除 Thumbs.db 以防止 Windows Explorer 跟踪视图状态 ([2f6924c](https://github.com/Moyf/yearly-glance/commit/2f6924c717a300c011ec29351259b3cd5b3cc985))
 * **style:** remove tooltip CSS ([6dbca9e](https://github.com/Moyf/yearly-glance/commit/6dbca9e883fe2e29c0cf0d1e1f0d3a6959d351ab))
-
 
 

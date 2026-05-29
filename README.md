@@ -32,6 +32,19 @@ English | [中文文档](https://github.com/Moyf/yearly-glance/blob/master/READM
 - 🌏 **Multi-language Support**: English and Chinese (Both simplified and traditional) available.
 - 📄 **Note Events**: Use notes with frontmatter properties as event sources, with [Bases](https://help.obsidian.md/bases) integration for advanced filtering. [Learn more](./doc/note-events.md)
 
+### Event Sources
+
+Yearly Glance supports multiple event sources, so you can choose the storage model that best fits each workflow:
+
+| Source | Stored in | Best for |
+|--------|-----------|----------|
+| Plugin events | Plugin data | Quick holidays, birthdays, and custom events managed directly in Yearly Glance |
+| Note events | Note frontmatter | Events that need a dedicated note, long-form details, links, or attachments |
+| Daily note events | Daily note frontmatter | Events tied to daily notes and journal workflows |
+| Bases views | `.base` query results | Embedding calendars inside notes and filtering events by conditions |
+
+See [Note Events](./doc/note-events.md) for frontmatter setup and Bases integration details.
+
 
 ## Screenshots
 

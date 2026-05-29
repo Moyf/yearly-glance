@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import { Menu, Notice } from "obsidian";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import YearlyGlancePlugin from "@/src/main";
 import { VIEW_TYPE_GLANCE_MANAGER } from "@/src/views/GlanceManagerView";
 import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
@@ -60,6 +60,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 		viewType,
 		showWeekdays,
 		showLegend,
+		actionsBarCollapsed,
+		showViewPresetSelector,
 		limitListHeight,
 		eventFontSize,
 		showTooltips,
@@ -84,6 +86,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 
 	const calendarRef = React.useRef<HTMLDivElement>(null);
 	const yearControlsRef = React.useRef<HTMLDivElement>(null);
+	const scrollToTodayAfterYearChangeRef = React.useRef(false);
 
 	// 切换年份控制按钮的显示状态
 	const toggleYearControls = (e: React.MouseEvent) => {
@@ -116,6 +119,19 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 			activeDocument.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, [showYearControls]);
+
+	React.useEffect(() => {
+		if (!scrollToTodayAfterYearChangeRef.current) {
+			return;
+		}
+
+		scrollToTodayAfterYearChangeRef.current = false;
+		window.requestAnimationFrame(() => {
+			calendarRef.current
+				?.querySelector<HTMLElement>(".today")
+				?.scrollIntoView({ block: "center", behavior: "smooth" });
+		});
+	}, [year, viewType, layout, hidePreviousMonths, hideFutureMonths, hideEmptyDates]);
 
 	// 新增状态跟踪当前选择的预设
 	const [currentPreset, setCurrentPreset] = React.useState<string>(() => {
@@ -195,6 +211,34 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 	};
 	const handleEventForm = () => {
 		plugin.openEventForm("customEvent", {}, false, true);
+	};
+	const toggleActionsBar = () => {
+		updateConfig({
+			...config,
+			actionsBarCollapsed: !actionsBarCollapsed,
+		});
+	};
+	const toggleViewPresetSelector = () => {
+		updateConfig({
+			...config,
+			showViewPresetSelector: !showViewPresetSelector,
+		});
+	};
+	const handleGoToToday = () => {
+		const currentYear = IsoUtils.getCurrentYear();
+
+		if (year !== currentYear) {
+			scrollToTodayAfterYearChangeRef.current = true;
+			updateConfig({
+				...config,
+				year: currentYear,
+			});
+			return;
+		}
+
+		calendarRef.current
+			?.querySelector<HTMLElement>(".today")
+			?.scrollIntoView({ block: "center", behavior: "smooth" });
 	};
 	const handleEventClick = (event: CalendarEvent) => {
 		const action = eventClickAction || "showTooltip";
@@ -683,9 +727,33 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 			</div>
 
 			{/* actionsBar */}
-			<div className="yearly-calendar-actions-bar">
-				<div className="yg-buttons">
-					<div className="yg-buttons-left">
+			<div
+				className={`yearly-calendar-actions-bar ${
+					actionsBarCollapsed ? "collapsed" : ""
+				}`}
+			>
+				<div className="yg-actions-collapse-container">
+					<button
+						className={`yg-actions-collapse-button ${
+							actionsBarCollapsed ? "collapsed" : ""
+						}`}
+						aria-expanded={!actionsBarCollapsed}
+						onClick={toggleActionsBar}
+					>
+						{actionsBarCollapsed ? (
+							<>
+								<PanelLeftOpen size={16} />
+								<span>{t("view.yearlyGlance.actions.expandActionsBar")}</span>
+							</>
+						) : (
+							<PanelLeftClose size={16} />
+						)}
+					</button>
+				</div>
+
+				{!actionsBarCollapsed && (
+					<div className="yg-buttons">
+						<div className="yg-buttons-left">
 						{/* 图例 */}
 						{showLegend && !(externalEvents && !inheritPluginData) && (
 							<div className="event-legend">
@@ -787,47 +855,62 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 								})}
 							</div>
 						)}
-					</div>
-
-					<div className="yg-buttons-right">
-						<div className="yg-select-group">
-							{/* 视图预设选择 */}
-							<Select
-								options={viewPresetOptions}
-								value={currentPreset}
-								onValueChange={handlePresetChange}
-							/>
-
-							{/* 自定义模式下显示布局和视图类型选择器 */}
-							{currentPreset === "custom" && (
-								<>
-									{/* 布局选择 */}
-									<Select
-										options={getLayoutOptions(viewType)}
-										value={layout}
-										onValueChange={(value) =>
-											updateConfig({
-												...config,
-												layout: value,
-											})
-										}
-									/>
-									{/* 视图选择 */}
-									<Select
-										options={viewTypeOptions}
-										value={viewType}
-										onValueChange={(value) =>
-											updateConfig({
-												...config,
-												viewType: value,
-											})
-										}
-									/>
-								</>
-							)}
 						</div>
 
+						<div className="yg-buttons-right">
 						<div className="yg-action-buttons">
+							<Tooltip text={t("view.yearlyGlance.actions.viewOptions")}>
+								<button
+									className={`actions-button view-options-button ${
+										showViewPresetSelector ? "active" : ""
+									}`}
+									onClick={toggleViewPresetSelector}
+								>
+									<span className="button-icon">🔧</span>
+								</button>
+							</Tooltip>
+
+							{showViewPresetSelector && (
+								<div className="yg-select-group">
+									{/* 视图预设选择 */}
+									<Select
+										options={viewPresetOptions}
+										value={currentPreset}
+										onValueChange={handlePresetChange}
+									/>
+
+									{/* 自定义模式下显示布局和视图类型选择器 */}
+									{currentPreset === "custom" && (
+										<>
+											{/* 布局选择 */}
+											<Select
+												options={getLayoutOptions(viewType)}
+												value={layout}
+												onValueChange={(value) =>
+													updateConfig({
+														...config,
+														layout: value,
+													})
+												}
+											/>
+											{/* 视图选择 */}
+											<Select
+												options={viewTypeOptions}
+												value={viewType}
+												onValueChange={(value) =>
+													updateConfig({
+														...config,
+														viewType: value,
+													})
+												}
+											/>
+										</>
+									)}
+								</div>
+							)}
+
+							{showViewPresetSelector && (
+							<>
 							{/* 过往/未来月份切换按钮 - 所有视图显示 */}
 							<Tooltip
 								text={
@@ -998,6 +1081,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 									<span className="button-icon">💬</span>
 								</button>
 							</Tooltip>
+							</>
+							)}
 
 							{/* 事件管理 */}
 							<Tooltip
@@ -1020,9 +1105,19 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 									<span className="button-icon">✏️</span>
 								</button>
 							</Tooltip>
+
+							<Tooltip text={t("view.yearlyGlance.actions.goToToday")}>
+								<button
+									className="actions-button go-to-today-button"
+									onClick={handleGoToToday}
+								>
+									<span className="button-icon">🎯</span>
+								</button>
+							</Tooltip>
+						</div>
 						</div>
 					</div>
-				</div>
+				)}
 			</div>
 
 			{/* 日历网格 */}

@@ -54,9 +54,10 @@ export function expandEventByDuration(
 	const events: CalendarEvent[] = [];
 
 	for (let dayIndex = 0; dayIndex < duration; dayIndex++) {
-		const currentDate = new Date(baseDate);
-		currentDate.setDate(currentDate.getDate() + dayIndex);
-		const currentDateISO = IsoUtils.toLocalDateString(currentDate);
+		const currentDateISO = IsoUtils.addDaysToLocalDateString(
+			baseDate,
+			dayIndex
+		);
 
 		const currentYear = parseInt(currentDateISO.split("-")[0], 10);
 		if (currentYear !== year) continue;

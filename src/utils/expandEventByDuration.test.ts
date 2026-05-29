@@ -52,6 +52,7 @@ describe('expandEventByDuration', () => {
 		const { events } = expandEventByDuration(makeEvent('2025-06-10', 1), eventType, 2025);
 
 		expect(events).toHaveLength(1);
+		expect(events[0].dateArr?.[0]).toBe('2025-06-10');
 		expect(events[0]._isFirstDay).toBe(true);
 		expect(events[0]._isLastDay).toBe(true);
 	});

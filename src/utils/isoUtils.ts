@@ -243,6 +243,16 @@ export class IsoUtils {
 	}
 
 	/**
+	 * 给 YYYY-MM-DD 日期增加天数，并保持本地日期语义。
+	 * 避免 new Date("YYYY-MM-DD") 被按 UTC 解析后在负时区回退一天。
+	 */
+	static addDaysToLocalDateString(dateString: string, days: number): string {
+		const date = this.fromLocalDateString(dateString);
+		date.setDate(date.getDate() + days);
+		return this.toLocalDateString(date);
+	}
+
+	/**
 	 * 获取当前年份
 	 * @returns 当前年份
 	 */

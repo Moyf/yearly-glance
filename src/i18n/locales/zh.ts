@@ -308,6 +308,10 @@ const translations: BaseMessage = {
 				custom: "自定义布局",
 			},
 			actions: {
+				collapseActionsBar: "折叠操作按钮",
+				expandActionsBar: "展开操作按钮",
+				viewOptions: "视图选项",
+				goToToday: "跳转到今日",
 				clickToShow: "点击显示",
 				clickToHide: "点击隐藏",
 				form: "添加事件",

@@ -173,6 +173,10 @@ export type BaseMessage = {
 				custom: string;
 			};
 			actions: {
+				collapseActionsBar: string;
+				expandActionsBar: string;
+				viewOptions: string;
+				goToToday: string;
 				clickToShow: string;
 				clickToHide: string;
 				form: string;

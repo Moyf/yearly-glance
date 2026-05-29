@@ -308,6 +308,10 @@ const translations: BaseMessage = {
 				custom: "Custom layout",
 			},
 			actions: {
+				collapseActionsBar: "Collapse action buttons",
+				expandActionsBar: "Expand action buttons",
+				viewOptions: "View options",
+				goToToday: "Go to today",
 				clickToShow: "Click to show ",
 				clickToHide: "Click to hide ",
 				form: "Add event",

@@ -113,6 +113,8 @@ export interface YearlyGlanceSettings {
 	highlightToday: boolean; // 是否高亮今天
 	highlightWeekends: boolean; // 是否高亮周末
 	showLegend: boolean; // 是否显示图例
+	actionsBarCollapsed: boolean; // 是否折叠操作栏按钮
+	showViewPresetSelector: boolean; // 是否显示视图预设选择器
 	limitListHeight: boolean; // 是否限制列表高度
 	hideEmptyDates: boolean; // 是否隐藏空日期
 	hidePreviousMonths: boolean; // 是否隐藏过往月份
@@ -165,6 +167,8 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	highlightToday: true,
 	highlightWeekends: true,
 	showLegend: true,
+	actionsBarCollapsed: false,
+	showViewPresetSelector: true,
 	limitListHeight: false,
 	hideEmptyDates: false,
 	hidePreviousMonths: false,

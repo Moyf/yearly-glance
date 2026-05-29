@@ -308,6 +308,10 @@ const translations: BaseMessage = {
 				custom: "自訂佈局",
 			},
 			actions: {
+				collapseActionsBar: "折疊操作按鈕",
+				expandActionsBar: "展開操作按鈕",
+				viewOptions: "視圖選項",
+				goToToday: "跳轉到今日",
 				clickToShow: "點擊顯示",
 				clickToHide: "點擊隱藏",
 				form: "新增事件",

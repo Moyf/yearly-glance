@@ -1,3 +1,11 @@
+## [4.2.1](https://github.com/Moyf/yearly-glance/compare/4.2.0...4.2.1) (2026-06-04)
+
+
+### 🔒 安全
+
+* 升级 uuid 至 12.0.1，修复 CVE-2026-41907（插件仅使用 v4()，无实际影响）
+
+
 # [4.2.0](https://github.com/Moyf/yearly-glance/compare/4.1.0...4.2.0) (2026-05-29)
 
 

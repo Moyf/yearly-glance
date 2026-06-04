@@ -1,3 +1,11 @@
+## [4.2.1](https://github.com/Moyf/yearly-glance/compare/4.2.0...4.2.1) (2026-06-04)
+
+
+### 🔒 Security
+
+* upgrade uuid to 12.0.1 to resolve CVE-2026-41907 (no functional impact, plugin only uses v4())
+
+
 # [4.2.0](https://github.com/Moyf/yearly-glance/compare/4.1.0...4.2.0) (2026-05-29)
 
 

@@ -100,7 +100,6 @@
 
 		&:hover .year-number {
 			color: var(--interactive-accent);
-			text-decoration-color: var(--interactive-accent);
 		}
 
 		&.expanded {
@@ -108,13 +107,19 @@
 		}
 
 		.year-number {
+			position: relative;
 			font-size: 1.625em;
 			font-family: Georgia, 'Times New Roman', serif;
 			cursor: pointer;
-			text-decoration: underline;
-			text-decoration-thickness: 2px;
-			text-underline-offset: 3px;
-			text-decoration-color: currentColor;
+
+			&::after {
+				content: '';
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: 4px;
+				border-bottom: 2px solid currentColor;
+			}
 		}
 
 		.year-control {

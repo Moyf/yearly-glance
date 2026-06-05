@@ -1,3 +1,11 @@
+## [4.2.2](https://github.com/Moyf/yearly-glance/compare/4.2.1...4.2.2) (2026-06-05)
+
+
+### 🔧 Build
+
+* update pnpm lockfile for the uuid security patch release
+
+
 ## [4.2.1](https://github.com/Moyf/yearly-glance/compare/4.2.0...4.2.1) (2026-06-04)
 
 
@@ -702,5 +710,4 @@
 * **.gitignore:** Add 'styles.css' to the list of ignored files ([e99ec99](https://github.com/Moyf/yearly-glance/commit/e99ec99a0167c45a9125c00d83886f7c9666644c))
 * **.gitignore:** Exclude Thumbs.db to prevent Windows Explorer view states from being tracked ([2f6924c](https://github.com/Moyf/yearly-glance/commit/2f6924c717a300c011ec29351259b3cd5b3cc985))
 * **style:** remove tooltip CSS ([6dbca9e](https://github.com/Moyf/yearly-glance/commit/6dbca9e883fe2e29c0cf0d1e1f0d3a6959d351ab))
-
 

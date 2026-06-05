@@ -1,3 +1,11 @@
+## [4.2.2](https://github.com/Moyf/yearly-glance/compare/4.2.1...4.2.2) (2026-06-05)
+
+
+### 🔧 构建
+
+* 更新 pnpm lockfile，补齐 uuid 安全修复版本的发布文件
+
+
 ## [4.2.1](https://github.com/Moyf/yearly-glance/compare/4.2.0...4.2.1) (2026-06-04)
 
 
@@ -704,4 +712,3 @@
 * **.gitignore:** 将'styles.css'添加到忽略文件列表中 ([e99ec99](https://github.com/Moyf/yearly-glance/commit/e99ec99a0167c45a9125c00d83886f7c9666644c))
 * **.gitignore:** 排除 Thumbs.db 以防止 Windows Explorer 跟踪视图状态 ([2f6924c](https://github.com/Moyf/yearly-glance/commit/2f6924c717a300c011ec29351259b3cd5b3cc985))
 * **style:** remove tooltip CSS ([6dbca9e](https://github.com/Moyf/yearly-glance/commit/6dbca9e883fe2e29c0cf0d1e1f0d3a6959d351ab))
-

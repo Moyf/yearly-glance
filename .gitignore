@@ -46,3 +46,5 @@ dist
 # Worktrees
 .worktrees/
 /coverage
+
+.omo/

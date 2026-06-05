@@ -83,10 +83,10 @@ jobs:
                   cache: "npm"
 
             - name: Install dependencies
-              run: yarn install --frozen-lockfile
+              run: npm ci
 
             - name: Build plugin
-              run: yarn build
+              run: npm run build
 
             - name: Prepare artifacts
               run: |

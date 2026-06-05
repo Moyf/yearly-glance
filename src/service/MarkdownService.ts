@@ -197,7 +197,7 @@ export class MarkdownService {
 		const data: Record<string, FrontmatterValue> = {};
 
 		// Resolve emoji/color from preset if not directly set on event
-		const preset = eventPresetTypes.find(p => p.id === (event as any).presetTypeId);
+		const preset = eventPresetTypes.find(p => p.id === event.presetTypeId);
 		const resolvedEmoji = event.emoji ?? preset?.emoji;
 		const resolvedColor = event.color ?? preset?.color;
 

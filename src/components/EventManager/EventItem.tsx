@@ -67,7 +67,7 @@ export const EventItem: React.FC<EventItemProps> = ({
 		e.stopPropagation();
 		const noteInfo = extractNoteInfo(event.id);
 		if (noteInfo) {
-			plugin.app.workspace.openLinkText(noteInfo.filePath, '', true);
+			void plugin.app.workspace.openLinkText(noteInfo.filePath, '', true);
 		}
 	};
 
@@ -76,7 +76,7 @@ export const EventItem: React.FC<EventItemProps> = ({
 		e.stopPropagation();
 		const noteInfo = extractDailyNoteInfo(event as CalendarEvent);
 		if (noteInfo) {
-			plugin.app.workspace.openLinkText(noteInfo.filePath, '', true);
+			void plugin.app.workspace.openLinkText(noteInfo.filePath, '', true);
 		}
 	};
 	// 获取事件特定信息

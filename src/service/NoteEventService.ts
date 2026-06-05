@@ -171,7 +171,7 @@ export class NoteEventService {
 				if (isNaN(date.getTime())) return null;
 				return date.toISOString().split("T")[0];
 			}
-		} catch (error) {
+		} catch {
 			return null;
 		}
 	}

@@ -11,6 +11,10 @@ import { ViewSettings } from "@/src/components/Settings/ViewSettings";
 import { DataPortManagerView } from "@/src/components/DataPort/DataPortManager";
 import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 
+interface HeaderUpdatableLeaf extends WorkspaceLeaf {
+	updateHeader(): void;
+}
+
 export const VIEW_TYPE_GLANCE_MANAGER = "yearly-glance-manager-view";
 
 export type GlanceManagerTab = "events" | "settings" | "dataPort";
@@ -146,8 +150,7 @@ export class GlanceManagerView extends ItemView {
 
 		// Subscribe to config changes to refresh tab icon and title
 		this.unsubscribeBus = YearlyGlanceBus.subscribeTopics(['config', 'all'], () => {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(this.leaf as any).updateHeader();
+			(this.leaf as HeaderUpdatableLeaf).updateHeader();
 		});
 	}
 

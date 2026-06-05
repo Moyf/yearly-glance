@@ -6,7 +6,6 @@ import { TranslationKeys } from "@/src/i18n/types";
 import { generateUUID } from "@/src/utils/uuid";
 import YearlyGlancePlugin from "@/src/main";
 import { Input } from "@/src/components/Base/Input";
-import { Toggle } from "@/src/components/Base/Toggle";
 import { ConfirmDialog } from "@/src/components/Base/ConfirmDialog";
 import "./style/PresetEventTypeSettings.css";
 
@@ -125,14 +124,6 @@ export const PresetEventTypeSettings: React.FC<
 	const handlePresetColorSelect = (id: string, value: string) => {
 		updateTypes(types.map((type) =>
 			type.id === id ? { ...type, color: value || undefined } : type
-		));
-	};
-
-	const handleEnableChange = (id: string) => {
-		updateTypes(types.map((type) =>
-			type.id === id
-				? { ...type, enable: !(type.enable ?? true) }
-				: type
 		));
 	};
 

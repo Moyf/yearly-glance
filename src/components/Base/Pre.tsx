@@ -49,7 +49,9 @@ export const Pre: React.FC<PreProps> = ({
 				<Tooltip text={copied ? "Copied!" : "Copy to clipboard"}>
 					<button
 						className={`yg-pre-copy-button ${copied ? "copied" : ""}`}
-						onClick={handleCopy}
+						onClick={() => {
+							void handleCopy();
+						}}
 					>
 						{copied ? <Check size={16} /> : <Copy size={16} />}
 					</button>

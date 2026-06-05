@@ -16,7 +16,7 @@ export const EVENT_CLICK_ACTION_OPTIONS = ["showTooltip", "editEvent", "openNote
 export type EventClickAction = typeof EVENT_CLICK_ACTION_OPTIONS[number];
 
 // 公历日期显示格式选项
-export const GREGORIAN_DISPLAY_FORMAT_OPTIONS: SelectOption[] = [
+export const GREGORIAN_DISPLAY_FORMAT_OPTIONS: SelectOption<string>[] = [
 	{
 		label: t("setting.general.gregorianDisplayFormat.options.iso"),
 		value: "YYYY-MM-DD",
@@ -74,7 +74,7 @@ interface LayoutConfig {
 
 export interface IPresetColor {
 	label: string;
-	value: any;
+	value: string;
 	enable: boolean;
 	id?: string;
 }

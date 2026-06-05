@@ -68,8 +68,8 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 		IsoUtils.getTodayLocalDateString()
 	);
 
-	const handleUpdateConfig = async (updates: Partial<YearlyGlanceConfig["config"]>) => {
-		await updateConfig({ ...config, ...updates });
+	const handleUpdateConfig = (updates: Partial<YearlyGlanceConfig["config"]>) => {
+		void updateConfig({ ...config, ...updates });
 	};
 
 	const settingsTabs = [

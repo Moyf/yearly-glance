@@ -192,7 +192,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 			}
 		};
 
-		loadDailyNoteEvents();
+		void loadDailyNoteEvents();
 	}, [externalEvents, config.showDailyNoteEvents, config.dailyNoteSource, config.dailyNoteEventProp, year, plugin.app, dailyNoteRefreshKey]);
 
 	// 处理所有事件

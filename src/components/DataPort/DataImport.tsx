@@ -196,10 +196,10 @@ export const DataImport: React.FC<DataImportProps> = ({
 
 			for (const event of eventsToImport) {
 				const eventData = JsonService.createEventFromParsed(event);
-				const eventType = event.eventType as EventType;
+				const eventType = event.eventType;
 
 				await onDataImport(
-					eventData as Parameters<typeof onDataImport>[0],
+					eventData,
 					eventType
 				);
 			}
@@ -374,7 +374,9 @@ export const DataImport: React.FC<DataImportProps> = ({
 							</Button>
 							<Button
 								variant="primary"
-								onClick={handleImport}
+								onClick={() => {
+									void handleImport();
+								}}
 								disabled={
 									isImporting ||
 									selectedValidEvents.size === 0

@@ -26,7 +26,7 @@ export class EventCalculator {
 		isoDate: string,
 		calendar: CalendarType,
 		yearSelected: number,
-		isRepeat?: boolean | undefined
+		isRepeat?: boolean
 	) {
 		if (!isoDate) return [];
 

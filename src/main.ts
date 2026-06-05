@@ -385,7 +385,7 @@ export default class YearlyGlancePlugin extends Plugin {
 
 		if (existingLeaves.length > 0) {
 			// 如果存在，则激活第一个视图
-			this.app.workspace.revealLeaf(existingLeaves[0]);
+			void this.app.workspace.revealLeaf(existingLeaves[0]);
 		} else {
 			// 如果不存在，则创建新的视图
 			const leaf = this.app.workspace.getLeaf("tab");
@@ -394,7 +394,7 @@ export default class YearlyGlancePlugin extends Plugin {
 				active: true,
 			});
 
-			this.app.workspace.revealLeaf(leaf);
+			void this.app.workspace.revealLeaf(leaf);
 		}
 	}
 
@@ -408,7 +408,7 @@ export default class YearlyGlancePlugin extends Plugin {
 		if (existingLeaves.length > 0) {
 			// 如果存在，则激活第一个视图并更新标签
 			const leaf = existingLeaves[0];
-			this.app.workspace.revealLeaf(leaf);
+			void this.app.workspace.revealLeaf(leaf);
 
 			// 确保视图已经加载完成后再更新标签
 			const view = leaf.view as GlanceManagerView;
@@ -435,7 +435,7 @@ export default class YearlyGlancePlugin extends Plugin {
 				}, 100);
 			}
 
-			this.app.workspace.revealLeaf(leaf);
+			void this.app.workspace.revealLeaf(leaf);
 		}
 	}
 

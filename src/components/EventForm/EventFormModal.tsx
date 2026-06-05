@@ -88,7 +88,7 @@ export class EventFormModal extends Modal {
 					allowTypeChange={this.allowTypeChange}
 					settings={this.settings}
 					plugin={this.plugin}
-				onSave={this.onSave.bind(this)}
+					onSave={(event, eventType) => this.onSave(event, eventType)}
 				onCancel={() => this.close()}
 				onDelete={this.isEditing ? () => this.handleDelete() : undefined}
 				canDelete={this.isEditing}
@@ -113,7 +113,8 @@ export class EventFormModal extends Modal {
 			new ConfirmDialog(this.plugin, {
 				title: t("view.eventManager.actions.delete"),
 				message: t("view.eventManager.actions.deleteConfirm", { name: this.event.text || "" }),
-				onConfirm: async () => {
+				onConfirm: () => {
+					void (async () => {
 					try {
 						if (this.isDailyNoteEvent) {
 							const filePath = (this.event as CalendarEvent).sourceFilePath || DailyNoteService.getFilePathFromEvent(this.event as CalendarEvent);
@@ -147,6 +148,7 @@ export class EventFormModal extends Modal {
 						console.error("[YearlyGlance] Delete failed:", error);
 					}
 					resolve();
+					})();
 				},
 			}).open();
 		});
@@ -248,10 +250,10 @@ export class EventFormModal extends Modal {
 				}
 				case "holiday": {
 					// 计算并更新节日的完整信息
-					event = EventCalculator.updateHolidayInfo(
-						event as Holiday,
-						currentYear
-					);
+						event = EventCalculator.updateHolidayInfo(
+							event,
+							currentYear
+						);
 					if (this.isEditing) {
 						newEvents.holidays = newEvents.holidays.map((h) =>
 							h.id === event.id ? (event as Holiday) : h
@@ -398,7 +400,7 @@ export class EventFormModal extends Modal {
 
 			// 记住本次保存的事件类型，用于下次新建事件时的默认类型
 			if (!this.isEditing && this.allowTypeChange) {
-				this.plugin.updateConfig({ lastSelectedEventType: eventType });
+				void this.plugin.updateConfig({ lastSelectedEventType: eventType });
 			}
 
 			this.close();

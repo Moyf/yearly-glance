@@ -142,7 +142,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 	}, []);
 
 	const handleYearlyCalendar = () => {
-		plugin.openPluginView(VIEW_TYPE_YEARLY_GLANCE);
+		void plugin.openPluginView(VIEW_TYPE_YEARLY_GLANCE);
 	};
 
 	// 处理排序变更
@@ -153,20 +153,20 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 
 	// 添加新事件
 	const handleAddEvent = () => {
-		plugin.openEventForm(activeTab, {}, false, true);
+		void plugin.openEventForm(activeTab, {}, false, true);
 	};
 
 	// 编辑事件
 	const handleEditEvent = (event: Holiday | Birthday | CustomEvent | CalendarEvent) => {
 		// 检查是否为笔记事件
 		if ((event as CalendarEvent).id?.startsWith("bases-")) {
-			plugin.openEventForm("basesEvent", event, true, false);
+			void plugin.openEventForm("basesEvent", event, true, false);
 			return;
 		}
 
 		// 检查是否为日记事件
 		if ((event as CalendarEvent).id?.startsWith("dailynote-")) {
-			plugin.openEventForm("dailyNoteEvent", event, true, false);
+			void plugin.openEventForm("dailyNoteEvent", event, true, false);
 			return;
 		}
 
@@ -184,7 +184,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 			throw new Error("Unknown event type");
 		}
 
-		plugin.openEventForm(eventType, event, true, false);
+		void plugin.openEventForm(eventType, event, true, false);
 	};
 
 	// 删除事件
@@ -196,7 +196,8 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 			message: t("view.eventManager.actions.deleteConfirm", {
 				name: event.text,
 			}),
-			onConfirm: async () => {
+			onConfirm: () => {
+				void (async () => {
 				const newEvents = { ...events };
 				const eventId = event.id;
 
@@ -212,6 +213,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 				);
 
 				await updateEvents(newEvents);
+				})();
 			},
 		}).open();
 	};
@@ -251,7 +253,6 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 					case "month": {
 						const monthNum = parseInt(token.value, 10);
 						if (isNaN(monthNum)) break;
-						const paddedMonth = String(monthNum).padStart(2, "0");
 						const hasMonth =
 							(event as CalendarEvent).dateArr?.some((d) => {
 								// "YYYY-MM-DD" → month is index 5-6

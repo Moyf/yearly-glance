@@ -4,6 +4,10 @@ import { t } from "@/src/i18n/i18n";
 import { YearlyCalendar } from "@/src/components/YearlyCalendar/YearlyCalendar";
 import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
 
+interface HeaderUpdatableLeaf extends WorkspaceLeaf {
+	updateHeader(): void;
+}
+
 // 定义视图类型
 export const VIEW_TYPE_YEARLY_GLANCE = "yearly-glance-view";
 
@@ -54,12 +58,11 @@ export class YearlyGlanceView extends ItemView {
 			this.plugin
 		);
 		this.calendarView.initialize(this.plugin);
-		this.calendarView.render();
+		void this.calendarView.render();
 
 		// Subscribe to config changes to refresh tab icon and title
 		this.unsubscribeBus = YearlyGlanceBus.subscribeTopics(['config', 'all'], () => {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(this.leaf as any).updateHeader();
+			(this.leaf as HeaderUpdatableLeaf).updateHeader();
 		});
 	}
 

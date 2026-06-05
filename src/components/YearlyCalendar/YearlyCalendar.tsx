@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from "lucide
 import YearlyGlancePlugin from "@/src/main";
 import { VIEW_TYPE_GLANCE_MANAGER } from "@/src/views/GlanceManagerView";
 import { useYearlyGlanceConfig } from "@/src/hooks/useYearlyGlanceConfig";
-import { EVENT_TYPE_DEFAULT, EVENT_TYPE_LIST, EventSource, EventType } from "@/src/type/Events";
+import { EVENT_TYPE_DEFAULT, EVENT_TYPE_LIST, EventSource } from "@/src/type/Events";
 import {
 	getLayoutOptions,
 	viewTypeOptions,
@@ -23,7 +23,7 @@ import { ConfirmDialog } from "@/src/components/Base/ConfirmDialog";
 import { resolveEventDisplay } from "@/src/utils/resolveEventDisplay";
 import { DailyNoteService } from "@/src/service/DailyNoteService";
 import { YearlyGlanceBus } from "@/src/hooks/useYearlyGlanceConfig";
-import { EVENT_SEARCH_REQUESTED, EventManagerBus } from "@/src/hooks/useEventBus";
+import { YearlyGlanceConfig } from "@/src/type/Config";
 
 interface YearlyCalendarViewProps {
 	plugin: YearlyGlancePlugin;
@@ -97,7 +97,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 	// 调整年份
 	const adjustYear = (delta: number, e: React.MouseEvent) => {
 		e.stopPropagation();
-		updateConfig({ ...config, year: year + delta });
+		void updateConfig({ ...config, year: year + delta });
 	};
 
 	React.useEffect(() => {
@@ -198,7 +198,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 			// 应用预设配置
 			const presetConfig =
 				presetConfigs[preset as keyof typeof presetConfigs];
-			updateConfig({
+			void updateConfig({
 				...config,
 				layout: presetConfig.layout,
 				viewType: presetConfig.viewType,
@@ -207,19 +207,19 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 	};
 
 	const handleGlanceManager = () => {
-		plugin.openPluginView(VIEW_TYPE_GLANCE_MANAGER);
+		void plugin.openPluginView(VIEW_TYPE_GLANCE_MANAGER);
 	};
 	const handleEventForm = () => {
-		plugin.openEventForm("customEvent", {}, false, true);
+		void plugin.openEventForm("customEvent", {}, false, true);
 	};
 	const toggleActionsBar = () => {
-		updateConfig({
+		void updateConfig({
 			...config,
 			actionsBarCollapsed: !actionsBarCollapsed,
 		});
 	};
 	const toggleViewPresetSelector = () => {
-		updateConfig({
+		void updateConfig({
 			...config,
 			showViewPresetSelector: !showViewPresetSelector,
 		});
@@ -229,7 +229,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 
 		if (year !== currentYear) {
 			scrollToTodayAfterYearChangeRef.current = true;
-			updateConfig({
+			void updateConfig({
 				...config,
 				year: currentYear,
 			});
@@ -246,14 +246,14 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 		switch (action) {
 			case "editEvent":
 				// 直接打开编辑表单
-				plugin.openEventForm(event.eventType as EventType, event, true, false);
+				void plugin.openEventForm(event.eventType, event, true, false);
 				break;
 			case "openNote": {
 				// 打开笔记（仅对有笔记来源的事件生效，否则 fallback 到 tooltip）
 				const isBasesEvent = event.eventSource === EventSource.BASES || event.id.startsWith("bases-");
 				const isDailyNoteEvent = event.eventType === "dailyNoteEvent";
 				if ((isBasesEvent || isDailyNoteEvent) && event.sourceFilePath) {
-					plugin.app.workspace.openLinkText(event.sourceFilePath, '', true);
+					void plugin.app.workspace.openLinkText(event.sourceFilePath, '', true);
 				} else {
 					// 非笔记事件，fallback 到显示 tooltip
 					new EventTooltip(plugin, event).open();
@@ -272,7 +272,8 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 		new ConfirmDialog(plugin, {
 			title: t("view.eventManager.actions.delete"),
 			message: t("view.eventManager.actions.deleteConfirm", { name: event.text }),
-			onConfirm: async () => {
+			onConfirm: () => {
+				void (async () => {
 				const isBasesEvent = event.eventSource === EventSource.BASES || event.id.startsWith("bases-");
 				const isDailyNoteEvent = event.eventType === "dailyNoteEvent";
 
@@ -312,6 +313,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 				}
 
 				new Notice(t("view.eventManager.form.eventDeleted"));
+				})();
 			},
 		}).open();
 	};
@@ -325,15 +327,13 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 
 		const isBasesEvent = event.eventSource === EventSource.BASES || event.id.startsWith("bases-");
 		const isDailyNoteEvent = event.eventType === "dailyNoteEvent";
-		const isConfigEvent = !isBasesEvent && !isDailyNoteEvent;
-
 		// 1. Edit（所有事件）
 		menu.addItem((item) => {
 			item.setTitle(t("view.eventManager.actions.edit"))
 				.setIcon("pencil")
 				.onClick(() => {
-					const eventType = event.eventType as EventType;
-					plugin.openEventForm(eventType, event, true, false);
+					const eventType = event.eventType;
+					void plugin.openEventForm(eventType, event, true, false);
 				});
 		});
 
@@ -343,7 +343,9 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 				item.setTitle(t("view.eventManager.actions.openOriginalNote"))
 					.setIcon("file-text")
 					.onClick(() => {
-						plugin.app.workspace.openLinkText(event.sourceFilePath!, "", true);
+						if (event.sourceFilePath) {
+							void plugin.app.workspace.openLinkText(event.sourceFilePath, "", true);
+						}
 					});
 			});
 		}
@@ -364,14 +366,14 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 	const handleAddEventInDay = (day: CalendarDay) => {
 		// 避免时区转换问题，直接使用已经存在的date对象
 		const selectDate = IsoUtils.toLocalDateString(day.date);
-		plugin.openEventForm("customEvent", {}, false, true, {
+		void plugin.openEventForm("customEvent", {}, false, true, {
 			date: selectDate,
 		});
 	};
 
 	// 切换事件类型可见性
 	const toggleEventTypeVisibility = (eventType: string) => {
-		const configUpdate: any = {};
+		const configUpdate: Partial<YearlyGlanceConfig["config"]> = {};
 
 		switch (eventType) {
 			case "holiday":
@@ -391,7 +393,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 				break;
 		}
 
-		updateConfig(configUpdate);
+		void updateConfig({ ...config, ...configUpdate });
 	};
 
 	// 渲染单个事件
@@ -886,23 +888,23 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 											<Select
 												options={getLayoutOptions(viewType)}
 												value={layout}
-												onValueChange={(value) =>
-													updateConfig({
+												onValueChange={(value) => {
+													void updateConfig({
 														...config,
 														layout: value,
-													})
-												}
+													});
+												}}
 											/>
 											{/* 视图选择 */}
 											<Select
 												options={viewTypeOptions}
 												value={viewType}
-												onValueChange={(value) =>
-													updateConfig({
+												onValueChange={(value) => {
+													void updateConfig({
 														...config,
 														viewType: value,
-													})
-												}
+													});
+												}}
 											/>
 										</>
 									)}
@@ -927,13 +929,13 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 									className={`actions-button hide-previous-months-button ${
 										hidePreviousMonths ? "active" : ""
 									}`}
-									onClick={() =>
-										updateConfig({
-											...config,
-											hidePreviousMonths:
-												!hidePreviousMonths,
-										})
-									}
+												onClick={() => {
+												void updateConfig({
+													...config,
+													hidePreviousMonths:
+														!hidePreviousMonths,
+												});
+											}}
 								>
 									<span className="button-icon">⏪</span>
 								</button>
@@ -953,13 +955,13 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 									className={`actions-button hide-future-months-button ${
 										hideFutureMonths ? "active" : ""
 									}`}
-									onClick={() =>
-										updateConfig({
-											...config,
-											hideFutureMonths:
-												!hideFutureMonths,
-										})
-									}
+												onClick={() => {
+												void updateConfig({
+													...config,
+													hideFutureMonths:
+														!hideFutureMonths,
+												});
+											}}
 								>
 									<span className="button-icon">⏩</span>
 								</button>
@@ -975,13 +977,13 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 									>
 										<button
 											className="actions-button emoji-position-button"
-											onClick={() =>
-												updateConfig({
-													...config,
-													emojiOnTop:
-														!config.emojiOnTop,
-												})
-											}
+														onClick={() => {
+															void updateConfig({
+																...config,
+																emojiOnTop:
+																	!config.emojiOnTop,
+															});
+														}}
 										>
 											<span className="button-icon">
 												{config.emojiOnTop
@@ -997,13 +999,13 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 									>
 										<button
 											className="actions-button wrap-text-button"
-											onClick={() =>
-												updateConfig({
-													...config,
-													wrapEventText:
-														!config.wrapEventText,
-												})
-											}
+														onClick={() => {
+															void updateConfig({
+																...config,
+																wrapEventText:
+																	!config.wrapEventText,
+															});
+														}}
 										>
 											<span className="button-icon">
 												{config.wrapEventText
@@ -1024,13 +1026,13 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 									>
 										<button
 											className="actions-button limit-list-height-button"
-											onClick={() =>
-												updateConfig({
-													...config,
-													limitListHeight:
-														!limitListHeight,
-												})
-											}
+														onClick={() => {
+															void updateConfig({
+																...config,
+																limitListHeight:
+																	!limitListHeight,
+															});
+														}}
 										>
 											<span className="button-icon">
 												{limitListHeight ? "🚧" : "♾️"}
@@ -1045,13 +1047,13 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 									>
 										<button
 											className="actions-button hide-empty-dates-button"
-											onClick={() =>
-												updateConfig({
-													...config,
-													hideEmptyDates:
-														!hideEmptyDates,
-												})
-											}
+														onClick={() => {
+															void updateConfig({
+																...config,
+																hideEmptyDates:
+																	!hideEmptyDates,
+															});
+														}}
 										>
 											<span className="button-icon">
 												{hideEmptyDates ? "🙈" : "👀"}
@@ -1071,12 +1073,12 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 									className={`actions-button show-tooltips-button ${
 										config.showTooltips ? "active" : ""
 									}`}
-									onClick={() =>
-										updateConfig({
+									onClick={() => {
+										void updateConfig({
 											...config,
 											showTooltips: !config.showTooltips,
-										})
-									}
+										});
+									}}
 								>
 									<span className="button-icon">💬</span>
 								</button>

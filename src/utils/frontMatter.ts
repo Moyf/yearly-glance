@@ -1,5 +1,7 @@
 import { App, TFile } from "obsidian";
 
+type FrontmatterRecord = Record<string, unknown>;
+
 export class FrontMatter {
 	app: App;
 
@@ -9,7 +11,7 @@ export class FrontMatter {
 
 	async createFrontMatter(
 		file: TFile,
-		newFrontmatter: Record<string, any>
+		newFrontmatter: FrontmatterRecord
 	): Promise<void> {
 		await this.app.fileManager.processFrontMatter(file, (fm) => {
 			Object.assign(fm, newFrontmatter);
@@ -29,15 +31,15 @@ export class FrontMatter {
 
 	async updateFrontMatter(
 		file: TFile,
-		updateFrontmatterFunc: (frontmatter: Record<string, any>) => void
+		updateFrontmatterFunc: (frontmatter: FrontmatterRecord) => void
 	): Promise<void> {
 		await this.app.fileManager.processFrontMatter(file, (fm) => {
 			updateFrontmatterFunc(fm);
 		});
 	}
 
-	async readFrontMatter(file: TFile): Promise<Record<string, any>> {
-		let frontmatter: Record<string, any> = {};
+	async readFrontMatter(file: TFile): Promise<FrontmatterRecord> {
+		let frontmatter: FrontmatterRecord = {};
 		await this.app.fileManager.processFrontMatter(file, (fm) => {
 			frontmatter = { ...fm };
 		});
@@ -62,7 +64,7 @@ export class FrontMatter {
 		return Object.prototype.hasOwnProperty.call(frontmatter, key);
 	}
 
-	async getFrontMatterValue(file: TFile, key: string): Promise<any> {
+	async getFrontMatterValue(file: TFile, key: string): Promise<unknown> {
 		const frontmatter = await this.readFrontMatter(file);
 		return frontmatter[key];
 	}

@@ -84,7 +84,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 	// 组件卸载时恢复原始年份配置
 	React.useEffect(() => {
 		return () => {
-			onConfigUpdate({ year: originalYear.current });
+			void onConfigUpdate({ year: originalYear.current });
 		};
 	}, [onConfigUpdate]);
 
@@ -224,7 +224,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 		const newYear = exportYear + delta;
 		setExportYear(newYear);
 		// 同步更新配置中的年份
-		onConfigUpdate({ year: newYear });
+		void onConfigUpdate({ year: newYear });
 	};
 
 	// 处理导出格式切换
@@ -329,7 +329,9 @@ export const DataExport: React.FC<DataExportProps> = ({
 					);
 			}
 		} catch (error) {
-			throw new Error(`导出失败: ${error.message}`);
+			throw new Error(
+				`导出失败: ${error instanceof Error ? error.message : String(error)}`
+			);
 		} finally {
 			setIsExporting(false);
 		}
@@ -622,7 +624,9 @@ export const DataExport: React.FC<DataExportProps> = ({
 					</div>
 					<Button
 						icon={<Download size={16} />}
-						onClick={handleExport}
+						onClick={() => {
+							void handleExport();
+						}}
 						disabled={isExporting || selectedEvents.size === 0}
 						variant="primary"
 					>

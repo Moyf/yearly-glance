@@ -316,12 +316,12 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 															{kw}
 															<button
 																className="yg-emoji-keyword-remove"
-																onClick={() =>
-																	handleRemoveKeyword(
-																		emoji,
-																		kw
-																	)
-																}
+														onClick={() => {
+														void handleRemoveKeyword(
+															emoji,
+															kw
+														);
+													}}
 																title={t("view.emojiPicker.keywordRemove")}
 															>
 																×
@@ -352,15 +352,18 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 											setNewKeywordText(e.target.value)
 										}
 										onKeyDown={(e) => {
-											if (e.key === "Enter")
-												handleAddKeyword();
-										}}
+										if (e.key === "Enter") {
+											void handleAddKeyword();
+										}
+									}}
 										onFocus={(e) => e.stopPropagation()}
 										className="yg-emoji-keyword-input-text"
 									/>
 										<button
 											className="yg-emoji-keyword-add-btn"
-											onClick={handleAddKeyword}
+											onClick={() => {
+												void handleAddKeyword();
+											}}
 											disabled={
 												!newKeywordEmoji.trim() ||
 												!newKeywordText.trim()

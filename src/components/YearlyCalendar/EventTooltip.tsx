@@ -4,9 +4,6 @@ import { Modal, TFile } from "obsidian";
 import YearlyGlancePlugin from "@/src/main";
 import {
 	Birthday,
-	EVENT_TYPE_DEFAULT,
-	EventSource,
-	EventType,
 	Holiday,
 } from "@/src/type/Events";
 import { resolveEventDisplay } from "@/src/utils/resolveEventDisplay";
@@ -41,7 +38,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 	// 编辑事件
 	const handleEditEvent = () => {
 		// 将类型从 CalendarEvent.type 转换为 EventType
-		const eventType = event.eventType as EventType;
+		const eventType = event.eventType;
 
 		// 关闭当前tooltip，否则可能会导致UI堆叠问题
 		onClose();
@@ -65,12 +62,12 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 			// 对于 Bases 事件，打开原始笔记
 			openOriginalNoteForBasesEvent();
 		} else if (isDailyNoteEvent && event.sourceFilePath) {
-			plugin.app.workspace.openLinkText(event.sourceFilePath, '', true);
+			void plugin.app.workspace.openLinkText(event.sourceFilePath, '', true);
 		} else {
 			// 对于 Config 事件，打开事件管理器
 			window.setTimeout(() => {
 				// 打开事件管理器视图
-				plugin.openGlanceManagerWithTab("events");
+				void plugin.openGlanceManagerWithTab("events");
 
 				// 使用延迟确保事件管理器视图已完全加载
 				window.setTimeout(() => {
@@ -97,7 +94,7 @@ const EventTooltipContent: React.FC<EventTooltipContentProps> = ({
 
 		if (file && file instanceof TFile) {
 			// 打开文件
-			plugin.app.workspace.openLinkText(filePath, '', true);
+			void plugin.app.workspace.openLinkText(filePath, '', true);
 		} else {
 			// 如果找不到文件，显示通知
 			console.warn(`[Yearly Glance] Could not find file: ${filePath}`);

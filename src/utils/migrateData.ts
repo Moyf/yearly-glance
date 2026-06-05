@@ -5,6 +5,11 @@ import { CalendarType } from "@/src/type/Date";
 import { parseUserDateInput } from "@/src/service/DateParseService";
 import { reverseTranslationToKey } from "@/src/i18n/birthday";
 
+interface LegacyEvent extends BaseEvent {
+	date?: string;
+	dateType?: "SOLAR" | "LUNAR";
+}
+
 export class MigrateData {
 	/**
 	 * v2.x -> v3.x 的数据迁移更新
@@ -62,7 +67,7 @@ export class MigrateData {
 	 * 迁移单个事件到新的结构
 	 * @param event 需要迁移的事件对象
 	 */
-	private static migrateEventV2(event: BaseEvent): void {
+	private static migrateEventV2(event: LegacyEvent): void {
 		if (!event) return;
 
 		const oldDate = event.date;
@@ -112,7 +117,7 @@ export class MigrateData {
 		const birthdays = data.data.birthdays;
 		if (!Array.isArray(birthdays)) return;
 
-		for (const birthday of birthdays as Birthday[]) {
+		for (const birthday of birthdays) {
 			// 迁移 zodiac
 			if (birthday.zodiac && !this.isZodiacKey(birthday.zodiac)) {
 				const key = reverseTranslationToKey(birthday.zodiac, "zodiac");

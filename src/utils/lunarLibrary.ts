@@ -47,7 +47,7 @@ export class LunarLibrary {
 		try {
 			Lunar.fromYmd(year, month, day);
 			return true;
-		} catch (error) {
+		} catch {
 			return false;
 		}
 	}

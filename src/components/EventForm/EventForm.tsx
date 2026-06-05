@@ -23,6 +23,7 @@ import { Tooltip } from "@/src/components/Base/Tooltip";
 import { EmojiPicker } from "@/src/components/Base/EmojiPicker";
 import { IsoUtils } from "@/src/utils/isoUtils";
 import { previewNoteEventPath } from "@/src/utils/notePathFormat";
+import { DailyNoteService } from "@/src/service/DailyNoteService";
 
 // 事件类型tab
 export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
@@ -30,6 +31,14 @@ export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
 	label: t(`view.eventManager.${type}.name` as TranslationKeys),
 	emoji: EVENT_TYPE_DEFAULT[type].emoji,
 }));
+
+type WindowWithMoment = typeof window & {
+	moment?: (
+		input: string,
+		format: string,
+		strict?: boolean
+	) => { isValid(): boolean; format(pattern: string): string };
+};
 
 // 日历类型选项
 const CALENDAR_OPTIONS = [
@@ -213,11 +222,10 @@ export const EventForm: React.FC<EventFormProps> = ({
 	const dailyNoteInfo = React.useMemo(() => {
 		if (currentEventType !== 'dailyNoteEvent' || !plugin) return null;
 
-		const { DailyNoteService } = require('@/src/service/DailyNoteService') as { DailyNoteService: typeof import('@/src/service/DailyNoteService').DailyNoteService };
 		const dnSettings = DailyNoteService.getDailyNoteSettings(plugin.app, settings.config.dailyNoteSource);
 		if (!dnSettings) return null;
 
-		const momentFn = (window as any).moment;
+		const momentFn = (window as WindowWithMoment).moment;
 		if (!momentFn || !formData.userInputDate) return null;
 
 		const parsed = momentFn(formData.userInputDate, 'YYYY-MM-DD', true);
@@ -280,7 +288,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 		}
 
 		try {
-			const { isoDate, calendar } = parseUserDateInput(
+			const { isoDate } = parseUserDateInput(
 				formData.userInputDate,
 				formData.userInputCalendar as CalendarType | undefined
 			);
@@ -394,7 +402,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 		try {
 			await onSave(completeEvent, currentEventType);
 			// 成功：Modal 会调用 this.close()，isSaving 状态无需重置
-		} catch (error) {
+		} catch {
 			// 失败：Modal 已显示错误通知，这里只需重新启用按钮
 			setIsSaving(false);
 		}
@@ -795,7 +803,11 @@ export const EventForm: React.FC<EventFormProps> = ({
 							type="button"
 							className="delete-button"
 							disabled={!canDelete || isSaving}
-							onClick={async () => { if (canDelete && onDelete) await onDelete(); }}
+							onClick={() => {
+								if (canDelete && onDelete) {
+									void onDelete();
+								}
+							}}
 						>
 							{t("view.eventManager.actions.delete")}
 						</button>

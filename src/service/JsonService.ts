@@ -36,7 +36,7 @@ export class JsonService {
 		try {
 			const jsonString = JSON.stringify(jsonObject, null, 2);
 			return jsonString;
-		} catch (error) {
+		} catch {
 			return "{}"; // 返回空对象字符串以避免错误
 		}
 	}
@@ -59,7 +59,7 @@ export class JsonService {
 	}
 
 	private static converterToJsonEvent(event: EventData, eventPresetTypes: EventPresetType[]): JsonEvent {
-		const preset = eventPresetTypes.find(p => p.id === (event as any).presetTypeId);
+		const preset = eventPresetTypes.find(p => p.id === event.presetTypeId);
 		const resolvedEmoji = event.emoji ?? preset?.emoji;
 		const resolvedColor = event.color ?? preset?.color;
 		return {

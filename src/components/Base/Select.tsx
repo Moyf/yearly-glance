@@ -2,28 +2,28 @@ import * as React from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import "./style/Select.css";
 
-export interface SelectOption {
-	value: any;
+export interface SelectOption<T = string | undefined> {
+	value: T;
 	label: string;
 }
 
-interface SelectProps {
-	value: any;
-	onValueChange: (value: any) => void;
-	options: SelectOption[];
+interface SelectProps<T = string | undefined> {
+	value: T;
+	onValueChange: (value: T) => void;
+	options: SelectOption<T>[];
 	placeholder?: string;
 	className?: string;
-	renderOption?: (option: SelectOption) => React.ReactNode;
+	renderOption?: (option: SelectOption<T>) => React.ReactNode;
 }
 
-export const Select: React.FC<SelectProps> = ({
+export const Select = <T extends string | undefined>({
 	value,
 	onValueChange,
 	options,
 	placeholder = "Select an option",
 	className = "",
 	renderOption,
-}) => {
+}: SelectProps<T>) => {
 	const [isOpen, setIsOpen] = React.useState(false);
 	const selectRef = React.useRef<HTMLDivElement>(null);
 	const dropdownRef = React.useRef<HTMLDivElement>(null);
@@ -125,7 +125,7 @@ export const Select: React.FC<SelectProps> = ({
 
 							return (
 								<div
-									key={option.value}
+									key={option.value ?? "__empty__"}
 									ref={
 										isSelected
 											? selectedOptionRef

@@ -20,7 +20,7 @@ export const ImportJson: React.FC<ImportJsonProps> = ({
 	const [pasteContent, setPasteContent] = React.useState("");
 	const [parseError, setParseError] = React.useState<string | null>(null);
 
-	const handlePasteSubmit = async () => {
+	const handlePasteSubmit = () => {
 		if (!pasteContent.trim()) return;
 
 		setParseError(null);
@@ -35,7 +35,7 @@ export const ImportJson: React.FC<ImportJsonProps> = ({
 				setShowPasteModal(false);
 			}, 1000);
 		} catch (error) {
-			setParseError(error.message);
+			setParseError(error instanceof Error ? error.message : String(error));
 		}
 	};
 

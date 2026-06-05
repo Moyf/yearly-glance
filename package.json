@@ -1,6 +1,6 @@
 {
 	"name": "yearly-glance",
-	"version": "4.2.2",
+	"version": "4.2.3",
 	"description": "Year at a glance - overview of annual events with customizable management options.",
 	"main": "main.js",
 	"scripts": {
@@ -34,6 +34,7 @@
 		"@conventional-changelog/git-client": "^2.0.0"
 	},
 	"devDependencies": {
+		"@eslint/js": "^9.39.4",
 		"@types/jest": "^30.0.0",
 		"@types/node": "^20.19.25",
 		"@types/react": "^18.3.28",
@@ -44,7 +45,7 @@
 		"conventional-changelog-cli": "^5.0.0",
 		"cz-conventional-changelog": "^3.3.0",
 		"esbuild": "^0.27.1",
-		"eslint": "^8.57.1",
+		"eslint": "^9.39.4",
 		"eslint-plugin-obsidianmd": "^0.3.0",
 		"jest": "^30.0.4",
 		"obsidian": "latest",

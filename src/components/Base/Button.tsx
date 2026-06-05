@@ -34,7 +34,7 @@ export const Button: React.FC<ButtonProps> = ({
 
 	return (
 		<button
-			type={type as "button" | "submit" | "reset"}
+			type={type}
 			className={baseClasses}
 			onClick={onClick}
 			disabled={disabled}

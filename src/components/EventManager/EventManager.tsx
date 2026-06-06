@@ -344,7 +344,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 		// 如果搜索框为空且不是点击了清除按钮，则收起搜索框
 		if (
 			searchTerm === "" &&
-			!searchContainerRef.current?.contains(e.relatedTarget as Node)
+			!searchContainerRef.current?.contains(e.relatedTarget)
 		) {
 			setSearchExpanded(false);
 		}
@@ -388,7 +388,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 				<NavTabs
 					tabs={EVENT_TYPE_OPTIONS.map((option) => ({
 						...option,
-						count: eventCounts[option.value as EventType],
+						count: eventCounts[option.value],
 					}))}
 					activeTab={activeTab}
 					onClick={(tab) => setActiveTab(tab as EventType)}
@@ -520,7 +520,7 @@ export const EventManagerView: React.FC<EventManagerViewProps> = ({
 				<EventList
 					events={getCurrentEvents()}
 					onEdit={handleEditEvent}
-					onDelete={handleDeleteEvent}
+					onDelete={(e) => { void handleDeleteEvent(e); }}
 					eventType={activeTab}
 					sortField={sortField}
 					sortDirection={sortDirection}

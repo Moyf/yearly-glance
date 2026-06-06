@@ -7,7 +7,7 @@
 		"target": "ES2017",
 		"allowJs": true,
 		"noImplicitAny": false,
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"skipLibCheck": true,
 		"importHelpers": true,
 		"isolatedModules": true,
@@ -17,8 +17,9 @@
 		"paths": {
 			"@/*": ["./*"]
 		},
-		"forceConsistentCasingInFileNames": true
+		"forceConsistentCasingInFileNames": true,
+		"ignoreDeprecations": "6.0"
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx"],
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules", "src/**/*.test.ts"]
 }

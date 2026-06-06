@@ -28,7 +28,7 @@ import { DailyNoteService } from "@/src/service/DailyNoteService";
 // 事件类型tab
 export const EVENT_TYPE_OPTIONS = EVENT_TYPE_LIST.map((type) => ({
 	value: type,
-	label: t(`view.eventManager.${type}.name` as TranslationKeys),
+	label: t(`view.eventManager.${type}.name`),
 	emoji: EVENT_TYPE_DEFAULT[type].emoji,
 }));
 
@@ -225,7 +225,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 		const dnSettings = DailyNoteService.getDailyNoteSettings(plugin.app, settings.config.dailyNoteSource);
 		if (!dnSettings) return null;
 
-		const momentFn = (window as WindowWithMoment).moment;
+		const momentFn = (window).moment;
 		if (!momentFn || !formData.userInputDate) return null;
 
 		const parsed = momentFn(formData.userInputDate, 'YYYY-MM-DD', true);
@@ -425,7 +425,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 			<form
 				className="yg-event-form"
 				ref={formRef}
-				onSubmit={handleSubmit}
+				onSubmit={(e) => { void handleSubmit(e); }}
 			>
 				{/* 表单标题 */}
 				<h3 className="yg-event-form-title">
@@ -440,11 +440,11 @@ export const EventForm: React.FC<EventFormProps> = ({
 						: isEditing
 						? t("view.eventManager.form.edit") +
 						  t(
-								`view.eventManager.${currentEventType}.name` as TranslationKeys
+								`view.eventManager.${currentEventType}.name`
 						  )
 						: t("view.eventManager.form.add") +
 						  t(
-								`view.eventManager.${currentEventType}.name` as TranslationKeys
+								`view.eventManager.${currentEventType}.name`
 						  )}
 				</h3>
 
@@ -588,7 +588,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 						<div className="form-group">
 							<label>
 								{t("view.eventManager.presetType.label")}
-								<Tooltip text={t("setting.general.eventPresetTypes.tooltip" as TranslationKeys)} />
+								<Tooltip text={t("setting.general.eventPresetTypes.tooltip")} />
 							</label>
 							<Select
 								options={[

@@ -1,6 +1,6 @@
 import YearlyGlancePlugin from "@/src/main";
 import { YearlyGlanceConfig } from "@/src/type/Config";
-import { BaseEvent, Birthday } from "@/src/type/Events";
+import { BaseEvent } from "@/src/type/Events";
 import { CalendarType } from "@/src/type/Date";
 import { parseUserDateInput } from "@/src/service/DateParseService";
 import { reverseTranslationToKey } from "@/src/i18n/birthday";
@@ -36,7 +36,7 @@ export class MigrateData {
 			migratedData.config.customEmojiKeywords = {};
 		}
 
-		const eventTypes = ["holidays", "birthdays", "customEvents"];
+		const eventTypes = ["holidays", "birthdays", "customEvents"] as const;
 
 		for (const type of eventTypes) {
 			// 检查当前类型的事件是否为数组
@@ -70,8 +70,8 @@ export class MigrateData {
 	private static migrateEventV2(event: LegacyEvent): void {
 		if (!event) return;
 
-		const oldDate = event.date;
-		const oldDateType = event.dateType;
+		const oldDate = event.date; // eslint-disable-line @typescript-eslint/no-deprecated
+		const oldDateType = event.dateType; // eslint-disable-line @typescript-eslint/no-deprecated
 
 		if (!oldDate || !oldDateType) return;
 

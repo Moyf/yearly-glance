@@ -51,9 +51,9 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 	);
 
 	// 实际显示的颜色值
-	const displayColor = value || defaultColor;
+	const displayColor = value || defaultColor || "";
 
-	const presetColorOptions: SelectOption[] =
+	const presetColorOptions: SelectOption<string>[] =
 		presetColors
 			.filter((color) => color.enable)
 			.map((color) => {

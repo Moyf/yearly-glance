@@ -433,7 +433,7 @@ export class YearlyGlanceBasesView extends BasesView {
                 isRepeat: false,
                 eventSource: EventSource.BASES,
                 presetTypeId,
-            } as CalendarEvent;
+            };
         } catch (error) {
             console.warn('Failed to convert Bases event:', error, entry);
             return null;

@@ -94,35 +94,38 @@ export class NoteEventService {
 			presetTypeProp: string;
 		}
 	): CalendarEvent | null {
-		const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter ?? {};
+		const frontmatter = (this.app.metadataCache.getFileCache(file)?.frontmatter ?? {}) as Record<string, unknown>;
 
 		const { titleProp, dateProp, durationProp, iconProp, colorProp, descriptionProp, presetTypeProp } = propConfig;
 
 		// 读取日期字段（必需）
-		const dateValue = frontmatter[dateProp];
-		if (!dateValue) {
-			return null; // 没有日期字段，跳过
+		const rawDate = frontmatter[dateProp];
+		if (!rawDate) {
+			return null;
 		}
 
-		// 解析日期
-		const isoDate = this.parseDateValue(dateValue);
+		const isoDate = this.parseDateValue(rawDate);
 		if (!isoDate) {
-			return null; // 日期解析失败，跳过
+			return null;
 		}
 
-		// 读取其他字段
-		const title = frontmatter[titleProp] || file.basename;
-		const duration = frontmatter[durationProp] || 1;
-		const icon = frontmatter[iconProp] || null;
-		const color = frontmatter[colorProp] || null;
-		const description = frontmatter[descriptionProp] || "";
-		const presetTypeName = frontmatter[presetTypeProp];
+		const rawTitle = frontmatter[titleProp];
+		const title = typeof rawTitle === "string" ? rawTitle : file.basename;
+		const rawDuration = frontmatter[durationProp];
+		const duration = typeof rawDuration === "number" ? rawDuration : 1;
+		const rawIcon = frontmatter[iconProp];
+		const icon = typeof rawIcon === "string" ? rawIcon : null;
+		const rawColor = frontmatter[colorProp];
+		const color = typeof rawColor === "string" ? rawColor : null;
+		const rawDescription = frontmatter[descriptionProp];
+		const description = typeof rawDescription === "string" ? rawDescription : "";
+		const rawPresetTypeName = frontmatter[presetTypeProp];
 
 		// 按名称匹配预设类型（大小写不敏感）
 		let presetTypeId: string | undefined;
-		if (presetTypeName && typeof presetTypeName === "string") {
+		if (typeof rawPresetTypeName === "string" && rawPresetTypeName) {
 			const matched = (this.config.eventPresetTypes ?? []).find(
-				(pt) => pt.name.trim().toLowerCase() === presetTypeName.trim().toLowerCase()
+				(pt) => pt.name.trim().toLowerCase() === rawPresetTypeName.trim().toLowerCase()
 			);
 			presetTypeId = matched?.id;
 		}
@@ -150,7 +153,7 @@ export class NoteEventService {
 			isRepeat: false,
 			eventSource: EventSource.BASES,
 			presetTypeId,
-		} as CalendarEvent;
+		};
 	}
 
 	/**

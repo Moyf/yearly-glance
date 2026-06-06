@@ -312,8 +312,8 @@ export const DataImport: React.FC<DataImportProps> = ({
 	};
 
 	// 获取分组显示信息
-	const getGroupInfo = (type: EventType) => {
-		const config = {
+	const getGroupInfo = (type: EventType): { title: string; icon: React.ReactNode } => {
+		const config: Record<EventType, { title: string; icon: React.ReactNode }> = {
 			holiday: {
 				title: t("view.yearlyGlance.legend.holiday"),
 				icon: <Sparkles className="group-icon" />,
@@ -324,6 +324,14 @@ export const DataImport: React.FC<DataImportProps> = ({
 			},
 			customEvent: {
 				title: t("view.yearlyGlance.legend.customEvent"),
+				icon: <Calendar className="group-icon" />,
+			},
+			basesEvent: {
+				title: t("view.yearlyGlance.legend.basesEvent"),
+				icon: <FileText className="group-icon" />,
+			},
+			dailyNoteEvent: {
+				title: t("view.yearlyGlance.legend.dailyNoteEvent"),
 				icon: <Calendar className="group-icon" />,
 			},
 		};
@@ -683,7 +691,7 @@ export const DataImport: React.FC<DataImportProps> = ({
 						icon={<FileText size={24} />}
 						actions={
 							<ImportJson
-								onUpload={handleFileChange}
+								onUpload={(e) => { void handleFileChange(e); }}
 								onPasteJson={handlePasteJson}
 								disabled={isImporting}
 							/>

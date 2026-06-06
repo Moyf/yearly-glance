@@ -1,5 +1,4 @@
 import { EVENT_TYPE_DEFAULT, Events } from "@/src/type/Events";
-import { TranslationKeys } from "../i18n/types";
 import { t } from "../i18n/i18n";
 
 export class iCalendarService {
@@ -12,17 +11,22 @@ export class iCalendarService {
 		];
 
 		// 添加所有事件
-		const allEvents = [
+		const allEvents: Array<{
+			type: "holiday" | "birthday" | "customEvent";
+			event: (typeof eventsData)["holidays"][number] |
+				(typeof eventsData)["birthdays"][number] |
+				(typeof eventsData)["customEvents"][number];
+		}> = [
 			...eventsData.holidays.map((h) => ({
-				type: "holiday",
+				type: "holiday" as const,
 				event: h,
 			})),
 			...eventsData.birthdays.map((b) => ({
-				type: "birthday",
+				type: "birthday" as const,
 				event: b,
 			})),
 			...eventsData.customEvents.map((c) => ({
-				type: "customEvent",
+				type: "customEvent" as const,
 				event: c,
 			})),
 		];
@@ -42,7 +46,7 @@ export class iCalendarService {
 
 				icsLines.push(
 					`SUMMARY:${t(
-						`view.yearlyGlance.legend.${type}` as TranslationKeys
+						`view.yearlyGlance.legend.${type}`
 					)}: ${event.text}`
 				);
 

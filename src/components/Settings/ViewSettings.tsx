@@ -46,11 +46,11 @@ export const eventFontSizeOptions = EVENT_FONT_SIZE_OPTIONS.map((eventFontSize) 
 }));
 export const iconDisplayOptions = ICON_DISPLAY_OPTIONS.map((option) => ({
 	value: option,
-	label: t(`setting.general.showEmojiBeforeTabName.options.${option}` as TranslationKeys),
+	label: t(`setting.general.showEmojiBeforeTabName.options.${option}`),
 }));
 export const eventClickActionOptions = EVENT_CLICK_ACTION_OPTIONS.map((option) => ({
 	value: option,
-	label: t(`setting.general.eventClickAction.options.${option}` as TranslationKeys),
+	label: t(`setting.general.eventClickAction.options.${option}`),
 }));
 
 type SettingsTabKey = "basic" | "style" | "noteEvents" | "dailyNoteEvents" | "presets";
@@ -74,10 +74,10 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 
 	const settingsTabs = [
 		{ label: t("setting.group.basic.name"), value: "basic" },
-		{ label: t("setting.group.style.name" as TranslationKeys), value: "style" },
+		{ label: t("setting.group.style.name"), value: "style" },
 		{ label: t("setting.group.basesEvent.name"), value: "noteEvents" },
 		{ label: t("setting.group.dailyNoteEvent.name"), value: "dailyNoteEvents" },
-		{ label: t("setting.group.presets.name" as TranslationKeys), value: "presets" },
+		{ label: t("setting.group.presets.name"), value: "presets" },
 	];
 
 	const renderTabContent = () => {
@@ -124,8 +124,8 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 
 						{/* 布局相关设置分组 */}
 						<SettingsBlock
-							name={t("setting.group.layout.name" as TranslationKeys)}
-							desc={t("setting.group.layout.desc" as TranslationKeys)}
+							name={t("setting.group.layout.name")}
+							desc={t("setting.group.layout.desc")}
 							collapsible
 							defaultCollapsed={false}
 						>
@@ -146,8 +146,8 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 					<>
 						{/* 样式设置 */}
 						<SettingsBlock
-							name={t("setting.group.style.name" as TranslationKeys)}
-							desc={t("setting.group.style.desc" as TranslationKeys)}
+							name={t("setting.group.style.name")}
+							desc={t("setting.group.style.desc")}
 							collapsible
 							defaultCollapsed={false}
 						>
@@ -179,8 +179,8 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 
 						{/* 事件显示相关设置 */}
 						<SettingsBlock
-							name={t("setting.group.eventDisplay.name" as TranslationKeys)}
-							desc={t("setting.group.eventDisplay.desc" as TranslationKeys)}
+							name={t("setting.group.eventDisplay.name")}
+							desc={t("setting.group.eventDisplay.desc")}
 							collapsible
 							defaultCollapsed={false}
 						>
@@ -241,8 +241,8 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 
 						{/* 笔记属性 */}
 						<SettingsBlock
-							name={t("setting.group.noteEventProps.name" as TranslationKeys)}
-							desc={t("setting.group.noteEventProps.desc" as TranslationKeys)}
+							name={t("setting.group.noteEventProps.name")}
+							desc={t("setting.group.noteEventProps.desc")}
 							collapsible
 							defaultCollapsed={false}
 						>
@@ -298,7 +298,7 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 									{ label: t("setting.general.dailyNoteSource.options.dailyNotes"), value: "daily-notes" },
 									{ label: t("setting.general.dailyNoteSource.options.periodicNotes"), value: "periodic-notes" },
 								]}
-								onValueChange={(value) => handleUpdateConfig({ dailyNoteSource: value as "daily-notes" | "periodic-notes" })}
+								onValueChange={(value) => handleUpdateConfig({ dailyNoteSource: value })}
 							/>
 						</SettingsItem>
 						{/* 事件属性名 */}

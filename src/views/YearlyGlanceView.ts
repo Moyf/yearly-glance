@@ -14,7 +14,7 @@ export const VIEW_TYPE_YEARLY_GLANCE = "yearly-glance-view";
 // 定义年历视图类
 export class YearlyGlanceView extends ItemView {
 	plugin: YearlyGlancePlugin;
-	calendarView: YearlyCalendar;
+	calendarView!: YearlyCalendar;
 	calendarContainer: HTMLElement;
 	private unsubscribeBus?: () => void;
 
@@ -32,7 +32,7 @@ export class YearlyGlanceView extends ItemView {
 
 	getIcon(): IconName {
 		const config = this.plugin.getConfig();
-		return config.showEmojiBeforeTabName === "lucide" ? "telescope" : ("" as IconName);
+		return config.showEmojiBeforeTabName === "lucide" ? "telescope" : ("");
 	}
 
 	getDisplayText(): string {
@@ -57,8 +57,8 @@ export class YearlyGlanceView extends ItemView {
 			this.calendarContainer,
 			this.plugin
 		);
-		this.calendarView.initialize(this.plugin);
-		void this.calendarView.render();
+		void await this.calendarView.initialize(this.plugin);
+		this.calendarView.render();
 
 		// Subscribe to config changes to refresh tab icon and title
 		this.unsubscribeBus = YearlyGlanceBus.subscribeTopics(['config', 'all'], () => {

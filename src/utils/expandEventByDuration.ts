@@ -70,7 +70,7 @@ export function expandEventByDuration(
 			_isFirstDay: dayIndex === 0,
 			_isLastDay: dayIndex === duration - 1,
 			dateArr: [currentDateISO],
-		} as CalendarEvent);
+		});
 	}
 
 	return { events, warning };

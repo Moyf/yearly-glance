@@ -41,7 +41,7 @@ function getStringProperty(record: Record<string, unknown>, key: string): string
 }
 
 function getMomentFromWindow(): MomentLike | null {
-	const momentValue = (window as typeof window & { moment?: unknown }).moment;
+	const momentValue = (window).moment;
 	return typeof momentValue === 'function' ? (momentValue as MomentLike) : null;
 }
 
@@ -202,7 +202,7 @@ export class DailyNoteService {
 			return false;
 		}
 
-		await app.fileManager.processFrontMatter(file, (fm) => {
+		await app.fileManager.processFrontMatter(file, (fm: Record<string, unknown>) => {
 			const rawEvents = fm[eventProp];
 			if (!Array.isArray(rawEvents)) {
 				return;
@@ -234,7 +234,7 @@ export class DailyNoteService {
 			return false;
 		}
 
-		await app.fileManager.processFrontMatter(file, (fm) => {
+		await app.fileManager.processFrontMatter(file, (fm: Record<string, unknown>) => {
 			if (!Array.isArray(fm[eventProp])) {
 				fm[eventProp] = [];
 			}
@@ -256,7 +256,7 @@ export class DailyNoteService {
 			return false;
 		}
 
-		await app.fileManager.processFrontMatter(file, (fm) => {
+		await app.fileManager.processFrontMatter(file, (fm: Record<string, unknown>) => {
 			const rawEvents = fm[eventProp];
 			if (!Array.isArray(rawEvents)) {
 				return;

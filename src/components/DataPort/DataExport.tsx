@@ -137,19 +137,19 @@ export const DataExport: React.FC<DataExportProps> = ({
 			holiday: sortEventsByDate(
 				currentData.holidays.map((event) => ({
 					...event,
-					type: "holiday" as EventType,
+					type: "holiday",
 				}))
 			),
 			birthday: sortEventsByDate(
 				currentData.birthdays.map((event) => ({
 					...event,
-					type: "birthday" as EventType,
+					type: "birthday",
 				}))
 			),
 			customEvent: sortEventsByDate(
 				currentData.customEvents.map((event) => ({
 					...event,
-					type: "customEvent" as EventType,
+					type: "customEvent",
 				}))
 			),
 			// bases events are tied to notes and don't need to be exported through data port
@@ -325,7 +325,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 				}
 				default:
 					throw new Error(
-						`Unsupported export format: ${activeExportFormat}`
+						`Unsupported export format: ${String(activeExportFormat)}`
 					);
 			}
 		} catch (error) {
@@ -338,8 +338,8 @@ export const DataExport: React.FC<DataExportProps> = ({
 	};
 
 	// 获取分组显示信息
-	const getGroupInfo = (type: EventType) => {
-		const config = {
+	const getGroupInfo = (type: EventType): { title: string; icon: React.ReactNode } => {
+		const config: Record<EventType, { title: string; icon: React.ReactNode }> = {
 			holiday: {
 				title: t("view.yearlyGlance.legend.holiday"),
 				icon: <Sparkles className="group-icon" />,
@@ -350,6 +350,14 @@ export const DataExport: React.FC<DataExportProps> = ({
 			},
 			customEvent: {
 				title: t("view.yearlyGlance.legend.customEvent"),
+				icon: <Calendar className="group-icon" />,
+			},
+			basesEvent: {
+				title: t("view.yearlyGlance.legend.basesEvent"),
+				icon: <FileText className="group-icon" />,
+			},
+			dailyNoteEvent: {
+				title: t("view.yearlyGlance.legend.dailyNoteEvent"),
 				icon: <Calendar className="group-icon" />,
 			},
 		};
@@ -472,7 +480,14 @@ export const DataExport: React.FC<DataExportProps> = ({
 	];
 
 	// 事件类型配置映射
-	const eventTypeConfigs = {
+	interface EventTypeExportConfig {
+		title: string;
+		folderKey: "holidayFolder" | "birthdayFolder" | "customEventFolder";
+		fields: { key: string; label: string }[];
+		configKey: "holidayFields" | "birthdayFields" | "customEventFields";
+	}
+
+	const eventTypeConfigs: Record<string, EventTypeExportConfig> = {
 		holiday: {
 			title:
 				t("view.yearlyGlance.legend.holiday") +
@@ -568,15 +583,13 @@ export const DataExport: React.FC<DataExportProps> = ({
 						)}
 					</label>
 					<div className="field-toggles">
-						{config.fields.map((field) => (
+						{config.fields.map((field) => {
+							const fieldConfig = markdownConfig[config.configKey] as unknown as Record<string, boolean | undefined>;
+							return (
 							<Toggle
 								key={field.key}
 								label={field.label}
-								checked={
-									markdownConfig[config.configKey][
-										field.key
-									] || false
-								}
+								checked={fieldConfig[field.key] || false}
 								onChange={(checked) =>
 									setMarkdownConfig((prev) => ({
 										...prev,
@@ -587,7 +600,8 @@ export const DataExport: React.FC<DataExportProps> = ({
 									}))
 								}
 							/>
-						))}
+							);
+						})}
 					</div>
 				</div>
 			</div>
@@ -600,9 +614,7 @@ export const DataExport: React.FC<DataExportProps> = ({
 				<div className="config-group">
 					<div className="markdown-export-config">
 						{Object.keys(eventTypeConfigs).map((type) =>
-							renderEventTypeConfig(
-								type as keyof typeof eventTypeConfigs
-							)
+							renderEventTypeConfig(type)
 						)}
 					</div>
 				</div>

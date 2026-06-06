@@ -98,7 +98,7 @@ describe('expandEventByDuration', () => {
 			text: 'Missing Event Date',
 			eventDate: undefined as unknown as BaseEvent['eventDate'],
 			duration: 3,
-		} as BaseEvent, eventType, 2025);
+		}, eventType, 2025);
 
 		expect(emptyEvents).toEqual([]);
 		expect(emptyWarning).toBeNull();

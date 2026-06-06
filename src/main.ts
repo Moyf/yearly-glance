@@ -32,7 +32,7 @@ import { generateEventId } from "./utils/uniqueEventId";
 import { CalendarEvent } from "./type/CalendarEvent";
 
 export default class YearlyGlancePlugin extends Plugin {
-	settings: YearlyGlanceConfig;
+	settings!: YearlyGlanceConfig;
 
 	async onload() {
 		// 加载设置
@@ -110,7 +110,7 @@ export default class YearlyGlancePlugin extends Plugin {
 
 	async loadSettings() {
 		// 加载数据
-		const savedData = await this.loadData();
+		const savedData: unknown = await this.loadData();
 		// 验证并合并数据
 		this.settings = this.validateAndMergeSettings(savedData);
 		// 数据迁移
@@ -484,7 +484,7 @@ export default class YearlyGlancePlugin extends Plugin {
 
 	private buildEventFromNoteProperties(file: TFile): Partial<CalendarEvent> {
 		const propConfig = buildPropConfig(this.settings.config);
-		const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter ?? {};
+		const frontmatter = (this.app.metadataCache.getFileCache(file)?.frontmatter ?? {}) as Record<string, unknown>;
 		const readStringProp = (propName: string): string | undefined => {
 			const value = frontmatter[propName];
 			if (typeof value === "string") {
@@ -550,8 +550,12 @@ export default class YearlyGlancePlugin extends Plugin {
 			return Number.isNaN(dateValue.getTime()) ? undefined : dateValue.toISOString().split("T")[0];
 		}
 
-		const date = new Date(String(dateValue));
-		return Number.isNaN(date.getTime()) ? undefined : date.toISOString().split("T")[0];
+		if (typeof dateValue === "number") {
+			const date = new Date(dateValue);
+			return Number.isNaN(date.getTime()) ? undefined : date.toISOString().split("T")[0];
+		}
+
+		return undefined;
 	}
 
 	private getConvertNotePathWarning(file: TFile): string | undefined {
@@ -643,9 +647,7 @@ export default class YearlyGlancePlugin extends Plugin {
 		const isoDate = event.eventDate.isoDate;
 		if (!isoDate) return;
 
-		const momentFn = (window as typeof window & {
-			moment?: (input: string, format: string) => { format(pattern: string): string };
-		}).moment;
+		const momentFn = (window).moment;
 		if (!momentFn) return;
 
 		const formattedName = momentFn(isoDate, "YYYY-MM-DD").format(settings.format);
@@ -751,7 +753,7 @@ export default class YearlyGlancePlugin extends Plugin {
 		if (!(abstractFile instanceof TFile)) {
 			throw new Error(`Failed to access created file: ${filePath}`);
 		}
-		await this.app.fileManager.processFrontMatter(abstractFile, (fm) => {
+		await this.app.fileManager.processFrontMatter(abstractFile, (fm: Record<string, unknown>) => {
 			fm[propConfig.titleProp] = event.text;
 			fm[propConfig.dateProp] = event.eventDate.isoDate;
 			if (event.duration && event.duration > 1) {
@@ -798,10 +800,14 @@ export default class YearlyGlancePlugin extends Plugin {
 	// 重载插件
 	public async reloadPlugin() {
 		try {
-			// @ts-ignore
-			await this.app.plugins.disablePluginAndSave("yearly-glance");
-			// @ts-ignore
-			await this.app.plugins.enablePluginAndSave("yearly-glance");
+			const appWithPlugins = this.app as unknown as {
+				plugins: {
+					disablePluginAndSave(id: string): Promise<void>;
+					enablePluginAndSave(id: string): Promise<void>;
+				};
+			};
+			await appWithPlugins.plugins.disablePluginAndSave("yearly-glance");
+			await appWithPlugins.plugins.enablePluginAndSave("yearly-glance");
 			new Notice("[yearly glance] reloaded successfully");
 		} catch (error) {
 			console.error("[Yearly Glance] Fail to reload", error);

@@ -150,9 +150,9 @@ export const PresetEventTypeSettings: React.FC<
 
 		if (refCount > 0) {
 			new ConfirmDialog(plugin, {
-				title: t("setting.general.eventPresetTypes.name" as TranslationKeys),
+				title: t("setting.general.eventPresetTypes.name"),
 				message: t(
-					"setting.general.eventPresetTypes.deleteConfirm" as TranslationKeys,
+					"setting.general.eventPresetTypes.deleteConfirm",
 					{ count: refCount }
 				),
 				onConfirm: doDelete,
@@ -204,7 +204,7 @@ export const PresetEventTypeSettings: React.FC<
 								onChange={(value) => handleNameChange(type.id, value)}
 								onBlur={() => handleNameBlur(type.id)}
 								placeholder={t(
-									"setting.general.eventPresetTypes.namePlaceholder" as TranslationKeys
+									"setting.general.eventPresetTypes.namePlaceholder"
 								)}
 							/>
 						<input
@@ -219,7 +219,7 @@ export const PresetEventTypeSettings: React.FC<
 								type="color"
 								value={type.color || "#cccccc"}
 								onChange={(e) => handleColorChange(type.id, e.target.value)}
-								title={t("common.color" as TranslationKeys)}
+								title={t("common.color")}
 							/>
 							{presetColorOptions.length > 0 && (
 								<select
@@ -228,7 +228,7 @@ export const PresetEventTypeSettings: React.FC<
 									onChange={(e) =>
 										handlePresetColorSelect(type.id, e.target.value)
 									}
-									title={t("setting.general.presetColors.name" as TranslationKeys)}
+									title={t("setting.general.presetColors.name")}
 								>
 									<option value="">—</option>
 									{presetColorOptions.map((opt) => (
@@ -242,13 +242,13 @@ export const PresetEventTypeSettings: React.FC<
 						<div className="yg-preset-type-actions">
 							{errors[type.id] && (
 								<span className="yg-preset-type-error">
-									{t("setting.general.eventPresetTypes.namePlaceholder" as TranslationKeys)}
+									{t("setting.general.eventPresetTypes.namePlaceholder")}
 								</span>
 							)}
 							<button
 								className="yg-preset-type-delete-btn"
 								onClick={() => handleDelete(type.id)}
-								title={t("common.delete" as TranslationKeys)}
+								title={t("common.delete")}
 							>
 								<Trash2 size={18} />
 							</button>

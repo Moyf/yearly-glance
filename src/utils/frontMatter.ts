@@ -13,7 +13,7 @@ export class FrontMatter {
 		file: TFile,
 		newFrontmatter: FrontmatterRecord
 	): Promise<void> {
-		await this.app.fileManager.processFrontMatter(file, (fm) => {
+		await this.app.fileManager.processFrontMatter(file, (fm: Record<string, unknown>) => {
 			Object.assign(fm, newFrontmatter);
 		});
 	}
@@ -22,7 +22,7 @@ export class FrontMatter {
 		file: TFile,
 		keysToDelete: string[]
 	): Promise<void> {
-		await this.app.fileManager.processFrontMatter(file, (fm) => {
+		await this.app.fileManager.processFrontMatter(file, (fm: Record<string, unknown>) => {
 			keysToDelete.forEach((key) => {
 				delete fm[key];
 			});
@@ -33,14 +33,14 @@ export class FrontMatter {
 		file: TFile,
 		updateFrontmatterFunc: (frontmatter: FrontmatterRecord) => void
 	): Promise<void> {
-		await this.app.fileManager.processFrontMatter(file, (fm) => {
+		await this.app.fileManager.processFrontMatter(file, (fm: Record<string, unknown>) => {
 			updateFrontmatterFunc(fm);
 		});
 	}
 
 	async readFrontMatter(file: TFile): Promise<FrontmatterRecord> {
 		let frontmatter: FrontmatterRecord = {};
-		await this.app.fileManager.processFrontMatter(file, (fm) => {
+		await this.app.fileManager.processFrontMatter(file, (fm: Record<string, unknown>) => {
 			frontmatter = { ...fm };
 		});
 		return frontmatter;
@@ -51,7 +51,7 @@ export class FrontMatter {
 		oldKey: string,
 		newKey: string
 	): Promise<void> {
-		await this.app.fileManager.processFrontMatter(file, (fm) => {
+		await this.app.fileManager.processFrontMatter(file, (fm: Record<string, unknown>) => {
 			if (fm[oldKey] !== undefined) {
 				fm[newKey] = fm[oldKey];
 				delete fm[oldKey];

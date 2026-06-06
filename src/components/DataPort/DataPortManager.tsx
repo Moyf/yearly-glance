@@ -35,6 +35,10 @@ export const DataPortManagerView: React.FC<{
 }> = ({ plugin }) => {
 	const { config, updateConfig, events } = useYearlyGlanceConfig(plugin);
 
+	const handleConfigUpdate = async (partial: Partial<YearlyGlanceSettings>) => {
+		await updateConfig({ ...config, ...partial });
+	};
+
 	const onDataImport = async (
 		event: CustomEvent | Birthday | Holiday,
 		eventType: EventType
@@ -56,7 +60,7 @@ export const DataPortManagerView: React.FC<{
 			app={plugin.app}
 			config={config}
 			data={events}
-			onConfigUpdate={updateConfig}
+			onConfigUpdate={handleConfigUpdate}
 			onDataImport={onDataImport}
 		/>
 	);

@@ -31,13 +31,7 @@ export function formatNoteEventPath(
 
 	result = result.replace(/\{event_name\}/g, () => protect(eventName));
 
-	const momentFn = (window as typeof window & {
-		moment?: (
-			input: string,
-			format: string | string[],
-			strict?: boolean
-		) => { isValid(): boolean; format(pattern: string): string };
-	}).moment;
+	const momentFn = (window).moment;
 	if (momentFn && isoDate) {
 		const parsedDate = momentFn(isoDate, ["YYYY-MM-DD", "MM-DD"], true);
 		if (parsedDate.isValid()) {

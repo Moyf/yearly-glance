@@ -21,31 +21,31 @@ export async function syncEventToFrontmatter(
 		return;
 	}
 
-	await app.fileManager.processFrontMatter(file, (fm) => {
+	await app.fileManager.processFrontMatter(file, (fm: Record<string, unknown>) => {
 		fm[propConfig.titleProp] = event.text;
 		fm[propConfig.dateProp] = eventDate;
 
 		if (event.duration && event.duration > 1) {
 			fm[propConfig.durationProp] = event.duration;
-		} else if (fm[propConfig.durationProp]) {
+		} else if (fm[propConfig.durationProp] !== undefined) {
 			delete fm[propConfig.durationProp];
 		}
 
 		if (event.emoji && event.emoji !== EVENT_TYPE_DEFAULT.basesEvent.emoji) {
 			fm[propConfig.iconProp] = event.emoji;
-		} else if (fm[propConfig.iconProp]) {
+		} else if (fm[propConfig.iconProp] !== undefined) {
 			delete fm[propConfig.iconProp];
 		}
 
 		if (event.color && event.color !== EVENT_TYPE_DEFAULT.basesEvent.color) {
 			fm[propConfig.colorProp] = event.color;
-		} else if (fm[propConfig.colorProp]) {
+		} else if (fm[propConfig.colorProp] !== undefined) {
 			delete fm[propConfig.colorProp];
 		}
 
 		if (event.remark && typeof event.remark === "string" && event.remark.length > 0) {
 			fm[propConfig.descriptionProp] = event.remark;
-		} else if (fm[propConfig.descriptionProp]) {
+		} else if (fm[propConfig.descriptionProp] !== undefined) {
 			delete fm[propConfig.descriptionProp];
 		}
 
@@ -54,10 +54,10 @@ export async function syncEventToFrontmatter(
 			const preset = eventPresetTypes.find((p) => p.id === event.presetTypeId);
 			if (preset) {
 				fm[propConfig.presetTypeProp] = preset.name;
-			} else if (fm[propConfig.presetTypeProp]) {
-				delete fm[propConfig.presetTypeProp];
-			}
-		} else if (fm[propConfig.presetTypeProp]) {
+		} else if (fm[propConfig.presetTypeProp] !== undefined) {
+			delete fm[propConfig.presetTypeProp];
+		}
+	} else if (fm[propConfig.presetTypeProp] !== undefined) {
 			delete fm[propConfig.presetTypeProp];
 		}
 	});

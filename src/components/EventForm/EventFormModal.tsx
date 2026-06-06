@@ -260,8 +260,8 @@ export class EventFormModal extends Modal {
 						);
 					} else {
 						// 新增事件时添加 eventSource
-						(event as Holiday).eventSource = EventSource.CONFIG;
-						newEvents.holidays.push(event as Holiday);
+						(event).eventSource = EventSource.CONFIG;
+						newEvents.holidays.push(event);
 					}
 					break;
 				}
@@ -316,9 +316,7 @@ export class EventFormModal extends Modal {
 									throw new Error("Daily note plugin is not available");
 								}
 
-								const momentFn = (window as typeof window & {
-									moment?: (input: string, format: string) => { format(pattern: string): string };
-								}).moment;
+								const momentFn = (window).moment;
 								if (!momentFn) {
 									throw new Error("Moment is not available");
 								}
@@ -385,7 +383,7 @@ export class EventFormModal extends Modal {
 					break;
 				}
 				default: {
-					throw new Error(`Unsupported event type: ${eventType}`);
+					throw new Error(`Unsupported event type: ${String(eventType)}`);
 				}
 			}
 

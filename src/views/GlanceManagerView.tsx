@@ -114,7 +114,7 @@ export class GlanceManagerView extends ItemView {
 
 	getIcon(): IconName {
 		const config = this.plugin.getConfig();
-		return config.showEmojiBeforeTabName === "lucide" ? "layout-dashboard" : ("" as IconName);
+		return config.showEmojiBeforeTabName === "lucide" ? "layout-dashboard" : ("");
 	}
 
 	getDisplayText(): string {

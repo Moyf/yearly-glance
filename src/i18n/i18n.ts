@@ -32,14 +32,17 @@ export class I18n {
 		}
 	}
 
-	private flattenObject(obj: any, prefix = ""): Record<string, string> {
-		return Object.keys(obj).reduce(
+	private flattenObject(obj: unknown, prefix = ""): Record<string, string> {
+		if (typeof obj !== "object" || obj === null) return {};
+		const record = obj as Record<string, unknown>;
+		return Object.keys(record).reduce(
 			(acc: Record<string, string>, k: string) => {
 				const pre = prefix.length ? prefix + "." : "";
-				if (typeof obj[k] === "object") {
-					Object.assign(acc, this.flattenObject(obj[k], pre + k));
-				} else {
-					acc[pre + k] = obj[k];
+				const value = record[k];
+				if (typeof value === "object" && value !== null) {
+					Object.assign(acc, this.flattenObject(value, pre + k));
+				} else if (typeof value === "string") {
+					acc[pre + k] = value;
 				}
 				return acc;
 			},
@@ -59,7 +62,7 @@ export class I18n {
 		}
 
 		// 只处理命名变量参数
-		return translation.replace(/\{\{([^}]+)\}\}/g, (match, name) => {
+		return translation.replace(/\{\{([^}]+)\}\}/g, (match, name: string) => {
 			return params[name] !== undefined ? String(params[name]) : match;
 		});
 	}

@@ -23,7 +23,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
 		isAbove: false,
 	});
 	const triggerRef = React.useRef<HTMLDivElement>(null);
-	const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+	const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const updatePosition = React.useCallback(() => {
 		if (triggerRef.current) {

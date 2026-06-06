@@ -52,7 +52,7 @@ export class IsoUtils {
 			calendar !== "LUNAR" &&
 			calendar !== "LUNAR_LEAP"
 		) {
-			throw new Error(`Unsupported calendar type: ${calendar}`);
+			throw new Error(`Unsupported calendar type: ${calendar as string}`);
 		}
 
 		// 解析日期部分获取年、月、日
@@ -102,7 +102,7 @@ export class IsoUtils {
 			const monthL = calendar === "LUNAR_LEAP" ? -month : month;
 			return LunarLibrary.getChineseName(year, monthL, day);
 		} else {
-			throw new Error(`Unsupported calendar type: ${calendar}`);
+			throw new Error(`Unsupported calendar type: ${calendar as string}`);
 		}
 	}
 

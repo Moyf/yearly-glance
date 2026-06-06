@@ -809,12 +809,12 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 													? `${t(
 															"view.yearlyGlance.actions.clickToHide"
 													  )}${t(
-															`view.yearlyGlance.legend.${eventType}` as TranslationKeys
+															`view.yearlyGlance.legend.${eventType}`
 													  )}`
 													: `${t(
 															"view.yearlyGlance.actions.clickToShow"
 													  )}${t(
-															`view.yearlyGlance.legend.${eventType}` as TranslationKeys
+															`view.yearlyGlance.legend.${eventType}`
 													  )}`
 											}
 										>
@@ -848,7 +848,7 @@ const YearlyCalendarView: React.FC<YearlyCalendarViewProps> = ({ plugin, externa
 												</span>
 												<span className="legend-text">
 													{t(
-														`view.yearlyGlance.legend.${eventType}` as TranslationKeys
+														`view.yearlyGlance.legend.${eventType}`
 													)}
 												</span>
 											</div>

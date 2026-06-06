@@ -10,7 +10,7 @@ import { TranslationKeys } from "@/src/i18n/types";
 export type SortField = "name" | "date";
 export type SortDirection = "asc" | "desc";
 
-export const SORT_FIELD_OPTIONS = [
+export const SORT_FIELD_OPTIONS: { value: SortField; label: string }[] = [
 	{ value: "name", label: t("view.eventManager.actions.sort.name") },
 	{ value: "date", label: t("view.eventManager.actions.sort.date") },
 ];
@@ -84,7 +84,7 @@ export const SortControls: React.FC<SortControlsProps> = ({
 					</div>
 					<div className="yg-sort-sortDirection">
 						<Tooltip text={t(
-							`view.eventManager.actions.sort.${sortDirection}` as TranslationKeys
+							`view.eventManager.actions.sort.${sortDirection}`
 						)}>
 							<button
 								className="clickable-icon"

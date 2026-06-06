@@ -4,7 +4,7 @@ import { getBirthdayKeyId } from "@/src/i18n/birthday";
 import { IsoUtils } from "./isoUtils";
 import { LunarLibrary } from "./lunarLibrary";
 import { SpecialHoliday } from "./specialHoliday";
-import { CalendarType } from "@/src/type/Date";
+import { CalendarType, ParseIsoDate } from "@/src/type/Date";
 
 export class EventCalculator {
 	/**
@@ -30,7 +30,7 @@ export class EventCalculator {
 	) {
 		if (!isoDate) return [];
 
-		let parsed;
+		let parsed: ParseIsoDate;
 		try {
 			parsed = IsoUtils.parse(isoDate, calendar);
 		} catch (e) {
@@ -271,9 +271,11 @@ export class EventCalculator {
 			const todaySolar = Solar.fromDate(new Date());
 
 			// 计算下一次生日，
-			let nextBirthday, currentYearBirthday, nextYearBirthday;
-			// 计算星座，生肖，
-			let zodiac, animal;
+			let nextBirthday: string = "";
+			let currentYearBirthday: Solar = Solar.fromDate(new Date());
+			let nextYearBirthday: Solar = Solar.fromDate(new Date());
+			let zodiac: string | undefined;
+			let animal: string | undefined;
 			if (calendar === "GREGORIAN") {
 				currentYearBirthday = Solar.fromYmd(
 					todaySolar.getYear(),
@@ -295,7 +297,7 @@ export class EventCalculator {
 
 				if (year !== undefined) {
 					const xingzuo = Solar.fromYmd(year, month, day).getXingZuo();
-					zodiac = getBirthdayKeyId(xingzuo, "zodiac");
+					zodiac = getBirthdayKeyId(xingzuo, "zodiac") ?? undefined;
 
 					const ganzhi = Solar.fromYmd(year, month, day)
 						.getLunar()
@@ -306,15 +308,15 @@ export class EventCalculator {
 					// 获取生肖：存储格式 "ganzhi_key:animal_key"
 					const ganzhiKey = getBirthdayKeyId(ganzhi, "ganzhi");
 					const animalKey = getBirthdayKeyId(shengxiao, "animal");
-					animal = ganzhiKey && animalKey ? `${ganzhiKey}:${animalKey}` : null;
+					animal = ganzhiKey && animalKey ? `${ganzhiKey}:${animalKey}` : undefined;
 				} else {
 					const xingzuo = Solar.fromYmd(
 						yearSelected,
 						month,
 						day
 					).getXingZuo();
-					zodiac = getBirthdayKeyId(xingzuo, "zodiac");
-					animal = null;
+					zodiac = getBirthdayKeyId(xingzuo, "zodiac") ?? undefined;
+					animal = undefined;
 				}
 			} else if (calendar === "LUNAR" || calendar === "LUNAR_LEAP") {
 				currentYearBirthday = LunarLibrary.constructLunar(
@@ -341,7 +343,7 @@ export class EventCalculator {
 					const xingzuo = Lunar.fromYmd(year, month, day)
 						.getSolar()
 						.getXingZuo();
-					zodiac = getBirthdayKeyId(xingzuo, "zodiac");
+					zodiac = getBirthdayKeyId(xingzuo, "zodiac") ?? undefined;
 
 					const ganzhi = Lunar.fromYmd(
 						year,
@@ -356,23 +358,23 @@ export class EventCalculator {
 					// 获取生肖：存储格式 "ganzhi_key:animal_key"
 					const ganzhiKey = getBirthdayKeyId(ganzhi, "ganzhi");
 					const animalKey = getBirthdayKeyId(shengxiao, "animal");
-					animal = ganzhiKey && animalKey ? `${ganzhiKey}:${animalKey}` : null;
+					animal = ganzhiKey && animalKey ? `${ganzhiKey}:${animalKey}` : undefined;
 				} else {
 					// 对于农历生日，如果没有年份，无法计算星座，生肖和干支
-					zodiac = null;
-					animal = null;
+					zodiac = undefined;
+					animal = undefined;
 				}
 			}
 
 			// 计算年龄
-			let age;
+			let age: number | undefined;
 			if (year !== undefined) {
 				// 当今天还未过生日时，年龄为当前年份减去出生年份再减1
 				age = todaySolar.isBefore(currentYearBirthday)
 					? todaySolar.getYear() - year - 1
 					: todaySolar.getYear() - year;
 			} else {
-				age = null;
+				age = undefined;
 			}
 
 			return {

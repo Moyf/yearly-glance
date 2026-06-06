@@ -201,7 +201,7 @@ export function useYearlyCalendar(plugin: YearlyGlancePlugin, externalEvents?: C
 		const durationWarnings: DurationWarning[] = [];
 
 		const pushExpanded = (event: CalendarEvent | Parameters<typeof expandEventByDuration>[0], type: Parameters<typeof expandEventByDuration>[1]) => {
-			const { events: expanded, warning } = expandEventByDuration(event as Parameters<typeof expandEventByDuration>[0], type, year);
+			const { events: expanded, warning } = expandEventByDuration(event, type, year);
 			expanded.forEach((e) => events.push(e));
 			if (warning) durationWarnings.push(warning);
 		};

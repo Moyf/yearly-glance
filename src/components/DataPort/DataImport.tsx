@@ -683,7 +683,7 @@ export const DataImport: React.FC<DataImportProps> = ({
 						icon={<FileText size={24} />}
 						actions={
 							<ImportJson
-								onUpload={handleFileChange}
+								onUpload={(e) => { void handleFileChange(e); }}
 								onPasteJson={handlePasteJson}
 								disabled={isImporting}
 							/>

@@ -425,7 +425,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 			<form
 				className="yg-event-form"
 				ref={formRef}
-				onSubmit={handleSubmit}
+				onSubmit={(e) => { void handleSubmit(e); }}
 			>
 				{/* 表单标题 */}
 				<h3 className="yg-event-form-title">

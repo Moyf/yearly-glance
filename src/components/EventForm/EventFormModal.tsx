@@ -256,12 +256,12 @@ export class EventFormModal extends Modal {
 						);
 					if (this.isEditing) {
 						newEvents.holidays = newEvents.holidays.map((h) =>
-							h.id === event.id ? (event as Holiday) : h
+							h.id === event.id ? event : h
 						);
 					} else {
 						// 新增事件时添加 eventSource
-						(event as Holiday).eventSource = EventSource.CONFIG;
-						newEvents.holidays.push(event as Holiday);
+						event.eventSource = EventSource.CONFIG;
+						newEvents.holidays.push(event);
 					}
 					break;
 				}

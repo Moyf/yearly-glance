@@ -298,7 +298,7 @@ export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 									{ label: t("setting.general.dailyNoteSource.options.dailyNotes"), value: "daily-notes" },
 									{ label: t("setting.general.dailyNoteSource.options.periodicNotes"), value: "periodic-notes" },
 								]}
-								onValueChange={(value) => handleUpdateConfig({ dailyNoteSource: value as "daily-notes" | "periodic-notes" })}
+								onValueChange={(value) => handleUpdateConfig({ dailyNoteSource: value })}
 							/>
 						</SettingsItem>
 						{/* 事件属性名 */}

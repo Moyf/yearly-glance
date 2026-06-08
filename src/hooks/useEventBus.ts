@@ -13,7 +13,7 @@ export const EVENT_SEARCH_REQUESTED = "event-search-requested";
  * 创建一个类型安全的事件总线
  * 用于不同组件间的通信，避免直接DOM操作
  */
-export function createEventBus<T = any>() {
+export function createEventBus<T = unknown>() {
 	type Listener = (data: T) => void;
 	const listeners = new Map<string, Set<Listener>>();
 

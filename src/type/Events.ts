@@ -18,10 +18,6 @@ export interface BaseEvent {
 	id: string;
 	text: string;
 	eventDate: EventDate;
-	/** @deprecated 使用 eventDate.isoDate 替代 */
-	date?: string;
-	/** @deprecated 使用 eventDate.calendar 替代 */
-	dateType?: "SOLAR" | "LUNAR";
 	/** 计算后的公历日期数组（运行时生成） */
 	dateArr?: string[];
 	/** 事件持续天数，默认为1（单日事件） */

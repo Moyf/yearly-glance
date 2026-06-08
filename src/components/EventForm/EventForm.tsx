@@ -325,8 +325,12 @@ export const EventForm: React.FC<EventFormProps> = ({
 		}
 
 		const handleKeyDown = (e: KeyboardEvent) => {
-			// 检查是否按下了 Ctrl+Enter 或 Cmd+Enter
-			if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+			// 检查是否按下了 Ctrl+Enter、Cmd+Enter 或 Alt+S
+			const isSubmitShortcut =
+				(e.key === "Enter" && (e.metaKey || e.ctrlKey)) ||
+				(e.altKey && e.key.toLowerCase() === "s");
+
+			if (isSubmitShortcut) {
 				e.preventDefault();
 				formRef.current?.requestSubmit();
 				return;

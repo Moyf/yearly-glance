@@ -57,8 +57,7 @@ export class YearlyGlanceView extends ItemView {
 			this.calendarContainer,
 			this.plugin
 		);
-		this.calendarView.initialize(this.plugin);
-		void this.calendarView.render();
+		await this.calendarView.initialize(this.plugin);
 
 		// Subscribe to config changes to refresh tab icon and title
 		this.unsubscribeBus = YearlyGlanceBus.subscribeTopics(['config', 'all'], () => {

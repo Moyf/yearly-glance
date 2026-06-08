@@ -1,3 +1,11 @@
+## [4.2.5](https://github.com/Moyf/yearly-glance/compare/4.2.4...4.2.5) (2026-06-08)
+
+
+### ⚡ 变更
+
+* 将标签页图标显示方式默认值改为 Lucide，并优化事件类型提示文案
+
+
 ## [4.2.2](https://github.com/Moyf/yearly-glance/compare/4.2.1...4.2.2) (2026-06-05)
 
 

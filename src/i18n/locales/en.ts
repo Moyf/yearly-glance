@@ -181,7 +181,7 @@ const translations: BaseMessage = {
 			eventPresetTypes: {
 				name: "Event type presets",
 				desc: "Define icon and color combinations, assign to events, and filter by group",
-				tooltip: "Assign a type to events to apply its emoji and color. You can still override emoji/color on individual events.",
+				tooltip: "After assigning a type to an event, it inherits that type's icon and color. You can also set them on a specific event to override them. Edit preset types in the plugin settings under Presets.",
 				addNew: "Add type",
 				namePlaceholder: "Type name (e.g. Travel)",
 				deleteConfirm: "This type is used by {count} events. Deleting it will fall back to default colors. Continue?",

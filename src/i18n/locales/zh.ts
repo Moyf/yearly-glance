@@ -181,7 +181,7 @@ const translations: BaseMessage = {
 			eventPresetTypes: {
 				name: "事件类型预设",
 				desc: "定义偏好的图标和颜色组合，快速分配给事件，也可用于按分组筛选",
-				tooltip: "给事件分配类型后将自动应用该类型的 emoji 和颜色。单个事件仍可覆盖自己的 emoji 和颜色。",
+				tooltip: "给事件分配类型后将继承该类型的图标和颜色，也可以给特定事件单独设置以覆盖。在插件设置的「预设配置」中可编辑预设类型。",
 				addNew: "新建类型",
 				namePlaceholder: "类型名称（如：出游）",
 				deleteConfirm: "此类型被 {count} 个事件使用，删除后将回退到默认颜色，是否继续？",

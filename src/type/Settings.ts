@@ -180,7 +180,7 @@ export const DEFAULT_SETTINGS: YearlyGlanceSettings = {
 	showBasesEvents: true, // 默认显示笔记事件
 	mondayFirst: true,
 	title: "",
-	showEmojiBeforeTabName: "emoji",
+	showEmojiBeforeTabName: "lucide",
 	showTooltips: true,
 	eventClickAction: "showTooltip", // 默认显示预览
 	colorful: false,

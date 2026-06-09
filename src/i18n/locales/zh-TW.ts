@@ -346,7 +346,9 @@ const translations: BaseMessage = {
 			keywordRemove: "刪除",
 			keywordEmojiPlaceholder: "emoji",
 			keywordTextPlaceholder: "關鍵詞",
-			keywordSettingsHint: "提示：也可以在 設定 → 預設配置 中批量管理",
+			keywordSettingsHintPrefix: "提示：也可以在外掛的 ",
+			keywordSettingsHintLink: "預設配置",
+			keywordSettingsHintSuffix: " 中進行批次管理",
 		},
 		eventManager: {
 			solar: "公曆",

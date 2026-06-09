@@ -346,7 +346,9 @@ const translations: BaseMessage = {
 			keywordRemove: "Remove",
 			keywordEmojiPlaceholder: "emoji",
 			keywordTextPlaceholder: "Keyword",
-			keywordSettingsHint: "Tip: Batch edit in Settings → Custom Emoji Keywords",
+			keywordSettingsHintPrefix: "Tip: You can also batch edit them in the plugin's ",
+			keywordSettingsHintLink: "Presets",
+			keywordSettingsHintSuffix: " tab.",
 		},
 		eventManager: {
 			solar: "Solar",

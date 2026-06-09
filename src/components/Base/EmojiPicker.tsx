@@ -2,9 +2,21 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { EMOJI_DATA, buildEmojiKeywordMap } from "@/src/data/emojiData";
 import type YearlyGlancePlugin from "@/src/main";
-import { t } from "@/src/i18n/i18n";
+import { isChineseLocale, t } from "@/src/i18n/i18n";
 import { Tooltip } from "@/src/components/Base/Tooltip";
 import "./style/EmojiPicker.css";
+
+// 用于检测关键词是否包含 CJK 字符
+const CJK_REGEX = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/;
+
+const isChineseKeyword = (keyword: string): boolean => CJK_REGEX.test(keyword);
+
+const getDisplayKeywords = (keywords: string[], chinese: boolean): string[] => {
+	const filtered = keywords.filter((kw) =>
+		chinese ? isChineseKeyword(kw) : !isChineseKeyword(kw)
+	);
+	return filtered.length > 0 ? filtered : keywords;
+};
 
 interface EmojiPickerProps {
 	value: string;
@@ -31,6 +43,12 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 	const [customKeywords, setCustomKeywords] = React.useState<Record<string, string[]>>(
 		() => (plugin ? plugin.getConfig().customEmojiKeywords || {} : {})
 	);
+
+	const chineseLocale = isChineseLocale();
+
+	const openPresetsSettings = React.useCallback(() => {
+		void plugin?.openPluginSettings("presets");
+	}, [plugin]);
 
 	// Build the combined keyword map (built-in + custom)
 	const keywordMap = React.useMemo(() => {
@@ -373,7 +391,16 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 										</button>
 									</div>
 									<div className="yg-emoji-keyword-hint">
-										{t("view.emojiPicker.keywordSettingsHint")}
+										{t("view.emojiPicker.keywordSettingsHintPrefix")}
+										<Tooltip
+											text={t("view.emojiPicker.keywordSettingsHintLink")}
+											onClick={openPresetsSettings}
+										>
+											<strong className="yg-emoji-keyword-hint-link">
+												{t("view.emojiPicker.keywordSettingsHintLink")}
+											</strong>
+										</Tooltip>
+										{t("view.emojiPicker.keywordSettingsHintSuffix")}
 									</div>
 								</div>
 							)}
@@ -389,8 +416,13 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 								</div>
 								<div className="yg-emoji-grid">
 									{category.emojis.map((entry) => {
+										const allKeywords = keywordMap[entry.emoji] || [];
+										const displayKeywords = getDisplayKeywords(
+											allKeywords,
+											chineseLocale
+										);
 										const tooltipText =
-											keywordMap[entry.emoji]?.join(", ") || entry.emoji;
+											displayKeywords.join(", ") || entry.emoji;
 
 										return (
 											<Tooltip key={entry.emoji} text={tooltipText}>

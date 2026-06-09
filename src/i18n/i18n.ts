@@ -82,6 +82,10 @@ export class I18n {
 	public hasTranslation(key: TranslationKeys): boolean {
 		return !!this.flatTranslations[this.currentLocale][key];
 	}
+
+	public isChineseLocale(): boolean {
+		return this.currentLocale.toLowerCase().startsWith("zh");
+	}
 }
 
 // 导出默认实例
@@ -91,3 +95,5 @@ export const i18n = I18n.getInstance();
 export const t = (key: TranslationKeys, params?: TranslationParams): string => {
 	return i18n.t(key, params);
 };
+
+export const isChineseLocale = (): boolean => i18n.isChineseLocale();

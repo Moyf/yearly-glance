@@ -211,7 +211,9 @@ export type BaseMessage = {
 			keywordRemove: string;
 			keywordEmojiPlaceholder: string;
 			keywordTextPlaceholder: string;
-			keywordSettingsHint: string;
+			keywordSettingsHintPrefix: string;
+			keywordSettingsHintLink: string;
+			keywordSettingsHintSuffix: string;
 		};
 		eventManager: {
 			solar: string;

@@ -246,6 +246,20 @@ button:not(.clickable-icon).yg-emoji-keyword-remove {
 	line-height: 1.4;
 }
 
+.yg-emoji-keyword-hint .yg-tooltip-container.has-children {
+	margin-left: 0;
+}
+
+.yg-emoji-keyword-hint-link {
+	color: var(--text-muted);
+	transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.yg-tooltip-container.clickable:hover .yg-emoji-keyword-hint-link,
+.yg-tooltip-container.clickable:focus-visible .yg-emoji-keyword-hint-link {
+	color: var(--interactive-accent);
+}
+
 /* Emoji Grid Container */
 .yg-emoji-grid-container {
 	overflow-y: auto;

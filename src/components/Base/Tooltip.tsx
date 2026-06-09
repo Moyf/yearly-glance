@@ -8,6 +8,11 @@ interface TooltipProps {
 	children?: React.ReactNode; // 可选的子元素，如果提供则包裹子元素，否则显示默认图标
 	trigger?: "hover" | "click"; // 触发方式，默认为hover
 	disabled?: boolean; // 是否禁用tooltip
+	onClick?: (
+		event:
+			| React.MouseEvent<HTMLDivElement>
+			| React.KeyboardEvent<HTMLDivElement>
+	) => void;
 }
 
 export const Tooltip: React.FC<TooltipProps> = ({
@@ -15,6 +20,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
 	children,
 	trigger = "hover",
 	disabled = false,
+	onClick,
 }) => {
 	const [isVisible, setIsVisible] = React.useState(false);
 	const [position, setPosition] = React.useState({
@@ -156,14 +162,34 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
 	// 处理事件监听器
 	const getEventHandlers = () => {
+		const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+			onClick?.(event);
+
+			if (trigger === "click") {
+				toggleTooltip();
+			}
+		};
+
+		const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+			if (!onClick || (event.key !== "Enter" && event.key !== " ")) {
+				return;
+			}
+
+			event.preventDefault();
+			onClick(event);
+		};
+
 		if (trigger === "hover") {
 			return {
 				onMouseEnter: showTooltip,
 				onMouseLeave: hideTooltip,
+				onClick: onClick ? handleClick : undefined,
+				onKeyDown: onClick ? handleKeyDown : undefined,
 			};
 		} else if (trigger === "click") {
 			return {
-				onClick: toggleTooltip,
+				onClick: handleClick,
+				onKeyDown: onClick ? handleKeyDown : undefined,
 			};
 		}
 		return {};
@@ -175,7 +201,9 @@ export const Tooltip: React.FC<TooltipProps> = ({
 				ref={triggerRef}
 				className={`yg-tooltip-container ${
 					disabled ? "disabled" : ""
-				} ${children ? "has-children" : ""}`}
+				} ${children ? "has-children" : ""} ${onClick ? "clickable" : ""}`}
+				role={onClick ? "button" : undefined}
+				tabIndex={onClick ? 0 : undefined}
 				{...getEventHandlers()}
 			>
 				{children || (

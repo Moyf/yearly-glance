@@ -181,7 +181,7 @@ const translations: BaseMessage = {
 			eventPresetTypes: {
 				name: "事件類型預設",
 				desc: "定義偏好的圖示和顏色組合，快速分配給事件，也可用於按分組篩選",
-				tooltip: "給事件分配類型後將繼承該類型的圖示和顏色，也可以給特定事件單獨設定以覆蓋。在外掛設定的「預設設定」中可編輯預設類型。",
+				tooltip: "給事件分配類型後將繼承該類型的圖示和顏色，也可以給特定事件單獨設定以覆蓋。點擊圖示可前往外掛的「預設設定」編輯事件預設類型。",
 				addNew: "新建類型",
 				namePlaceholder: "類型名稱（如：出遊）",
 				deleteConfirm: "此類型被 {count} 個事件使用，刪除後將回退到預設顏色，是否繼續？",
@@ -456,7 +456,7 @@ const translations: BaseMessage = {
 				eventEmoji: "事件圖標，目前支援使用emoji",
 				eventColor:
 					"事件顏色，可以選擇預設顏色或自訂顏色<br>" +
-					"預設顏色在外掛設定中新增",
+					"點擊圖示可前往外掛的「預設設定」編輯事件預設顏色。",
 				eventHidden:
 					"是否隱藏該事件（在概覽中不再顯示）<br>" +
 					"注：在事件管理中保持可見",

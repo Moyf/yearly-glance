@@ -24,11 +24,22 @@
 .yg-tooltip-icon {
 	color: var(--text-muted);
 	cursor: help;
-	transition: color 0.2s ease;
+	transition: color 0.2s ease, transform 0.2s ease;
 
 	&:hover {
 		color: var(--text-normal);
 	}
+}
+
+.yg-tooltip-container.clickable,
+.yg-tooltip-container.clickable .yg-tooltip-icon {
+	cursor: pointer;
+}
+
+.yg-tooltip-container.clickable:hover .yg-tooltip-icon,
+.yg-tooltip-container.clickable:focus-visible .yg-tooltip-icon {
+	color: var(--interactive-accent);
+	transform: scale(1.08);
 }
 
 .yg-tooltip-content {

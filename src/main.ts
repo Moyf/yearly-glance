@@ -1,4 +1,4 @@
-import { normalizePath, Notice, Plugin, TFile, TFolder } from "obsidian";
+import { App, normalizePath, Notice, Plugin, TFile, TFolder } from "obsidian";
 import { DEFAULT_CONFIG, YearlyGlanceConfig } from "./type/Config";
 import YearlyGlanceSettingsTab from "./components/Settings/SettingsTab";
 import {
@@ -23,6 +23,19 @@ import { YearlyGlanceBus } from "./hooks/useYearlyGlanceConfig";
 import { t } from "./i18n/i18n";
 import { buildPropConfig, syncEventToFrontmatter } from "./service/BasesEventFrontmatterService";
 import { DailyNoteService } from "./service/DailyNoteService";
+
+type YearlyGlanceSettingsTarget = "basic" | "style" | "noteEvents" | "dailyNoteEvents" | "presets";
+
+interface WindowWithYearlyGlanceSettingsTarget extends Window {
+	__yearlyGlanceSettingsTarget?: YearlyGlanceSettingsTarget;
+}
+
+interface AppWithSettings extends App {
+	setting: {
+		open(): void;
+		openTabById(id: string): void;
+	};
+}
 import { MigrateData } from "./utils/migrateData";
 import { setDebugLoggerEnabled, logger } from "./utils/logger";
 import { EventCalculator } from "./utils/eventCalculator";
@@ -437,6 +450,16 @@ export default class YearlyGlancePlugin extends Plugin {
 
 			void this.app.workspace.revealLeaf(leaf);
 		}
+	}
+
+	public async openPluginSettings(target?: YearlyGlanceSettingsTarget) {
+		if (target) {
+			(window as WindowWithYearlyGlanceSettingsTarget).__yearlyGlanceSettingsTarget = target;
+		}
+
+		const appWithSettings = this.app as AppWithSettings;
+		appWithSettings.setting.open();
+		appWithSettings.setting.openTabById(this.manifest.id);
 	}
 
 	// 添加打开事件表单的方法

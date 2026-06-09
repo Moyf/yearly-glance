@@ -181,7 +181,7 @@ const translations: BaseMessage = {
 			eventPresetTypes: {
 				name: "Event type presets",
 				desc: "Define icon and color combinations, assign to events, and filter by group",
-				tooltip: "After assigning a type to an event, it inherits that type's icon and color. You can also set them on a specific event to override them. Edit preset types in the plugin settings under Presets.",
+				tooltip: "After assigning a type to an event, it inherits that type's icon and color. You can also set them on a specific event to override them. Click the icon to open the plugin's Presets and edit event preset types.",
 				addNew: "Add type",
 				namePlaceholder: "Type name (e.g. Travel)",
 				deleteConfirm: "This type is used by {count} events. Deleting it will fall back to default colors. Continue?",
@@ -456,7 +456,7 @@ const translations: BaseMessage = {
 				eventEmoji: "Event icon, currently supports using emoji",
 				eventColor:
 					"Event color, you can select preset colors or custom colors<br>" +
-					"Preset colors are added in plugin settings",
+					"Click the icon to open the plugin's Presets and edit event preset colors.",
 				eventHidden:
 					"Whether to hide the event (not displayed in the overview)<br>" +
 					"Note: The event will still be visible in the event manager",

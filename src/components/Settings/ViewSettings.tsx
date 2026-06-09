@@ -55,11 +55,27 @@ export const eventClickActionOptions = EVENT_CLICK_ACTION_OPTIONS.map((option) =
 
 type SettingsTabKey = "basic" | "style" | "noteEvents" | "dailyNoteEvents" | "presets";
 
+interface WindowWithYearlyGlanceSettingsTarget extends Window {
+	__yearlyGlanceSettingsTarget?: SettingsTabKey;
+}
+
 export const ViewSettings: React.FC<ViewSettingsProps> = ({ plugin }) => {
 	const { config, updateConfig } = useYearlyGlanceConfig(plugin);
-	const [activeSettingsTab, setActiveSettingsTab] = React.useState<SettingsTabKey>("basic");
+	const initialSettingsTab =
+		(window as WindowWithYearlyGlanceSettingsTarget).__yearlyGlanceSettingsTarget ?? "basic";
+	const [activeSettingsTab, setActiveSettingsTab] = React.useState<SettingsTabKey>(initialSettingsTab);
 	// 记忆颜色预设折叠状态
 	const [colorPresetsCollapsed, setColorPresetsCollapsed] = React.useState(true);
+
+	React.useEffect(() => {
+		const target = (window as WindowWithYearlyGlanceSettingsTarget).__yearlyGlanceSettingsTarget;
+		if (!target) {
+			return;
+		}
+
+		setActiveSettingsTab(target);
+		delete (window as WindowWithYearlyGlanceSettingsTarget).__yearlyGlanceSettingsTarget;
+	}, []);
 
 	const basesEventFilePreview = previewNoteEventPath(
 		config.defaultBasesEventPath || "",

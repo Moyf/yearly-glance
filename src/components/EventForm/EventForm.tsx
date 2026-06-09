@@ -214,6 +214,10 @@ export const EventForm: React.FC<EventFormProps> = ({
 	const [optionalCollapsed, setOptionalCollapsed] = React.useState(false);
 	const [isSaving, setIsSaving] = React.useState(false);
 
+	const openPresetsSettings = React.useCallback(() => {
+		void plugin?.openPluginSettings("presets");
+	}, [plugin]);
+
 	// Track original date for dailyNoteEvent editing
 	const originalIsoDate = React.useRef(event.eventDate?.isoDate || '');
 	const hasDateChanged = isEditing && formData.userInputDate !== originalIsoDate.current;
@@ -592,7 +596,10 @@ export const EventForm: React.FC<EventFormProps> = ({
 						<div className="form-group">
 							<label>
 								{t("view.eventManager.presetType.label")}
-								<Tooltip text={t("setting.general.eventPresetTypes.tooltip" as TranslationKeys)} />
+								<Tooltip
+									text={t("setting.general.eventPresetTypes.tooltip" as TranslationKeys)}
+									onClick={openPresetsSettings}
+								/>
 							</label>
 							<Select
 								options={[
@@ -630,6 +637,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 							{t("view.eventManager.form.eventColor")}
 							<Tooltip
 								text={t("view.eventManager.help.eventColor")}
+								onClick={openPresetsSettings}
 							/>
 						</label>
 						<ColorSelector

@@ -1,27 +1,35 @@
-import { readFileSync, existsSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, isAbsolute, join, parse, resolve } from "node:path";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+export function getVaultPath(startDirectory) {
+	const start = resolve(startDirectory);
+	const envResult = findEnvValue("VAULT_PATH", start);
+	const configuredPath = process.env.VAULT_PATH?.trim() || envResult?.value;
+	if (!configuredPath) throw new Error("VAULT_PATH is not set. Add it to .env in this repository or a parent directory.");
+	return isAbsolute(configuredPath) ? configuredPath : resolve(envResult?.directory ?? start, configuredPath);
+}
 
-/**
- * 手动解析 .env 文件并注入 process.env
- * 替代 dotenv 包，避免额外依赖
- */
-export function loadEnv(envPath) {
-	const filePath = envPath ?? resolve(__dirname, "../.env");
-	if (!existsSync(filePath)) return;
-
-	const lines = readFileSync(filePath, "utf8").split("\n");
-	for (const line of lines) {
-		const trimmed = line.trim();
-		if (!trimmed || trimmed.startsWith("#")) continue;
-		const eq = trimmed.indexOf("=");
-		if (eq === -1) continue;
-		const key = trimmed.slice(0, eq).trim();
-		const val = trimmed.slice(eq + 1).trim().replace(/^["']|["']$/g, "");
-		if (key && !(key in process.env)) {
-			process.env[key] = val;
+function findEnvValue(key, startDirectory) {
+	let directory = resolve(startDirectory);
+	const root = parse(directory).root;
+	while (true) {
+		const envPath = join(directory, ".env");
+		if (existsSync(envPath)) {
+			const value = parseEnvValue(readFileSync(envPath, "utf8"), key);
+			if (value !== undefined) return { value, directory };
 		}
+		if (directory === root) return null;
+		directory = dirname(directory);
 	}
+}
+
+function parseEnvValue(contents, key) {
+	for (const line of contents.split(/\r?\n/u)) {
+		const match = line.match(/^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/u);
+		if (!match || match[1] !== key) continue;
+		const raw = match[2].trim();
+		if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) return raw.slice(1, -1);
+		return raw.replace(/\s+#.*$/u, "").trim();
+	}
+	return undefined;
 }

@@ -1,8 +1,8 @@
-import { copyFile, mkdir, readFile } from "fs/promises";
+import { copyFile, mkdir, readFile, writeFile } from "fs/promises";
 import { existsSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import { loadEnv } from "./load-env.mjs";
+import { getVaultPath } from "./load-env.mjs";
 
 // 获取当前文件的目录
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -11,6 +11,13 @@ const manifestPath = join(rootDir, "manifest.json");
 
 async function copyToVault(vaultPath) {
 	try {
+		if (!existsSync(vaultPath)) {
+			throw new Error(`Vault directory does not exist: ${vaultPath}`);
+		}
+		const obsidianDir = join(vaultPath, ".obsidian");
+		if (!existsSync(obsidianDir)) {
+			throw new Error(`Vault directory does not contain .obsidian: ${vaultPath}`);
+		}
 		// 从 manifest.json 读取插件 ID
 		console.log("正在读取 manifest.json...");
 		const manifestContent = await readFile(manifestPath, "utf8");
@@ -52,6 +59,11 @@ async function copyToVault(vaultPath) {
 			console.log(`复制文件: ${file} -> ${destPath}`);
 		}
 
+		const hotreloadPath = join(pluginDir, ".hotreload");
+		if (!existsSync(hotreloadPath)) {
+			await writeFile(hotreloadPath, "");
+		}
+
 		console.log(
 			`所有文件已成功复制到 Obsidian 库的 ${pluginId} 插件目录！`
 		);
@@ -66,23 +78,13 @@ async function main() {
 	console.log("开始执行复制到 Obsidian 库的脚本...");
 	console.log(`项目根目录: ${rootDir}`);
 
-	// 加载 .env 文件中的环境变量
-	loadEnv();
-
-	// 获取 VAULT_PATH 环境变量
-	const VAULT_PATH = process.env.VAULT_PATH;
-	console.log(`Obsidian 库路径: ${VAULT_PATH}`);
-
-	if (!VAULT_PATH) {
-		// CI 环境中没有 VAULT_PATH 是正常的，跳过复制步骤
-		console.log("VAULT_PATH 未定义，跳过复制到 Obsidian 库的步骤（CI 环境正常行为）");
-		process.exit(0);
-	}
+	const vaultPath = getVaultPath(rootDir);
+	console.log(`Obsidian 库路径: ${vaultPath}`);
 
 	console.log(`manifest 文件路径: ${manifestPath}`);
 	console.log("开始复制文件...");
 
-	await copyToVault(VAULT_PATH);
+	await copyToVault(vaultPath);
 	console.log("脚本执行完成！");
 }
 

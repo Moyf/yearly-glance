@@ -232,8 +232,10 @@
 /* Tab nav within settings — override for tighter fit */
 .yg-settings-tabs-wrapper .yg-nav-tabs {
 	display: flex;
-	flex-wrap: wrap; /* allow wrapping in narrow panels */
+	flex-wrap: wrap;
 	gap: 4px;
+	width: 100%;
+	box-sizing: border-box;
 	margin-bottom: 1rem;
 	padding: 4px;
 	background: var(--background-secondary);
@@ -242,13 +244,20 @@
 }
 
 .yg-settings-tabs-wrapper .yg-nav-tab {
-	flex: 1;
+	flex: 1 1 auto;
 	min-width: 80px;
+	justify-content: center;
 	text-align: center;
 	padding: 6px 10px;
 	border-radius: 6px;
 	font-size: var(--font-ui-small);
 	white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+	.yg-settings-tabs-wrapper .yg-nav-tab .yg-nav-tab-label {
+		display: inline;
+	}
 }
 
 .yg-settings-tabs-wrapper .yg-nav-tab.active {

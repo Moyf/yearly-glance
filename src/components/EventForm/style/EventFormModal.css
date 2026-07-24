@@ -5,6 +5,17 @@
 
 	.event-type-selector {
 		margin-bottom: 20px;
+
+		.yg-nav-tabs {
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		.yg-nav-tab {
+			flex: 1 1 0;
+			justify-content: center;
+			text-align: center;
+		}
 	}
 }
 

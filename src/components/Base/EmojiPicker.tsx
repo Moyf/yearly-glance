@@ -47,6 +47,8 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 	const chineseLocale = isChineseLocale();
 
 	const openPresetsSettings = React.useCallback(() => {
+		setIsOpen(false);
+		setSearch("");
 		void plugin?.openPluginSettings("presets");
 	}, [plugin]);
 
@@ -393,7 +395,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 									<div className="yg-emoji-keyword-hint">
 										{t("view.emojiPicker.keywordSettingsHintPrefix")}
 										<Tooltip
-											text={t("view.emojiPicker.keywordSettingsHintLink")}
+											text={t("view.emojiPicker.keywordSettingsHintLinkTooltip")}
 											onClick={openPresetsSettings}
 										>
 											<strong className="yg-emoji-keyword-hint-link">

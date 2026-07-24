@@ -214,6 +214,7 @@ export type BaseMessage = {
 			keywordSettingsHintPrefix: string;
 			keywordSettingsHintLink: string;
 			keywordSettingsHintSuffix: string;
+			keywordSettingsHintLinkTooltip: string;
 		};
 		eventManager: {
 			solar: string;

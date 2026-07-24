@@ -349,6 +349,7 @@ const translations: BaseMessage = {
 			keywordSettingsHintPrefix: "Tip: You can also batch edit them in the plugin's ",
 			keywordSettingsHintLink: "Presets",
 			keywordSettingsHintSuffix: " tab.",
+			keywordSettingsHintLinkTooltip: "Open the plugin's Presets settings tab",
 		},
 		eventManager: {
 			solar: "Solar",

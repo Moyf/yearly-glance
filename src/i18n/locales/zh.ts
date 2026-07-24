@@ -349,6 +349,7 @@ const translations: BaseMessage = {
 			keywordSettingsHintPrefix: "提示：也可以在插件的 ",
 			keywordSettingsHintLink: "预设配置",
 			keywordSettingsHintSuffix: " 中进行批量管理",
+			keywordSettingsHintLinkTooltip: "打开插件设置的预设配置页面",
 		},
 		eventManager: {
 			solar: "公历",

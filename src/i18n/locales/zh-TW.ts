@@ -349,6 +349,7 @@ const translations: BaseMessage = {
 			keywordSettingsHintPrefix: "提示：也可以在外掛的 ",
 			keywordSettingsHintLink: "預設配置",
 			keywordSettingsHintSuffix: " 中進行批次管理",
+			keywordSettingsHintLinkTooltip: "開啟外掛設定的預設配置頁面",
 		},
 		eventManager: {
 			solar: "公曆",

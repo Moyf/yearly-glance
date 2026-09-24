@@ -149,6 +149,7 @@ If you encounter any issues or have suggestions:
 - [Open an issue](https://github.com/Moyf/yearly-glance/issues) on GitHub
 - [Join the discussion](https://github.com/Moyf/yearly-glance/discussions) for questions and ideas
 - Contributions are welcome! See [CONTRIBUTING](./CONTRIBUTING.md) for details.
+- If you like Yearly Glance, consider [buying me a coffee on Ko-fi](https://ko-fi.com/moy) ☕
 
 ## License
 

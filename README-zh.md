@@ -143,6 +143,7 @@ Yearly Glance 支持多种事件来源，你可以根据不同使用场景选择
 - 有问题或建议请 [提交 Issue](https://github.com/Moyf/yearly-glance/issues)
 - 参与讨论：[Discussions](https://github.com/Moyf/yearly-glance/discussions)
 - 欢迎 PR 贡献！详见 [CONTRIBUTING](./CONTRIBUTING.md) 文档
+- 如果 Yearly Glance 对你有帮助，欢迎[请我喝杯咖啡（Ko-fi）](https://ko-fi.com/moy) ☕
 
 ## 许可证
 

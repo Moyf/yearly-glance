@@ -138,6 +138,16 @@ Yearly Glance 支持多种事件来源，你可以根据不同使用场景选择
 
 ---
 
+## 来自 Moy 的更多插件
+
+如果你欣赏我的插件设计和质量，可以看看我的其他 Obsidian 插件：
+
+| 插件名称 | 简介 | 数据 |
+| --- | --- | --- |
+| [Keyword Decorator](https://github.com/Moyf/keyword-decorator) | 关键词高亮与装饰，支持 Emoji/Lucide/图片/SVG 标记与整篇首次装饰。 <!-- Draft; pending Moy review. --> | [![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&logoColor=white&color=%23483699&label=downloads&query=%24%5B%22keyword-decorator%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)](https://obsidian.md/plugins?id=keyword-decorator) [![GitHub Stars](https://img.shields.io/github/stars/Moyf/keyword-decorator?logo=github&label=Stars)](https://github.com/Moyf/keyword-decorator/stargazers) |
+
+> 全部插件见 [Moy 的 Obsidian Community 页面](https://community.obsidian.md/users/moyf)。
+
 ## 支持与反馈
 
 - 有问题或建议请 [提交 Issue](https://github.com/Moyf/yearly-glance/issues)
